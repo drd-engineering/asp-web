@@ -1,0 +1,162 @@
+﻿@{
+    Layout = null;
+}
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <script src="https://jsplumbtoolkit.com/js/jquery.min.js"></script>
+    <title>jsPlumb Toolkit - build Flowcharts, Diagrams and connectivity based applications fast</title>
+    <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://jsplumbtoolkit.com/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://jsplumbtoolkit.com/css/jsplumbtoolkit-defaults.css">
+    <link rel="stylesheet" href="https://jsplumbtoolkit.com/css/jsplumbtoolkit-demo.css">
+
+
+
+    <link rel="stylesheet" href="https://jsplumbtoolkit.com/community/demo/flowchart/app.css">
+</head>
+
+<body class="jtk-bootstrap jtk-bootstrap-wide">
+
+    <div class="jtk-header">
+        <a class="jtk-logo" href="/"><img src="/img/logo-medium-jsplumb.png"></a>
+
+        <div class="jtk-nav">
+            <div><a href="/demos.html">DEMOS</a></div>
+            <div><a href="/docs.html">DOCS</a></div>
+            <div><a href="/features">FEATURES</a></div>
+            <div><a href="/download">DOWNLOAD</a></div>
+            <div><a href="/purchase">PURCHASE</a></div>
+            <div><a href="/contact.html">CONTACT</a></div>
+            <div><a href="https://blog.jsplumbtoolkit.com">BLOG</a></div>
+
+        </div>
+
+        <div class="social-nav hidden-xs">
+            <style>
+                .btn-try {
+                    background-color: #489ea5;
+                    border-radius: 3px;
+                    padding: 4px 10px;
+                    color: white;
+                    outline: none;
+                    border: none;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 17px;
+                }
+
+                    .btn-try:hover {
+                        background-color: #5eb4bb;
+                    }
+
+                    .btn-try a {
+                        color: whitesmoke;
+                        text-decoration: none;
+                    }
+
+                    .btn-try:hover a {
+                        color: white;
+                    }
+            </style>
+            <button class="btn-try">
+                <a href="/contact.html">Try Now</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="breadcrumbs">
+        <div class="crumbs">
+            <a href="/demos.html">DEMOS</a> &nbsp; &rarr; &nbsp; <a href="/demos.html#community">community </a> &nbsp; &rarr; &nbsp; Flowchart
+        </div>
+        <div class="demo-nav">
+            <a class="demo-prev" href="/community/demo/groups/index.html">Groups</a>
+            &nbsp; &larr; &nbsp;
+            &nbsp; &rarr; &nbsp;
+            <a class="demo-next" href="/community/demo/statemachine/index.html">State Machine</a>
+        </div>
+    </div>
+
+    <div class="jtk-page-container">
+        <div class="jtk-container">
+
+            <div class="jtk-demo-main">
+                <!-- demo -->
+                <div class="jtk-demo-canvas canvas-wide flowchart-demo jtk-surface jtk-surface-nopan" id="canvas">
+                    <div class="window jtk-node" id="flowchartWindow1"><strong>1</strong><br /><br /></div>
+                    <div class="window jtk-node" id="flowchartWindow2"><strong>2</strong><br /><br /></div>
+                    <div class="window jtk-node" id="flowchartWindow3"><strong>3</strong><br /><br /></div>
+                    <div class="window jtk-node" id="flowchartWindow4"><strong>4</strong><br /><br /></div>
+                </div>
+                <!-- /demo -->
+            </div>
+            <div class="full-width-container">
+                <div class="container">
+                    <!-- explanation -->
+                    <div class="description">
+                        <h4>FLOWCHART</h4>
+                        <p>Nodes are connected with the Flowchart connector.</p>
+                        <p>Hover over connections to highlight them, click to delete. </p>
+                        <p>Drag new connections from hollow dots to solid dots. You can also drag connections from their source/target to other sources/targets, or back onto themselves.</p>
+                        <p>By default, Flowchart connectors have square corners, but by setting the 'cornerRadius' parameter, as we have here, you can get rounded corners.</p>
+                    </div>
+                    <!-- /explanation -->
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="jtk-footer">
+        <div class="jtk-container">
+            <div class="jtk-copyright">
+                <div><img src="/img/logo-jsplumb-green.png"></div>
+                <div>
+                    © 2018 jsPlumb Pty Ltd. All rights reserved. &nbsp;&nbsp;
+                    ABN : 31 646 922 756&nbsp;&nbsp;
+                </div>
+            </div>
+            <div class="jtk-links">
+                <a href="/license">license</a>&nbsp;&nbsp;&nbsp;
+                <a href="privacy">privacy policy</a>&nbsp;&nbsp;&nbsp;
+                <a href="/contact.html">contact</a>&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="social-nav">
+                <a href="http://twitter.com/jsplumblib" class="link"><span class="icon-twitter"></span></a>
+                <a href="http://github.com/jsplumb/jsplumb/" class="link"><span class="icon-github"></span></a>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://jsplumbtoolkit.com/lib/jsplumb.js"></script>
+
+    <script src="https://jsplumbtoolkit.com/community/demo/flowchart/app.js"></script>
+    <script src="https://jsplumbtoolkit.com/js/jquery.validate.js"></script>
+    <script src="https://jsplumbtoolkit.com/js/additional-methods.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49979015-1', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+
+
+</body>
+
+</html>

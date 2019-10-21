@@ -1,0 +1,134 @@
+﻿.xannoLayer {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    overflow: hidden;
+
+    touch-action: none;
+    /*transform:rotate(0deg) scale(1, 1) translate(0,0);*/
+}
+
+.svg-selection {
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    touch-action: none;
+}
+
+.rect-selection {
+    fill: transparent;
+    stroke: black;
+    /*rgba(60,151,254,.5);*/
+    shape-rendering: crispEdges;
+    cursor: pointer;
+    pointer-events: fill;
+}
+
+.rect-selectionbar {
+    pointer-events: fill;
+}
+
+.circle-selection {
+    fill: #3c97fe;
+    stroke: #fff;
+    pointer-events: fill;
+}
+
+.circle-action {
+    pointer-events: fill;
+    z-index:1000;
+}
+
+.resize-cursor-topleft {
+    cursor: nwse-resize;
+}
+
+.resize-cursor-topcenter {
+    cursor: ns-resize;
+}
+
+.resize-cursor-topright {
+    cursor: nesw-resize;
+}
+
+.resize-cursor-bottomleft {
+    cursor: nesw-resize;
+}
+
+.resize-cursor-bottomcenter {
+    cursor: ns-resize;
+}
+
+.resize-cursor-bottomright {
+    cursor: nwse-resize;
+}
+
+.resize-cursor-left {
+    cursor: ew-resize;
+}
+
+.resize-cursor-right {
+    cursor: ew-resize;
+}
+
+
+.text-tool {
+    /*user-select: none;
+        pointer-events: none;*/
+    position: absolute;
+    /*touch-action: none;*/
+}
+
+.svg {
+    /*transform:rotate(90deg) scale(1, 1) translate(0,0);*/
+}
+
+.signature {
+    position: absolute;
+    padding: 4px;
+    font-size: xx-small;
+    font-family: Arial;
+    background-color: #ffc615;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-width: 150px;
+    min-height: 40px;
+    cursor: pointer;
+    pointer-events: stroke;
+    /*transform:rotate(90deg) scale(1, 1) translate(0,0);*/
+}
+
+.initial {
+    position: absolute;
+    padding: 4px;
+    font-size: xx-small;
+    font-family: Arial;
+    background-color: #92d14f;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-width: 150px;
+    min-height: 40px;
+    cursor: pointer;
+    pointer-events: stroke;
+}
+.privatestamp {
+    position: absolute;
+    padding: 4px;
+    font-size: xx-small;
+    font-family: Arial;
+    background-color: #62a0db;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-width: 150px;
+    min-height: 40px;
+    cursor: pointer;
+    pointer-events: stroke;
+}
+.stamp {
+    position: absolute;
+    padding: 4px;
+    /*min-width:150px;*/
+    min-height: 40px;
+    cursor: pointer;
+    pointer-events: stroke;
+}

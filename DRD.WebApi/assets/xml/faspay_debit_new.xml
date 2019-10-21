@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<faspay>
+  <request>Post Data Transaksi</request>
+  <merchant_id>99999</merchant_id>
+  <merchant>STORE</merchant>
+  <bill_no>647998170894149</bill_no>
+  <bill_reff>647998170894149</bill_reff>
+  <bill_date>2017/7/19 11:25:53 AM</bill_date>
+  <bill_expired>2017/7/19 3:25:53 PM</bill_expired>
+  <bill_desc>MIYAKO Stand Water Dispenser - Red Black (Merchant)</bill_desc>
+  <bill_currency>IDR</bill_currency>
+  <bill_gross>000</bill_gross>
+  <bill_tax>000</bill_tax>
+  <bill_miscfee>000</bill_miscfee>
+  <bill_total>75600000</bill_total>
+  <cust_no>USR170709275</cust_no>
+  <cust_name>nur auliya</cust_name>
+  <payment_channel>402</payment_channel>
+  <pay_type>1</pay_type>
+  <bank_userid>bot31160</bank_userid>
+  <msisdn>089682712285</msisdn>
+  <email>example@gmail.com</email>
+  <terminal>10</terminal>
+  <billing_address>Kawasan industri sentul.jl.olympic raya kav.b8 sentul bogor</billing_address>
+  <billing_address_city>Bogor</billing_address_city>
+  <billing_address_region>Bogor</billing_address_region>
+  <billing_address_state>Jawa Barat</billing_address_state>
+  <billing_address_poscode>16810</billing_address_poscode>
+  <billing_address_country_code>ID</billing_address_country_code>
+  <receiver_name_for_shipping>nur auliya</receiver_name_for_shipping>
+  <shipping_address>Kawasan industri sentul.jl.olympic raya kav.b8 sentul bogor</shipping_address>
+  <shipping_address_city>Bogor</shipping_address_city>
+  <shipping_address_region>Bogor</shipping_address_region>
+  <shipping_address_state>Jawa Barat</shipping_address_state>
+  <shipping_address_poscode>16810</shipping_address_poscode>
+  <shipping_address_country_code>ID</shipping_address_country_code>
+  <item>
+    <product>MIYAKO Stand Water D</product>
+    <amount>54900000</amount>
+    <qty>1</qty>
+    <payment_plan>1</payment_plan>
+    <tenor>00</tenor>
+    <merchant_id />
+  </item>
+  <item>
+    <product>Shipping Cost</product>
+    <amount>20700000</amount>
+    <qty>1</qty>
+    <payment_plan>1</payment_plan>
+    <tenor>00</tenor>
+    <merchant_id />
+  </item>
+  <reserve1 />
+  <reserve2 />
+  <signature>be8791ac5f10bb042834896598bfc6bb9aadcbf9</signature>
+</faspay>

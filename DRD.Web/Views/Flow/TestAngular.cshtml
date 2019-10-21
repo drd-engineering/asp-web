@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+<!-- Global stylesheets -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+<link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+<!-- /global stylesheets -->
+
+<script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-route.js"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="~/Scripts/xcontroller/xapp.js"></script>
+<script src="~/Scripts/xcontroller/xctrl1.js"></script>
+
+<body ng-app="drdApp">
+    <!-- Page container -->
+    <div id="mainController" class="page-container" ng-controller="drdController">
+        <div ng-controller="drdController2">
+            <div ng-controller="drdController3">
+                <span ng-click="alertA()">Test A</span>
+                <span ng-click="alertB()">Test B</span>
+                <span ng-click="alertC()">Test C</span>
+            </div>
+        </div>
+    </div>
+    <!-- /Page container -->
+    <script type="text/javascript">
+
+
+        //var myApp = angular.module('drdApp', ['ngRoute', 'drdController2', 'ui.bootstrap']);
+
+        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+            $scope.angkaC = "A";
+            $scope.alertB = function () {
+                //alert('B');
+                $scope.alertC();
+            }
+        });
+        //myApp.controller("drdController2", function ($scope, $location, $http, $filter) {
+        //    $scope.alertA = function () {
+        //        alert('A');
+        //    }
+        //});
+        myApp.controller("drdController3", function ($scope, $location, $http, $filter) {
+            $scope.alertC = function () {
+                alert($scope.angkaC);
+            }
+        });
+    </script>
+
+
+
+</body>
+

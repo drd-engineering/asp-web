@@ -1,0 +1,469 @@
+﻿@using DRD.Domain;
+@model JsonLayout
+
+@{
+    ViewBag.Title = "";
+}
+
+@*<link rel="stylesheet" href="/assets/css/demo.css">
+    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
+    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>*@
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+<script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
+<script src="/assets/vendors/ng_only_number.js"></script>
+
+<link href="/assets/vendors/bootstrap-switch/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
+<script src="/assets/vendors/bootstrap-switch/bootstrap-switch.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+
+<script src="~/Scripts/xpublic.js"></script>
+
+<style type="text/css">
+    .auto-style3 {
+        width: 64px;
+    }
+
+    .image-wraper {
+        float: left;
+        margin-right: 10px;
+        width: 120px;
+        height: 120px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-content {
+        width: 120px;
+        cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .auto-style1 {
+        width: 40px;
+    }
+
+    .auto-style2 {
+        width: 141px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+    }
+
+    .auto-style22 {
+        width: 141px;
+    }
+
+    .auto-style3 {
+        width: 100%;
+    }
+
+    .auto-style4 {
+    }
+
+    .auto-style5 {
+        text-align: center;
+        font-size: smaller;
+        width: 100px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+    }
+
+    .auto-style6 {
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+        font-size: smaller;
+        color: gray;
+    }
+</style>
+
+
+
+<body @*ng-app="drdApp"*@>
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <!-- Page content -->
+        <div class="page-content">
+
+
+            <!-- Main content -->
+            <div class="content-wrapper">
+                <!-- Page header -->
+                <div class="page-header page-header-default">
+                    <div class="page-header-content">
+                        <div class="page-title">
+                            <h4><i class="icon-spinner4 position-left"></i>In Progress</h4>
+                            Rotation: {{model.Subject}}
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /page header -->
+                <!-- Horizontal form options -->
+                <!-- Content area -->
+                <div class="content">
+
+
+                    <!-- Basic layout-->
+
+
+                    <div class="panel panel-flat">
+                        <div class="panel-body">
+
+
+                            <!--MEMBER DATA-->
+
+                            <form name="myForm" class="form-horizontal" autocomplete="off">
+
+                                <div ng-show="wizarno=='product'">
+
+
+
+                                    <fieldset>
+                                        <div class="col-md-12">
+
+                                            @*<div class="row">
+                                                    <div class="col-md-10">
+                                                        <label class="control-label">Workflow</label>
+                                                        <div class="input-group">
+                                                            <div>
+                                                                <input type="text" class="form-control" ng-model="workflow.Name" maxlength="50" readonly />
+                                                            </div>
+                                                            <span class="input-group-addon" style="cursor:pointer" ng-click="popupWorkflow()"><i class="icon-cogs"></i></span>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <hr />*@
+
+                                            @*<div class="row">
+                                                    <div class="col-md-10">
+                                                        <label class="control-label">Title</label>
+                                                        <input type="text" class="form-control" ng-model="model.Title" ng-required="wizarno=='product'" maxlength="100" readonly />
+                                                    </div>
+
+                                                </div>
+
+                                                <br />*@
+
+                                            <div ng-show="loadingLog==1">
+                                                <i class="icon-spinner2 spinner"></i>
+                                                <span>Loading log...</span>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </fieldset>
+
+                                    <br />
+
+                                </div>
+                            </form>
+                            <!--/MEMBER DATA-->
+                            <!--CONFIRMATION THANK YOU-->
+                            <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
+                            <!--/CONFIRMATION THANK YOU-->
+
+                        </div>
+                    </div>
+
+
+                    <!-- /basic layout -->
+
+
+
+
+                </div>
+                <!-- /vertical form options -->
+            </div>
+            <!-- /Main content -->
+        </div>
+        <!-- /Page content -->
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
+
+        myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
+
+            // modal workflow
+            $scope.workflow = {};
+            $scope.workflows = [];
+            $scope.workflowCount = [];
+            $scope.paging = [];
+            $scope.kriteria = "";
+            $scope.page = 1;
+            $scope.row = 20;
+            $scope.currPage = 0;
+            $scope.index = 0;
+            // modal workflow
+
+            $scope.model = {};
+            $scope.wizarno = 'product';
+            $scope.master = {};
+            $scope.model.IsActive=true;
+            $scope.model.Id = 0;
+            $scope.model.Status="00";
+            $scope.loadingLog=1;
+            //$scope.currentRotationNode={};
+            $scope.docs=[];
+            $scope.identities=[];
+            $scope.curentUser;
+            initValues();
+
+            $(".control-warning").uniform({
+                radioClass: 'choice',
+                wrapperClass: 'border-warning-600 text-warning-800'
+            });
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+            });
+
+            function initValues() {
+                $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
+                var product = @Html.Raw(Json.Encode(Model.obj));
+                if (product.Id!=0 ){
+                    $scope.model.Id=product.Id;
+                    $scope.model.MemberId=product.MemberId;
+                    $scope.model.RotationNodeId=product.RotationNodeId;
+                    $scope.model.Subject=product.Subject;
+                    $scope.model.Status=product.Status;
+                    $scope.model.Remark= product.Remark;
+                    $scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
+                    $scope.model.FlagAction=product.FlagAction;
+                    $scope.model.DecissionInfo=product.DecissionInfo;
+                    $scope.rotationNodes=product.RotationNodes;
+                    $scope.workflow=product.Workflow;
+                    $scope.sumDocuments=product.SumRotationNodeDocs;
+                    $scope.sumAttachments=product.SumRotationNodeUpDocs;
+                    //$scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id === product.RotationNodeId)[0];
+                    $scope.docs=$scope.rotationNodes.RotationNodeDocs;
+                }else{
+
+                }
+
+                $('#checkbox1').bootstrapSwitch.defaults.size='mini';
+            }
+
+            $scope.initData = function () {
+
+            }
+            $scope.showIdentityImage = function(member) {
+                $scope.identities=[];
+                //if (member.ImageProfile!=null) {
+                //    $scope.identities.push({Title:'Profile', Image:member.ImageProfile});
+                //}
+                if (member.ImageKtp1!=null) {
+                    $scope.identities.push({Title:'KTP 1', Image:member.ImageKtp1});
+                }
+                if (member.ImageKtp2!=null){
+                    $scope.identities.push({Title:'KTP 2', Image:member.ImageKtp2});
+                }
+                //if (member.ImageSignature!=null){
+                //    $scope.identities.push({Title:'Signature', Image:member.ImageSignature});
+                //}
+                //if (member.ImageInitials!=null){
+                //    $scope.identities.push({Title:'Initial', Image:member.ImageInitials});
+                //}
+                //if (member.ImageStamp!=null){
+                //    $scope.identities.push({Title:'Private Stamp', Image:member.ImageStamp});
+                //}
+                if ($scope.identities.length==0){
+                    showInfo("No ID image found");
+                    return;
+                }
+                $("#modal_identity_image").modal("show");
+            }
+            $scope.finishLoading = function() {
+                $scope.loadingLog=0;
+            }
+            $scope.downloadAttchment = function (atth){
+                location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName+"&isDocument=false";
+            }
+            $scope.viewDocument = function (arg) {
+                var member=arg.Document.DocumentMember;//s.filter((subject) => subject.MemberId == $scope.curentUser.Id)[0];
+                if (member == undefined || arg.Document.DocumentMember==null || arg.Document.DocumentMember.FlagPermission<=1){
+                    showInfo("You don't have permission to open this file.");
+                    return;
+                }
+                var iframe=document.getElementById('xpdfIFrame');
+                if (iframe.contentWindow==null)
+                    return;
+                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
+                $http.post('/document/openfile', { fileName: arg.Document.FileName }).then(function (response) {
+                    if (response.data) {
+                        $scope.openDocument(member, iframe, arg, response.data);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+
+            }
+            $scope.openDocument = function (member, iframe, arg, fileName){
+                if (arg.Document.DocumentAnnotates.length>0){
+                    $scope.annos=[];
+                    for(i=0;i<arg.Document.DocumentAnnotates.length;i++){
+                        var ix=arg.Document.DocumentAnnotates[i];
+                        var item={};
+                        item.SvgId='svg'+i;
+                        item.Page=ix.Page;
+                        item.AnnotateType=ix.AnnotateTypeId;
+                        item.LeftPos=ix.LeftPos;
+                        item.TopPos=ix.TopPos;
+                        item.WidthPos=ix.WidthPos;
+                        item.HeightPos=ix.HeightPos;
+                        item.Color=ix.Color;
+                        item.BackColor=ix.BackColor;
+                        item.Data=ix.Data;
+                        item.Data2=ix.Data2;
+                        item.Rotation=ix.Rotation;
+                        item.ScaleX=ix.ScaleX;
+                        item.ScaleY=ix.ScaleY;
+                        item.TransX=ix.TransX;
+                        item.TransY=ix.TransY;
+                        item.StrokeWidth=ix.StrokeWidth;
+                        item.Opacity=ix.Opacity;
+                        item.Flag=ix.Flag;
+                        item.FlagCode=ix.FlagCode;
+                        item.FlagDate = convertJsonDate(ix.FlagDate);
+                        item.FlagImage = ix.FlagImage;
+                        item.CreatorId=ix.CreatorId;
+                        item.AnnotateId=ix.AnnotateId;
+                        item.Annotate=ix.Annotate;
+                        $scope.annos.push(item);
+                    }
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                }
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
+                var flagDownload=member.FlagPermission;
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((flagDownload & 8)==8);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileNameOri);
+                $("#modal_pdf_viewer").modal("show");
+            }
+            /*--------------------------------------------------------------
+            submitActivity
+            --------------------------------------------------------------*/
+            $scope.submitActivity = function (bit) {
+                $http.post('@Url.Action("ProcessActivity", "Rotation")',
+                    {
+                        id: $scope.model.RotationNodeId,
+                        remark:$scope.model.Remark,
+                        bit: bit,
+                    }).then(function (response) {
+                        if (response.data) {
+                            $scope.wizarno = 'success';
+                        }
+                    }, function (response) {
+                        //error handle\
+                        var x = 0;
+                    });
+            }
+
+            $scope.processActivity = function (bit) {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+
+                //if ($scope.workflow.Name==undefined) {
+                //    showInfo("Required workflow");
+                //    return;
+                //}
+
+                $scope.submitActivity(bit);
+            }
+
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+
+            $scope.scrollingPage = function (id) {
+                $('html, body').animate({
+                    scrollTop: $(id).offset().top
+                }, 200);
+            }
+
+            $scope.validAction = function (val, bit) {
+                return ((val & bit)==bit);
+            }
+
+
+
+            /*--------------------------------------------------------------
+           CONVERT JSON DATE
+           --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+            function convertJsonDate(val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+        });
+
+
+        $(function () {
+        });
+
+
+        $(document).ready(function () {
+            $('#checkbox1').bootstrapSwitch();
+            $('#action-panel').show();
+        })
+
+    </script>
+
+</body>

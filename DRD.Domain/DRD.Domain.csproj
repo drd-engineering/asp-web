@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5812968F-ECCF-4382-8607-3503AE6CC72B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DRD.Domain</RootNamespace>
+    <AssemblyName>DRD.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DtoAnnotateType.cs" />
+    <Compile Include="DtoBank.cs" />
+    <Compile Include="DtoBroadcastMessage.cs" />
+    <Compile Include="DtoCompanyBank.cs" />
+    <Compile Include="DtoCompanyLite.cs" />
+    <Compile Include="DtoCompany.cs" />
+    <Compile Include="DtoDocumentSign.cs" />
+    <Compile Include="DtoDocument.cs" />
+    <Compile Include="DtoDocumentAnnotate.cs" />
+    <Compile Include="DtoDocumentLite.cs" />
+    <Compile Include="DtoDocumentMember.cs" />
+    <Compile Include="DtoDocumentUpload.cs" />
+    <Compile Include="DtoDrDrive.cs" />
+    <Compile Include="DtoDrDriveType.cs" />
+    <Compile Include="DtoMemberAccount.cs" />
+    <Compile Include="DtoMemberDepositTrx.cs" />
+    <Compile Include="DtoMemberFolder.cs" />
+    <Compile Include="DtoMemberInvited.cs" />
+    <Compile Include="DtoMemberLite.cs" />
+    <Compile Include="DtoMemberLogin.cs" />
+    <Compile Include="DtoMember.cs" />
+    <Compile Include="DtoMemberMaster.cs" />
+    <Compile Include="DtoMemberPlanRequest.cs" />
+    <Compile Include="DtoMemberPlan.cs" />
+    <Compile Include="DtoMemberTitle.cs" />
+    <Compile Include="DtoMemberTopupDeposit.cs" />
+    <Compile Include="DtoMemberTopupPayment.cs" />
+    <Compile Include="DtoMessage.cs" />
+    <Compile Include="DtoMessageSum.cs" />
+    <Compile Include="DtoMessageSumDetail.cs" />
+    <Compile Include="DtoNews.cs" />
+    <Compile Include="DtoNewsDetail.cs" />
+    <Compile Include="DtoNewsLite.cs" />
+    <Compile Include="DtoNewsMaster.cs" />
+    <Compile Include="DtoNewsType.cs" />
+    <Compile Include="DtoNewsVideo.cs" />
+    <Compile Include="DtoNewsVideoLite.cs" />
+    <Compile Include="DtoPaymentMethod.cs" />
+    <Compile Include="DtoPodCast.cs" />
+    <Compile Include="DtoPodCastLite.cs" />
+    <Compile Include="DtoProjectLite.cs" />
+    <Compile Include="DtoProject.cs" />
+    <Compile Include="DtoRotationLite.cs" />
+    <Compile Include="DtoRotation.cs" />
+    <Compile Include="DtoRotationMember.cs" />
+    <Compile Include="DtoRotationNode.cs" />
+    <Compile Include="DtoRotationNodeDoc.cs" />
+    <Compile Include="DtoRotationNodeRemark.cs" />
+    <Compile Include="DtoRotationNodeUpDoc.cs" />
+    <Compile Include="DtoStampLite.cs" />
+    <Compile Include="DtoStamp.cs" />
+    <Compile Include="DtoStatusCode.cs" />
+    <Compile Include="DtoSubscriptExtraType.cs" />
+    <Compile Include="DtoSubscriptType.cs" />
+    <Compile Include="DtoSymbol.cs" />
+    <Compile Include="DtoUserAdmin.cs" />
+    <Compile Include="DtoVersioning.cs" />
+    <Compile Include="DtoVoucher.cs" />
+    <Compile Include="DtoVoucherGenerator.cs" />
+    <Compile Include="DtoWorkflowLite.cs" />
+    <Compile Include="DtoWorkflow.cs" />
+    <Compile Include="DtoWorkflowNode.cs" />
+    <Compile Include="DtoWorkflowNodeLink.cs" />
+    <Compile Include="faspay.cs" />
+    <Compile Include="FaspayData.cs" />
+    <Compile Include="JsonActivityResult.cs" />
+    <Compile Include="JsonAddressComponent.cs" />
+    <Compile Include="JsonAnnotate.cs" />
+    <Compile Include="JsonDashboard.cs" />
+    <Compile Include="JsonDashboardAdmin.cs" />
+    <Compile Include="JsonDashboardLink.cs" />
+    <Compile Include="JsonDrDriveCount.cs" />
+    <Compile Include="JsonFaspayPayment.cs" />
+    <Compile Include="JsonMessageCount.cs" />
+    <Compile Include="JsonPermission.cs" />
+    <Compile Include="JsonPermissionCompany.cs" />
+    <Compile Include="JsonCompareObject.cs" />
+    <Compile Include="JsonCounter.cs" />
+    <Compile Include="JsonDataImage.cs" />
+    <Compile Include="JsonGenericData.cs" />
+    <Compile Include="JsonLayout.cs" />
+    <Compile Include="JsonMemberRegister.cs" />
+    <Compile Include="JsonMenu.cs" />
+    <Compile Include="JsonMenuMaster.cs" />
+    <Compile Include="JsonPermissionProject.cs" />
+    <Compile Include="JsonPermissionRotation.cs" />
+    <Compile Include="JsonPermissionWorkflow.cs" />
+    <Compile Include="JsonProcessActivity.cs" />
+    <Compile Include="JsonSubscriptionRegistry.cs" />
+    <Compile Include="JsonSubscriptionRegistryResult.cs" />
+    <Compile Include="JsonUploadResult.cs" />
+    <Compile Include="JsonInvitationResult.cs" />
+    <Compile Include="JsonUser.cs" />
+    <Compile Include="JsonUserGroup.cs" />
+    <Compile Include="JsonUserMaster.cs" />
+    <Compile Include="JsonUserMenu.cs" />
+    <Compile Include="JsonWorkflow.cs" />
+    <Compile Include="JsonWorkflowNode.cs" />
+    <Compile Include="JsonWorkflowNodeLink.cs" />
+    <Compile Include="JsonWorkflowNodeMember.cs" />
+    <Compile Include="JsonWorkflowProject.cs" />
+    <Compile Include="JsonRotationUser.cs" />
+    <Compile Include="PaymentParam.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

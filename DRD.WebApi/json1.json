@@ -1,0 +1,242 @@
+﻿{
+  "Remark": "siap bos\nsegera",
+  "RotationNodeDocs": [
+    {
+      "Document": {
+        "CompanyId": 0,
+        "DateCreated": "0001-01-01T00:20:00",
+        "DocumentAnnotates": [
+          {
+            "Annotate": {
+              "Foto": "tedi.png",
+              "Initial": "nosignature.jpg",
+              "Name": "Tedy.Keys",
+              "Number": "002",
+              "Signature": "00a4186e-de33-4d1c-867b-d2a326bac8ea.png"
+            },
+            "AnnotateId": 2,
+            "AnnotateType": {
+              "Code": "SIGNATURE",
+              "Id": 4
+            },
+            "AnnotateTypeId": 4,
+            "CreatorId": 2,
+            "DateCreated": "2019-01-10T02:33:52",
+            "DocumentId": 20,
+            "Flag": 1,
+            "FlagCode": "190108203550725",
+            "HeightPos": 87.0,
+            "Id": 70,
+            "LeftPos": 55.0,
+            "Opacity": 1.0,
+            "Page": 1,
+            "Rotation": 0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "StrokeWidth": 4.0,
+            "TopPos": 794.0,
+            "TransX": 0.0,
+            "TransY": 0.0,
+            "UserId": "CALLER",
+            "WidthPos": 150.0
+          },
+          {
+            "Annotate": {
+              "Foto": "budi.png",
+              "Initial": "f384484f-5e28-46a5-a407-6f8fc9724783.png",
+              "Name": "Budi Mulyana",
+              "Number": "001",
+              "Signature": "0c854957-06d0-42d7-9db4-865b643e5af3.png"
+            },
+            "AnnotateId": 1,
+            "AnnotateType": {
+              "Code": "SIGNATURE",
+              "Id": 4
+            },
+            "AnnotateTypeId": 4,
+            "CreatorId": 2,
+            "DateCreated": "2019-01-10T02:33:52",
+            "DocumentId": 20,
+            "Flag": 1,
+            "FlagCode": "190108204812058",
+            "HeightPos": 80.0,
+            "Id": 71,
+            "LeftPos": 334.0,
+            "Opacity": 1.0,
+            "Page": 1,
+            "Rotation": 0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "StrokeWidth": 4.0,
+            "TopPos": 796.0,
+            "TransX": 0.0,
+            "TransY": 0.0,
+            "UserId": "CALLER",
+            "WidthPos": 150.0
+          }
+        ],
+        "DocumentMember": {
+          "DocumentId": 20,
+          "FlagAction": 0,
+          "FlagPermission": 29,
+          "Id": 84,
+          "MemberId": 1
+        },
+        "DocumentMembers": [
+          {
+            "DocumentId": 20,
+            "FlagAction": 1,
+            "FlagPermission": 29,
+            "Id": 82,
+            "MemberId": 2
+          },
+          {
+            "DocumentId": 20,
+            "FlagAction": 4,
+            "FlagPermission": 6,
+            "Id": 83,
+            "MemberId": 7
+          },
+          {
+            "DocumentId": 20,
+            "FlagAction": 0,
+            "FlagPermission": 29,
+            "Id": 84,
+            "MemberId": 1
+          }
+        ],
+        "ExtFile": "pdf",
+        "FileName": "40bc5e01-8a14-4015-aa60-3a09d0aec190.pdf",
+        "FileNameOri": "Pengajuan Honor Desember2018.pdf",
+        "Id": 0,
+        "RotationNodeDocs": [ ],
+        "Title": "sk naik gaji 3"
+      },
+      "DocumentId": 20,
+      "FlagAction": 1,
+      "Id": 111,
+      "RotationNodeId": 0
+    },
+    {
+      "Document": {
+        "CompanyId": 0,
+        "DateCreated": "0001-01-01T00:20:00",
+        "DocumentAnnotates": [
+          {
+            "Annotate": {
+              "Foto": "budi.png",
+              "Initial": "f384484f-5e28-46a5-a407-6f8fc9724783.png",
+              "Name": "Budi Mulyana",
+              "Number": "001",
+              "Signature": "0c854957-06d0-42d7-9db4-865b643e5af3.png"
+            },
+            "AnnotateId": 1,
+            "AnnotateType": {
+              "Code": "SIGNATURE",
+              "Id": 4
+            },
+            "AnnotateTypeId": 4,
+            "CreatorId": 2,
+            "DateCreated": "2019-01-10T02:33:52",
+            "DocumentId": 21,
+            "Flag": 1,
+            "FlagCode": "190108190740078",
+            "HeightPos": 0.0,
+            "Id": 68,
+            "LeftPos": 129.0,
+            "Opacity": 1.0,
+            "Page": 1,
+            "Rotation": 0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "StrokeWidth": 4.0,
+            "TopPos": 801.0,
+            "TransX": 0.0,
+            "TransY": 0.0,
+            "UserId": "CALLER",
+            "WidthPos": 0.0
+          },
+          {
+            "Annotate": {
+              "Foto": "tedi.png",
+              "Initial": "nosignature.jpg",
+              "Name": "Tedy.Keys",
+              "Number": "002",
+              "Signature": "00a4186e-de33-4d1c-867b-d2a326bac8ea.png"
+            },
+            "AnnotateId": 2,
+            "AnnotateType": {
+              "Code": "SIGNATURE",
+              "Id": 4
+            },
+            "AnnotateTypeId": 4,
+            "CreatorId": 2,
+            "DateCreated": "2019-01-10T02:33:52",
+            "DocumentId": 21,
+            "Flag": 1,
+            "FlagCode": "190108205433292",
+            "HeightPos": 40.0,
+            "Id": 69,
+            "LeftPos": 322.0,
+            "Opacity": 1.0,
+            "Page": 1,
+            "Rotation": 0,
+            "ScaleX": 1.0,
+            "ScaleY": 1.0,
+            "StrokeWidth": 4.0,
+            "TopPos": 803.0,
+            "TransX": 0.0,
+            "TransY": 0.0,
+            "UserId": "CALLER",
+            "WidthPos": 150.0
+          }
+        ],
+        "DocumentMember": {
+          "DocumentId": 21,
+          "FlagAction": 0,
+          "FlagPermission": 31,
+          "Id": 85,
+          "MemberId": 1
+        },
+        "DocumentMembers": [
+          {
+            "DocumentId": 21,
+            "FlagAction": 0,
+            "FlagPermission": 31,
+            "Id": 85,
+            "MemberId": 1
+          },
+          {
+            "DocumentId": 21,
+            "FlagAction": 1,
+            "FlagPermission": 31,
+            "Id": 86,
+            "MemberId": 2
+          }
+        ],
+        "ExtFile": "pdf",
+        "FileName": "8ab7df78-c203-41d6-ab78-ef0db06f08f8.pdf",
+        "FileNameOri": "xannotation.pdf",
+        "Id": 0,
+        "RotationNodeDocs": [ ],
+        "Title": "sk 4"
+      },
+      "DocumentId": 21,
+      "FlagAction": 1,
+      "Id": 110,
+      "RotationNodeId": 0
+    }
+  ],
+  "RotationNodeId":193,
+  "RotationNodeUpDocs": [
+    {
+      "ExtFile": "pptx",
+      "FileFlag": 0,
+      "FileName": "f6327184-9038-4879-9684-406214f62868.pptx",
+      "FileNameOri": "M A Y A N G.pptx",
+      "Id": 5,
+      "RotationNodeId": 0
+    }
+  ],
+  "Value": ""
+}

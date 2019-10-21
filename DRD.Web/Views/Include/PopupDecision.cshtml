@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div id="modal_select_decision" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title">Define Decision</h6>
+            </div>
+
+            <div class="modal-body">
+                <div class="">
+                    <label class="control-label">Name</label>
+                    <input type="text" class="form-control" ng-model="decision.Name" maxlength="100" />
+
+                </div>
+                <div class="">
+                    <label class="control-label">Info</label><br />
+                    <textarea class="control-label" ng-model="decision.Info" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 100px;width:100%" @*ng-required="wizarno=='product'"*@></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Operator</label>
+                        <select id="decision-operator" class="form-control" ng-model="decision.Operator">
+                            <option value="{{x.Descr}}" ng-repeat="x in decOperators">{{x.Descr}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="control-label">Value</label><br />
+                        <input type="text" class="form-control" ng-model="decision.Value" maxlength="20" @*ng-only-number*@ />
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="setDecision();">Save changes</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
