@@ -36,7 +36,7 @@ namespace DRD.Core
 
                 string criteria = "Email=\"" + username + "\"";
                 if (!username.Contains('@'))
-                    criteria = "Number=\"" + username + "\"";
+                    criteria = "Number=\"" + username + "\"";   
 
                 var member =
                     (from c in db.Members
