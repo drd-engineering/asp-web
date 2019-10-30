@@ -21,7 +21,7 @@ namespace DRD.Web.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DrdUserContext", throwIfV1Schema: false)
         {
         }
         
