@@ -24,12 +24,10 @@
 <script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
 <!-- /theme JS files -->
 <!-- Theme JS files -->
-@*
-    <script type="text/javascript" src="assets/js/plugins/notifications/pnotify.min.js"></script>*@
+
 <script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
 <script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
-@*
-    <script type="text/javascript" src="assets/js/pages/components_notifications_other.js"></script>*@
+
 <!-- /theme JS files -->
 
 <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
@@ -91,12 +89,6 @@
                                 <i class="caret"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                @*<li><a href="#"><i class="icon-user-plus"></i> My profile</a></li>
-                                    <li><a href="#"><i class="icon-coins"></i> My balance</a></li>
-                                    <li><a href="#"><span class="badge bg-blue pull-right">58</span> <i class="icon-comment-discussion"></i> Messages</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>
-                                    <li><a href="#"><i class="icon-switch2"></i> Logout</a></li>*@
                                 <li><a href="/member/myprofile"><i class="icon-user-check"></i> <span>My Profile</span></a></li>
                                 <li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>My Plan</span></a></li>
                                 <li><a href="/memberaccount/memberaccountlist"><i class="icon-home8"></i> <span>My Bank Account</span></a></li>
@@ -129,25 +121,10 @@
 
                         <div class="sidebar-user-material">
                             <div class="category-content desktop_layout" style="height:100px">
-                                @*<div class="sidebar-user-material-content">
-                                        <h6>@Model.user.Name</h6>
-                                        <span class="text-size-small">@Model.user.Company.SubAdminArea</span>
-                                    </div>*@
-
-                                @*<div class="sidebar-user-material-menu">
-                                        <a href="/#user-nav" data-toggle="collapse"><span>My account</span> <i class="caret"></i></a>
-                                    </div>*@
+                               
                             </div>
 
-                            @*<div class="navigation-wrapper collapse" id="user-nav">
-                                    <ul class="navigation">
-                                        <li><a href="/member/myprofile"><i class="icon-user-check"></i> <span>My Profile</span></a></li>
-                                        <li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>My Plan</span></a></li>
-                                        <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>My Deposit</span></a></li>
-                                        <li><a href="/login/changepassword"><i class="icon-cog5"></i> <span>Change Password</span></a></li>
-                                        <li><a href="/login/logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
-                                    </ul>
-                                </div>*@
+                            
                         </div>
 
                         <!-- /user menu -->
@@ -261,10 +238,7 @@
                                                                     {
                                                                         <span class="label bg-danger-800">{{(counter.Inbox==0?'':counter.Inbox)}}</span>
                                                                     }
-                                                                    @*else if (@menu2.SecondaryKey.Equals("INPROGRESS"))
-                                                                        {
-                                                                            <span class="label bg-danger-800">{{(counter.InProgress==0?'':counter.InProgress)}}</span>
-                                                                        }*@
+                                                                    
                                                                     else if (@menu2.SecondaryKey.Equals("PENDING"))
                                                                     {
                                                                         <span class="label bg-danger-800">{{(counter.Pending==0?'':counter.Pending)}}</span>
@@ -273,14 +247,7 @@
                                                                     {
                                                                         <span class="label bg-danger-800">{{(counter.Signed==0?'':counter.Signed)}}</span>
                                                                     }
-                                                                    @*else if (@menu2.SecondaryKey.Equals("DECLINED"))
-                                                                        {
-                                                                            <span class="label bg-danger-800">{{(counter.Declined==0?'':counter.Declined)}}</span>
-                                                                        }
-                                                                        else if (@menu2.SecondaryKey.Equals("COMPLETED"))
-                                                                        {
-                                                                            <span class="label bg-danger-800">{{(counter.Completed==0?'':counter.Completed)}}</span>
-                                                                        }*@
+                                                                    
                                                                     else if (@menu2.SecondaryKey.Equals("ALTERED"))
                                                                     {
                                                                         <span class="label bg-danger-800">{{(counter.Altered==0?'':counter.Altered)}}</span>
@@ -344,7 +311,7 @@
     </div>
     <script type="text/javascript">
 
-        //var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
+       
 
         myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
 
@@ -356,10 +323,6 @@
             $scope.counter = { Inbox: 0, InProgress: 0, Pending: 0 };
             $scope.notiftime = 5000;
             $scope.xtimer = 0;
-            //$scope.folders = [];// [{ Id: 1, Name: 'Backup baru',Descr:'xx' }, { Id: 2, Name: 'Pemilihan Presiden',Descr:'xxx' }, { Id: 3, Name: 'Pengasingan folder',Descr:'xxxx' }, { Id: 4, Name: 'Doc tidak terpakai',Descr:'xxxxx' }];
-            //$scope.folderId = 0;
-            //$scope.folderName = "";
-            //$scope.folderDescr = "";
 
             $scope.startCounting = function () {
                 $scope.xtimer = setInterval(() => {
@@ -382,50 +345,7 @@
                 location.href = url;
             };
 
-            @*$scope.popupFolder = function (folder) {
-                if (folder == undefined) {
-                    $scope.folderId = 0;
-                    $("#folderName").val("");
-                    $("#folderDescr").val("");
-                } else {
-                    $scope.folderId = folder.Id;
-                    $("#folderName").val(folder.Name);
-                    $("#folderDescr").val(folder.Descr);
-                }
-                $("#modal_folder").modal("show");
-            };
-            $scope.saveFolder = function () {
-                var item = { Id: $scope.folderId, Name: $("#folderName").val(), Descr: $("#folderDescr").val() };
-                $scope.folders.push(item);
-
-                $http.post('@Url.Action("save", "memberfolder")',
-                    {
-                        folder:{
-                            Id:item.Id,
-                            Name:item.Name,
-                            Descr:item.Descr
-                        }
-                    }).then(function (response) {
-                    if (response.data) {
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-            /*--------------------------------------------------------------
-            GET FOLDER
-            --------------------------------------------------------------*/
-            $scope.getFolders = function () {
-                $http.post('@Url.Action("GetMenuAll", "memberfolder")', {}).then(function (response) {
-                    if (response.data) {
-                        $scope.folders = response.data;
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }*@
+            
             /*--------------------------------------------------------------
             GET ASSET ITEM
             --------------------------------------------------------------*/
@@ -546,14 +466,6 @@
             $scope.customFunction = function () {
                 alert("Under construction");
             };
-        });
-
-        $(function () {
-
-        });
-
-        $(document).ready(function () {
-
         });
 
     </script>
