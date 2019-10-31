@@ -106,6 +106,12 @@
     <Compile Include="MemberTopupDepositService.cs" />
     <Compile Include="MemberTopupPaymentService.cs" />
     <Compile Include="MessageService.cs" />
+    <Compile Include="Migrations\201910301125131_test.cs" />
+    <Compile Include="Migrations\201910301125131_test.Designer.cs">
+      <DependentUpon>201910301125131_test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\MyDBContext.cs" />
     <Compile Include="NewsService.cs" />
     <Compile Include="NewsVideoService.cs" />
     <Compile Include="PaymentMethodService.cs" />
@@ -157,6 +163,11 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201910301125131_test.resx">
+      <DependentUpon>201910301125131_test.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

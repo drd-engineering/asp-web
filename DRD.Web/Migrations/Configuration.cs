@@ -9,7 +9,7 @@ namespace DRD.Web.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(DRD.Web.Models.ApplicationDbContext context)
