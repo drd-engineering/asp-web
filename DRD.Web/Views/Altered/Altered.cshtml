@@ -66,14 +66,13 @@
     .image-content {
         width: 120px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
     }
+    /*Belom tau kegunaannya apa dan dimana*/
         .auto-style1 {
             width: 40px;
         }
@@ -292,11 +291,6 @@
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
-                //if ($scope.workflow.Name==undefined) {
-                //    showInfo("Required workflow");
-                //    return;
-                //}
-
                 $scope.submitActivity(bit);
             }
 
@@ -322,7 +316,7 @@
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName+"&isDocument=false";
             }
             $scope.viewDocument = function (arg) {
-                var member=arg.Document.DocumentMember;//s.filter((subject) => subject.MemberId == $scope.curentUser.Id)[0];
+                var member=arg.Document.DocumentMember;
                 if (member == undefined || arg.Document.DocumentMember==null || arg.Document.DocumentMember.FlagPermission<=1){
                     showInfo("You don't have permission to open this file.");
                     return;
@@ -376,7 +370,7 @@
                     }
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 }
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var flagDownload=member.FlagPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
