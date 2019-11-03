@@ -45,8 +45,30 @@
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
+    }
+    .navbar-brand img {
+        margin-top:-5px;
+        height:30px;
+    }
 
-        /*background-origin: content-box;*/
+    .icon-bubble9 {
+        top:3px;
+    }
+
+    .dropdown-toggle img {
+        height:18px;
+    }
+
+    .sidebar-user-material .category-content, .desktop_layout {
+        height:100px;
+    }
+
+    .sidebar-content i {
+        top:3px;
+    }
+
+    .category-content {
+        display:none;
     }
 </style>
 
@@ -57,7 +79,7 @@
         <div class="navbar navbar-default navbar-fixed-top header-highlight">
             <div class="navbar-header" style="background-color:@Model.user.Company.BackColorBar">
                 <a class="navbar-brand" href="/">
-                    <img ng-src="/images/company/@Model.user.Company.Image2" alt="" style="margin-top:-5px;height:30px">
+                    <img ng-src="/images/company/@Model.user.Company.Image2" alt="">
                 </a>
                 <ul class="nav navbar-nav visible-xs-block">
                     <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
@@ -77,14 +99,14 @@
                     <ul class="nav navbar-nav">
                         <li>
                             <a href="/chat/chat">
-                                <i class="icon-bubble9" style="top:3px"></i>
+                                <i class="icon-bubble9"></i>
                                 <span class="visible-xs-inline-block position-right">Chat</span>
                                 <span class="badge bg-warning-400" ng-hide="counter.UnReadChat==0">{{counter.UnReadChat}}</span>
                             </a>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="~/Images/Member/@Model.user.ImageProfile" alt="" style="height:18px">
+                                <img src="~/Images/Member/@Model.user.ImageProfile" alt="">
                                 <span>@Model.user.ShortName</span>
                                 <i class="caret"></i>
                             </a>
@@ -120,7 +142,7 @@
                         <!-- User menu -->
 
                         <div class="sidebar-user-material">
-                            <div class="category-content desktop_layout" style="height:100px">
+                            <div class="category-content desktop_layout">
                                
                             </div>
 
@@ -130,13 +152,12 @@
                         <!-- /user menu -->
                         <!-- Main navigation -->
                         <div class="sidebar-category sidebar-category-visible">
-                            <div class="category-content no-padding" style="display:none" id="menu-content">
+                            <div class="category-content no-padding" id="menu-content">
 
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
                                     <li class="active">
                                         <a href="/dashboard" style="background-color:@Model.user.Company.BackColorBar"><i class="icon-home4"></i> <span>Dashboard</span></a>
-                                        <div style="height:1px;background-color:whitesmoke"></div>
                                     </li>
                                     <!-- /main -->
                                     @foreach (var menu in Model.menus)
