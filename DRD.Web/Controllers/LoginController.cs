@@ -157,7 +157,7 @@ namespace DRD.Web.Controllers
             string decx = msvr.Decrypt(data);
             if (decx == null)
             {
-                controller.Response.Redirect("/error/invalidpage");
+                 econtroller.Response.Redirect("/error/invalidpage");
                 return null;
             }
             string[] datas = decx.Split(',');
