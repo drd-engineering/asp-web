@@ -26,8 +26,6 @@ namespace DRD.Domain
         public bool IsActive { get; set; } // IsActive
         public System.DateTime CreatedAt { get; set; } // DateCreated
 
-        public MemberMaster Master { get; set; };
-
         public User() {}
     }
 }
