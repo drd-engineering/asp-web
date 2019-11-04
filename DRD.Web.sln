@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.TaskScheduler", "DRD.Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Models", "DRD.Models\DRD.Models.csproj", "{9634C54D-BFAC-4DA4-8E04-9B65E7A84763}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Based.Core", "System.Based.Core\System.Based.Core.csproj", "{4516EEC9-F6AB-4825-AE4D-485F79144B84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{9634C54D-BFAC-4DA4-8E04-9B65E7A84763}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9634C54D-BFAC-4DA4-8E04-9B65E7A84763}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9634C54D-BFAC-4DA4-8E04-9B65E7A84763}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4516EEC9-F6AB-4825-AE4D-485F79144B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4516EEC9-F6AB-4825-AE4D-485F79144B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4516EEC9-F6AB-4825-AE4D-485F79144B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4516EEC9-F6AB-4825-AE4D-485F79144B84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
