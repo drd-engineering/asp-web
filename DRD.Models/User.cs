@@ -25,7 +25,8 @@ namespace DRD.Domain
         public string ImageKtp2 { get; set; }
         public bool IsActive { get; set; } // IsActive
         public System.DateTime CreatedAt { get; set; } // DateCreated
-        // public MemberMaster Master { get; set; };
+
+        public MemberMaster Master { get; set; };
 
         public User() {}
     }
