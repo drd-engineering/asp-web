@@ -34,50 +34,28 @@ namespace System.Based.Core.Entity
     // Unit of work
     public interface IDrdContext : System.IDisposable
     {
-        System.Data.Entity.DbSet<AnnotateType> AnnotateTypes { get; set; } // AnnotateType
+        System.Data.Entity.DbSet<ElementType> ElementTypes { get; set; } // ElementType
         System.Data.Entity.DbSet<ApplConfig> ApplConfigs { get; set; } // ApplConfig
-        System.Data.Entity.DbSet<Bank> Banks { get; set; } // Bank
-        System.Data.Entity.DbSet<BroadcastMessage> BroadcastMessages { get; set; } // BroadcastMessage
         System.Data.Entity.DbSet<Company> Companies { get; set; } // Company
         System.Data.Entity.DbSet<CompanyBank> CompanyBanks { get; set; } // CompanyBank
         System.Data.Entity.DbSet<Document> Documents { get; set; } // Document
-        System.Data.Entity.DbSet<DocumentAnnotate> DocumentAnnotates { get; set; } // DocumentAnnotate
-        System.Data.Entity.DbSet<DocumentMember> DocumentMembers { get; set; } // DocumentMember
-        System.Data.Entity.DbSet<DocumentUpload> DocumentUploads { get; set; } // DocumentUpload
-        System.Data.Entity.DbSet<DrDrive> DrDrives { get; set; } // DrDrive
-        System.Data.Entity.DbSet<DrDriveType> DrDriveTypes { get; set; } // DrDriveType
-        System.Data.Entity.DbSet<FaspayCreditStatu> FaspayCreditStatus { get; set; } // FaspayCreditStatus
-        System.Data.Entity.DbSet<FaspayDebitStatu> FaspayDebitStatus { get; set; } // FaspayDebitStatus
-        System.Data.Entity.DbSet<FaspayPayment> FaspayPayments { get; set; } // FaspayPayment
+        System.Data.Entity.DbSet<DocumentElement> DocumentElements { get; set; } // DocumentElement
         System.Data.Entity.DbSet<Member> Members { get; set; } // Member
-        System.Data.Entity.DbSet<MemberAccount> MemberAccounts { get; set; } // MemberAccount
         System.Data.Entity.DbSet<MemberDepositTransfer> MemberDepositTransfers { get; set; } // MemberDepositTransfer
         System.Data.Entity.DbSet<MemberDepositTrx> MemberDepositTrxes { get; set; } // MemberDepositTrx
         System.Data.Entity.DbSet<MemberFolder> MemberFolders { get; set; } // MemberFolder
         System.Data.Entity.DbSet<MemberHitLog> MemberHitLogs { get; set; } // MemberHitLog
         System.Data.Entity.DbSet<MemberInvited> MemberInviteds { get; set; } // MemberInvited
         System.Data.Entity.DbSet<MemberPermission> MemberPermissions { get; set; } // MemberPermission
-        System.Data.Entity.DbSet<MemberPlan> MemberPlans { get; set; } // MemberPlan
-        System.Data.Entity.DbSet<MemberPlanExtra> MemberPlanExtras { get; set; } // MemberPlanExtra
-        System.Data.Entity.DbSet<MemberPlanRequest> MemberPlanRequests { get; set; } // MemberPlanRequest
+        System.Data.Entity.DbSet<Plan> Plans { get; set; } // Plan
         System.Data.Entity.DbSet<MemberProject> MemberProjects { get; set; } // MemberProject
         System.Data.Entity.DbSet<MemberRotation> MemberRotations { get; set; } // MemberRotation
         System.Data.Entity.DbSet<MemberSignHistory> MemberSignHistories { get; set; } // MemberSignHistory
         System.Data.Entity.DbSet<MemberSubscribe> MemberSubscribes { get; set; } // MemberSubscribe
         System.Data.Entity.DbSet<MemberTitle> MemberTitles { get; set; } // MemberTitle
-        System.Data.Entity.DbSet<MemberTopupDeposit> MemberTopupDeposits { get; set; } // MemberTopupDeposit
-        System.Data.Entity.DbSet<MemberTopupPayment> MemberTopupPayments { get; set; } // MemberTopupPayment
         System.Data.Entity.DbSet<MemberType> MemberTypes { get; set; } // MemberType
         System.Data.Entity.DbSet<MemberWorkflow> MemberWorkflows { get; set; } // MemberWorkflow
         System.Data.Entity.DbSet<Message> Messages { get; set; } // Message
-        System.Data.Entity.DbSet<News> News { get; set; } // News
-        System.Data.Entity.DbSet<NewsDetail> NewsDetails { get; set; } // NewsDetail
-        System.Data.Entity.DbSet<NewsType> NewsTypes { get; set; } // NewsType
-        System.Data.Entity.DbSet<NewsVideo> NewsVideos { get; set; } // NewsVideo
-        System.Data.Entity.DbSet<PaymentMethod> PaymentMethods { get; set; } // PaymentMethod
-        System.Data.Entity.DbSet<PaymentStatu> PaymentStatus { get; set; } // PaymentStatus
-        System.Data.Entity.DbSet<PodCast> PodCasts { get; set; } // PodCast
-        System.Data.Entity.DbSet<Project> Projects { get; set; } // Project
         System.Data.Entity.DbSet<Rotation> Rotations { get; set; } // Rotation
         System.Data.Entity.DbSet<RotationMember> RotationMembers { get; set; } // RotationMember
         System.Data.Entity.DbSet<RotationNode> RotationNodes { get; set; } // RotationNode
@@ -85,16 +63,9 @@ namespace System.Based.Core.Entity
         System.Data.Entity.DbSet<RotationNodeLog> RotationNodeLogs { get; set; } // RotationNodeLog
         System.Data.Entity.DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark
         System.Data.Entity.DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc
-        System.Data.Entity.DbSet<Stamp> Stamps { get; set; } // Stamp
-        System.Data.Entity.DbSet<StatusCode> StatusCodes { get; set; } // StatusCode
-        System.Data.Entity.DbSet<SubscriptExtraType> SubscriptExtraTypes { get; set; } // SubscriptExtraType
-        System.Data.Entity.DbSet<SubscriptType> SubscriptTypes { get; set; } // SubscriptType
         System.Data.Entity.DbSet<Symbol> Symbols { get; set; } // Symbol
-        System.Data.Entity.DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         System.Data.Entity.DbSet<UserAdmin> UserAdmins { get; set; } // UserAdmin
         System.Data.Entity.DbSet<Versioning> Versionings { get; set; } // Versioning
-        System.Data.Entity.DbSet<Voucher> Vouchers { get; set; } // Voucher
-        System.Data.Entity.DbSet<VoucherGenerator> VoucherGenerators { get; set; } // VoucherGenerator
         System.Data.Entity.DbSet<Workflow> Workflows { get; set; } // Workflow
         System.Data.Entity.DbSet<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode
         System.Data.Entity.DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // WorkflowNodeLink
@@ -109,14 +80,11 @@ namespace System.Based.Core.Entity
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class DrdContext : System.Data.Entity.DbContext, IDrdContext
     {
-        public System.Data.Entity.DbSet<AnnotateType> AnnotateTypes { get; set; } // AnnotateType
+        public System.Data.Entity.DbSet<ElementType> ElementTypes { get; set; } // ElementType
         public System.Data.Entity.DbSet<ApplConfig> ApplConfigs { get; set; } // ApplConfig
-        public System.Data.Entity.DbSet<Bank> Banks { get; set; } // Bank
-        public System.Data.Entity.DbSet<BroadcastMessage> BroadcastMessages { get; set; } // BroadcastMessage
         public System.Data.Entity.DbSet<Company> Companies { get; set; } // Company
-        public System.Data.Entity.DbSet<CompanyBank> CompanyBanks { get; set; } // CompanyBank
         public System.Data.Entity.DbSet<Document> Documents { get; set; } // Document
-        public System.Data.Entity.DbSet<DocumentAnnotate> DocumentAnnotates { get; set; } // DocumentAnnotate
+        public System.Data.Entity.DbSet<DocumentElement> DocumentElements { get; set; } // DocumentElement
         public System.Data.Entity.DbSet<DocumentMember> DocumentMembers { get; set; } // DocumentMember
         public System.Data.Entity.DbSet<DocumentUpload> DocumentUploads { get; set; } // DocumentUpload
         public System.Data.Entity.DbSet<DrDrive> DrDrives { get; set; } // DrDrive
@@ -132,9 +100,9 @@ namespace System.Based.Core.Entity
         public System.Data.Entity.DbSet<MemberHitLog> MemberHitLogs { get; set; } // MemberHitLog
         public System.Data.Entity.DbSet<MemberInvited> MemberInviteds { get; set; } // MemberInvited
         public System.Data.Entity.DbSet<MemberPermission> MemberPermissions { get; set; } // MemberPermission
-        public System.Data.Entity.DbSet<MemberPlan> MemberPlans { get; set; } // MemberPlan
-        public System.Data.Entity.DbSet<MemberPlanExtra> MemberPlanExtras { get; set; } // MemberPlanExtra
-        public System.Data.Entity.DbSet<MemberPlanRequest> MemberPlanRequests { get; set; } // MemberPlanRequest
+        public System.Data.Entity.DbSet<Plan> Plans { get; set; } // Plan
+        public System.Data.Entity.DbSet<PlanExtra> PlanExtras { get; set; } // PlanExtra
+        public System.Data.Entity.DbSet<PlanRequest> PlanRequests { get; set; } // PlanRequest
         public System.Data.Entity.DbSet<MemberProject> MemberProjects { get; set; } // MemberProject
         public System.Data.Entity.DbSet<MemberRotation> MemberRotations { get; set; } // MemberRotation
         public System.Data.Entity.DbSet<MemberSignHistory> MemberSignHistories { get; set; } // MemberSignHistory
@@ -222,14 +190,14 @@ namespace System.Based.Core.Entity
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Configurations.Add(new AnnotateTypeConfiguration());
+            modelBuilder.Configurations.Add(new ElementTypeConfiguration());
             modelBuilder.Configurations.Add(new ApplConfigConfiguration());
             modelBuilder.Configurations.Add(new BankConfiguration());
             modelBuilder.Configurations.Add(new BroadcastMessageConfiguration());
             modelBuilder.Configurations.Add(new CompanyConfiguration());
             modelBuilder.Configurations.Add(new CompanyBankConfiguration());
             modelBuilder.Configurations.Add(new DocumentConfiguration());
-            modelBuilder.Configurations.Add(new DocumentAnnotateConfiguration());
+            modelBuilder.Configurations.Add(new DocumentElementConfiguration());
             modelBuilder.Configurations.Add(new DocumentMemberConfiguration());
             modelBuilder.Configurations.Add(new DocumentUploadConfiguration());
             modelBuilder.Configurations.Add(new DrDriveConfiguration());
@@ -245,9 +213,9 @@ namespace System.Based.Core.Entity
             modelBuilder.Configurations.Add(new MemberHitLogConfiguration());
             modelBuilder.Configurations.Add(new MemberInvitedConfiguration());
             modelBuilder.Configurations.Add(new MemberPermissionConfiguration());
-            modelBuilder.Configurations.Add(new MemberPlanConfiguration());
-            modelBuilder.Configurations.Add(new MemberPlanExtraConfiguration());
-            modelBuilder.Configurations.Add(new MemberPlanRequestConfiguration());
+            modelBuilder.Configurations.Add(new PlanConfiguration());
+            modelBuilder.Configurations.Add(new PlanExtraConfiguration());
+            modelBuilder.Configurations.Add(new PlanRequestConfiguration());
             modelBuilder.Configurations.Add(new MemberProjectConfiguration());
             modelBuilder.Configurations.Add(new MemberRotationConfiguration());
             modelBuilder.Configurations.Add(new MemberSignHistoryConfiguration());
@@ -290,14 +258,14 @@ namespace System.Based.Core.Entity
 
         public static System.Data.Entity.DbModelBuilder CreateModel(System.Data.Entity.DbModelBuilder modelBuilder, string schema)
         {
-            modelBuilder.Configurations.Add(new AnnotateTypeConfiguration(schema));
+            modelBuilder.Configurations.Add(new ElementTypeConfiguration(schema));
             modelBuilder.Configurations.Add(new ApplConfigConfiguration(schema));
             modelBuilder.Configurations.Add(new BankConfiguration(schema));
             modelBuilder.Configurations.Add(new BroadcastMessageConfiguration(schema));
             modelBuilder.Configurations.Add(new CompanyConfiguration(schema));
             modelBuilder.Configurations.Add(new CompanyBankConfiguration(schema));
             modelBuilder.Configurations.Add(new DocumentConfiguration(schema));
-            modelBuilder.Configurations.Add(new DocumentAnnotateConfiguration(schema));
+            modelBuilder.Configurations.Add(new DocumentElementConfiguration(schema));
             modelBuilder.Configurations.Add(new DocumentMemberConfiguration(schema));
             modelBuilder.Configurations.Add(new DocumentUploadConfiguration(schema));
             modelBuilder.Configurations.Add(new DrDriveConfiguration(schema));
@@ -313,9 +281,9 @@ namespace System.Based.Core.Entity
             modelBuilder.Configurations.Add(new MemberHitLogConfiguration(schema));
             modelBuilder.Configurations.Add(new MemberInvitedConfiguration(schema));
             modelBuilder.Configurations.Add(new MemberPermissionConfiguration(schema));
-            modelBuilder.Configurations.Add(new MemberPlanConfiguration(schema));
-            modelBuilder.Configurations.Add(new MemberPlanExtraConfiguration(schema));
-            modelBuilder.Configurations.Add(new MemberPlanRequestConfiguration(schema));
+            modelBuilder.Configurations.Add(new PlanConfiguration(schema));
+            modelBuilder.Configurations.Add(new PlanExtraConfiguration(schema));
+            modelBuilder.Configurations.Add(new PlanRequestConfiguration(schema));
             modelBuilder.Configurations.Add(new MemberProjectConfiguration(schema));
             modelBuilder.Configurations.Add(new MemberRotationConfiguration(schema));
             modelBuilder.Configurations.Add(new MemberSignHistoryConfiguration(schema));
@@ -363,14 +331,14 @@ namespace System.Based.Core.Entity
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
     public class FakeDrdContext : IDrdContext
     {
-        public System.Data.Entity.DbSet<AnnotateType> AnnotateTypes { get; set; }
+        public System.Data.Entity.DbSet<ElementType> ElementTypes { get; set; }
         public System.Data.Entity.DbSet<ApplConfig> ApplConfigs { get; set; }
         public System.Data.Entity.DbSet<Bank> Banks { get; set; }
         public System.Data.Entity.DbSet<BroadcastMessage> BroadcastMessages { get; set; }
         public System.Data.Entity.DbSet<Company> Companies { get; set; }
         public System.Data.Entity.DbSet<CompanyBank> CompanyBanks { get; set; }
         public System.Data.Entity.DbSet<Document> Documents { get; set; }
-        public System.Data.Entity.DbSet<DocumentAnnotate> DocumentAnnotates { get; set; }
+        public System.Data.Entity.DbSet<DocumentElement> DocumentElements { get; set; }
         public System.Data.Entity.DbSet<DocumentMember> DocumentMembers { get; set; }
         public System.Data.Entity.DbSet<DocumentUpload> DocumentUploads { get; set; }
         public System.Data.Entity.DbSet<DrDrive> DrDrives { get; set; }
@@ -386,9 +354,9 @@ namespace System.Based.Core.Entity
         public System.Data.Entity.DbSet<MemberHitLog> MemberHitLogs { get; set; }
         public System.Data.Entity.DbSet<MemberInvited> MemberInviteds { get; set; }
         public System.Data.Entity.DbSet<MemberPermission> MemberPermissions { get; set; }
-        public System.Data.Entity.DbSet<MemberPlan> MemberPlans { get; set; }
-        public System.Data.Entity.DbSet<MemberPlanExtra> MemberPlanExtras { get; set; }
-        public System.Data.Entity.DbSet<MemberPlanRequest> MemberPlanRequests { get; set; }
+        public System.Data.Entity.DbSet<Plan> Plans { get; set; }
+        public System.Data.Entity.DbSet<PlanExtra> PlanExtras { get; set; }
+        public System.Data.Entity.DbSet<PlanRequest> PlanRequests { get; set; }
         public System.Data.Entity.DbSet<MemberProject> MemberProjects { get; set; }
         public System.Data.Entity.DbSet<MemberRotation> MemberRotations { get; set; }
         public System.Data.Entity.DbSet<MemberSignHistory> MemberSignHistories { get; set; }
@@ -430,14 +398,14 @@ namespace System.Based.Core.Entity
 
         public FakeDrdContext()
         {
-            AnnotateTypes = new FakeDbSet<AnnotateType>("Id");
+            ElementTypes = new FakeDbSet<ElementType>("Id");
             ApplConfigs = new FakeDbSet<ApplConfig>("Id");
             Banks = new FakeDbSet<Bank>("Id");
             BroadcastMessages = new FakeDbSet<BroadcastMessage>("Id");
             Companies = new FakeDbSet<Company>("Id");
             CompanyBanks = new FakeDbSet<CompanyBank>("Id");
             Documents = new FakeDbSet<Document>("Id");
-            DocumentAnnotates = new FakeDbSet<DocumentAnnotate>("Id");
+            DocumentElements = new FakeDbSet<DocumentElement>("Id");
             DocumentMembers = new FakeDbSet<DocumentMember>("Id");
             DocumentUploads = new FakeDbSet<DocumentUpload>("Id");
             DrDrives = new FakeDbSet<DrDrive>("Id");
@@ -453,9 +421,9 @@ namespace System.Based.Core.Entity
             MemberHitLogs = new FakeDbSet<MemberHitLog>("Id");
             MemberInviteds = new FakeDbSet<MemberInvited>("Id");
             MemberPermissions = new FakeDbSet<MemberPermission>("Id");
-            MemberPlans = new FakeDbSet<MemberPlan>("Id");
-            MemberPlanExtras = new FakeDbSet<MemberPlanExtra>("Id");
-            MemberPlanRequests = new FakeDbSet<MemberPlanRequest>("Id");
+            Plans = new FakeDbSet<Plan>("Id");
+            PlanExtras = new FakeDbSet<PlanExtra>("Id");
+            PlanRequests = new FakeDbSet<PlanRequest>("Id");
             MemberProjects = new FakeDbSet<MemberProject>("Id");
             MemberRotations = new FakeDbSet<MemberRotation>("Id");
             MemberSignHistories = new FakeDbSet<MemberSignHistory>("Id");
@@ -769,20 +737,20 @@ namespace System.Based.Core.Entity
     // ************************************************************************
     // POCO classes
 
-    // AnnotateType
+    // ElementType
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class AnnotateType
+    public class ElementType
     {
         public int Id { get; set; } // Id (Primary key)
         public string Code { get; set; } // Code (length: 20)
         public string Descr { get; set; } // Descr (length: 500)
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<DocumentAnnotate> DocumentAnnotates { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_AnnotateType
+        public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentElement.FK_DocumentElement_ElementType
         
-        public AnnotateType()
+        public ElementType()
         {
-            DocumentAnnotates = new System.Collections.Generic.List<DocumentAnnotate>();
+            DocumentElements = new System.Collections.Generic.List<DocumentElement>();
         }
     }
 
@@ -967,7 +935,7 @@ namespace System.Based.Core.Entity
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<DocumentAnnotate> DocumentAnnotates { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
+        public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentElement.FK_DocumentElement_Document
         public virtual System.Collections.Generic.ICollection<DocumentMember> DocumentMembers { get; set; } // DocumentMember.FK_DocumentMember_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
 
@@ -982,20 +950,20 @@ namespace System.Based.Core.Entity
             MaxDownload = 0;
             ExpiryDay = 0;
             MemberFolderId = 0;
-            DocumentAnnotates = new System.Collections.Generic.List<DocumentAnnotate>();
+            DocumentElements = new System.Collections.Generic.List<DocumentElement>();
             DocumentMembers = new System.Collections.Generic.List<DocumentMember>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
     }
 
-    // DocumentAnnotate
+    // DocumentElement
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class DocumentAnnotate
+    public class DocumentElement
     {
         public long Id { get; set; } // Id (Primary key)
         public long DocumentId { get; set; } // DocumentId
         public int Page { get; set; } // Page
-        public int AnnotateTypeId { get; set; } // AnnotateTypeId
+        public int ElementTypeId { get; set; } // ElementTypeId
         public double? LeftPos { get; set; } // LeftPos
         public double? TopPos { get; set; } // TopPos
         public double? WidthPos { get; set; } // WidthPos
@@ -1022,10 +990,10 @@ namespace System.Based.Core.Entity
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         // Foreign keys
-        public virtual AnnotateType AnnotateType { get; set; } // FK_DocumentAnnotate_AnnotateType
-        public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
+        public virtual ElementType ElementType { get; set; } // FK_DocumentElement_ElementType
+        public virtual Document Document { get; set; } // FK_DocumentElement_Document
         
-        public DocumentAnnotate()
+        public DocumentElement()
         {
             Rotation = 0;
             ScaleX = 1;
@@ -1266,8 +1234,8 @@ namespace System.Based.Core.Entity
         public virtual System.Collections.Generic.ICollection<MemberInvited> MemberInviteds_InvitedId { get; set; } // MemberInvited.FK_MemberInvited_Invited
         public virtual System.Collections.Generic.ICollection<MemberInvited> MemberInviteds_MemberId { get; set; } // MemberInvited.FK_MemberInvited_Member
         public virtual System.Collections.Generic.ICollection<MemberPermission> MemberPermissions { get; set; } // MemberPermission.FK_MemberPermission_Member
-        public virtual System.Collections.Generic.ICollection<MemberPlan> MemberPlans { get; set; } // MemberPlan.FK_MemberPlan_Member
-        public virtual System.Collections.Generic.ICollection<MemberPlanRequest> MemberPlanRequests { get; set; } // MemberPlanRequest.FK_MemberPlanRequest_Member
+        public virtual System.Collections.Generic.ICollection<Plan> Plans { get; set; } // Plan.FK_Plan_Member
+        public virtual System.Collections.Generic.ICollection<PlanRequest> PlanRequests { get; set; } // PlanRequest.FK_PlanRequest_Member
         public virtual System.Collections.Generic.ICollection<MemberSignHistory> MemberSignHistories { get; set; } // MemberSignHistory.FK_MemberSignHistory_Member
         public virtual System.Collections.Generic.ICollection<MemberTopupDeposit> MemberTopupDeposits { get; set; } // MemberTopupDeposit.FK_MemberTopupDeposit_Member
         public virtual System.Collections.Generic.ICollection<Message> Messages_FromId { get; set; } // Message.FK_Message_MemberFrom
@@ -1293,8 +1261,8 @@ namespace System.Based.Core.Entity
             MemberInviteds_InvitedId = new System.Collections.Generic.List<MemberInvited>();
             MemberInviteds_MemberId = new System.Collections.Generic.List<MemberInvited>();
             MemberPermissions = new System.Collections.Generic.List<MemberPermission>();
-            MemberPlans = new System.Collections.Generic.List<MemberPlan>();
-            MemberPlanRequests = new System.Collections.Generic.List<MemberPlanRequest>();
+            Plans = new System.Collections.Generic.List<Plan>();
+            PlanRequests = new System.Collections.Generic.List<PlanRequest>();
             MemberSignHistories = new System.Collections.Generic.List<MemberSignHistory>();
             MemberTopupDeposits = new System.Collections.Generic.List<MemberTopupDeposit>();
             Messages_FromId = new System.Collections.Generic.List<Message>();
@@ -1454,9 +1422,9 @@ namespace System.Based.Core.Entity
         }
     }
 
-    // MemberPlan
+    // Plan
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlan
+    public class Plan
     {
         public long Id { get; set; } // Id (Primary key)
         public long MemberId { get; set; } // MemberId
@@ -1491,13 +1459,13 @@ namespace System.Based.Core.Entity
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<MemberPlanExtra> MemberPlanExtras { get; set; } // MemberPlanExtra.FK_MemberPlanExtra_MemberPlan
+        public virtual System.Collections.Generic.ICollection<PlanExtra> PlanExtras { get; set; } // PlanExtra.FK_PlanExtra_Plan
 
         // Foreign keys
-        public virtual Member Member { get; set; } // FK_MemberPlan_Member
-        public virtual SubscriptType SubscriptType { get; set; } // FK_MemberPlan_SubscriptType
+        public virtual Member Member { get; set; } // FK_Plan_Member
+        public virtual SubscriptType SubscriptType { get; set; } // FK_Plan_SubscriptType
         
-        public MemberPlan()
+        public Plan()
         {
             Price = 0m;
             RotationCount = 0;
@@ -1519,16 +1487,16 @@ namespace System.Based.Core.Entity
             PackageExpiryDay = 0;
             DrDriveExpiryDay = 0;
             IsDefault = true;
-            MemberPlanExtras = new System.Collections.Generic.List<MemberPlanExtra>();
+            PlanExtras = new System.Collections.Generic.List<PlanExtra>();
         }
     }
 
-    // MemberPlanExtra
+    // PlanExtra
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlanExtra
+    public class PlanExtra
     {
         public long Id { get; set; } // Id (Primary key)
-        public long MemberPlanId { get; set; } // MemberPlanId
+        public long PlanId { get; set; } // PlanId
         public int RotationCount { get; set; } // RotationCount
         public decimal RotationPrice { get; set; } // RotationPrice
         public int FlowActivityCount { get; set; } // FlowActivityCount
@@ -1540,9 +1508,9 @@ namespace System.Based.Core.Entity
         public System.DateTime DateCreated { get; set; } // DateCreated
 
         // Foreign keys
-        public virtual MemberPlan MemberPlan { get; set; } // FK_MemberPlanExtra_MemberPlan
+        public virtual Plan Plan { get; set; } // FK_PlanExtra_Plan
         
-        public MemberPlanExtra()
+        public PlanExtra()
         {
             RotationCount = 0;
             RotationPrice = 0m;
@@ -1554,9 +1522,9 @@ namespace System.Based.Core.Entity
         }
     }
 
-    // MemberPlanRequest
+    // PlanRequest
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlanRequest
+    public class PlanRequest
     {
         public long Id { get; set; } // Id (Primary key)
         public long MemberId { get; set; } // MemberId
@@ -1571,10 +1539,10 @@ namespace System.Based.Core.Entity
         public System.DateTime DateCreated { get; set; } // DateCreated
 
         // Foreign keys
-        public virtual Member Member { get; set; } // FK_MemberPlanRequest_Member
-        public virtual SubscriptType SubscriptType { get; set; } // FK_MemberPlanRequest_SubscriptType
+        public virtual Member Member { get; set; } // FK_PlanRequest_Member
+        public virtual SubscriptType SubscriptType { get; set; } // FK_PlanRequest_SubscriptType
         
-        public MemberPlanRequest()
+        public PlanRequest()
         {
             RotationCount = 0;
             FlowActivityCount = 0;
@@ -2199,8 +2167,8 @@ namespace System.Based.Core.Entity
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<MemberPlan> MemberPlans { get; set; } // MemberPlan.FK_MemberPlan_SubscriptType
-        public virtual System.Collections.Generic.ICollection<MemberPlanRequest> MemberPlanRequests { get; set; } // MemberPlanRequest.FK_MemberPlanRequest_SubscriptType
+        public virtual System.Collections.Generic.ICollection<Plan> Plans { get; set; } // Plan.FK_Plan_SubscriptType
+        public virtual System.Collections.Generic.ICollection<PlanRequest> PlanRequests { get; set; } // PlanRequest.FK_PlanRequest_SubscriptType
         
         public SubscriptType()
         {
@@ -2214,8 +2182,8 @@ namespace System.Based.Core.Entity
             DrDrivePrice = 0m;
             ExpiryDocDay = 0;
             PackageExpiryDay = 0;
-            MemberPlans = new System.Collections.Generic.List<MemberPlan>();
-            MemberPlanRequests = new System.Collections.Generic.List<MemberPlanRequest>();
+            Plans = new System.Collections.Generic.List<Plan>();
+            PlanRequests = new System.Collections.Generic.List<PlanRequest>();
         }
     }
 
@@ -2443,18 +2411,18 @@ namespace System.Based.Core.Entity
     // ************************************************************************
     // POCO Configuration
 
-    // AnnotateType
+    // ElementType
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class AnnotateTypeConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<AnnotateType>
+    public class ElementTypeConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ElementType>
     {
-        public AnnotateTypeConfiguration()
+        public ElementTypeConfiguration()
             : this("dbo")
         {
         }
  
-        public AnnotateTypeConfiguration(string schema)
+        public ElementTypeConfiguration(string schema)
         {
-            ToTable(schema + ".AnnotateType");
+            ToTable(schema + ".ElementType");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -2613,8 +2581,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Bank).WithMany(b => b.CompanyBanks).HasForeignKey(c => c.BankId); // FK_CompanyBank_Bank
-            HasRequired(a => a.PaymentMethod).WithMany(b => b.CompanyBanks).HasForeignKey(c => c.PaymentMethodId); // FK_CompanyBank_PaymentMethod
+            HasRequired(a => a.Bank).WithMany(b => b.CompanyBanks).HasForeignKey(c => c.BankId).WillCascadeOnDelete(false); // FK_CompanyBank_Bank
+            HasRequired(a => a.PaymentMethod).WithMany(b => b.CompanyBanks).HasForeignKey(c => c.PaymentMethodId).WillCascadeOnDelete(false); // FK_CompanyBank_PaymentMethod
         }
     }
 
@@ -2652,28 +2620,28 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Company).WithMany(b => b.Documents).HasForeignKey(c => c.CompanyId); // FK_Document_Company
+            HasRequired(a => a.Company).WithMany(b => b.Documents).HasForeignKey(c => c.CompanyId).WillCascadeOnDelete(false); // FK_Document_Company
         }
     }
 
-    // DocumentAnnotate
+    // DocumentElement
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class DocumentAnnotateConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<DocumentAnnotate>
+    public class DocumentElementConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<DocumentElement>
     {
-        public DocumentAnnotateConfiguration()
+        public DocumentElementConfiguration()
             : this("dbo")
         {
         }
  
-        public DocumentAnnotateConfiguration(string schema)
+        public DocumentElementConfiguration(string schema)
         {
-            ToTable(schema + ".DocumentAnnotate");
+            ToTable(schema + ".DocumentElement");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("bigint").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
             Property(x => x.DocumentId).HasColumnName(@"DocumentId").IsRequired().HasColumnType("bigint");
             Property(x => x.Page).HasColumnName(@"Page").IsRequired().HasColumnType("int");
-            Property(x => x.AnnotateTypeId).HasColumnName(@"AnnotateTypeId").IsRequired().HasColumnType("int");
+            Property(x => x.ElementTypeId).HasColumnName(@"ElementTypeId").IsRequired().HasColumnType("int");
             Property(x => x.LeftPos).HasColumnName(@"LeftPos").IsOptional().HasColumnType("float");
             Property(x => x.TopPos).HasColumnName(@"TopPos").IsOptional().HasColumnType("float");
             Property(x => x.WidthPos).HasColumnName(@"WidthPos").IsOptional().HasColumnType("float");
@@ -2700,8 +2668,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.AnnotateType).WithMany(b => b.DocumentAnnotates).HasForeignKey(c => c.AnnotateTypeId); // FK_DocumentAnnotate_AnnotateType
-            HasRequired(a => a.Document).WithMany(b => b.DocumentAnnotates).HasForeignKey(c => c.DocumentId); // FK_DocumentAnnotate_Document
+            HasRequired(a => a.ElementType).WithMany(b => b.DocumentElements).HasForeignKey(c => c.ElementTypeId).WillCascadeOnDelete(false); // FK_DocumentElement_ElementType
+            HasRequired(a => a.Document).WithMany(b => b.DocumentElements).HasForeignKey(c => c.DocumentId).WillCascadeOnDelete(false); // FK_DocumentElement_Document
         }
     }
 
@@ -2727,8 +2695,8 @@ namespace System.Based.Core.Entity
             Property(x => x.CxDownload).HasColumnName(@"CxDownload").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.Document).WithMany(b => b.DocumentMembers).HasForeignKey(c => c.DocumentId); // FK_DocumentMember_Document
-            HasRequired(a => a.Member).WithMany(b => b.DocumentMembers).HasForeignKey(c => c.MemberId); // FK_DocumentMember_Member
+            HasRequired(a => a.Document).WithMany(b => b.DocumentMembers).HasForeignKey(c => c.DocumentId).WillCascadeOnDelete(false); // FK_DocumentMember_Document
+            HasRequired(a => a.Member).WithMany(b => b.DocumentMembers).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_DocumentMember_Member
         }
     }
 
@@ -2966,8 +2934,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasOptional(a => a.Company).WithMany(b => b.Members).HasForeignKey(c => c.CompanyId); // FK_Member_Company
-            HasRequired(a => a.MemberTitle).WithMany(b => b.Members).HasForeignKey(c => c.MemberTitleId); // FK_Member_MemberTitle
+            HasOptional(a => a.Company).WithMany(b => b.Members).HasForeignKey(c => c.CompanyId).WillCascadeOnDelete(false); // FK_Member_Company
+            HasRequired(a => a.MemberTitle).WithMany(b => b.Members).HasForeignKey(c => c.MemberTitleId).WillCascadeOnDelete(false); // FK_Member_MemberTitle
         }
     }
 
@@ -2996,8 +2964,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Bank).WithMany(b => b.MemberAccounts).HasForeignKey(c => c.BankId); // FK_MemberAccount_Bank
-            HasRequired(a => a.Member).WithMany(b => b.MemberAccounts).HasForeignKey(c => c.MemberId); // FK_MemberAccount_Member
+            HasRequired(a => a.Bank).WithMany(b => b.MemberAccounts).HasForeignKey(c => c.BankId).WillCascadeOnDelete(false); // FK_MemberAccount_Bank
+            HasRequired(a => a.Member).WithMany(b => b.MemberAccounts).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_MemberAccount_Member
         }
     }
 
@@ -3024,8 +2992,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateCreated).HasColumnName(@"DateCreated").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member_FromId).WithMany(b => b.MemberDepositTransfers_FromId).HasForeignKey(c => c.FromId); // FK_MemberDepositTransfer_MemberFrom
-            HasRequired(a => a.Member_ToId).WithMany(b => b.MemberDepositTransfers_ToId).HasForeignKey(c => c.ToId); // FK_MemberDepositTransfer_MemberTo
+            HasRequired(a => a.Member_FromId).WithMany(b => b.MemberDepositTransfers_FromId).HasForeignKey(c => c.FromId).WillCascadeOnDelete(false); // FK_MemberDepositTransfer_MemberFrom
+            HasRequired(a => a.Member_ToId).WithMany(b => b.MemberDepositTransfers_ToId).HasForeignKey(c => c.ToId).WillCascadeOnDelete(false); // FK_MemberDepositTransfer_MemberTo
         }
     }
 
@@ -3055,7 +3023,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateCreated).HasColumnName(@"DateCreated").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberDepositTrxes).HasForeignKey(c => c.MemberId); // FK_MemberDepositTrx_Member
+            HasRequired(a => a.Member).WithMany(b => b.MemberDepositTrxes).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_MemberDepositTrx_Member
         }
     }
 
@@ -3128,8 +3096,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member_InvitedId).WithMany(b => b.MemberInviteds_InvitedId).HasForeignKey(c => c.InvitedId); // FK_MemberInvited_Invited
-            HasRequired(a => a.Member_MemberId).WithMany(b => b.MemberInviteds_MemberId).HasForeignKey(c => c.MemberId); // FK_MemberInvited_Member
+            HasRequired(a => a.Member_InvitedId).WithMany(b => b.MemberInviteds_InvitedId).HasForeignKey(c => c.InvitedId).WillCascadeOnDelete(false); // FK_MemberInvited_Invited
+            HasRequired(a => a.Member_MemberId).WithMany(b => b.MemberInviteds_MemberId).HasForeignKey(c => c.MemberId);  // FK_MemberInvited_Member
         }
     }
 
@@ -3155,22 +3123,22 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberPermissions).HasForeignKey(c => c.MemberId); // FK_MemberPermission_Member
+            HasRequired(a => a.Member).WithMany(b => b.MemberPermissions).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_MemberPermission_Member
         }
     }
 
-    // MemberPlan
+    // Plan
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlanConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<MemberPlan>
+    public class PlanConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Plan>
     {
-        public MemberPlanConfiguration()
+        public PlanConfiguration()
             : this("dbo")
         {
         }
  
-        public MemberPlanConfiguration(string schema)
+        public PlanConfiguration(string schema)
         {
-            ToTable(schema + ".MemberPlan");
+            ToTable(schema + ".Plan");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("bigint").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -3206,27 +3174,27 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberPlans).HasForeignKey(c => c.MemberId); // FK_MemberPlan_Member
-            HasRequired(a => a.SubscriptType).WithMany(b => b.MemberPlans).HasForeignKey(c => c.SubscriptTypeId); // FK_MemberPlan_SubscriptType
+            HasRequired(a => a.Member).WithMany(b => b.Plans).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_Plan_Member
+            HasRequired(a => a.SubscriptType).WithMany(b => b.Plans).HasForeignKey(c => c.SubscriptTypeId).WillCascadeOnDelete(false); // FK_Plan_SubscriptType
         }
     }
 
-    // MemberPlanExtra
+    // PlanExtra
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlanExtraConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<MemberPlanExtra>
+    public class PlanExtraConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<PlanExtra>
     {
-        public MemberPlanExtraConfiguration()
+        public PlanExtraConfiguration()
             : this("dbo")
         {
         }
  
-        public MemberPlanExtraConfiguration(string schema)
+        public PlanExtraConfiguration(string schema)
         {
-            ToTable(schema + ".MemberPlanExtra");
+            ToTable(schema + ".PlanExtra");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("bigint").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
-            Property(x => x.MemberPlanId).HasColumnName(@"MemberPlanId").IsRequired().HasColumnType("bigint");
+            Property(x => x.PlanId).HasColumnName(@"PlanId").IsRequired().HasColumnType("bigint");
             Property(x => x.RotationCount).HasColumnName(@"RotationCount").IsRequired().HasColumnType("int");
             Property(x => x.RotationPrice).HasColumnName(@"RotationPrice").IsRequired().HasColumnType("money").HasPrecision(19,4);
             Property(x => x.FlowActivityCount).HasColumnName(@"FlowActivityCount").IsRequired().HasColumnType("int");
@@ -3238,22 +3206,22 @@ namespace System.Based.Core.Entity
             Property(x => x.DateCreated).HasColumnName(@"DateCreated").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.MemberPlan).WithMany(b => b.MemberPlanExtras).HasForeignKey(c => c.MemberPlanId); // FK_MemberPlanExtra_MemberPlan
+            HasRequired(a => a.Plan).WithMany(b => b.PlanExtras).HasForeignKey(c => c.PlanId).WillCascadeOnDelete(false); // FK_PlanExtra_Plan
         }
     }
 
-    // MemberPlanRequest
+    // PlanRequest
     [System.CodeDom.Compiler.GeneratedCodeAttribute("EF.Reverse.POCO.Generator", "2.19.2.0")]
-    public class MemberPlanRequestConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<MemberPlanRequest>
+    public class PlanRequestConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<PlanRequest>
     {
-        public MemberPlanRequestConfiguration()
+        public PlanRequestConfiguration()
             : this("dbo")
         {
         }
  
-        public MemberPlanRequestConfiguration(string schema)
+        public PlanRequestConfiguration(string schema)
         {
-            ToTable(schema + ".MemberPlanRequest");
+            ToTable(schema + ".PlanRequest");
             HasKey(x => x.Id);
 
             Property(x => x.Id).HasColumnName(@"Id").IsRequired().HasColumnType("bigint").HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
@@ -3269,8 +3237,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateCreated).HasColumnName(@"DateCreated").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberPlanRequests).HasForeignKey(c => c.MemberId); // FK_MemberPlanRequest_Member
-            HasRequired(a => a.SubscriptType).WithMany(b => b.MemberPlanRequests).HasForeignKey(c => c.SubscriptTypeId); // FK_MemberPlanRequest_SubscriptType
+            HasRequired(a => a.Member).WithMany(b => b.PlanRequests).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_PlanRequest_Member
+            HasRequired(a => a.SubscriptType).WithMany(b => b.PlanRequests).HasForeignKey(c => c.SubscriptTypeId).WillCascadeOnDelete(false); // FK_PlanRequest_SubscriptType
         }
     }
 
@@ -3294,8 +3262,8 @@ namespace System.Based.Core.Entity
             Property(x => x.Flag).HasColumnName(@"Flag").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.MemberSubscribe).WithMany(b => b.MemberProjects).HasForeignKey(c => c.MemberSubscribeId); // FK_MemberProject_MemberSubscribe
-            HasRequired(a => a.Project).WithMany(b => b.MemberProjects).HasForeignKey(c => c.ProjectId); // FK_MemberProject_Project
+            HasRequired(a => a.MemberSubscribe).WithMany(b => b.MemberProjects).HasForeignKey(c => c.MemberSubscribeId).WillCascadeOnDelete(false); // FK_MemberProject_MemberSubscribe
+            HasRequired(a => a.Project).WithMany(b => b.MemberProjects).HasForeignKey(c => c.ProjectId).WillCascadeOnDelete(false); // FK_MemberProject_Project
         }
     }
 
@@ -3319,8 +3287,8 @@ namespace System.Based.Core.Entity
             Property(x => x.Flag).HasColumnName(@"Flag").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.MemberWorkflow).WithMany(b => b.MemberRotations).HasForeignKey(c => c.MemberWorkflowId); // FK_MemberRotation_MemberWorkflow
-            HasRequired(a => a.Rotation).WithMany(b => b.MemberRotations).HasForeignKey(c => c.RotationId); // FK_MemberRotation_Rotation
+            HasRequired(a => a.MemberWorkflow).WithMany(b => b.MemberRotations).HasForeignKey(c => c.MemberWorkflowId).WillCascadeOnDelete(false); // FK_MemberRotation_MemberWorkflow
+            HasRequired(a => a.Rotation).WithMany(b => b.MemberRotations).HasForeignKey(c => c.RotationId).WillCascadeOnDelete(false); // FK_MemberRotation_Rotation
         }
     }
 
@@ -3346,7 +3314,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateCreated).HasColumnName(@"DateCreated").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberSignHistories).HasForeignKey(c => c.MemberId); // FK_MemberSignHistory_Member
+            HasRequired(a => a.Member).WithMany(b => b.MemberSignHistories).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_MemberSignHistory_Member
         }
     }
 
@@ -3370,8 +3338,8 @@ namespace System.Based.Core.Entity
             Property(x => x.Flag).HasColumnName(@"Flag").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.Company).WithMany(b => b.MemberSubscribes).HasForeignKey(c => c.CompanyId); // FK_MemberSubscribe_Company
-            HasRequired(a => a.MemberPermission).WithMany(b => b.MemberSubscribes).HasForeignKey(c => c.MemberPermissionId); // FK_MemberSubscribe_MemberPermission
+            HasRequired(a => a.Company).WithMany(b => b.MemberSubscribes).HasForeignKey(c => c.CompanyId).WillCascadeOnDelete(false); // FK_MemberSubscribe_Company
+            HasRequired(a => a.MemberPermission).WithMany(b => b.MemberSubscribes).HasForeignKey(c => c.MemberPermissionId).WillCascadeOnDelete(false); // FK_MemberSubscribe_MemberPermission
         }
     }
 
@@ -3418,7 +3386,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.MemberTopupDeposits).HasForeignKey(c => c.MemberId); // FK_MemberTopupDeposit_Member
+            HasRequired(a => a.Member).WithMany(b => b.MemberTopupDeposits).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_MemberTopupDeposit_Member
         }
     }
 
@@ -3448,9 +3416,9 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasOptional(a => a.MemberAccount).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.MemberAccountId); // FK_MemberTopupPayment_MemberAccount
-            HasRequired(a => a.CompanyBank).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.CompanyBankId); // FK_MemberTopupPayment_CompanyBank
-            HasRequired(a => a.MemberTopupDeposit).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.TopupDepositId); // FK_MemberTopupPayment_MemberTopupDeposit
+            HasOptional(a => a.MemberAccount).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.MemberAccountId).WillCascadeOnDelete(false); // FK_MemberTopupPayment_MemberAccount
+            HasRequired(a => a.CompanyBank).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.CompanyBankId).WillCascadeOnDelete(false); // FK_MemberTopupPayment_CompanyBank
+            HasRequired(a => a.MemberTopupDeposit).WithMany(b => b.MemberTopupPayments).HasForeignKey(c => c.TopupDepositId).WillCascadeOnDelete(false); // FK_MemberTopupPayment_MemberTopupDeposit
         }
     }
 
@@ -3498,8 +3466,8 @@ namespace System.Based.Core.Entity
             Property(x => x.Flag).HasColumnName(@"Flag").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.MemberProject).WithMany(b => b.MemberWorkflows).HasForeignKey(c => c.MemberProjectId); // FK_MemberWorkflow_MemberProject
-            HasRequired(a => a.Workflow).WithMany(b => b.MemberWorkflows).HasForeignKey(c => c.WorkflowId); // FK_MemberWorkflow_Workflow
+            HasRequired(a => a.MemberProject).WithMany(b => b.MemberWorkflows).HasForeignKey(c => c.MemberProjectId).WillCascadeOnDelete(false); // FK_MemberWorkflow_MemberProject
+            HasRequired(a => a.Workflow).WithMany(b => b.MemberWorkflows).HasForeignKey(c => c.WorkflowId).WillCascadeOnDelete(false); // FK_MemberWorkflow_Workflow
         }
     }
 
@@ -3528,9 +3496,9 @@ namespace System.Based.Core.Entity
             Property(x => x.DateReplied).HasColumnName(@"DateReplied").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasOptional(a => a.BroadcastMessage).WithMany(b => b.Messages).HasForeignKey(c => c.BroadcastMessageId); // FK_Message_BroadcastMessage
-            HasRequired(a => a.Member_FromId).WithMany(b => b.Messages_FromId).HasForeignKey(c => c.FromId); // FK_Message_MemberFrom
-            HasRequired(a => a.Member_ToId).WithMany(b => b.Messages_ToId).HasForeignKey(c => c.ToId); // FK_Message_MemberTo
+            HasOptional(a => a.BroadcastMessage).WithMany(b => b.Messages).HasForeignKey(c => c.BroadcastMessageId).WillCascadeOnDelete(false); // FK_Message_BroadcastMessage
+            HasRequired(a => a.Member_FromId).WithMany(b => b.Messages_FromId).HasForeignKey(c => c.FromId).WillCascadeOnDelete(false); // FK_Message_MemberFrom
+            HasRequired(a => a.Member_ToId).WithMany(b => b.Messages_ToId).HasForeignKey(c => c.ToId).WillCascadeOnDelete(false); // FK_Message_MemberTo
         }
     }
 
@@ -3579,7 +3547,7 @@ namespace System.Based.Core.Entity
             Property(x => x.Descr).HasColumnName(@"Descr").IsOptional().HasColumnType("nvarchar");
 
             // Foreign keys
-            HasRequired(a => a.News).WithMany(b => b.NewsDetails).HasForeignKey(c => c.NewsId); // FK_NewsDetail_News
+            HasRequired(a => a.News).WithMany(b => b.NewsDetails).HasForeignKey(c => c.NewsId).WillCascadeOnDelete(false); // FK_NewsDetail_News
         }
     }
 
@@ -3740,7 +3708,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Company).WithMany(b => b.Projects).HasForeignKey(c => c.CompanyId); // FK_Project_Company
+            HasRequired(a => a.Company).WithMany(b => b.Projects).HasForeignKey(c => c.CompanyId).WillCascadeOnDelete(false); // FK_Project_Company
         }
     }
 
@@ -3772,8 +3740,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DateStarted).HasColumnName(@"DateStarted").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Member).WithMany(b => b.Rotations).HasForeignKey(c => c.MemberId); // FK_Rotation_Member
-            HasRequired(a => a.Workflow).WithMany(b => b.Rotations).HasForeignKey(c => c.WorkflowId); // FK_Rotation_Workflow
+            HasRequired(a => a.Member).WithMany(b => b.Rotations).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_Rotation_Member
+            HasRequired(a => a.Workflow).WithMany(b => b.Rotations).HasForeignKey(c => c.WorkflowId).WillCascadeOnDelete(false); // FK_Rotation_Workflow
         }
     }
 
@@ -3798,9 +3766,9 @@ namespace System.Based.Core.Entity
             Property(x => x.FlagPermission).HasColumnName(@"FlagPermission").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasOptional(a => a.Member).WithMany(b => b.RotationMembers).HasForeignKey(c => c.MemberId); // FK_RotationMember_Member
-            HasRequired(a => a.Rotation).WithMany(b => b.RotationMembers).HasForeignKey(c => c.RotationId); // FK_RotationMember_Rotation
-            HasRequired(a => a.WorkflowNode).WithMany(b => b.RotationMembers).HasForeignKey(c => c.WorkflowNodeId); // FK_RotationMember_WorkflowNode
+            HasOptional(a => a.Member).WithMany(b => b.RotationMembers).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_RotationMember_Member
+            HasRequired(a => a.Rotation).WithMany(b => b.RotationMembers).HasForeignKey(c => c.RotationId).WillCascadeOnDelete(false); // FK_RotationMember_Rotation
+            HasRequired(a => a.WorkflowNode).WithMany(b => b.RotationMembers).HasForeignKey(c => c.WorkflowNodeId).WillCascadeOnDelete(false); // FK_RotationMember_WorkflowNode
         }
     }
 
@@ -3831,10 +3799,10 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasOptional(a => a.RotationNode_SenderRotationNodeId).WithMany(b => b.RotationNodes).HasForeignKey(c => c.SenderRotationNodeId); // FK_RotationNode_RotationNode
-            HasRequired(a => a.Member).WithMany(b => b.RotationNodes).HasForeignKey(c => c.MemberId); // FK_RotationNode_Member
-            HasRequired(a => a.Rotation).WithMany(b => b.RotationNodes).HasForeignKey(c => c.RotationId); // FK_RotationNode_Rotation
-            HasRequired(a => a.WorkflowNode).WithMany(b => b.RotationNodes).HasForeignKey(c => c.WorkflowNodeId); // FK_RotationNode_WorkflowNode
+            HasOptional(a => a.RotationNode_SenderRotationNodeId).WithMany(b => b.RotationNodes).HasForeignKey(c => c.SenderRotationNodeId).WillCascadeOnDelete(false); // FK_RotationNode_RotationNode
+            HasRequired(a => a.Member).WithMany(b => b.RotationNodes).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_RotationNode_Member
+            HasRequired(a => a.Rotation).WithMany(b => b.RotationNodes).HasForeignKey(c => c.RotationId).WillCascadeOnDelete(false); // FK_RotationNode_Rotation
+            HasRequired(a => a.WorkflowNode).WithMany(b => b.RotationNodes).HasForeignKey(c => c.WorkflowNodeId).WillCascadeOnDelete(false); // FK_RotationNode_WorkflowNode
         }
     }
 
@@ -3858,8 +3826,8 @@ namespace System.Based.Core.Entity
             Property(x => x.FlagAction).HasColumnName(@"FlagAction").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasOptional(a => a.Document).WithMany(b => b.RotationNodeDocs).HasForeignKey(c => c.DocumentId); // FK_RotationNodeDoc_Document
-            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeDocs).HasForeignKey(c => c.RotationNodeId); // FK_RotationNodeDoc_RotationNode
+            HasOptional(a => a.Document).WithMany(b => b.RotationNodeDocs).HasForeignKey(c => c.DocumentId).WillCascadeOnDelete(false); // FK_RotationNodeDoc_Document
+            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeDocs).HasForeignKey(c => c.RotationNodeId).WillCascadeOnDelete(false); // FK_RotationNodeDoc_RotationNode
         }
     }
 
@@ -3905,7 +3873,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateStamp).HasColumnName(@"DateStamp").IsRequired().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeRemarks).HasForeignKey(c => c.RotationNodeId); // FK_RotationNodeRemark_RotationNode
+            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeRemarks).HasForeignKey(c => c.RotationNodeId).WillCascadeOnDelete(false); // FK_RotationNodeRemark_RotationNode
         }
     }
 
@@ -3928,8 +3896,8 @@ namespace System.Based.Core.Entity
             Property(x => x.DocumentUploadId).HasColumnName(@"DocumentUploadId").IsOptional().HasColumnType("bigint");
 
             // Foreign keys
-            HasOptional(a => a.DocumentUpload).WithMany(b => b.RotationNodeUpDocs).HasForeignKey(c => c.DocumentUploadId); // FK_RotationNodeUpDoc_DocumentUpload
-            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeUpDocs).HasForeignKey(c => c.RotationNodeId); // FK_RotationNodeUpDoc_RotationNode
+            HasOptional(a => a.DocumentUpload).WithMany(b => b.RotationNodeUpDocs).HasForeignKey(c => c.DocumentUploadId).WillCascadeOnDelete(false); // FK_RotationNodeUpDoc_DocumentUpload
+            HasRequired(a => a.RotationNode).WithMany(b => b.RotationNodeUpDocs).HasForeignKey(c => c.RotationNodeId).WillCascadeOnDelete(false); // FK_RotationNodeUpDoc_RotationNode
         }
     }
 
@@ -3957,7 +3925,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Company).WithMany(b => b.Stamps).HasForeignKey(c => c.CompanyId); // FK_Stamp_Company
+            HasRequired(a => a.Company).WithMany(b => b.Stamps).HasForeignKey(c => c.CompanyId).WillCascadeOnDelete(false); // FK_Stamp_Company
         }
     }
 
@@ -4230,7 +4198,7 @@ namespace System.Based.Core.Entity
             Property(x => x.DateUpdated).HasColumnName(@"DateUpdated").IsOptional().HasColumnType("datetime");
 
             // Foreign keys
-            HasRequired(a => a.Project).WithMany(b => b.Workflows).HasForeignKey(c => c.ProjectId); // FK_Workflow_Project
+            HasRequired(a => a.Project).WithMany(b => b.Workflows).HasForeignKey(c => c.ProjectId).WillCascadeOnDelete(false); // FK_Workflow_Project
         }
     }
 
@@ -4265,9 +4233,9 @@ namespace System.Based.Core.Entity
             Property(x => x.Flag).HasColumnName(@"Flag").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasOptional(a => a.Member).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.MemberId); // FK_WorkflowNode_Member
-            HasRequired(a => a.Symbol).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.SymbolId); // FK_WorkflowNode_Symbol
-            HasRequired(a => a.Workflow).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.WorkflowId); // FK_WorkflowNode_Workflow
+            HasOptional(a => a.Member).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.MemberId).WillCascadeOnDelete(false); // FK_WorkflowNode_Member
+            HasRequired(a => a.Symbol).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.SymbolId).WillCascadeOnDelete(false); // FK_WorkflowNode_Symbol
+            HasRequired(a => a.Workflow).WithMany(b => b.WorkflowNodes).HasForeignKey(c => c.WorkflowId).WillCascadeOnDelete(false); // FK_WorkflowNode_Workflow
         }
     }
 
@@ -4294,9 +4262,9 @@ namespace System.Based.Core.Entity
             Property(x => x.SymbolId).HasColumnName(@"SymbolId").IsRequired().HasColumnType("int");
 
             // Foreign keys
-            HasRequired(a => a.Symbol).WithMany(b => b.WorkflowNodeLinks).HasForeignKey(c => c.SymbolId); // FK_WorkflowNodeLink_Symbol
-            HasRequired(a => a.WorkflowNode_WorkflowNodeId).WithMany(b => b.WorkflowNodeLinks_WorkflowNodeId).HasForeignKey(c => c.WorkflowNodeId); // FK_WorkflowNodeLink_WorkflowNode
-            HasRequired(a => a.WorkflowNode_WorkflowNodeToId).WithMany(b => b.WorkflowNodeLinks_WorkflowNodeToId).HasForeignKey(c => c.WorkflowNodeToId); // FK_WorkflowNodeLink_WorkflowNode1
+            HasRequired(a => a.Symbol).WithMany(b => b.WorkflowNodeLinks).HasForeignKey(c => c.SymbolId).WillCascadeOnDelete(false); // FK_WorkflowNodeLink_Symbol
+            HasRequired(a => a.WorkflowNode_WorkflowNodeId).WithMany(b => b.WorkflowNodeLinks_WorkflowNodeId).HasForeignKey(c => c.WorkflowNodeId).WillCascadeOnDelete(false); // FK_WorkflowNodeLink_WorkflowNode
+            HasRequired(a => a.WorkflowNode_WorkflowNodeToId).WithMany(b => b.WorkflowNodeLinks_WorkflowNodeToId).HasForeignKey(c => c.WorkflowNodeToId).WillCascadeOnDelete(false); // FK_WorkflowNodeLink_WorkflowNode1
         }
     }
 
