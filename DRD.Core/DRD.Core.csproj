@@ -106,10 +106,6 @@
     <Compile Include="MemberTopupDepositService.cs" />
     <Compile Include="MemberTopupPaymentService.cs" />
     <Compile Include="MessageService.cs" />
-    <Compile Include="Migrations\201910301125131_test.cs" />
-    <Compile Include="Migrations\201910301125131_test.Designer.cs">
-      <DependentUpon>201910301125131_test.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\MyDBContext.cs" />
     <Compile Include="NewsService.cs" />
@@ -151,6 +147,10 @@
       <Project>{5812968f-eccf-4382-8607-3503ae6cc72b}</Project>
       <Name>DRD.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
+      <Project>{9634c54d-bfac-4da4-8e04-9b65e7a84763}</Project>
+      <Name>DRD.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -163,11 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201910301125131_test.resx">
-      <DependentUpon>201910301125131_test.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

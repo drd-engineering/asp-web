@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
-using DRD.Domain;
-using System.Based.Core.Entity;
+using DRD.Models;
+
 
 namespace Vidly.Models
 {
@@ -15,7 +15,7 @@ namespace Vidly.Models
         {
 
         }
-        public DbSet<DtoAnnotateType> Customers { get; set; } // My domain models
-        public DbSet<DtoBank> Movies { get; set; }// My domain models
+        public DbSet<AnnotateType> Customers { get; set; } // My domain models
+        public DbSet<Company> Movies { get; set; }// My domain models
     }
 }
