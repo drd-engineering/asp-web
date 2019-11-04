@@ -5,14 +5,14 @@ namespace DRD.Core.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Vidly.Models.MyDBContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<DRD.Core.Models.MyDBContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Vidly.Models.MyDBContext context)
+        protected override void Seed(DRD.Core.Models.MyDBContext context)
         {
             //  This method will be called after migrating to the latest version.
 
