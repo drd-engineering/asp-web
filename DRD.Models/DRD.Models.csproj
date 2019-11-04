@@ -61,7 +61,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Versioning.cs" />
     <Compile Include="Workflow.cs" />
-    <Compile Include="WorkflowLite.cs" />
     <Compile Include="WorkflowNode.cs" />
     <Compile Include="WorkflowNodeLink.cs" />
   </ItemGroup>
