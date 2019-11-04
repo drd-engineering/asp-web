@@ -41,19 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <Compile Include="Class1.cs" />
-    <Compile Include="MemberFolder.cs" />
-    <Compile Include="Member.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserAdmin.cs" />
-=======
     <Compile Include="AnnotateType.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentElement.cs" />
     <Compile Include="DocumentSign.cs" />
+    <Compile Include="Plan.cs" />
     <Compile Include="FaspayData.cs" />
+    <Compile Include="Member.cs" />
     <Compile Include="Rotation.cs" />
     <Compile Include="RotationMember.cs" />
     <Compile Include="RotationNode.cs" />
@@ -62,13 +58,12 @@
     <Compile Include="RotationNodeUpDoc.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserAdmin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Versioning.cs" />
     <Compile Include="Workflow.cs" />
     <Compile Include="WorkflowLite.cs" />
     <Compile Include="WorkflowNode.cs" />
     <Compile Include="WorkflowNodeLink.cs" />
->>>>>>> d30466a3783057854453fc2b92625642a0ba9d53
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
