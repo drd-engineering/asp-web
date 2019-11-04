@@ -32,7 +32,7 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<Tag> Tags { get; set; } // Project.FK_Project_Company
 
         // Foreign keys
-        public virtual SubscriptType subscript_type { get; set; } // FK_Company_SubscriptType
+        //public virtual SubscriptType subscript_type { get; set; } // FK_Company_SubscriptType
             
         public Company()
         {

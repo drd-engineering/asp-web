@@ -18,7 +18,7 @@ namespace DRD.Models
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
-        public StatusCode StatusCode { get; set; }
+        //public StatusCode StatusCode { get; set; }
         public string Note { get; set; }
 
         // Reverse navigation

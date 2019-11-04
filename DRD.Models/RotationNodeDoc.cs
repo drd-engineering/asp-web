@@ -13,7 +13,7 @@ namespace DRD.Models
 
         // Foreign keys
         public virtual Document Document { get; set; } // FK_RotationNodeDoc_Document
-        public virtualDtoRotationNode RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
+        public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
 
         public RotationNodeDoc()
         {

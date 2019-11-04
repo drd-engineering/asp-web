@@ -35,14 +35,14 @@ namespace DRD.Models
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
-        public JsonAnnotate Annotate { get; set; }
+        //public JsonAnnotate Annotate { get; set; }
 
         // Foreign keys
-        public virtual DtoAnnotateType AnnotateType { get; set; } // FK_DocumentAnnotate_AnnotateType
+        public virtual AnnotateType AnnotateType { get; set; } // FK_DocumentAnnotate_AnnotateType
         
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
 
-        public DtoDocumentAnnotate()
+        public DocumentElement()
         {
             Rotation = 0;
             ScaleX = 1;
@@ -52,7 +52,7 @@ namespace DRD.Models
             StrokeWidth = 4;
             Opacity = 1;
             Flag = 0;
-            Annotate = new JsonAnnotate();
+           // Annotate = new JsonAnnotate();
         }
     }
 }

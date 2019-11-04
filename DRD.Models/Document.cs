@@ -21,14 +21,14 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         
-        public Company Companies { get; set } //FK to Company
+        public Company Companies { get; set; } //FK to Company
 
-        public DocumentMember DocumentMember { get; set; }
+       // public DocumentMember DocumentMember { get; set; }
 
         public Document()
         {
-            DocumentMember = new DocumentMember();
-            DocumentAnnotates = new System.Collections.Generic.List<DocumentAnnotate>();
+           // DocumentMember = new DocumentMember();
+            DocumentElements = new System.Collections.Generic.List<DocumentElement>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
     }
