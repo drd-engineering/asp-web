@@ -83,17 +83,10 @@ namespace System.Based.Core.Entity
         public System.Data.Entity.DbSet<ElementType> ElementTypes { get; set; } // ElementType
         public System.Data.Entity.DbSet<ApplConfig> ApplConfigs { get; set; } // ApplConfig
         public System.Data.Entity.DbSet<Company> Companies { get; set; } // Company
+        public System.Data.Entity.DbSet<CompanyBank> CompanyBanks { get; set; } // CompanyBank
         public System.Data.Entity.DbSet<Document> Documents { get; set; } // Document
         public System.Data.Entity.DbSet<DocumentElement> DocumentElements { get; set; } // DocumentElement
-        public System.Data.Entity.DbSet<DocumentMember> DocumentMembers { get; set; } // DocumentMember
-        public System.Data.Entity.DbSet<DocumentUpload> DocumentUploads { get; set; } // DocumentUpload
-        public System.Data.Entity.DbSet<DrDrive> DrDrives { get; set; } // DrDrive
-        public System.Data.Entity.DbSet<DrDriveType> DrDriveTypes { get; set; } // DrDriveType
-        public System.Data.Entity.DbSet<FaspayCreditStatu> FaspayCreditStatus { get; set; } // FaspayCreditStatus
-        public System.Data.Entity.DbSet<FaspayDebitStatu> FaspayDebitStatus { get; set; } // FaspayDebitStatus
-        public System.Data.Entity.DbSet<FaspayPayment> FaspayPayments { get; set; } // FaspayPayment
         public System.Data.Entity.DbSet<Member> Members { get; set; } // Member
-        public System.Data.Entity.DbSet<MemberAccount> MemberAccounts { get; set; } // MemberAccount
         public System.Data.Entity.DbSet<MemberDepositTransfer> MemberDepositTransfers { get; set; } // MemberDepositTransfer
         public System.Data.Entity.DbSet<MemberDepositTrx> MemberDepositTrxes { get; set; } // MemberDepositTrx
         public System.Data.Entity.DbSet<MemberFolder> MemberFolders { get; set; } // MemberFolder
@@ -101,26 +94,14 @@ namespace System.Based.Core.Entity
         public System.Data.Entity.DbSet<MemberInvited> MemberInviteds { get; set; } // MemberInvited
         public System.Data.Entity.DbSet<MemberPermission> MemberPermissions { get; set; } // MemberPermission
         public System.Data.Entity.DbSet<Plan> Plans { get; set; } // Plan
-        public System.Data.Entity.DbSet<PlanExtra> PlanExtras { get; set; } // PlanExtra
-        public System.Data.Entity.DbSet<PlanRequest> PlanRequests { get; set; } // PlanRequest
         public System.Data.Entity.DbSet<MemberProject> MemberProjects { get; set; } // MemberProject
         public System.Data.Entity.DbSet<MemberRotation> MemberRotations { get; set; } // MemberRotation
         public System.Data.Entity.DbSet<MemberSignHistory> MemberSignHistories { get; set; } // MemberSignHistory
         public System.Data.Entity.DbSet<MemberSubscribe> MemberSubscribes { get; set; } // MemberSubscribe
         public System.Data.Entity.DbSet<MemberTitle> MemberTitles { get; set; } // MemberTitle
-        public System.Data.Entity.DbSet<MemberTopupDeposit> MemberTopupDeposits { get; set; } // MemberTopupDeposit
-        public System.Data.Entity.DbSet<MemberTopupPayment> MemberTopupPayments { get; set; } // MemberTopupPayment
         public System.Data.Entity.DbSet<MemberType> MemberTypes { get; set; } // MemberType
         public System.Data.Entity.DbSet<MemberWorkflow> MemberWorkflows { get; set; } // MemberWorkflow
         public System.Data.Entity.DbSet<Message> Messages { get; set; } // Message
-        public System.Data.Entity.DbSet<News> News { get; set; } // News
-        public System.Data.Entity.DbSet<NewsDetail> NewsDetails { get; set; } // NewsDetail
-        public System.Data.Entity.DbSet<NewsType> NewsTypes { get; set; } // NewsType
-        public System.Data.Entity.DbSet<NewsVideo> NewsVideos { get; set; } // NewsVideo
-        public System.Data.Entity.DbSet<PaymentMethod> PaymentMethods { get; set; } // PaymentMethod
-        public System.Data.Entity.DbSet<PaymentStatu> PaymentStatus { get; set; } // PaymentStatus
-        public System.Data.Entity.DbSet<PodCast> PodCasts { get; set; } // PodCast
-        public System.Data.Entity.DbSet<Project> Projects { get; set; } // Project
         public System.Data.Entity.DbSet<Rotation> Rotations { get; set; } // Rotation
         public System.Data.Entity.DbSet<RotationMember> RotationMembers { get; set; } // RotationMember
         public System.Data.Entity.DbSet<RotationNode> RotationNodes { get; set; } // RotationNode
@@ -128,20 +109,13 @@ namespace System.Based.Core.Entity
         public System.Data.Entity.DbSet<RotationNodeLog> RotationNodeLogs { get; set; } // RotationNodeLog
         public System.Data.Entity.DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark
         public System.Data.Entity.DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc
-        public System.Data.Entity.DbSet<Stamp> Stamps { get; set; } // Stamp
-        public System.Data.Entity.DbSet<StatusCode> StatusCodes { get; set; } // StatusCode
-        public System.Data.Entity.DbSet<SubscriptExtraType> SubscriptExtraTypes { get; set; } // SubscriptExtraType
-        public System.Data.Entity.DbSet<SubscriptType> SubscriptTypes { get; set; } // SubscriptType
         public System.Data.Entity.DbSet<Symbol> Symbols { get; set; } // Symbol
-        public System.Data.Entity.DbSet<Sysdiagram> Sysdiagrams { get; set; } // sysdiagrams
         public System.Data.Entity.DbSet<UserAdmin> UserAdmins { get; set; } // UserAdmin
         public System.Data.Entity.DbSet<Versioning> Versionings { get; set; } // Versioning
-        public System.Data.Entity.DbSet<Voucher> Vouchers { get; set; } // Voucher
-        public System.Data.Entity.DbSet<VoucherGenerator> VoucherGenerators { get; set; } // VoucherGenerator
         public System.Data.Entity.DbSet<Workflow> Workflows { get; set; } // Workflow
         public System.Data.Entity.DbSet<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode
         public System.Data.Entity.DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // WorkflowNodeLink
-        
+
         static DrdContext()
         {
             System.Data.Entity.Database.SetInitializer<DrdContext>(null);
