@@ -30,7 +30,7 @@ namespace Core.Postgres
         // public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }
-        // public DbSet<Workflow> Workflows { get; set; }
+        public DbSet<Workflow> Workflows { get; set; }
         // public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         // public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
     }
