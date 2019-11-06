@@ -20,11 +20,11 @@ namespace Core.Postgres.Models
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         // Reverse navigation
-        // public virtual System.Collections.Generic.ICollection<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode.FK_WorkflowNode_Workflow
+        public virtual System.Collections.Generic.ICollection<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode.FK_WorkflowNode_Workflow
 
         public Workflow()
         {
-            // WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
+            WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
             WfType = 0;
         }
     }

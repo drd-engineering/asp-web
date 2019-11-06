@@ -20,7 +20,7 @@ namespace Core.Postgres.Models
         // Foreign keys
         public virtual Member Member { get; set; } // FK_RotationMember_Member
         public virtual Rotation Rotation { get; set; } // FK_RotationMember_Rotation
-        // public virtual WorkflowNode WorkflowNode { get; set; } // FK_RotationMember_WorkflowNode
+        public virtual WorkflowNode WorkflowNode { get; set; } // FK_RotationMember_WorkflowNode
 
         public RotationMember()
         {
