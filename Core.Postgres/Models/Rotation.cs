@@ -24,7 +24,7 @@ namespace Core.Postgres.Models
         public string DecissionInfo { get; set; }
 
         // Document summaries
-        // public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
+        public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
         // public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
 
@@ -38,7 +38,7 @@ namespace Core.Postgres.Models
 
         public Rotation()
         {
-            // SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
+            SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
             // SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 
             // RotationMembers = new System.Collections.Generic.List<RotationMember>();
