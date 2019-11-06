@@ -8,7 +8,6 @@
 @*<link rel="stylesheet" href="/assets/css/demo.css">
     <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
     <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-
     <link rel="stylesheet" href="/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
           type="text/css">
@@ -18,7 +17,6 @@
     <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
     <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
@@ -86,39 +84,35 @@
         height: 32px;
     }
 
-
     .speech-bubble-left {
         background-color: #f8f8f8;
         border: 1px solid #c8c8c8;
         border-radius: 5px;
         width: auto;
-        max-width:80%;
+        max-width: 80%;
         text-align: left;
         padding: 10px;
-        margin-bottom:10px;
-        margin-left:50px;
-
-        display:inline-block;
-        clear:both;
-        float:left;
+        margin-bottom: 10px;
+        margin-left: 50px;
+        display: inline-block;
+        clear: both;
+        float: left;
     }
 
-
     .speech-bubble-right {
-        background-color:dodgerblue;
-        color:white;
+        background-color: dodgerblue;
+        color: white;
         border: 1px solid #c8c8c8;
         border-radius: 5px;
         width: auto;
-        max-width:80%;
+        max-width: 80%;
         text-align: left;
         padding: 10px;
-        margin-bottom:10px;
-        margin-right:50px;
-
-        display:inline-block;
-        clear:both;
-        float:right;
+        margin-bottom: 10px;
+        margin-right: 50px;
+        display: inline-block;
+        clear: both;
+        float: right;
     }
 
     .speech-bubble .arrow {
@@ -131,6 +125,66 @@
         border-width: 8px 8px 0px 8px;
         bottom: -8px;
     }
+
+    .default-user, .user-selected {
+        background-color: #C0C0C0
+    }
+
+        .default-user img, .user-selected img, .list-user img {
+            border-radius: 10%;
+            height: 40px;
+            width: 40px;
+        }
+
+    .content-wrapper .col-md-12 {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .page-content {
+        /*display: none;*/
+    }
+
+    .list-user {
+        overflow: auto;
+    }
+
+        .list-user .content {
+            height: 450px;
+        }
+
+        .list-user .user {
+            padding: 10px;
+            border-bottom-width: 1px;
+            border-bottom-color: aqua;
+            border-bottom-style: solid;
+            cursor: pointer;
+        }
+
+            .list-user .user .detail, .list-chat .content .detail {
+                font-size: xx-small;
+                color: brown;
+            }
+
+    .list-chat {
+        vertical-align: top;
+        padding: 10px;
+        overflow: auto;
+        background-color: #fafafa;
+    }
+
+        .list-chat .content {
+            height: 450px;
+            overflow: auto;
+        }
+
+    .chat-bg {
+        background-color: #C0C0C0;
+    }
+
+    .btn-send {
+        width: 120px;
+    }
 </style>
 
 
@@ -141,55 +195,52 @@
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
-        <div class="page-content" id="content" style="display:none;">
+        <div class="page-content" id="content">
 
             <!-- Main content -->
             <div class="content-wrapper">
-                <div class="col-md-12" style="padding-left:0px;padding-right:0px">
+                <div class="col-md-12">
                     <table style="width:100%;">
                         <tr>
-                            <td class="default-user" style="background-color: #C0C0C0">
-                                <img ng-src="/Images/Member/{{user.ImageProfile}}" height="40" width="40" style="border-radius:10%;" />
+                            <td class="default-user">
+                                <img ng-src="/Images/Member/{{user.ImageProfile}}" />
                                 &ensp;&ensp;CHAT
                             </td>
-                            <td class="user-selected" style="background-color: #C0C0C0">
-                                <img ng-src="/Images/Member/{{selectedUser.SenderFoto}}" height="40" width="40" style="border-radius:10%;" />
+                            <td class="user-selected">
+                                <img ng-src="/Images/Member/{{selectedUser.SenderFoto}}" />
                                 &ensp;&ensp;{{selectedUser.SenderName}}<span style="font-size:xx-small;color:brown">&ensp;&ensp;{{selectedUser.SenderProfession}}</span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="list-user" style="overflow:auto">
-                                <div style="height:450px">
-                                    <div ng-repeat="x in users" style="padding:10px;border-bottom-width:1px;border-bottom-color:aqua;border-bottom-style:solid;cursor:pointer" ng-click="clickUser(x.SenderId)">
-                                        <img ng-src="/Images/Member/{{x.SenderFoto}}" height="40" width="40" style="border-radius:10%;" />
-                                        &ensp;&ensp;{{x.SenderName}}<span style="font-size:xx-small;color:brown">&ensp;&ensp;{{x.SenderProfession}}</span>
+                            <td class="list-user">
+                                <div class="content">
+                                    <div class="user" ng-repeat="x in users" ng-click="clickUser(x.SenderId)">
+                                        <img ng-src="/Images/Member/{{x.SenderFoto}}" />
+                                        &ensp;&ensp;{{x.SenderName}}<span class="detail">&ensp;&ensp;{{x.SenderProfession}}</span>
                                         <span class="badge bg-warning-400" ng-hide="x.Unread==0">{{x.Unread}}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="list-chat" style="vertical-align:top;padding:10px;overflow:auto;background-color:#fafafa">
-                                <div style="height:450px;overflow:auto">
+                            <td class="list-chat">
+                                <div class="content">
                                     <div class="speech-bubble-{{(x.IsMe?'left':'right')}}" ng-repeat="x in messages">
-                                        @*<div class="arrow bottom right"></div>*@
                                         {{x.TextMessage}}<br />
-                                        <span style="font-size:xx-small">{{getTime(x.DateMessage)}}</span>
+                                        <span class="detail">{{getTime(x.DateMessage)}}</span>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                        <tr style="background-color: #C0C0C0">
+                        <tr class="chat-bg">
                             <td class="footer-user">
                                 <button class="btn btn-info btn-xs" type="button" ng-click="addContact()"><i class="icon-user-plus position-left"></i> Add Contact</button>
                             </td>
                             <td class="textbox-chat">
                                 <div>
                                     <div class="input-group">
-                                        @*<span class="input-group-addon"><i class="icon-search4"></i></span>*@
                                         <input id="txtmessage" type="text" class="form-control" ng-model="message" placeholder="Type a message" ng-keyup="$event.keyCode == 13 && sendMessage()">
                                         <span class="input-group-btn">
-                                            <button id="my-button" class="btn btn-default" type="button" ng-click="sendMessage()" style="width:120px">
+                                            <button id="my-button" class="btn btn-default btn-send" type="button" ng-click="sendMessage()">
                                                 <span>Send</span><span></span>
-                                                <div class="ladda-progress" style="width: 0px;"></div>
                                             </button>
                                         </span>
                                     </div>
@@ -212,12 +263,8 @@
     <!-- /Page container -->
 
     <script type="text/javascript">
-
-
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
-
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
-
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
@@ -228,44 +275,33 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
-
             $scope.dummyUsers=[];
             $scope.users=[];
             $scope.user={};
             $scope.selectedUser={};
             $scope.message="";
             $scope.messages=[];
-
             initValues();
-
             $scope.xtimer = 0;
-
             $scope.startCounting = function () {
                 $scope.xtimer = setInterval(() => {
                     $scope.getActivityCounter();
                 }, 5000);
-
             };
-
             $(".control-warning").uniform({
                 radioClass: 'choice',
                 wrapperClass: 'border-warning-600 text-warning-800'
             });
-
             $scope.$on("$destroy", function (event) {
                 clearInterval(xtimer);
             });
-
             $scope.getActivityCounter = function () {
                 $scope.getContact();
-
                 if ($scope.selectedUser==undefined || $scope.selectedUser.Id==undefined)
                     return;
-
                 if ($scope.selectedUser.Id!=0)
                     $scope.getMessage();
             }
-
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
@@ -274,32 +310,24 @@
                 $scope.startCounting();
                 $scope.getActivityCounter();
             });
-
             function initValues() {
                 //$scope.getContact();
                 //$scope.users = @Html.Raw(Json.Encode(Model.obj));
                 $scope.user = @Html.Raw(Json.Encode(Model.user));
                 //$scope.selectedUser=$scope.user;
-
                 //for(i=$scope.users.length-1;i>0;i--){
                 //    if ($scope.users[i].Id== $scope.user.Id){
                 //        $scope.users.splice(i,1);
                 //        break;
                 //    }
-
                 //}
-
             }
-
             $scope.initData = function () {
-
             }
-
             $scope.clickUser = function (id) {
                 $scope.selectedUser=$filter('filter')($scope.users, {SenderId: id}, true)[0];
                 $scope.getMessage();
             }
-
             $scope.getTime = function (dateTime) {
                 var today=$filter('date')(new Date(),'yyyyMMdd');
                 var thatTime=$filter('date')(convertJsonDate(dateTime),'yyyyMMdd');
@@ -307,22 +335,17 @@
                     return $filter('date')(convertJsonDate(dateTime),'HH:mm');
                 else
                     return $filter('date')(new Date(),'dd/MM/yyyy HH:mm');
-
             }
-
             $scope.getContact = function () {
-
                 $http.post('@Url.Action("getsum", "message")', { maxId:0, topCriteria:null, page:1, pageSize:100}).then(function (response) {
                     if (response.data) {
                         $scope.users=response.data;
-
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
             $scope.sendMessage = function () {
                 var msg={};
                 msg.FromId=$scope.user.Id;
@@ -342,11 +365,9 @@
                 });
             }
             $scope.getMessage = function () {
-
                 $http.post('@Url.Action("getsumdetail", "message")', { myId: $scope.user.Id, yourId: $scope.selectedUser.SenderId}).then(function (response) {
                     if (response.data) {
                         $scope.messages=response.data;
-
                     }
                 }, function (response) {
                     //error handle\
@@ -354,9 +375,6 @@
                 });
             }
 
-
-
-            
             /*--------------------------------------------------------------
                 POPUP MEMBER
             --------------------------------------------------------------*/
@@ -364,22 +382,7 @@
                 $scope.members = [];
                 $("#modal_select_contact").modal("show");
             }
-
-
-            //$scope.memberIdx=-1;
-            //$scope.editMember = function (idx) {
-            //    $scope.memberIdx=idx;
-            //    $scope.members = [];
-            //    $("#modal_select_contact").modal("show");
-            //}
-
             $scope.setMember = function (idx) {
-                //$scope.users[$scope.memberIdx].MemberId=$scope.members[idx].Id;
-                //$scope.users[$scope.memberIdx].MemberNumber=$scope.members[idx].Number;
-                //$scope.users[$scope.memberIdx].MemberName=$scope.members[idx].Name;
-                //$scope.users[$scope.memberIdx].MemberEmail=$scope.members[idx].Email;
-                //$scope.users[$scope.memberIdx].MemberPicture=$scope.members[idx].ImageProfile;
-
                 var user={};
                 user.SenderFoto=$scope.members[idx].ImageProfile;
                 user.SenderId=$scope.members[idx].Id;
@@ -388,38 +391,18 @@
                 user.SenderType=0;
                 user.ReceiverId=$scope.user.Id;
                 user.ReceiverName=$scope.user.Name;
-
                 $scope.selectedUser=user;
-
                 $scope.getMessage();
-
                 $( "#txtmessage" ).focus();
-
-                //var found=false;
-                //for(i=0;i<$scope.users.length;i++){
-                //    if ($scope.users[i].SenderId==user.SenderId){
-                //        found=true;
-                //        break;
-                //    }
-                //}
-
-                //if(!found){
-                //    $scope.users.push(user);
-                //}
-
             }
-
             $scope.getLiteMembers = function (kriteria, page, row) {
                 $scope.members = [];
                 $http.post('/Member/GetChatContacts', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data;
-
                         $scope.index = row * (page - 1);
-
                         $scope.paging = [];
                         $scope.getMemberCount(kriteria);
-
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -427,7 +410,6 @@
                     var x = 0;
                 });
             }
-
             $scope.changePageMember = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('/Member/GetChatContacts', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -440,43 +422,32 @@
                     var x = 0;
                 });
             }
-
             $scope.getMemberCount = function (kriteria) {
                 $http.post('/Member/GetChatContactsCount', { topCriteria: kriteria }).then(function (response) {
                     if (response.data) {
-
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
-
                         $scope.page = "1";
-
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
-
             /*--------------------------------------------------------------
                 END POPUP MEMBER
             --------------------------------------------------------------*/
-
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top
                 }, 200);
             }
-
             $scope.validAction = function (val, bit) {
                 return ((val & bit) == bit);
             }
-
-
-
             /*--------------------------------------------------------------
            CONVERT JSON DATE
            --------------------------------------------------------------*/
@@ -491,15 +462,10 @@
                 return new Date(parseInt(val.substr(6)));
             }
         });
-
-
         $(function () {
         });
-
-
         $(document).ready(function () {
         })
-
     </script>
 
 </body>

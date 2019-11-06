@@ -8,7 +8,6 @@
 @*<link rel="stylesheet" href="/assets/css/demo.css">
     <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
     <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-
     <link rel="stylesheet" href="/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
           type="text/css">
@@ -18,7 +17,6 @@
     <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
     <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
@@ -66,41 +64,48 @@
     .image-content {
         width: 120px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
     }
-        .auto-style1 {
-            width: 40px;
-        }
-        .auto-style2 {
-            width: 141px;
-            border-bottom-style: dotted; border-bottom-width: 1px;
-        }
-        .auto-style22 {
-            width: 141px;
-        }
-        .auto-style3 {
-            width: 100%;
-        }
-        .auto-style4 {
-            
-        }
-        .auto-style5 {
-            text-align: center;
-            font-size:smaller;
-            width: 100px;
-            border-bottom-style: dotted; border-bottom-width: 1px;
-        }
-        .auto-style6 {
-            border-bottom-style: dotted; border-bottom-width: 1px;
-            font-size:smaller;
-            color:gray;
-        }
+    /*Belom tau kegunaannya apa dan dimana*/
+    .auto-style1 {
+        width: 40px;
+    }
+
+    .auto-style2 {
+        width: 141px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+    }
+
+    .auto-style22 {
+        width: 141px;
+    }
+
+    .auto-style3 {
+        width: 100%;
+    }
+
+    .auto-style4 {
+    }
+
+    .auto-style5 {
+        text-align: center;
+        font-size: smaller;
+        width: 100px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+    }
+
+    .auto-style6 {
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+        font-size: smaller;
+        color: gray;
+    }
 </style>
 
 
@@ -117,7 +122,7 @@
                 <!-- Page header -->
                 <div class="page-header page-header-default">
                     <div class="page-header-content">
-                        
+
                         <div class="page-title">
                             <h4><i class="icon-split position-left"></i>Altered: {{currentRotationNode.WorkflowNode.Caption}}</h4>
                             Rotation: {{model.Subject}}
@@ -136,7 +141,7 @@
 
                     <div class="panel panel-flat">
                         <div class="panel-body">
-                           
+
 
                             <!--MEMBER DATA-->
 
@@ -148,7 +153,7 @@
 
                                     <fieldset>
                                         <div class="col-md-12">
-                                            
+
                                             <div ng-show="loadingLog==1">
                                                 <i class="icon-spinner2 spinner"></i>
                                                 <span>Loading log...</span>
@@ -159,19 +164,18 @@
 
                                                 </div>
                                             </div>
-                                              
+
 
 
                                         </div>
                                     </fieldset>
-                                     
+
                                     <br />
-                                    
+
                                 </div>
                             </form>
                             <!--/MEMBER DATA-->
                             <!--CONFIRMATION THANK YOU-->
-
                             <!--/CONFIRMATION THANK YOU-->
 
                         </div>
@@ -193,12 +197,8 @@
     <!-- /Page container -->
 
     <script type="text/javascript">
-
-
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
-
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
-
             // modal workflow
             $scope.workflow = {};
             $scope.workflows = [];
@@ -210,7 +210,6 @@
             $scope.currPage = 0;
             $scope.index = 0;
             // modal workflow
-
             $scope.model = {};
             $scope.wizarno = 'product';
             $scope.master = {};
@@ -222,26 +221,20 @@
             $scope.docs=[];
             $scope.curentUser;
             initValues();
-
             $(".control-warning").uniform({
                 radioClass: 'choice',
                 wrapperClass: 'border-warning-600 text-warning-800'
             });
-
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-
                 $(".content-wrapper").show();
-
             });
-
             function initValues() {
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
                 var product = @Html.Raw(Json.Encode(Model.obj));
                 if (product.Id!=0 ){
-
                     $scope.model.Id=product.Id;
                     $scope.model.MemberId=product.MemberId;
                     $scope.model.RotationNodeId=product.RotationNodeId;
@@ -258,17 +251,11 @@
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
                     $scope.docs=$scope.currentRotationNode.RotationNodeDocs;
                 }else{
-
                 }
-
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
-
             $scope.initData = function () {
-
             }
-
-
             /*--------------------------------------------------------------
             submitActivity
             --------------------------------------------------------------*/
@@ -287,34 +274,23 @@
                         var x = 0;
                     });
             }
-
             $scope.processActivity = function (bit) {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
-
-                //if ($scope.workflow.Name==undefined) {
-                //    showInfo("Required workflow");
-                //    return;
-                //}
-
                 $scope.submitActivity(bit);
             }
-
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;
             };
-
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top
                 }, 200);
             }
-
             $scope.validAction = function (val, bit) {
                 return ((val & bit)==bit);
             }
-
             $scope.finishLoading = function() {
                 $scope.loadingLog=0;
             }
@@ -322,7 +298,7 @@
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName+"&isDocument=false";
             }
             $scope.viewDocument = function (arg) {
-                var member=arg.Document.DocumentMember;//s.filter((subject) => subject.MemberId == $scope.curentUser.Id)[0];
+                var member=arg.Document.DocumentMember;
                 if (member == undefined || arg.Document.DocumentMember==null || arg.Document.DocumentMember.FlagPermission<=1){
                     showInfo("You don't have permission to open this file.");
                     return;
@@ -338,8 +314,7 @@
                 }, function (response) {
                     //error handle\
                     var x = 0;
-                });       
-
+                });
             }
             $scope.openDocument = function (member, iframe, arg, fileName){
                 if (arg.Document.DocumentAnnotates.length>0){
@@ -376,7 +351,7 @@
                     }
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 }
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var flagDownload=member.FlagPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
@@ -398,17 +373,12 @@
                 return new Date(parseInt(val.substr(6)));
             }
         });
-
-
         $(function () {
         });
-
-
         $(document).ready(function () {
             $('#checkbox1').bootstrapSwitch();
             $('#action-panel').show();
         })
-
     </script>
 
 </body>
