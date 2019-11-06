@@ -26,7 +26,7 @@ namespace Core.Postgres.Models
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationNode> Rotations { get; set; } // Rotation.FK_Rotation_WorkflowNode
-        // public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks_WorkflowNodeId { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode
+        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks_WorkflowNodeId { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode
         // public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks_WorkflowNodeToId { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
 
         // Foreign keys
@@ -38,7 +38,7 @@ namespace Core.Postgres.Models
         {
             Flag = 0;
             Rotations = new System.Collections.Generic.List<RotationNode>();
-            // WorkflowNodeLinks_WorkflowNodeId = new System.Collections.Generic.List<WorkflowNodeLink>();
+            WorkflowNodeLinks_WorkflowNodeId = new System.Collections.Generic.List<WorkflowNodeLink>();
             // WorkflowNodeLinks_WorkflowNodeToId = new System.Collections.Generic.List<WorkflowNodeLink>();
         }
     }
