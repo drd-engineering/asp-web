@@ -12,7 +12,8 @@ namespace Core.Postgres
     {
         public DRDContext(DbContextOptions<DRDContext> options) : base(options) { }
 
-       // public DbSet<ElementType> AnnotateTypes { get; set; }
+        public DbSet<ElementType> ElementTypes { get; set; }
+
         public DbSet<Company> Companies { get; set; }
        // public DbSet<Document> Documents { get; set; }
        // public DbSet<DocumentElement> DocumentElements { get; set; }

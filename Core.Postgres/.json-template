@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DRDConection": "User ID =DRD-admin;Password=drd123;Server=localhost;Port=5432;Database=DRD; Integrated Security=true;Pooling=true;"
+    "DRDConection": "User ID =[isi];Password=[isi];Server=localhost;Port=5432;Database=DRD; Integrated Security=true;Pooling=true;"
   },
   "Logging": {
     "IncludeScopes": false,
