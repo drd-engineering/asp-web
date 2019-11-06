@@ -579,6 +579,7 @@
     <Content Include="drduserDataSet.xsc">
       <DependentUpon>drduserDataSet.xsd</DependentUpon>
     </Content>
+    <Content Include="Chat - Copy.cshtml" />
     <None Include="drduserDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>drduserDataSet.Designer.cs</LastGenOutput>
