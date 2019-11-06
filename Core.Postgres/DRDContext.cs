@@ -22,7 +22,7 @@ namespace Core.Postgres
        // public DbSet<FaspayData> FaspayDatas { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Plan> Plans { get; set; }
-        // public DbSet<Rotation> Rotations { get; set; }
+        public DbSet<Rotation> Rotations { get; set; }
         // public DbSet<RotationMember> RotationMembers { get; set; }
         // public DbSet<RotationNode> RotationNodes { get; set; }
         // public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
