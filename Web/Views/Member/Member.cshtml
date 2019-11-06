@@ -1,0 +1,685 @@
+﻿@using DRD.Domain;
+@model JsonLayout
+
+
+@*<link rel="stylesheet" href="/assets/css/demo.css">
+    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
+    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>*@
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script>
+<script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
+<script src="/assets/vendors/ng_only_number.js"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular-sanitize.min.js"></script>
+
+@*http://bootstrapswitch.com/*@
+<link href="/assets/vendors/bootstrap-switch/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
+<script src="/assets/vendors/bootstrap-switch/bootstrap-switch.js"></script>
+
+@* demo/doc https://uxsolutions.github.io/bootstrap-datepicker/?markup=input&format=&weekStart=&startDate=&endDate=&startView=0&minViewMode=0&maxViewMode=4&todayBtn=false&clearBtn=false&language=en&orientation=auto&multidate=&multidateSeparator=&autoclose=on&keyboardNavigation=on&forceParse=on#sandbox*@
+<link id="bsdp-css" href="/assets/vendors/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<script src="/assets/vendors/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+
+<script src="/angular-signature-master/src/signature_pad.min.js"></script>
+<script src="/angular-signature-master/src/signature.js"></script>
+<script src="~/Scripts/xpublic.js"></script>
+
+<style type="text/css">
+    .auto-style3 {
+        width: 64px;
+    }
+
+    .image-wraper {
+        float: left;
+        margin-right: 10px;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-content {
+        width: 200px;
+        cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .container {
+        border: 1px solid red;
+        padding: 10px 10px 40px 10px;
+        position: relative;
+        margin: 0 auto 0 auto;
+        height: 100%;
+    }
+
+    .container .signature {
+        border: 1px solid orange;
+        margin: 0 auto;
+        cursor: pointer;
+    }
+
+    .container .signature canvas {
+        border: 1px solid #999;
+        margin: 0 auto;
+        cursor: pointer;
+    }
+
+    .container .buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .container .sizes {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .container .sizes input {
+        width: 4em;
+        text-align: center;
+    }
+
+    .result {
+        border: 1px solid blue;
+        margin: 30px auto 0 auto;
+        height: 220px;
+        width: 568px;
+    }
+</style>
+
+
+
+<body @*ng-app="drdApp"*@>
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <!-- Page content -->
+        <div class="page-content">
+
+
+            <!-- Main content -->
+            <div class="content-wrapper">
+                <!-- Page header -->
+                <div class="page-header page-header-default">
+                    <div class="page-header-content">
+                        <div class="page-title">
+                            <h4><i class="icon-user position-left"></i> User Data</h4>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /page header -->
+                <!-- Horizontal form options -->
+                <!-- Content area -->
+                <div class="content">
+
+
+                    <!-- Basic layout-->
+
+
+                    <div class="panel panel-flat">
+                        <div class="panel-body">
+
+                            <!--MEMBER DATA-->
+
+                            <form name="myForm" class="form-horizontal" autocomplete="off">
+
+                                <div ng-show="wizarno=='product'">
+                                    <fieldset>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    @*<label class="control-label">Pas Foto</label>*@
+                                                    <div>
+                                                        <div class="image-wraper">
+
+                                                            <img ng-src="/Images/member/{{model.ImageProfile}}" class="image-content"
+                                                                 ngf-drop="uploadFiles(0,$file, $invalidFiles)"
+                                                                 ngf-select="uploadFiles(0,$file, $invalidFiles)"
+                                                                 ngf-pattern="'image/*'"
+                                                                 accept="image/*"
+                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Number</label>
+                                                            <input type="text" class="form-control" ng-model="model.Number" readonly placeholder="Auto" />
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <label class="control-label">Name</label>
+                                                            <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Phone</label>
+                                                            <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number ng-readonly="model.Id!=0" />
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <label class="control-label">Email</label>
+                                                            <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">User Group</label>
+                                                            <select id="user-group" class="form-control" ng-model="model.UserGroup" ng-required="wizarno=='product'">
+                                                                <option value="">Select user group</option>
+                                                                <option value="{{x.Name}}" ng-repeat="x in master.UserGroups">{{x.Descr}}</option>
+                                                            </select>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <hr />
+                                            <h4>Identity</h4>
+                                            <div class="row">
+
+
+                                                <div class="col-md-3" ng-show="model.LoginId==model.Id">
+                                                    <div style="width:200px">
+                                                        <label class="control-label">Signature</label>
+                                                        <span class="pull-right"><a ng-click="signaturePad(0)"><i class="icon-pencil7"></i></a></span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="image-wraper">
+                                                            <img ng-src="/Images/member/{{model.ImageSignature}}" class="image-content"
+                                                                 ngf-drop="uploadFiles(1,$file, $invalidFiles)"
+                                                                 ngf-select="uploadFiles(1,$file, $invalidFiles)"
+                                                                 ngf-pattern="'image/*'"
+                                                                 accept="image/*"
+                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" 
+                                                                 id="signaturepad"/>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-3" ng-show="model.LoginId==model.Id">
+                                                    <div style="width:200px">
+                                                        <label class="control-label">Initial</label>
+                                                        <span class="pull-right"><a ng-click="signaturePad(1)"><i class="icon-pencil7"></i></a></span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="image-wraper">
+
+                                                            <img ng-src="/Images/member/{{model.ImageInitials}}" class="image-content"
+                                                                 ngf-drop="uploadFiles(2,$file, $invalidFiles)"
+                                                                 ngf-select="uploadFiles(2,$file, $invalidFiles)"
+                                                                 ngf-pattern="'image/*'"
+                                                                 accept="image/*"
+                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" 
+                                                                 id="initialpad"/>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-3" ng-show="model.LoginId==model.Id">
+                                                    <label class="control-label">Private Stamp</label>
+                                                    <div>
+                                                        <div class="image-wraper">
+
+                                                            <img ng-src="/Images/member/{{model.ImageStamp}}" class="image-content"
+                                                                 ngf-drop="uploadFiles(3,$file, $invalidFiles)"
+                                                                 ngf-select="uploadFiles(3,$file, $invalidFiles)"
+                                                                 ngf-pattern="'image/*'"
+                                                                 accept="image/*"
+                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <h4>Status Active</h4>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input id="checkbox1" type="checkbox" data-off-text="Inactive" data-on-text="Active" class="BSswitch" ng-model="model.IsActive">
+                                                </div>
+                                            </div>
+
+                                            
+                                        </div>
+                                    </fieldset>
+
+                                    <hr />
+                                    <div class="col-md-12">
+
+                                        <div class="col-md-12">
+                                            <div class="text-right">
+                                                <span class="input-group-btn">
+                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                            <!--/MEMBER DATA-->
+                            <!--CONFIRMATION THANK YOU-->
+                            <div ng-show="wizarno=='success'">
+                                <div class="col-md-12">
+                                    <div class="alert alert-success alert-styled-left">
+                                        <p ng-bind-html="infoSuccess" compile-template></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-include src="'/Include/PopupSignature'" onload="finishLoading()"></ng-include>
+                            <!--/CONFIRMATION THANK YOU-->
+                        </div>
+                    </div>
+                    <!-- /basic layout -->
+                </div>
+                <!-- /vertical form options -->
+            </div>
+            <!-- /Main content -->
+        </div>
+        <!-- /Page content -->
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngSanitize', 'ngFileUpload', 'ngOnlyNumberApp', 'signature'])
+        myApp.directive('compileTemplate', function ($compile, $parse) {
+            return {
+                link: function (scope, element, attr) {
+                    var parsed = $parse(attr.ngBindHtml);
+                    function getStringValue() { return (parsed(scope) || '').toString(); }
+
+                    //Recompile if the template changes
+                    scope.$watch(getStringValue, function () {
+                        $compile(element, null, -9999)(scope);  //The -9999 makes it skip directives so that we do not recompile ourselves
+                    });
+                }
+            }
+        })
+        myApp.directive('onFinishRender', function ($timeout) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function () {
+                            scope.$emit('ngRepeatBindRoutesFinished');
+                        });
+                    }
+                }
+            }
+        });
+        myApp.controller("drdController", function ($scope, $sce, Upload, $location, $http, $filter) {
+
+            $scope.model = {};
+            $scope.wizarno = 'product';
+            $scope.model.Id = 0;
+            $scope.model.LoginId = -1;
+            $scope.noImage="no_picture.png";
+            $scope.model.ImageProfile=$scope.noImage;
+            $scope.model.ImageSignature=$scope.noImage;
+            $scope.model.ImageInitials=$scope.noImage;
+            $scope.model.ImageStamp=$scope.noImage;
+            $scope.master={};
+            $scope.model.IsActive=true;
+            $scope.isUploadImage0=0;
+            $scope.infoSuccess="Data saved successfully.";
+            $scope.creatorLevels=[{Id:0},{Id:1},{Id:2},{Id:3},{Id:4},{Id:5}];
+            $scope.model.CreatorLevel="0";
+            var signatureNo=0;
+            initValues();
+
+            $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
+                $(".control-primary").uniform({
+                    radioClass: 'choice',
+                    wrapperClass: 'border-primary-600 text-primary-800'
+                });
+            });
+
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+                if ($scope.model.Id==0 )
+                    $scope.getMaster();
+
+                //$scope.boundingBox = {
+                //    width: 400,
+                //    height: 300
+                //};
+
+            });
+            $scope.finishLoading = function() {
+
+            }
+
+            $scope.signatureDone = function(data) {
+                $("#modal_signature_pad").modal("hide");
+                //var sign=signature.acceptSignature();
+                if (signatureNo==0)
+                    $("#signaturepad").attr("src", data.dataUrl);
+                else
+                    $("#initialpad").attr("src", data.dataUrl);
+
+
+                // Get the form
+                var form = document.getElementById("myAwesomeForm");
+
+                var ImageURL = data.dataUrl;
+                // Split the base64 string in data and contentType
+                var block = ImageURL.split(";");
+                // Get the content type
+                var contentType = block[0].split(":")[1];// In this case "image/gif"
+                // get the real base64 content of the file
+                var realData = block[1].split(",")[1];// In this case "iVBORw0KGg...."
+
+                // Convert to blob
+                var blob = b64toBlob(realData, contentType);
+
+                // Create a FormData and append the file
+                var fd = new FormData(form);
+                fd.append("image", blob);
+
+                // Submit Form and upload file
+                $.ajax({
+                    url:"/updownfile/upload?idx=0&fileType=1",
+                    data: fd,// the formData function is available in almost all new browsers.
+                    type:"POST",
+                    contentType:false,
+                    processData:false,
+                    cache:false,
+                    dataType:"json", // Change this according to your response from the server.
+                    error:function(err){
+                        showInfo("Error upload data signature/initial.");
+                    },
+                    success:function(data){
+                        //console.log(data);
+                        //alert('success');
+                        if (signatureNo==0){
+                            $scope.model.ImageSignature=data.filename;
+                        }else if (signatureNo==1){
+                            $scope.model.ImageInitials=data.filename;
+                        }
+                    },
+                    complete:function(data){
+                        //console.log("Request finished.");
+                        //alert('complete');
+                    }
+                });
+
+
+            }
+            function b64toBlob(b64Data, contentType, sliceSize) {
+                contentType = contentType || '';
+                sliceSize = sliceSize || 512;
+
+                var byteCharacters = atob(b64Data);
+                var byteArrays = [];
+
+                for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                    var byteNumbers = new Array(slice.length);
+                    for (var i = 0; i < slice.length; i++) {
+                        byteNumbers[i] = slice.charCodeAt(i);
+                    }
+
+                    var byteArray = new Uint8Array(byteNumbers);
+
+                    byteArrays.push(byteArray);
+                }
+
+                var blob = new Blob(byteArrays, {type: contentType});
+                return blob;
+            }
+            function initValues() {
+                var product = @Html.Raw(Json.Encode(Model.obj));
+                if (product.Id!=0 ){
+                    $scope.model.Id=product.Id;
+                    $scope.model.Number=product.Number;
+                    $scope.model.Name=product.Name;
+                    $scope.model.Phone=product.Phone;
+                    $scope.model.Email=product.Email;
+                    $scope.model.ImageProfile=product.ImageProfile;
+                    $scope.model.CreatorLevel=product.CreatorLevel+"";
+                    $scope.model.ImageSignature=product.ImageSignature;
+                    $scope.model.ImageInitials=product.ImageInitials;
+                    $scope.model.ImageStamp=product.ImageStamp;
+                    $scope.model.LoginId=product.LoginId;
+                    $scope.model.IsActive=product.IsActive;
+                    $scope.model.UserGroup=product.UserGroup;
+                    $scope.model.UserId=product.UserId;
+
+                    if ($scope.model.ImageProfile==null)
+                        $scope.model.ImageProfile=$scope.noImage;
+                    if ($scope.model.ImageSignature==null)
+                        $scope.model.ImageSignature=$scope.noImage;
+                    if ($scope.model.ImageInitials==null)
+                        $scope.model.ImageInitials=$scope.noImage;
+                    if ($scope.model.ImageStamp==null)
+                        $scope.model.ImageStamp=$scope.noImage;
+
+                    $scope.master.UserGroups=product.Master.UserGroups;
+
+                    $scope.isUploadImage0=1;
+
+                }
+                $('#checkbox1').bootstrapSwitch.defaults.size='mini';
+            }
+
+            $scope.initData = function () {
+            }
+
+            $scope.typeChange = function (ini, idx) {
+                alert(idx);
+            }
+
+            $scope.signaturePad = function (idx) {
+                signatureNo=idx;
+                $("#modal_signature_pad").modal("show");
+            }
+            /*--------------------------------------------------------------
+            UPLOAD IMAGE FILE
+            --------------------------------------------------------------*/
+            $scope.uploadFiles = function (idx, file, errFiles) {
+                $scope.f = file;
+                $scope.errFile = errFiles && errFiles[0];
+                if (file) {
+                    file.upload = Upload.upload({
+                        url: '/updownfile/upload?idx='+idx+'&fileType=1',
+                        data: { MyImages: file }
+                    });
+
+                    file.upload.then(function (response) {
+                        //$timeout(function () {
+                        file.result = response.data;
+
+                        if (idx==0){
+                            $scope.model.ImageProfile=file.result.filename;
+                            $scope.isUploadImage0=1;
+                        }else if (idx==1){
+                            $scope.model.ImageSignature=file.result.filename;
+                        }else if (idx==2){
+                            $scope.model.ImageInitials=file.result.filename;
+                        }else if (idx==3){
+                            $scope.model.ImageStamp=file.result.filename;
+                        }
+                        //});
+                    }, function (response) {
+                        if (response.status > 0)
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function (evt) {
+                        file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                    });
+                } else if ($scope.errFile != null) {
+                    showInfo("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
+                }
+            }
+
+
+
+            /*--------------------------------------------------------------
+            SAVE PRODUCT
+            --------------------------------------------------------------*/
+            $scope.saveProduct = function () {
+                var memberType=0;
+                //var bit=1;
+                //for(i=0;i<$scope.master.MemberTypes.length;i++){
+                //    var cb= $('#checkboxmt'+i)[0];
+                //    if (cb.checked)
+                //        memberType+=bit;
+                //    bit+=bit;
+                //}
+                var btn = Ladda.create(document.querySelector('.btn-submit'));
+                btn.start();
+                $http.post('@Url.Action("Save", "Member")',
+                    {
+                        prod: {
+                            Id: $scope.model.Id,
+                            Name: $scope.model.Name,
+                            Phone: $scope.model.Phone,
+                            Email: $scope.model.Email,
+                            ImageProfile: $scope.model.ImageProfile,
+                            ImageSignature: ($scope.noImage==$scope.model.ImageSignature?null:$scope.model.ImageSignature),
+                            ImageInitials: ($scope.noImage==$scope.model.ImageInitials?null:$scope.model.ImageInitials),
+                            ImageStamp: ($scope.noImage==$scope.model.ImageStamp?null:$scope.model.ImageStamp),
+                            LoginId: $scope.model.LoginId,
+                            MemberType: memberType,
+                            UserGroup: $scope.model.UserGroup,
+                            IsActive: $('#checkbox1')[0].checked,
+                            UserId: 'SYST'
+                        }
+                    }).then(function (response) {
+                        btn.stop();
+                        if (response.data) {
+                            if (response.data=="DBLEMAIL"){
+                                showError("Email "+$scope.model.Email+" has been used by other users. Please use another email.");
+                                return;
+                            }
+                            $scope.infoSuccess+="<br/>Registration number <b>"+response.data+"</b>, this number is used to log in.";
+                            $scope.infoSuccess=$sce.trustAsHtml($scope.infoSuccess);
+                            $scope.wizarno = 'success';
+                        }
+                    }, function (response) {
+                        btn.stop();
+                        //error handle\
+                        var x = 0;
+                    });
+            }
+
+            /*--------------------------------------------------------------
+            GET MASTER
+            --------------------------------------------------------------*/
+            $scope.getMaster = function () {
+                $http.post('@Url.Action("GetMaster", "Member")', {}).then(function (response) {
+                    if (response.data) {
+                        $scope.master = response.data;
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            /*--------------------------------------------------------------
+            UPDATE PRODUCT
+            --------------------------------------------------------------*/
+            $scope.updateProduct = function () {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+
+                if ($scope.isUploadImage0==0) {
+                    showInfo("Pas photo must be uploaded");
+                    return;
+                }
+
+                $scope.saveProduct();
+            }
+
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+
+            /*--------------------------------------------------------------
+            GENERALD
+            --------------------------------------------------------------*/
+            $scope.scrollingPage = function (id) {
+                $('html, body').animate({
+                    scrollTop: $(id).offset().top
+                }, 200);
+            }
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            function convertJsonDate(val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+
+        });
+
+
+        $(function () {
+        });
+
+
+        $(document).ready(function () {
+            $('#checkbox1').bootstrapSwitch();
+        })
+
+    </script>
+
+</body>

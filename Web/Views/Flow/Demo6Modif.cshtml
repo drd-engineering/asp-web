@@ -1,0 +1,202 @@
+﻿@using DRD.Domain;
+@model JsonLayout
+
+@{
+    Layout = null;
+}
+
+<!-- Global stylesheets -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+<link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+<!-- /global stylesheets -->
+
+<script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+<script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
+<script src="/assets/vendors/ng_only_number.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+
+
+<script src="/Scripts/flow/svg-path/leader-line.min.js"></script>
+@*<script src="/Scripts/flow/svg-path/anim-event.min.js"></script>
+    <script src="/Scripts/flow/svg-path/in-view.min.js"></script>*@
+<script src="/Scripts/flow/svg-path/plain-draggable.min.js"></script>
+
+@*<script src="/Scripts/flow/required/script/jquery.connectingLine.js" type="text/javascript"></script>*@
+<script src="/Scripts/flow/scripts/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
+@*<script src="/assets/vendors/context-menu3/contextMenu.js"></script>*@
+
+<script type="text/javascript" src="/assets/js/core/app.js"></script>
+<script type="text/javascript" src="/assets/js/pages/components_popups.js"></script>
+
+<script src="~/Scripts/xpublic.js"></script>
+
+<link href="~/Scripts/xflow/xdiagram.css" rel="stylesheet" type="text/css">
+
+<script src="/Scripts/contextMenu/jquery.contextMenu.js" type="text/javascript"></script>
+<link href="/Scripts/contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+
+<body ng-app="drdApp">
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <div id="xdiagramController" ng-controller="xdiagramController">
+            <button class="btn bg-slate-700" ng-click="addNodeActivity(0,0)">
+                <span class="ladda-label">&nbsp;&nbsp;Add Node&nbsp;&nbsp;</span>
+            </button>
+            <button class="btn bg-slate-700" ng-click="addNodeDecision(0,0)">
+                <span class="ladda-label">&nbsp;&nbsp;Add Decision&nbsp;&nbsp;</span>
+            </button>
+            <button class="btn bg-slate-700" ng-click="addNodeCase(0,0)">
+                <span class="ladda-label">&nbsp;&nbsp;Add Case&nbsp;&nbsp;</span>
+            </button>
+            <button class="btn bg-slate-700" ng-click="addNodePararrel(0,0)">
+                <span class="ladda-label">&nbsp;&nbsp;Add Pararrel&nbsp;&nbsp;</span>
+            </button>
+            <button class="btn bg-slate-700" ng-click="submitFlow()">
+                <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span>
+            </button>
+            <div id="canvas" class="canvas" @*context-menu-one*@ onscroll="canvasScroll()" ng-click="releaseAllSelected()">
+
+                <div id="node-activity-xx" class="node-activity-yy" style="display:none">
+                    <div id="node-activity-caption-xx" class="node-activity-caption-yy">
+                        <span id="title-activity-xx" class="title-activity" onclick="popupActivity('title-activity-xx')">Activity</span>
+                        <i class="icon-cross3 pull-right" onclick="removeActivityConfirmation('-xx-')"></i>
+                        <i class="icon-loop4 pull-right" onclick="selectLink('node-activity-xx')"></i>
+                        <i id="info-activity-xx" class="icon-info22 pull-right" data-popup="popover" data-trigger="hover" data-content=""></i>
+                    </div>
+                    <div class="node-activity-content-yy">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:50px;"><img id="photo-profile-xx" src="/Images/Member/icon_user.png" height="45" style="cursor:pointer;border-radius:10%;" onclick="lookupReceipent('-xx-')" /></td>
+                                <td>
+                                    <span id="member-number-xx" class="text-format"></span><br />
+                                    <span id="member-name-xx" class="text-format">Receipent</span><br />
+                                    <span id="member-email-xx" class="text-format"></span><br />
+                                </td>
+                            </tr>
+                        </table>
+                        <input id="member-id-xx" value="0" style="display:none" />
+                    </div>
+                    <div class="footer-yy">
+                        <div id="reject-xx" class="join con-reject"></div>
+                        <div id="submit-xx" class="join con-submit"></div>
+                        <div id="revisi-xx" class="join con-revisi"></div>
+                        <div id="alter-xx" class="join con-alter"></div>
+                    </div>
+                </div>
+
+                <div id="node-decision-xx" class="node-decision-yy" style="display:none">
+                    <div id="node-decision-caption-xx" class="node-decision-caption-yy">
+                        <span id="title-decision-xx" class="title-decision" onclick="popupDecision('title-decision-xx')">Decision</span>
+                        <i class="icon-cross3 pull-right" onclick="removeDecisionConfirmation('-xx-')"></i>
+                        <i class="icon-loop4 pull-right" onclick="selectLink('node-decision-xx')"></i>
+                        <i id="info-decision-xx" class="icon-info22 pull-right" data-popup="popover" data-trigger="hover" data-content=""></i>
+                    </div>
+                    <div class="node-decision-content-yy">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:50px;"><img id="photo-profile-xx" src="~/Images/decision.png" height="45" style="border-radius:10%;" /></td>
+                                <td>
+                                    <span id="decision-descr-xx" class="text-format">value>=0</span><br />
+                                </td>
+                            </tr>
+                        </table>
+                        <input id="decision-operator-xx" value=">=" style="display:none" />
+                        <input id="decision-value-xx" value="0" style="display:none" />
+                    </div>
+                    <div class="footer-yy">
+                        <div id="no-xx" class="join con-no"></div>
+                        <div id="yes-xx" class="join con-yes"></div>
+                    </div>
+                </div>
+
+                <div id="node-case-xx" class="node-case-yy" style="display:none">
+                    <div id="node-case-caption-xx" class="node-case-caption-yy">
+                        <span id="title-case-xx" class="title-case" onclick="popupCase('title-case-xx')">Case</span>
+                        <i class="icon-cross3 pull-right" onclick="removeCaseConfirmation('-xx-')"></i>
+                        <i class="icon-loop4 pull-right" onclick="selectLink('node-case-xx')"></i>
+                        <i id="info-case-xx" class="icon-info22 pull-right" data-popup="popover" data-trigger="hover" data-content=""></i>
+                    </div>
+                    <div class="node-case-content-yy">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:50px;"><img id="photo-profile-xx" src="~/Images/decision.png" height="45" style="border-radius:10%;" /></td>
+                                <td>
+                                    <span id="case-descr-xx" class="text-format">Expression</span><br />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="footer-yy">
+                        <div id="submit-case-xx" class="join con-submit-case"></div>
+                    </div>
+                </div>
+
+                <div id="node-pararrel-xx" class="node-pararrel-yy" style="display:none">
+                    <div class="header">
+                        <i class="icon-cross3" onclick="removePararrelConfirmation('-xx-')"></i>
+                    </div>
+                    <span id="title-pararrel-xx" class="text-format">Pararrel</span>
+                    <div class="footer" style="bottom:2px">
+                        <div id="submit-pararrel-xx" class="join con-submit-pararrel"></div>
+                    </div>
+                </div>
+
+                <div id="start-0" class="terminator start">
+                    <span id="title-start-0" class="text-format">Start</span>
+                    <div class="footer" style="bottom:2px">
+                        <div id="submit-start" class="join con-submit"></div>
+                    </div>
+                </div>
+
+                <div id="end-1" class="terminator end">
+                    <span id="title-end-1" class="text-format">End</span>
+                </div>
+                <!-- View member modal -->
+                <ng-include src="'/Include/PopupMember'"></ng-include>
+                <ng-include src="'/Include/PopupActivity'"></ng-include>
+                <ng-include src="'/Include/PopupDecision'"></ng-include>
+                <ng-include src="'/Include/PopupCase'"></ng-include>
+                <ng-include src="'/Include/PopupLinkCase'"></ng-include>
+                <ng-include src="'/Include/PopupLinkAlter'"></ng-include>
+                <!-- View member modal -->
+            </div>
+        </div>
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])//, 'ui.bootstrap.contextMenu'])
+
+        myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
+
+            
+
+        });
+
+
+        
+
+        $(document).ready(function () {
+        })
+    </script>
+
+    <script src="/Scripts/xcontroller/xdiagram.js" type="text/javascript"></script>
+</body>

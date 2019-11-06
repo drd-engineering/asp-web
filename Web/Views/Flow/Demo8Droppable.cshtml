@@ -1,0 +1,60 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>droppable demo</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <style>
+        #draggable {
+            width: 100px;
+            height: 100px;
+            background: #ccc;
+        }
+
+        #droppable {
+            position: absolute;
+            left: 250px;
+            top: 0;
+            width: 125px;
+            height: 125px;
+            background: #999;
+            color: #fff;
+            padding: 10px;
+        }
+    </style>
+    @*<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    @*<script src="/Scripts/flow/required/script/jquery.connectingLine.js" type="text/javascript"></script>*@
+
+    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+
+    <script src="/Scripts/flow/scripts/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+    <div id="droppable">Drop here</div>
+    <div id="draggable">Drag me</div>
+
+    <script>
+        $("#draggable").draggable({
+            stop: function (event, ui) { alert("stop"); }
+        });
+        $("#droppable").droppable({
+            drop: function () {
+                alert("dropped");
+            },
+            deactivate: function (event, ui) {
+                alert("deactivate");
+            }
+
+        });
+    </script>
+
+</body>
+</html>
