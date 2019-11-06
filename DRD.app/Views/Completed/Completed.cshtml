@@ -5,25 +5,6 @@
     ViewBag.Title = "";
 }
 
-@*<link rel="stylesheet" href="/assets/css/demo.css">
-    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
-    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
-    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>*@
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -66,8 +47,6 @@
     .image-content {
         width: 120px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -114,7 +93,7 @@
 
 
 
-<body @*ng-app="drdApp"*@>
+<body>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -260,7 +239,6 @@
                     $scope.model.DecissionInfo=product.DecissionInfo;
                     $scope.rotationNodes=product.RotationNodes;
                     $scope.workflow=product.Workflow;
-                    //$scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id === product.RotationNodeId)[0];
                     $scope.sumDocuments=product.SumRotationNodeDocs;
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
                     $scope.docs=$scope.rotationNodes.RotationNodeDocs;
@@ -282,7 +260,7 @@
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName+"&isDocument=false";
             }
             $scope.viewDocument = function (arg) {
-                var member=arg.Document.DocumentMember;//s.filter((subject) => subject.MemberId == $scope.curentUser.Id)[0];
+                var member=arg.Document.DocumentMember;
                 if (member == undefined || arg.Document.DocumentMember==null || arg.Document.DocumentMember.FlagPermission<=1){
                     showInfo("You don't have permission to open this file.");
                     return;
@@ -367,11 +345,6 @@
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
-                //if ($scope.workflow.Name==undefined) {
-                //    showInfo("Required workflow");
-                //    return;
-                //}
-
                 $scope.submitActivity(bit);
             }
 
@@ -405,10 +378,6 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
-        });
-
-
-        $(function () {
         });
 
 
