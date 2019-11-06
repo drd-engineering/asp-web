@@ -24,7 +24,7 @@ namespace Core.Postgres.Models
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        // public virtual System.Collections.Generic.ICollection<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark.FK_RotationNodeRemark_RotationNode
+        public virtual System.Collections.Generic.ICollection<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark.FK_RotationNodeRemark_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
 
@@ -39,7 +39,7 @@ namespace Core.Postgres.Models
         {
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
-            // RotationNodeRemarks = new System.Collections.Generic.List<RotationNodeRemark>();
+            RotationNodeRemarks = new System.Collections.Generic.List<RotationNodeRemark>();
             RotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
         }
     }

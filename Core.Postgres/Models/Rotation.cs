@@ -29,7 +29,7 @@ namespace Core.Postgres.Models
 
 
         // Reverse navigation
-        // public virtual System.Collections.Generic.ICollection<RotationMember> RotationMembers { get; set; } // RotationMember.FK_RotationMember_Rotation
+        public virtual System.Collections.Generic.ICollection<RotationMember> RotationMembers { get; set; } // RotationMember.FK_RotationMember_Rotation
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
 
         // Foreign keys
@@ -41,7 +41,7 @@ namespace Core.Postgres.Models
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
             SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 
-            // RotationMembers = new System.Collections.Generic.List<RotationMember>();
+            RotationMembers = new System.Collections.Generic.List<RotationMember>();
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
         }
     }
