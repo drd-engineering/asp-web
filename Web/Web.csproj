@@ -1049,7 +1049,6 @@
     <Content Include="Views\Include\PopupTransfer.cshtml" />
     <Content Include="Views\Include\PopupPassword.cshtml" />
     <Content Include="Views\Include\PopupFolder.cshtml" />
-    <Content Include="Views\Shared\_Layout - Copy.cshtml" />
     <Content Include="Views\DrDrive\Index.cshtml" />
     <Content Include="Views\Include\PopupIdentityImage.cshtml" />
     <Content Include="Views\Testing\Pen.cshtml" />
@@ -1057,7 +1056,6 @@
     <Content Include="Views\Dashboard\Index - Copy.cshtml" />
     <Content Include="Views\Login\ForgotPassword.cshtml" />
     <Content Include="Views\Chat\Chat.cshtml" />
-    <Content Include="Views\Shared\_Layout - Copy %282%29.cshtml" />
     <Content Include="Views\TopupDeposit\Topup.cshtml" />
     <Content Include="Views\TopupDeposit\TopupList.cshtml" />
     <Content Include="Views\Payment\Payment.cshtml" />
