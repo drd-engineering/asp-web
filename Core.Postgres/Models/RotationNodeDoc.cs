@@ -13,7 +13,7 @@ namespace Core.Postgres.Models
 
         // Foreign keys
         public virtual Document Document { get; set; } // FK_RotationNodeDoc_Document
-        // public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
+        public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
 
         public RotationNodeDoc()
         {

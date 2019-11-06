@@ -25,12 +25,12 @@ namespace Core.Postgres.Models
 
         // Document summaries
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        // public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
+        public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
 
         // Reverse navigation
         // public virtual System.Collections.Generic.ICollection<RotationMember> RotationMembers { get; set; } // RotationMember.FK_RotationMember_Rotation
-        // public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
+        public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
 
         // Foreign keys
         public virtual Member Member { get; set; } // FK_Rotation_Member
@@ -39,10 +39,10 @@ namespace Core.Postgres.Models
         public Rotation()
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
-            // SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
+            SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 
             // RotationMembers = new System.Collections.Generic.List<RotationMember>();
-            // RotationNodes = new System.Collections.Generic.List<RotationNode>();
+            RotationNodes = new System.Collections.Generic.List<RotationNode>();
         }
     }
 }
