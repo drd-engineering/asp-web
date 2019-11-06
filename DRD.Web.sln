@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Web", "DRD.Web\DRD.Web.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Core", "DRD.Core\DRD.Core.csproj", "{69ADF00A-E21C-4924-91AE-1FA3A2C354E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Domain", "DRD.Domain\DRD.Domain.csproj", "{5812968F-ECCF-4382-8607-3503AE6CC72B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.WebApi", "DRD.WebApi\DRD.WebApi.csproj", "{344D7D31-23A7-4244-9E0B-CE61A44B1C97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Service.Desktop", "DRD.Service.Desktop\DRD.Service.Desktop.csproj", "{97A39455-F02B-4B5F-90F5-25095E9D5B67}"
@@ -17,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.TaskScheduler", "DRD.Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Models", "DRD.Models\DRD.Models.csproj", "{9634C54D-BFAC-4DA4-8E04-9B65E7A84763}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Postgres", "Core.Postgres\Core.Postgres.csproj", "{8273EAC5-3FC4-45C7-8114-D8D7398CFA66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Postgres", "Core.Postgres\Core.Postgres.csproj", "{8273EAC5-3FC4-45C7-8114-D8D7398CFA66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,9 +29,6 @@ Global
 		{69ADF00A-E21C-4924-91AE-1FA3A2C354E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{69ADF00A-E21C-4924-91AE-1FA3A2C354E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69ADF00A-E21C-4924-91AE-1FA3A2C354E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5812968F-ECCF-4382-8607-3503AE6CC72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5812968F-ECCF-4382-8607-3503AE6CC72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5812968F-ECCF-4382-8607-3503AE6CC72B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344D7D31-23A7-4244-9E0B-CE61A44B1C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{344D7D31-23A7-4244-9E0B-CE61A44B1C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{344D7D31-23A7-4244-9E0B-CE61A44B1C97}.Release|Any CPU.Build.0 = Release|Any CPU

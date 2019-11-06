@@ -144,10 +144,6 @@
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DRD.Domain\DRD.Domain.csproj">
-      <Project>{5812968f-eccf-4382-8607-3503ae6cc72b}</Project>
-      <Name>DRD.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
       <Project>{9634c54d-bfac-4da4-8e04-9b65e7a84763}</Project>
       <Name>DRD.Models</Name>

@@ -55,10 +55,6 @@
       <Project>{69adf00a-e21c-4924-91ae-1fa3a2c354e6}</Project>
       <Name>DRD.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DRD.Domain\DRD.Domain.csproj">
-      <Project>{5812968f-eccf-4382-8607-3503ae6cc72b}</Project>
-      <Name>DRD.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
