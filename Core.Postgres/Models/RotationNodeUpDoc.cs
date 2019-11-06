@@ -12,7 +12,6 @@ namespace Core.Postgres.Models
         public long? DocumentUploadId { get; set; } // DocumentUploadId
 
         // Foreign keys
-        //public virtual DocumentUpload DocumentUpload { get; set; } // FK_RotationNodeUpDoc_DocumentUpload
         public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeUpDoc_RotationNode
 
         public RotationNodeUpDoc()
