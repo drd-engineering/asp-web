@@ -1119,9 +1119,21 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core.Postgres\Core.Postgres.csproj">
+      <Project>{8273eac5-3fc4-45c7-8114-d8d7398cfa66}</Project>
+      <Name>Core.Postgres</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DRD.Core\DRD.Core.csproj">
       <Project>{69adf00a-e21c-4924-91ae-1fa3a2c354e6}</Project>
       <Name>DRD.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DRD.Domain\DRD.Domain.csproj">
+      <Project>{5812968f-eccf-4382-8607-3503ae6cc72b}</Project>
+      <Name>DRD.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
+      <Project>{9634c54d-bfac-4da4-8e04-9b65e7a84763}</Project>
+      <Name>DRD.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
