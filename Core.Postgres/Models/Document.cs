@@ -19,7 +19,7 @@ namespace Core.Postgres.Models
         
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
-        // public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
+        public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         
         public Company Companies { get; set; } //FK to Company
 
@@ -28,8 +28,8 @@ namespace Core.Postgres.Models
         public Document()
         {
            // DocumentMember = new DocumentMember();
-           DocumentElements = new System.Collections.Generic.List<DocumentElement>();
-            // RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
+            DocumentElements = new System.Collections.Generic.List<DocumentElement>();
+            RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
     }
 }
