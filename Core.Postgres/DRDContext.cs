@@ -17,7 +17,7 @@ namespace Core.Postgres
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Document> Documents { get; set; }
-       // public DbSet<DocumentElement> DocumentElements { get; set; }
+        public DbSet<DocumentElement> DocumentElements { get; set; }
        // public DbSet<DocumentSign> DocumentSigns { get; set; }
        // public DbSet<FaspayData> FaspayDatas { get; set; }
         public DbSet<Member> Members { get; set; }
