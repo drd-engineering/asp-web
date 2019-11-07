@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <None Remove=".json-template" />
+    <None Remove="appsettings.json.template" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include=".json-template" />
+    <Content Include="appsettings.json.template" />
   </ItemGroup>
 
   <ItemGroup>

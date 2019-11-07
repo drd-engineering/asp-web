@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Postgres.Models
+namespace DRD.app.Models
 {
     public class Versioning
     {
