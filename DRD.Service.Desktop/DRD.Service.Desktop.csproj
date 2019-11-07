@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DRD.Service.Desktop</RootNamespace>
     <AssemblyName>DRD.Service.Desktop</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -74,6 +75,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -93,10 +95,6 @@
     <ProjectReference Include="..\DRD.Core\DRD.Core.csproj">
       <Project>{69adf00a-e21c-4924-91ae-1fa3a2c354e6}</Project>
       <Name>DRD.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DRD.Domain\DRD.Domain.csproj">
-      <Project>{5812968f-eccf-4382-8607-3503ae6cc72b}</Project>
-      <Name>DRD.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
