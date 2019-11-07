@@ -274,4 +274,11 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 
+# config
+*.config
+
+# Migrations
+*/Migrations/
+!*/Migrations/Configuration.cs
+
 # End of https://www.gitignore.io/api/aspnetcore
