@@ -103,7 +103,7 @@
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Based.Core">
-      <HintPath>..\packages\System.Based.Core\System.Based.Core.dll</HintPath>
+      <HintPath>..\DRD.Core\bin\Debug\System.Based.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -624,6 +624,7 @@
     <Content Include="drduserDataSet.xsc">
       <DependentUpon>drduserDataSet.xsd</DependentUpon>
     </Content>
+    <Content Include="Chat - Copy.cshtml" />
     <None Include="drduserDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>drduserDataSet.Designer.cs</LastGenOutput>
@@ -1118,10 +1119,18 @@
     <Content Include="Views\MemberAccount\MemberAccount.cshtml" />
     <Content Include="Views\Include\PopupBank.cshtml" />
     <Content Include="Views\Include\PopupMemberAccount.cshtml" />
-    <Content Include="Views\Chat\Chat - Copy.cshtml" />
     <Content Include="Views\Payment\XAggregator.cshtml" />
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
+    <Content Include="Web - Copy.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web - Copy.Debug.config">
+      <DependentUpon>Web - Copy.config</DependentUpon>
+    </Content>
+    <Content Include="Web - Copy.Release.config">
+      <DependentUpon>Web - Copy.config</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />
