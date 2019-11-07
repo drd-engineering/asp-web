@@ -88,7 +88,7 @@
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Based.Core">
-      <HintPath>..\packages\System.Based.Core\System.Based.Core.dll</HintPath>
+      <HintPath>..\DRD.Core\bin\Debug\System.Based.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
