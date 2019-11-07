@@ -281,4 +281,7 @@ __pycache__/
 */Migrations/
 !*/Migrations/Configuration.cs
 
+# Copy WebConfig
+Web - Copy.config
+
 # End of https://www.gitignore.io/api/aspnetcore
