@@ -199,8 +199,8 @@
                                                     <label class="control-label">
                                                         Company (optional)
                                                         <small class="display-block text-light">select from registered company, to make new company please contact us</small>
-                                                    </label>                                                 
-                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="" ng-required="wizarno=='product'" maxlength="50"/>
+                                                    </label>
+                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.MemberName" maxlength="50" />
                                                 </div>
                                             </div>
 
@@ -211,7 +211,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             <span class="input-group-btn">
-                                                <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="popupTnC()" style="width:120px">
                                                     <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -224,7 +224,7 @@
                                             </span>
 
                                         </div>
-                                       
+
 
                                     </div>
                                 </div>
@@ -243,35 +243,10 @@
                                 </div>
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
-                            <!-- View map modal -->
-                            <div id="modal_select_map" class="modal_hide">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h6 class="modal-title">Select Location</h6>
-                                        </div>
-
-                                        <input type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
-                                        <div id="map_canvas" class="modal-body" style="height:400px">
-                                            <ui-gmap-google-map center='map.center'
-                                                                zoom='map.zoom'
-                                                                draggable="true"
-                                                                options="options"
-                                                                control="map.control" class="map_canvas">
-                                            </ui-gmap-google-map>
-                                        </div>
-
-                                        <label style="text-align:center;width:100%;margin-top:10px">{{model.LocationDetail}}</label>
-                                        <div style="width:100%;height:1px;background-color:dimgrey"></div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="setLocation()">Set</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- View map modal -->
+                            
+                            <!-- View member modal -->
+                            <ng-include src="'/Include/PopupTnC'"></ng-include>
+                            <!-- View member modal -->
 
                         </div>
                     </div>
@@ -349,20 +324,21 @@
                     latitude: 0,
                     longitude: 0
                 },
+                
                 icon: { url: "/assets/images/ic_markerred64.png" },
                 control: {},
                 options: { draggable: true }
             };
             $scope.currentLocation = { latitude: -6.2909744, longitude: 106.8046101 };
+
             $scope.dummyCurrentLocation = { latitude: 0, longitude: 0 };
 
             uiGmapIsReady.promise().then(function (map_instances) {
+                
                 $scope.initMap();
             });
 
-            uiGmapGoogleMapApi.then(function (maps) {
-
-            });
+            
 
             $scope.$on('g-places-autocomplete:select', function (event, place) {
 
@@ -425,7 +401,7 @@
                             $scope.model.ImageCard = file.result.filename;
                             $scope.isUploadImageCard = 1;
                         }
-                        //});
+                        
                     }, function (response) {
                         if (response.status > 0)
                             $scope.errorMsg = response.status + ': ' + response.data;
@@ -450,6 +426,7 @@
                             MemberName: $scope.model.MemberName,
                             MemberPhone: $scope.model.MemberPhone,
                             MemberEmail: $scope.model.MemberEmail,
+
                         }
                     }).then(function (response) {
                         btn.stop();
@@ -481,6 +458,11 @@
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
+                if ($scope.model.PointLocation == undefined) {
+                    showInfo("Point location must be filled.");
+                    return;
+                }
+
                 $scope.saveProduct();
             }
 
@@ -495,12 +477,18 @@
                 }, 200);
             }
 
-            /*---------------------------------------------------------------------------
-             ADDITIONAL FUNCTIONS
-            ---------------------------------------------------------------------------*/
+          
             $scope.backToHome = function () {
-                window.location = "/login";
+                location.href = "/login";
             }
+
+            $scope.popupTnC = function () {
+                $("#modal_tnc").modal("show");
+            }
+
+
+
+        });
 
     </script>
 

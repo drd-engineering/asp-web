@@ -93,7 +93,7 @@
                                     <table style="width:100%">
                                         <tr>
                                             <td>
-                                                <a ng-click="popupTnC()">Register</a>
+                                                <a ng-click="goRegistry()">Register</a>
                                             </td>
                                             <td style="text-align:right">
                                                 <a href="/login/forgotpassword">Forgot password?</a>
@@ -109,9 +109,6 @@
                             </div>
                         </form>
                         <!-- /simple login form -->
-                        <!-- View member modal -->
-                        <ng-include src="'/Include/PopupTnC'"></ng-include>
-                        <!-- View member modal -->
                     </div>
                     <!-- /content area -->
                 </div>
@@ -149,9 +146,6 @@
                 }
             }
 
-            $scope.popupTnC = function () {
-                $("#modal_tnc").modal("show");
-            }
 
             $scope.goRegistry = function () {
                 location.href = "/subscription/registry";
