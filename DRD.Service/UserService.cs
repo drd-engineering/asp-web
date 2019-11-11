@@ -25,7 +25,7 @@ namespace DRD.Service
                 UserService svr = new UserService();
                 User user = new User();
                 user.Email = register.Email;
-                user.Name = register.Name.Trim();
+                user.Name = register.Name;
                 user.Phone = register.Phone;
                 user.Password = System.Web.Security.Membership.GeneratePassword(length : 8, numberOfNonAlphanumericCharacters : 5);
                 long userId = svr.Save(user);

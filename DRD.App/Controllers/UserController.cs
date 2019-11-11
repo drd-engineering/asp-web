@@ -17,12 +17,6 @@ namespace DRD.App.Controllers
             return View();
         }
 
-        //User Registration
-        public ActionResult Registration(Register register)
-        {
-            var service = new UserService();
-            var data = service.SaveRegistration(register);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
+
     }
 }

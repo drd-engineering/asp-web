@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfigGenerator.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Context\ServicesContext.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContext.cs" />
     <Compile Include="UserService.cs" />
+    <Compile Include="Utiities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
@@ -70,6 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
