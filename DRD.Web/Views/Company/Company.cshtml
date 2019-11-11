@@ -111,7 +111,7 @@
     }
 </style>
 
-<body @*ng-app="drdApp"*@>
+<body >
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -123,10 +123,8 @@
                 <div class="page-header page-header-default">
                     <div class="page-header-content">
                         <div class="page-title">
-                            <h4>@*<i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">Home</span> -*@ Company Profile</h4>
-                            @*<span style="font-size:small">Update profile</span>*@
+                            <h4>Company Profile</h4>
                         </div>
-
                     </div>
 
                 </div>
@@ -142,7 +140,6 @@
                             <!--MEMBER DATA-->
 
                             <form name="myForm" class="form-horizontal" autocomplete="off">
-
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
@@ -689,15 +686,6 @@
                 angular.element('#modal_select_map').modal('hide');
             }
         });
-
-
-        $(function () {
-        });
-
-
-        $(document).ready(function () {
-
-        })
 
     </script>
 

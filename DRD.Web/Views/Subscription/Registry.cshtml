@@ -19,22 +19,12 @@
 <!-- /core JS files -->
 <!-- Theme JS files -->
 <script type="text/javascript" src="/assets/js/plugins/ui/nicescroll.min.js"></script>
-@*<script type="text/javascript" src="/assets/js/core/app.js"></script>*@
 <script type="text/javascript" src="/assets/js/pages/layout_fixed_custom.js"></script>
 <script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
 <!-- /theme JS files -->
 <!-- Theme JS files -->
-@*
-    <script type="text/javascript" src="assets/js/plugins/notifications/pnotify.min.js"></script>*@
 <script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
 <script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
-@*
-    <script type="text/javascript" src="assets/js/pages/components_notifications_other.js"></script>*@
-<!-- /theme JS files -->
-@*<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
-
-    <script src="~/Scripts/xpublic.js"></script>*@
 
 
 
@@ -73,7 +63,6 @@
     .dd-option-image, .dd-selected-image {
         width: 500px;
         height: auto;
-        /*max-width:1000px;*/
     }
 
     .map {
@@ -81,39 +70,18 @@
         height: 400px !important;
     }
 
-    /*.angular-google-map-container {
-           height: 400px;
-       }*/
-
     .angular-google-map-container {
         position: absolute;
         top: 0;
         bottom: 0;
         right: 0;
         left: 0;
-        /*height:400px;*/
     }
-
-    /*z-index: 1042 !important;*/
-    /*#modal_select_map {
-
-            z-index: 1041 !important;
-       }*/
 
     .pac-container {
         z-index: 9999 !important;
     }
 
-    /*.modal{
-           z-index: 20;
-       }
-       .modal-backdrop{
-           z-index: 10;
-       }​*/
-
-    /*.map_canvas {
-           z-index: 1043 !important;
-       }*/
     .modal_hide {
         top: -10000px;
         position: absolute;
@@ -140,8 +108,6 @@
     .image-content {
         width: 200px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -162,8 +128,6 @@
     .image-content2 {
         width: 300px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -181,16 +145,7 @@
             <div class="content-wrapper">
 
                 <!-- Page header -->
-                @*<div class="page-header page-header-default">
-                        <div class="page-header-content">
-                            <div class="page-title">
-                                <h4>Company Profile</h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>*@
+                
                 <!-- /page header -->
                 <!-- Horizontal form options -->
                 <!-- Content area -->
@@ -198,9 +153,6 @@
 
                     <!-- Basic layout-->
                     <div class="panel panel-body login-form" style="width:800px;">
-                        @*<div class="text-center">
-                            <img src="/Images/register-banner.jpg" style="width:100%;border-radius:10px" /><br /><br />
-                        </div>*@
                         <div style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
                             <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%"/>
                         </div>
@@ -289,11 +241,6 @@
                                             <div class="text-right">
 
                                                 <span class="input-group-btn">
-                                                    @*<button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>*@
-
                                                     <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
@@ -311,7 +258,6 @@
                             <!--CONFIRMATION THANK YOU-->
                             <div ng-show="wizarno=='success'">
                                 <div class="col-md-12">
-                                    @*<div class="alert alert-success alert-styled-left">*@
                                     Thank you for registering for the DRD subscription.<br />
                                     Subscription registration is successful.<br /><br />
 
@@ -319,7 +265,6 @@
                                     User number: <b>{{userNumber}}<br /></b><br />
 
                                     The password will be sent to email <b>{{model.MemberEmail}}</b>.<br />
-                                    @*</div>*@
                                 </div>
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
@@ -345,7 +290,6 @@
                                         <label style="text-align:center;width:100%;margin-top:10px">{{model.LocationDetail}}</label>
                                         <div style="width:100%;height:1px;background-color:dimgrey"></div>
                                         <div class="modal-footer">
-                                            @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
                                             <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
                                             <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="setLocation()">Set</button>
                                         </div>
@@ -420,7 +364,6 @@
             // map options
             $scope.options = {
                 scrollwheel: false,
-                //center: new google.maps.LatLng($scope.currentLocation.latitude, $scope.currentLocation.longitude),
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
@@ -431,35 +374,19 @@
                     latitude: 0,
                     longitude: 0
                 },
-                //"window": {
-                //    //"title": "Portland, OR"
-                //    "title": "Nasio"
-                //},
                 icon: { url: "/assets/images/ic_markerred64.png" },
                 control: {},
                 options: { draggable: true }
             };
             $scope.currentLocation = { latitude: -6.2909744, longitude: 106.8046101 };
-            //$scope.currentLocation = { latitude: 0, longitude: 0 };
             $scope.dummyCurrentLocation = { latitude: 0, longitude: 0 };
 
             uiGmapIsReady.promise().then(function (map_instances) {
-                //$scope.map.control.refresh({
-                //    latitude: 48,
-                //    longitude: 2.3
-                //});
                 $scope.initMap();
             });
 
             uiGmapGoogleMapApi.then(function (maps) {
-                //console.log('Google Maps loaded');
-                //$scope.map = {
-                //    center: {
-                //        latitude: -23.598763,
-                //        longitude: -46.676547
-                //    },
-                //    zoom: 13
-                //};
+               
             });
 
             $scope.$on('g-places-autocomplete:select', function (event, place) {
@@ -511,7 +438,6 @@
                     });
 
                     file.upload.then(function (response) {
-                        //$timeout(function () {
                         file.result = response.data;
 
                         if (idx == 0) {
