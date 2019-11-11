@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
-
 {
+    [Table("Plans", Schema = "public")]
     public class Plan
     {
         public long Id { get; set; } // Id (Primary key)

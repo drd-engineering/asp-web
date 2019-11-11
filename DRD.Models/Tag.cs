@@ -1,12 +1,9 @@
-﻿using DRD.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
+    [Table("Tags", Schema = "public")]
     public class Tag
     {
         public int Id { get; set; } 

@@ -22,23 +22,23 @@ namespace DRD.Service
                     return resgistrationResponse;
                 }
 
-                UserService svr = new UserService();
+                UserService userService = new UserService();
                 User user = new User();
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.Password = System.Web.Security.Membership.GeneratePassword(length : 8, numberOfNonAlphanumericCharacters : 5);
-                long userId = svr.Save(user);
+                user.Password = System.Web.Security.Membership.GeneratePassword(length : 8, numberOfNonAlphanumericCharacters : 7);
+                long userId = userService.Save(user);
                 user.Id = userId;
 
                 if(register.CompanyId != null){
                     Member member = new Member();
                     member.UserId = userId;
                     member.CompanyId = register.CompanyId;
-                    long memberId = svr.Save(member);
+                    long memberId = userService.Save(member);
                 }
 
-                svr.sendEmailRegistration(user);
+                userService.sendEmailRegistration(user);
 
                 resgistrationResponse.Id = "" + user.Id;
                 resgistrationResponse.Email = register.Email;
@@ -97,17 +97,17 @@ namespace DRD.Service
         }
         public long Save(Member member)
         {
-            
+            int result = 0;
             using (var db = new ServiceContext())
             {
                 for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
                 {
                     try
                     {
-                        //member.Id = asvr.LongRandom(1000000000,10000000000, new Random());
+                        member.Id = ((long)member.CompanyId * 10000 )+ Utilities.RandomLongGenerator(1000,10000);
                         member.JoinedAt = DateTime.Now;
                         db.Members.Add(member);
-                        //result = db.SaveChanges();
+                        result = db.SaveChanges();
                         break;
                     }
                     catch (DbUpdateException x)

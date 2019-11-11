@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
+    [Table("Versionings", Schema = "public")]
     public class Versioning
     {
         public int Id { get; set; } // Id (Primary key)
