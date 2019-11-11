@@ -140,7 +140,11 @@
     }
 
     .input-field-darker {
-        background-color: #B6B2B2;
+        background: #e6e4e1;
+    }
+
+    .mg-left-10 {
+        margin-left: 10px !important;
     }
 
 </style>
@@ -161,7 +165,7 @@
 
                     <!-- Basic layout-->
                     <div class="panel panel-body login-form" style="width:800px;">
-                        <div style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
+                        <div ng-click="backToHome()" style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
                             <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%" />
                         </div>
                         <div class="panel-body">
@@ -191,12 +195,12 @@
                                             </div>
 
                                             <div class="row form-component">
-                                                <div class="col-md-8">
+                                                <div class="col-md-6">
                                                     <label class="control-label">
                                                         Company (optional)
                                                         <small class="display-block text-light">select from registered company, to make new company please contact us</small>
                                                     </label>                                                 
-                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.MemberName" ng-required="wizarno=='product'" maxlength="50" readonly/>
+                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="" ng-required="wizarno=='product'" maxlength="50"/>
                                                 </div>
                                             </div>
 
@@ -205,17 +209,21 @@
 
 
                                     <div class="col-md-12">
-                                            <div class="text-right">
+                                        <div class="text-right">
+                                            <span class="input-group-btn">
+                                                <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                    <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                                </button>
 
-                                                <span class="input-group-btn">
-                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
+                                                <button class="btn bg-slate-700 pull-right btn-cancel mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="backToHome()" style="width:120px">
+                                                    <span class="ladda-label">&nbsp;&nbsp;Back&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                                </button>
 
-                                                </span>
+                                            </span>
 
-                                            </div>
+                                        </div>
                                        
 
                                     </div>
@@ -436,21 +444,21 @@
                 var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
                 btn.start();
 
-                $http.post('@Url.Action("registration", "company")',
+                $http.post('@Url.Action("registration", "member")',
                     {
                         registry: {
                             MemberTitleId: $scope.model.MemberTitleId,
                             MemberName: $scope.model.MemberName,
                             MemberPhone: $scope.model.MemberPhone,
                             MemberEmail: $scope.model.MemberEmail,
-                            SubscriptTypeId:$scope.SubscriptType.Id,
-                            CompanyName: $scope.model.CompanyName,
-                            CompanyPhone: $scope.model.CompanyPhone,
-                            CompanyEmail: $scope.model.CompanyEmail,
-                            CompanyAddress: $scope.model.CompanyAddress,
-                            CompanyPointLocation: $scope.model.PointLocation,
-                            Latitude: $scope.currentLocation.latitude,
-                            Longitude: $scope.currentLocation.longitude,
+                            //SubscriptTypeId:$scope.SubscriptType.Id,
+                            //CompanyName: $scope.model.CompanyName,
+                            //CompanyPhone: $scope.model.CompanyPhone,
+                            //CompanyEmail: $scope.model.CompanyEmail,
+                            //CompanyAddress: $scope.model.CompanyAddress,
+                            //CompanyPointLocation: $scope.model.PointLocation,
+                            //Latitude: $scope.currentLocation.latitude,
+                            //Longitude: $scope.currentLocation.longitude,
 
                         }
                     }).then(function (response) {
@@ -483,20 +491,6 @@
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
-                if ($scope.model.PointLocation == undefined) {
-                    showInfo("Point location must be filled.");
-                    return;
-                }
-
-                //if ($scope.isUploadImage1==0) {
-                //    showInfo("Logo harus di lengkapi");
-                //    return;
-                //}
-                //if ($scope.isUploadImage2==0) {
-                //    showInfo("Logo harus di lengkapi");
-                //    return;
-                //}
-
                 $scope.saveProduct();
             }
 
@@ -510,6 +504,14 @@
                     scrollTop: $(id).offset().top
                 }, 200);
             }
+
+            /*---------------------------------------------------------------------------
+             ADDITIONAL FUNCTIONS
+            ---------------------------------------------------------------------------*/
+            $scope.backToHome = function () {
+                window.location = "/login";
+            }
+
 
             /*---------------------------------------------------------------------------
              M A P
