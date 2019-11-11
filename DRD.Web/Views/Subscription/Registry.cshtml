@@ -134,6 +134,15 @@
         right: 0;
         bottom: 0;
     }
+
+    .form-component {
+        margin-bottom: 10px;
+    }
+
+    .input-field-darker {
+        background-color: #B6B2B2;
+    }
+
 </style>
 
 <body class="login-container" ng-app="drdApp" style="margin-top:-50px;">
@@ -145,7 +154,6 @@
             <div class="content-wrapper">
 
                 <!-- Page header -->
-                
                 <!-- /page header -->
                 <!-- Horizontal form options -->
                 <!-- Content area -->
@@ -154,7 +162,7 @@
                     <!-- Basic layout-->
                     <div class="panel panel-body login-form" style="width:800px;">
                         <div style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
-                            <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%"/>
+                            <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%" />
                         </div>
                         <div class="panel-body">
                             <!--MEMBER DATA-->
@@ -163,22 +171,14 @@
                                     <fieldset>
                                         <div class="col-md-12">
 
-                                            <h4>User</h4>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <label class="control-label">Title</label>
-                                                    <select id="user-group" class="form-control" ng-model="model.MemberTitleId" ng-required="wizarno=='product'">
-                                                        <option value="">Select Title</option>
-                                                        <option value="{{x.Id}}" ng-repeat="x in MemberTitles">{{x.Title}}</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-8">
+                                            <div class="row form-component">
+                                                <div class="col-md-12">
                                                     <label class="control-label">Name</label>
                                                     <input type="text" class="form-control" ng-model="model.MemberName" ng-required="wizarno=='product'" maxlength="50" />
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row form-component">
                                                 <div class="col-md-4">
                                                     <label class="control-label">Phone</label>
                                                     <input type="text" class="form-control" ng-model="model.MemberPhone" ng-required="wizarno=='product'" maxlength="20" ng-only-number />
@@ -187,57 +187,24 @@
                                                     <label class="control-label">Email</label>
                                                     <input type="email" class="form-control" ng-model="model.MemberEmail" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
                                                 </div>
-                                                
-                                            </div>
-
-
-                                            <hr />
-                                            <h4>Company</h4>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <label class="control-label">Name</label>
-                                                    <input type="text" class="form-control" ng-model="model.CompanyName" ng-required="wizarno=='product'" maxlength="50" />
-                                                </div>
 
                                             </div>
 
-                                            <div class="row">
-                                               
-                                                <div class="col-md-4">
-                                                    <label class="control-label">Phone</label>
-                                                    <input type="text" class="form-control" ng-model="model.CompanyPhone" ng-required="wizarno=='product'" maxlength="20" ng-only-number />
-                                                </div>
+                                            <div class="row form-component">
                                                 <div class="col-md-8">
-                                                    <label class="control-label">Email</label>
-                                                    <input type="email" class="form-control" ng-model="model.CompanyEmail" ng-required="wizarno=='product'" maxlength="50" />
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <label class="control-label">Address</label><br />
-                                                    <textarea class="control-label" ng-model="model.CompanyAddress" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 75px;width:100%" ng-required="wizarno=='product'"></textarea>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <label class="control-label">Point Location</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
-                                                        <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
-                                                    </div>
+                                                    <label class="control-label">
+                                                        Company (optional)
+                                                        <small class="display-block text-light">select from registered company, to make new company please contact us</small>
+                                                    </label>                                                 
+                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.MemberName" ng-required="wizarno=='product'" maxlength="50" readonly/>
                                                 </div>
                                             </div>
 
                                         </div>
                                     </fieldset>
 
-                                    <hr />
-                                    <div class="col-md-12">
 
-                                        <div class="col-md-12">
+                                    <div class="col-md-12">
                                             <div class="text-right">
 
                                                 <span class="input-group-btn">
@@ -249,7 +216,7 @@
                                                 </span>
 
                                             </div>
-                                        </div>
+                                       
 
                                     </div>
                                 </div>
@@ -386,7 +353,7 @@
             });
 
             uiGmapGoogleMapApi.then(function (maps) {
-               
+
             });
 
             $scope.$on('g-places-autocomplete:select', function (event, place) {
@@ -405,7 +372,7 @@
             //END MAP
             //
 
-           
+
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
