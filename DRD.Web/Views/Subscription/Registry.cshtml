@@ -233,13 +233,12 @@
                             <!--CONFIRMATION THANK YOU-->
                             <div ng-show="wizarno=='success'">
                                 <div class="col-md-12">
-                                    Thank you for registering for the DRD subscription.<br />
-                                    Subscription registration is successful.<br /><br />
+                                    <p>
+                                        You have successfully registered your account. Please check your email to get your password to be able to <a ng-href="/login">log in</a>.<br />
+                                        Subscription registration is successful.
+                                    </p><br /><br />
 
-                                    Subscription Id: <b>{{subscriptionId}}</b><br />
-                                    User number: <b>{{userNumber}}<br /></b><br />
-
-                                    The password will be sent to email <b>{{model.MemberEmail}}</b>.<br />
+                                    <p>if you want to register a new company to become our business partner. We’ll be glad if you contact us <a ng-href="#">here</a>.</p>
                                 </div>
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
@@ -399,7 +398,10 @@
 
 
             $scope.updateProduct = function (aggrement) {
-                if (!aggrement) return;
+                if (!aggrement) {
+                    alert("please tick the aggrement.");
+                    return;
+                }
                 $scope.saveProduct();
             }
 

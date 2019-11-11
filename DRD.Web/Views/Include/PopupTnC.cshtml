@@ -3,22 +3,26 @@
     Layout = null;
 }
 
-<div id="modal_tnc" class="modal fade">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="close" type="button" data-dismiss="modal">×</button>
-            </div>
-            <div class="modal-body">
-                <h2>Continue to register your Account?</h2>
-                <input type="checkbox" name="terms-and-conditions" value="agree" ng-model="checked"/>
-                <span><small>I have read the <a href="~/doc/tnc/tnc.htm" target="_blank">Terms and Agreement Policy</a>.</small></span>
-                
-            </div>
-            <div class="modal-footer">
-                <button class="btn bg-slate-700" type="button" ng-click="updateProduct(checked)">yes, continue</button>
+    <div id="modal_tnc" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <h2>Continue to register your Account?</h2>
+                    <input class="styled" type="checkbox" name="terms-and-conditions" value="agree" ng-model="checked" />
+                    <span><small>I have read the <a href="~/doc/tnc/tnc.htm" target="_blank">Terms and Agreement Policy</a>.</small></span>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn bg-slate-700" type="button" ng-click="updateProduct(checked)">yes, continue</button>
+                </div>
             </div>
         </div>
+
+        <!-- View member modal -->
+        <ng-include src="'/Include/PopupTnC'"></ng-include>
+        <!-- View member modal -->
     </div>
-</div>
 
