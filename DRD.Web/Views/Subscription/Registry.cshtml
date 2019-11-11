@@ -447,19 +447,9 @@
                 $http.post('@Url.Action("registration", "member")',
                     {
                         registry: {
-                            MemberTitleId: $scope.model.MemberTitleId,
                             MemberName: $scope.model.MemberName,
                             MemberPhone: $scope.model.MemberPhone,
                             MemberEmail: $scope.model.MemberEmail,
-                            //SubscriptTypeId:$scope.SubscriptType.Id,
-                            //CompanyName: $scope.model.CompanyName,
-                            //CompanyPhone: $scope.model.CompanyPhone,
-                            //CompanyEmail: $scope.model.CompanyEmail,
-                            //CompanyAddress: $scope.model.CompanyAddress,
-                            //CompanyPointLocation: $scope.model.PointLocation,
-                            //Latitude: $scope.currentLocation.latitude,
-                            //Longitude: $scope.currentLocation.longitude,
-
                         }
                     }).then(function (response) {
                         btn.stop();
@@ -511,120 +501,6 @@
             $scope.backToHome = function () {
                 window.location = "/login";
             }
-
-
-            /*---------------------------------------------------------------------------
-             M A P
-            ---------------------------------------------------------------------------*/
-
-            /*--------------------------------------------------------------
-            INIT MAP
-            --------------------------------------------------------------*/
-            $scope.initMap = function () {
-
-                var lat = $scope.currentLocation.latitude;
-                var lng = $scope.currentLocation.longitude;
-
-                $scope.markers = [];
-                $scope.markers.push(angular.copy($scope.markerTemplate));
-                $scope.markers[0].coords = {
-                    latitude: lat,
-                    longitude: lng
-                }
-
-                $scope.getLocationAddress(lat, lng);
-            }
-
-            /*--------------------------------------------------------------
-            SHOW LOCATION MAP
-            --------------------------------------------------------------*/
-            $scope.getLocationAddress = function (lat, lng) {
-                var geocoder = new google.maps.Geocoder;
-                var infowindow = new google.maps.InfoWindow;
-                var latlng = { lat: lat, lng: lng };
-                geocoder.geocode({ 'location': latlng }, function (results, status) {
-                    if (status === 'OK') {
-                        if (results[1]) {
-                            $scope.model.LocationDetail = results[0].formatted_address;
-                            $scope.dummyCurrentLocation.latitude = results[0].geometry.location.lat();
-                            $scope.dummyCurrentLocation.longitude = results[0].geometry.location.lng();
-                        } else {
-                            window.alert('No results found');
-                        }
-                    } else {
-                        window.alert('Geocoder failed due to: ' + status);
-                    }
-                });
-            }
-
-            $scope.createMarker = function () {
-                if ($scope.xmarkers.length != 0)
-                    $scope.xmarkers[0].setMap(null);
-
-                $scope.xmarkers = [];
-                var xmap = $scope.map.control.getGMap();
-                var myLatlng = new google.maps.LatLng($scope.currentLocation.latitude, $scope.currentLocation.longitude);
-                var mk = new google.maps.Marker(
-                {
-                    position: myLatlng,
-                    map: xmap,
-                    icon: { url: "/assets/images/ic_markerred64.png" },
-                    title: "Drag me!",
-                    draggable: true
-                });
-
-                $scope.xmarkers.push(mk);
-
-                google.maps.event.clearListeners(mk, "dragend")
-                google.maps.event.addListener(mk, "dragend", function (event) {
-                    var lat = event.latLng.lat();
-                    var lng = event.latLng.lng();
-
-                    $scope.getLocationAddress(lat, lng);
-
-                    $scope.map.control.refresh({
-                        latitude: lat,
-                        longitude: lng
-                    });
-
-                });
-
-            }
-
-            $scope.showLocation = function (val) {
-                var element = document.getElementById('modal_select_map');
-                if (element.className != 'modal fade') {
-                    element.className = 'modal fade';
-                }
-                $scope.createMarker();
-
-                $scope.map.center.latitude = $scope.currentLocation.latitude;
-                $scope.map.center.longitude = $scope.currentLocation.longitude;
-                $scope.map.zoom = 16;
-
-            }
-
-            /*--------------------------------------------------------------
-           SET LOCATION
-           --------------------------------------------------------------*/
-            $scope.setLocation = function () {
-                $scope.model.PointLocation = $scope.model.LocationDetail;
-                $scope.currentLocation.latitude = $scope.dummyCurrentLocation.latitude;
-                $scope.currentLocation.longitude = $scope.dummyCurrentLocation.longitude;
-                angular.element('#modal_select_map').modal('hide');
-            }
-
-
-        });
-
-
-        $(function () {
-        });
-
-
-        $(document).ready(function () {
-
-        })
 
     </script>
 
