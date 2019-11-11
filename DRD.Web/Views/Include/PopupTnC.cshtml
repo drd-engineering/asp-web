@@ -11,12 +11,12 @@
             </div>
             <div class="modal-body">
                 <h2>Continue to register your Account?</h2>
-                <input type="checkbox" name="terms-and-conditions" value="agree" />
+                <input type="checkbox" name="terms-and-conditions" value="agree" ng-model="checked"/>
                 <span><small>I have read the <a href="~/doc/tnc/tnc.htm" target="_blank">Terms and Agreement Policy</a>.</small></span>
                 
             </div>
             <div class="modal-footer">
-                <button class="btn bg-slate-700" type="button" ng-click="updateProduct()">yes, continue</button>
+                <button class="btn bg-slate-700" type="button" ng-click="updateProduct(checked)">yes, continue</button>
             </div>
         </div>
     </div>

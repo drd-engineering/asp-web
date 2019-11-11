@@ -200,7 +200,7 @@
                                                         Company (optional)
                                                         <small class="display-block text-light">select from registered company, to make new company please contact us</small>
                                                     </label>
-                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.MemberName" maxlength="50" />
+                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="" maxlength="50" />
                                                 </div>
                                             </div>
 
@@ -211,7 +211,7 @@
                                     <div class="col-md-12">
                                         <div class="text-right">
                                             <span class="input-group-btn">
-                                                <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="popupTnC()" style="width:120px">
+                                                <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="validateForm()" style="width:120px">
                                                     <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -292,69 +292,7 @@
             $scope.subscriptionId = "";
             $scope.userNumber = "";
 
-            //
-            // MAP
-            //
-            $scope.xmarkers = [];
-
-            $scope.model.Autocomplete = null;
-
-
-            // for the map
-            $scope.map = {
-                control: {},
-                center: {
-                    latitude: -6.2893464,
-                    longitude: 106.9513492
-                },
-                draggable: true,
-                zoom: 16
-            };
-
-            // map options
-            $scope.options = {
-                scrollwheel: false,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-
-
-            $scope.markerTemplate = {
-                id: 0,
-                coords: {
-                    latitude: 0,
-                    longitude: 0
-                },
-                
-                icon: { url: "/assets/images/ic_markerred64.png" },
-                control: {},
-                options: { draggable: true }
-            };
-            $scope.currentLocation = { latitude: -6.2909744, longitude: 106.8046101 };
-
-            $scope.dummyCurrentLocation = { latitude: 0, longitude: 0 };
-
-            uiGmapIsReady.promise().then(function (map_instances) {
-                
-                $scope.initMap();
-            });
-
-            
-
-            $scope.$on('g-places-autocomplete:select', function (event, place) {
-
-                $scope.currentLocation.latitude = place.geometry.location.lat();
-                $scope.currentLocation.longitude = place.geometry.location.lng();
-
-                $scope.map.center.latitude = $scope.currentLocation.latitude;
-                $scope.map.center.longitude = $scope.currentLocation.longitude;
-
-                $scope.getLocationAddress($scope.currentLocation.latitude, $scope.currentLocation.longitude);
-
-                $scope.createMarker();
-            });
-            //
-            //END MAP
-            //
+       
 
 
             /*--------------------------------------------------------------
@@ -453,16 +391,15 @@
                     });
             }
 
-
-            $scope.updateProduct = function () {
+            $scope.validateForm = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
+                $scope.popupTnC();
+            }
 
-                if ($scope.model.PointLocation == undefined) {
-                    showInfo("Point location must be filled.");
-                    return;
-                }
 
+            $scope.updateProduct = function (aggrement) {
+                if (!aggrement) return;
                 $scope.saveProduct();
             }
 
