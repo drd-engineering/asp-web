@@ -32,7 +32,7 @@ namespace DRD.Models
         public virtual Member Member { get; set; } // FK_RotationNode_Member
         public virtual Rotation Rotation { get; set; } // FK_RotationNode_Rotation
         public virtual WorkflowNode WorkflowNode { get; set; } // FK_RotationNode_WorkflowNode
-        public virtual WorkflowNode PrevWorkflowNode { get; set; } // FK_RotationNode_PrevWorkflowNode
+        // public virtual WorkflowNode PrevWorkflowNode { get; set; } // FK_RotationNode_PrevWorkflowNode
         public virtual RotationNode RotationNode_SenderRotationNodeId { get; set; } // FK_RotationNode_RotationNode
 
         public RotationNode()

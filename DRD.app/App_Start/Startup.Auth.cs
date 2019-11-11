@@ -5,9 +5,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
-using DRD.Web.Models;
+using DRD.App.Models;
 
-namespace DRD.Web
+namespace DRD.App
 {
     public partial class Startup
     {

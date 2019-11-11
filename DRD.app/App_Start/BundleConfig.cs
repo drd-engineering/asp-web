@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace DRD.Web
+namespace DRD.App
 {
     public class BundleConfig
     {

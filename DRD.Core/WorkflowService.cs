@@ -9,7 +9,7 @@ using DRD.Domain;
 using System.Configuration;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class WorkflowService
     {

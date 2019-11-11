@@ -38,7 +38,7 @@ namespace DRD.Models
         //public JsonAnnotate Annotate { get; set; }
 
         // Foreign keys
-        public virtual AnnotateType AnnotateType { get; set; } // FK_DocumentAnnotate_AnnotateType
+        public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
         
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
 

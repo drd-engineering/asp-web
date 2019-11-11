@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DRD.Models
 {
-    public class DtoVersioning
+    public class Versioning
     {
         public int Id { get; set; } // Id (Primary key)
         public string PackageName { get; set; } // PackageName (length: 100)

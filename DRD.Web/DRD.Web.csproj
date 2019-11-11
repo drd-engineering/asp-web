@@ -1120,12 +1120,6 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DRD.Core\DRD.Core.csproj">
-      <Project>{69adf00a-e21c-4924-91ae-1fa3a2c354e6}</Project>
-      <Name>DRD.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>

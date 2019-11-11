@@ -10,7 +10,7 @@ using System.Configuration;
 using System.Data.Entity.Infrastructure;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class ProjectService
     {

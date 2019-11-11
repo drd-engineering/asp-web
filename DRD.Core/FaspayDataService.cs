@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DRD.Domain;
 using System.Security.Cryptography;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class FaspayDataService
     {

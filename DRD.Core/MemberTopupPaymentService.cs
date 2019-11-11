@@ -9,7 +9,7 @@ using System.Based.Core.Entity;
 using System.Based.Core;
 using System.Data.Entity.Infrastructure;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class MemberTopupPaymentService
     {

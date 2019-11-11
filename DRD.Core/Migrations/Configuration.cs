@@ -1,18 +1,18 @@
-namespace DRD.Core.Migrations
+namespace DRD.Service.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<DRD.Core.Models.MyDBContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<DRD.Service.Models.MyDBContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(DRD.Core.Models.MyDBContext context)
+        protected override void Seed(DRD.Service.Models.MyDBContext context)
         {
             //  This method will be called after migrating to the latest version.
 

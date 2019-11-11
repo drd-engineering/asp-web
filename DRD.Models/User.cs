@@ -24,8 +24,8 @@ namespace DRD.Models
 
         public string ImageKtp2 { get; set; }
         public bool IsActive { get; set; } // IsActive
-        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public DateTime CreatedAt { get; set; } // DateCreated
 
-        public User() {}
+        public User() { }
     }
 }

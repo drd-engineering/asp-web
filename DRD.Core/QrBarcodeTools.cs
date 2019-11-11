@@ -16,7 +16,7 @@ using ZXing.QrCode;
 using System.Drawing;
 using System.IO;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class QrBarcodeTools
     {

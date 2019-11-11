@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Based.Core;
 using System.Based.Core.Entity;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class ApplConfigService
     {

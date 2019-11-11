@@ -10,18 +10,15 @@ namespace DRD.Models
     {
         public long Id { get; set; } // Id (Primary key)
         
-        public string Password { get; set; } // Password (length: 50)
         public long? CompanyId { get; set; } // CompanyId
-        public bool IsActive { get; set; } // IsActive
-        public string UserId { get; set; } // UserId (length: 50)
+        public long? UserId { get; set; } // UserId (length: 50)
         public System.DateTime JoinedAt { get; set; } // DateCreated
-
-        
-        public long LoginId { get; set; }
+        public bool IsActive { get; set; } // IsActive
+        public bool IsAdministrator { get; set; } // IsActive
 
         public Member()
         {
-            LoginId = 0;
+            IsAdministrator = false;
             IsActive = true;
         }
     }

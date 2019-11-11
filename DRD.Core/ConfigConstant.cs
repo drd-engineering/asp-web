@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class ConfigConstantX
     {

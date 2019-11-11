@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
-using DRD.Core;
+using DRD.Service;
 using System.Based.Core.Entity;
 using DRD.Domain;
 using System.Configuration;
@@ -12,7 +12,7 @@ using System.Data.Entity.Infrastructure;
 using System.Based.Core;
 
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class MemberService
     {

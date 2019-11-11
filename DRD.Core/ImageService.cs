@@ -7,7 +7,7 @@ using System.Drawing;
 using System.IO;
 using DRD.Domain;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class ImageService
     {

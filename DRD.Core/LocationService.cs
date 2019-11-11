@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class LocationService
     {

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace DRD.Web
+namespace DRD.App
 {
     public class RouteConfig
     {

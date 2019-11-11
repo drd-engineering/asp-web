@@ -8,7 +8,7 @@ using System.Based.Core.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class UserAdminService
     {

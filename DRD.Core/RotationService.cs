@@ -10,7 +10,7 @@ using System.Configuration;
 using Newtonsoft.Json;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class RotationService
     {

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace DRD.Web
+namespace DRD.App
 {
     public class FilterConfig
     {

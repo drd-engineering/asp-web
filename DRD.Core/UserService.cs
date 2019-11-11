@@ -7,10 +7,10 @@ using System.Based.Core.Entity;
 using System.Based.Core.Entity.User;
 using DRD.Domain;
 using System.Configuration;
-using DRD.Core;
+using DRD.Service;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class UserService
     {

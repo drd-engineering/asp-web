@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DRD.Core;
+using DRD.Service;
 
 namespace DRD.Service.Desktop
 {

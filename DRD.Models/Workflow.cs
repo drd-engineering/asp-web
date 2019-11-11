@@ -10,7 +10,7 @@ namespace DRD.Models
     {
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 100)
-        public string Descr { get; set; } // Descr
+        public string Description { get; set; } // Description
         public bool IsActive { get; set; } // IsActive
         public long? CreatorId { get; set; } // CreatorId
         public bool IsTemplate { get; set; } // IsTemplate

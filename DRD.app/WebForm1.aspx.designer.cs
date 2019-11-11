@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DRD.Web {
+namespace DRD.App {
     
     
     public partial class WebForm1 {

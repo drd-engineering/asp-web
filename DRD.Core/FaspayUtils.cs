@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class FaspayUtils
     {

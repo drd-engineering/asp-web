@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using System.Data.Entity;
 
-namespace DRD.Web.Migrations
+namespace DRD.App.Migrations
 {
     public class NpgSqlConfiguration : DbConfiguration
     {

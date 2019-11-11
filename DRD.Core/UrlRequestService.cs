@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class UrlRequestService
     {

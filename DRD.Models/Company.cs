@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DRD.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,24 +24,24 @@ namespace DRD.Models
         public string ImageCard { get; set; } // ImageCard (length: 100)
         public bool IsActive { get; set; } // IsActive
         public string UserId { get; set; } // UserId (length: 50)
-        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public DateTime CreatedAt { get; set; } // DateCreated
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<Document> Documents { get; set; } // Document.FK_Document_Company
-        public virtual System.Collections.Generic.ICollection<Member> Members { get; set; } // Member.FK_Member_Company
+       // public virtual ICollection<Document> Documents { get; set; } // Document.FK_Document_Company
+        public virtual ICollection<Member> Members { get; set; } // Member.FK_Member_Company
         //public virtual System.Collections.Generic.ICollection<DtoMemberSubscribe> MemberSubscribes { get; set; } // MemberSubscribe.FK_MemberSubscribe_Company
-        public virtual System.Collections.Generic.ICollection<Tag> Tags { get; set; } // Project.FK_Project_Company
+        public virtual ICollection<Tag> Tags { get; set; } // Project.FK_Project_Company
 
         // Foreign keys
         //public virtual SubscriptType subscript_type { get; set; } // FK_Company_SubscriptType
-            
+
         public Company()
         {
             IsActive = true;
             UserId = "SYST";
-            CreatedAt = System.DateTime.Now;
-            Members = new System.Collections.Generic.List<Member>();
-            Tags = new System.Collections.Generic.List<Tag>();
+            CreatedAt = DateTime.Now;
+            Members = new List<Member>();
+            Tags = new List<Tag>();
         }
     }
 }

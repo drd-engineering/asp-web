@@ -7,7 +7,7 @@ using System.Data.Entity;
 
 using DRD.Models;
 
-namespace DRD.Core.Models
+namespace DRD.Service.Models
 {
     public class MyDBContext : System.Based.Core.Entity.DrdContext
     {

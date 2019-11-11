@@ -8,7 +8,7 @@ using DRD.Domain;
 using System.Based.Core.Entity;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class BankService
     {

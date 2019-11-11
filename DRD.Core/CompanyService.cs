@@ -15,7 +15,7 @@ using System.Data.Entity.Infrastructure;
 using System.Text.RegularExpressions;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class CompanyService
     {

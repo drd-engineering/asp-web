@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Based.Core.Entity.User;
 using DRD.Domain;
-using DRD.Core;
+using DRD.Service;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class UserMasterService
     {

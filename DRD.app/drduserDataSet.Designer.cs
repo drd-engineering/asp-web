@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace DRD.Web {
+namespace DRD.App {
     
     
     /// <summary>
@@ -3860,7 +3860,7 @@ namespace DRD.Web {
         }
     }
 }
-namespace DRD.Web.drduserDataSetTableAdapters {
+namespace DRD.App.drduserDataSetTableAdapters {
     
     
     /// <summary>
@@ -4017,7 +4017,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4329,7 +4329,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4629,7 +4629,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5004,7 +5004,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5390,7 +5390,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5739,7 +5739,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6031,7 +6031,7 @@ namespace DRD.Web.drduserDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::DRD.Web.Properties.Settings.Default.drduserConnectionString;
+            this._connection.ConnectionString = global::DRD.App.Properties.Settings.Default.drduserConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

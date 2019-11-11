@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Based.Core.Entity;
 using DRD.Domain;
 using System.Configuration;
-using DRD.Core;
+using DRD.Service;
 using System.Based.Core;
 
-namespace DRD.Core
+namespace DRD.Service
 {
     public class DrDriveTypeService
     {
