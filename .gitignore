@@ -279,8 +279,8 @@ __pycache__/
 *.config
 !App.config
 
-# Migrations
-*/Migrations/
+# Migrations 
+/Migrations/*
 !*/Migrations/Configuration.cs
 !*/Migrations/NpgSqlConfiguration.cs
 
