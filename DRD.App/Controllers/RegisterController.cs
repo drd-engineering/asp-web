@@ -20,6 +20,10 @@ namespace DRD.App.Controllers
         // GET: Register
         public ActionResult Index()
         {
+            //var service = new CompanyService();
+            //var data = service.GetAllCompany();
+            //CompanyDropDown.DataSource = data;
+            //CompanyDropDown.DataBind();
             return View();
         }
 
@@ -32,6 +36,24 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        // GET: Register/GetAllCompaniesRegistered
+        //User Registration
+        public ActionResult GetAllCompaniesRegistered()
+        {
+            var service = new CompanyService();
+            var data = service.GetAllCompany();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Register/CheckEmail
+        //User Registration
+        public ActionResult CheckEmail(string email)
+        {
+            var service = new UserService();
+            var data = service.CheckEmailAvailability(email);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
