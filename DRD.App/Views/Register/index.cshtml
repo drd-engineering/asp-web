@@ -1,0 +1,392 @@
+﻿@using DRD.Service;
+@model dynamic
+
+@{
+    Layout = null;
+}
+
+<!-- Global stylesheets -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+<link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+<!-- /global stylesheets -->
+<!-- Core JS files -->
+<script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+<!-- /core JS files -->
+<!-- Theme JS files -->
+<script type="text/javascript" src="/assets/js/plugins/ui/nicescroll.min.js"></script>
+@*<script type="text/javascript" src="/assets/js/core/app.js"></script>*@
+<script type="text/javascript" src="/assets/js/pages/layout_fixed_custom.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
+<!-- /theme JS files -->
+<!-- Theme JS files -->
+@*
+    <script type="text/javascript" src="assets/js/plugins/notifications/pnotify.min.js"></script>*@
+<script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
+@*
+    <script type="text/javascript" src="assets/js/pages/components_notifications_other.js"></script>*@
+<!-- /theme JS files -->
+@*<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+
+    <script src="~/Scripts/xpublic.js"></script>*@
+
+
+
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script>
+<script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
+
+<script src="/assets/vendors/ng_only_number.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+<script src="~/Scripts/xpublic.js"></script>
+
+<!-- Google map -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY&libraries=visualization,drawing,geometry,places"></script>
+
+
+<script src="~/Scripts/autocomplete/autocomplete.min.js"></script>
+<link href="~/Scripts/autocomplete/autocomplete.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/lodash.min.js"></script>
+<script src="~/Scripts/angular-simple-logger.js"></script>
+<script src="~/Scripts/angular-google-maps.min.js"></script>
+<!-- /Google map -->
+
+<style>
+    .dd-option-image, .dd-selected-image {
+        width: 500px;
+        height: auto;
+        /*max-width:1000px;*/
+    }
+
+    .map {
+        width: 100%;
+        height: 400px !important;
+    }
+
+    /*.angular-google-map-container {
+           height: 400px;
+       }*/
+
+    .angular-google-map-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        /*height:400px;*/
+    }
+
+    /*z-index: 1042 !important;*/
+    /*#modal_select_map {
+
+            z-index: 1041 !important;
+       }*/
+
+    .pac-container {
+        z-index: 9999 !important;
+    }
+
+    /*.modal{
+           z-index: 20;
+       }
+       .modal-backdrop{
+           z-index: 10;
+       }​*/
+
+    /*.map_canvas {
+           z-index: 1043 !important;
+       }*/
+    .modal_hide {
+        top: -10000px;
+        position: absolute;
+    }
+</style>
+
+
+<style type="text/css">
+    .auto-style3 {
+        width: 64px;
+    }
+
+
+    .image-wraper {
+        float: left;
+        margin-right: 10px;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-content {
+        width: 200px;
+        cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .image-wraper2 {
+        float: left;
+        margin-right: 10px;
+        width: 300px;
+        height: 200px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .image-content2 {
+        width: 300px;
+        cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+</style>
+
+<body class="login-container" ng-app="drdApp" style="margin-top:-50px;">
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <!-- Page content -->
+        <div class="page-content">
+            <!-- Main content -->
+            <div class="content-wrapper">
+                <!-- Horizontal form options -->
+                <!-- Content area -->
+                <div class="content" style="display:none;">
+                    <!-- Basic layout-->
+                    <div class="panel panel-body login-form" style="width:800px;">
+                        @*<div class="text-center">
+                            <img src="/Images/register-banner.jpg" style="width:100%;border-radius:10px" /><br /><br />
+                        </div>*@
+                        <div style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
+                            <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%"/>
+                        </div>
+                        <div class="panel-body">
+                            <!--MEMBER DATA-->
+                            <form name="myForm" class="form-horizontal" autocomplete="off">
+                                <div ng-show="wizarno=='user'">
+                                    <fieldset>
+                                        <div class="col-md-12">
+
+                                            <h4>Create Your DRD Account</h4>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="control-label">Name</label>
+                                                    <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='user'" maxlength="50" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label class="control-label">Phone</label>
+                                                    <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='user'" maxlength="20" ng-only-number />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <label class="control-label">Email</label>
+                                                    <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='user'" maxlength="50" ng-readonly="model.Id!=0" />
+                                                </div>
+                                                
+                                            </div>
+
+                                            <hr />
+                                            <h4>Company (Optional) </h4>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="control-label">Select Your Company</label>
+                                                    <input type="text" class="form-control" ng-model="model.CompanyId" ng-required="wizarno=='user'" maxlength="50" />
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </fieldset>
+
+                                    <hr />
+                                    <div class="col-md-12">
+
+                                        <div class="col-md-12">
+                                            <div class="text-right">
+
+                                                <span class="input-group-btn">
+                                                    @*<button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                    </button>*@
+
+                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="saveUser()" style="width:120px">
+                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                    </button>
+
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                            <!--/MEMBER DATA-->
+
+                            <!--CONFIRMATION THANK YOU-->
+                            <div ng-show="wizarno=='success'">
+                                <div class="col-md-12">
+                                    @*<div class="alert alert-success alert-styled-left">*@
+                                    Thank you for registering for the DRD subscription.<br />
+                                    Subscription registration is successful.<br /><br />
+
+                                    Subscription Id: <b>{{subscriptionId}}</b><br />
+                                    User number: <b>{{userNumber}}<br /></b><br />
+
+                                    The password will be sent to email <b>{{model.Email}}</b>.<br />
+                                    @*</div>*@
+                                </div>
+                            </div>
+                            <!--/CONFIRMATION THANK YOU-->
+
+                        </div>
+                    </div>
+                    <!-- /basic layout -->
+                </div>
+                <!-- /vertical form options -->
+            </div>
+            <!-- /Main content -->
+        </div>
+        <!-- /Page content -->
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngOnlyNumberApp', 'ngFileUpload', 'uiGmapgoogle-maps', 'google.places'])
+
+        myApp.controller("drdController", function ($scope, Upload, $http, $filter) {
+            // modal member
+            $scope.model = {};
+            $scope.wizarno = 'user';
+            $scope.model.Id = 0;
+            $scope.isUploadImage1 = 0;
+            $scope.isUploadImage2 = 0;
+            $scope.isUploadImageCard = 0
+
+            $scope.subscriptionId = "";
+            $scope.userNumber = "";
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            function initValues() {
+            }
+
+            angular.element(document).ready(function () {
+                $scope.model.Image1 = "no_picture.png";
+                $scope.model.Image2 = "no_picture.png";
+                $scope.model.ImageCard = "no_picture.png";
+                $(".content").show();
+            });
+
+            $scope.initData = function () {
+
+            }
+
+
+            /*--------------------------------------------------------------
+            SAVE USER
+            --------------------------------------------------------------*/
+            $scope.saveUser = function () {
+                var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
+                btn.start();
+                console.log( $scope.model.Id, $scope.model.Name,$scope.model.Phone,$scope.model.Email,$scope.model.CompanyId)
+
+                $http.post('@Url.Action("Save", "Register")',
+                    {
+                        Register: {
+                            Id: $scope.model.Id,
+                            Name: $scope.model.Name,
+                            Phone: $scope.model.Phone,
+                            Email: $scope.model.Email,
+                            CompanyId: $scope.model.CompanyId,
+                        }
+                    }).then(function (response) {
+                        btn.stop();
+                        if (response.data) {
+                            var result = response.data;
+                            if (result.UserNumber == "DBLEMAIL") {
+                                showInfo("User email already used by other.");
+                                return;
+                            }
+                            if (result.SubscriptionId == "DBLEMAIL") {
+                                showInfo("Company email already used by other.");
+                                return;
+                            }
+
+                            $scope.wizarno = 'success';
+
+                            $scope.subscriptionId = result.SubscriptionId;
+                            $scope.userNumber = result.UserNumber;
+                        }
+                    }, function (response) {
+                        //error handle\
+                        btn.stop();
+                        var x = 0;
+                    });
+            }
+
+
+            $scope.updateProduct = function () {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+
+                $scope.saveProduct();
+            }
+
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+
+            $scope.scrollingPage = function (id) {
+                $('html, body').animate({
+                    scrollTop: $(id).offset().top
+                }, 200);
+            }
+            
+        });
+        $(function () {
+        });
+        $(document).ready(function () {
+
+        })
+    </script>
+
+</body>

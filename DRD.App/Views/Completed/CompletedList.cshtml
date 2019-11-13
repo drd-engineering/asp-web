@@ -1,0 +1,199 @@
+﻿@model DRD.Domain.JsonLayout
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+
+<body>
+
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <!-- Page content -->
+        <div class="page-content">
+
+            <div id="div-loading">
+                <i class="icon-spinner2 spinner"></i>
+                <span>Loading...</span>
+            </div>
+            <!-- Main content -->
+            <div class="content-wrapper hide-content" style="display:none">
+                <!-- Page header -->
+
+                <div class="page-header page-header-default">
+                    <div class="page-header-content">
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <h4><i class="icon-inbox position-left"></i>Completed</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="pull-right">
+                                    <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                        <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- /page header -->
+                <!-- Content area -->
+
+                <div class="content">
+                    <!-- Contextual classes -->
+                   
+                    <!-- LIST -->
+                    <div calss="row">
+
+
+                        <div class="panel panel-flat">
+
+                            <div class="table-responsive" ng-show="isView">
+
+                                <table class="table table-bordered table-striped" style="font-size:small">
+                                    <thead>
+                                        <tr>
+                                            <th width="25px">#</th>
+                                            <th>Subject</th>
+                                            <th>Workflow Name</th>
+                                            <th width="175px">Created</th>
+                                            <th width="100px">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="x in products">
+                                            <td>{{$index+1 + index}}</td>
+                                            <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
+                                            <td>{{x.WorkflowName}}</td>
+                                            <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                            <td>{{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /LIST -->
+
+                </div>
+                <!-- /content area -->
+            </div>
+            <!-- /main content -->
+        </div>
+        <!-- /page content -->
+    </div>
+    <!-- /page container -->
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
+
+        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+            $scope.product = {};
+            $scope.products = [];
+            $scope.productCount = [];
+            $scope.paging = [];
+            $scope.kriteria = "";
+            $scope.page = 1;
+            $scope.row = 20;
+            $scope.currPage = 0;
+            $scope.isView = false;
+            $scope.index = 0;
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+            });
+
+            /*--------------------------------------------------------------
+            DO EDIT
+            --------------------------------------------------------------*/
+
+            $scope.do_edit = function (mid, id) {
+                location.href = "/completed/completed?mid=" + mid + "," + id;
+            }
+
+            /*--------------------------------------------------------------
+            GET PRODUCT
+            --------------------------------------------------------------*/
+            $scope.getLiteProducts = function (kriteria, page, row) {
+                $scope.products = [];
+                $http.post('@Url.Action("GetLiteStatusAll", "Rotation")', { status: '90', topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    if (response.data) {
+                        $scope.products = response.data;
+
+                        $scope.index = row * (page - 1);
+
+                        $scope.paging = [];
+                        $scope.getProductCount(kriteria);
+
+                        $scope.isView = true;
+
+                        $("#div-loading").hide();
+                        $(".hide-content").show();
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.changePage = function (kriteria, page, row) {
+                $scope.products = [];
+                $http.post('@Url.Action("GetLiteStatusAll", "Rotation")', { status: '90', topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    if (response.data) {
+                        $scope.products = response.data;
+                        $scope.index = row * (page - 1);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.getProductCount = function (kriteria) {
+                $http.post('@Url.Action("GetLiteStatusAllCount", "Rotation")', { status: '90', topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+
+                        $scope.page = "1";
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+
+
+
+        });
+
+    </script>
+
+</body>
