@@ -282,6 +282,7 @@ __pycache__/
 # Migrations
 */Migrations/
 !*/Migrations/Configuration.cs
+!*/Migrations/NpgSqlConfiguration.cs
 
 # Copy WebConfig
 Web - Copy.config
