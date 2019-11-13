@@ -28,7 +28,8 @@ namespace DRD.Service
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.Password = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 7);
+                //user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
+                user.Password = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
                 long userId = userService.Save(user);
                 user.Id = userId;
 
@@ -128,7 +129,8 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                string encryptedPassword = Utilities.Encrypt(password);
+                //string encryptedPassword = Utilities.Encrypt(password);
+                string encryptedPassword = password;
 
                 Expression<Func<User, bool>> findUsername = s => (username.Contains('@') ? ( s.Email == username) : (s.Id == Convert.ToInt64(username)));
 
