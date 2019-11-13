@@ -275,14 +275,7 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 
-# config
-*.config
-!App.config
-
 # Migrations 
 /Migrations/*
 !*/Migrations/Configuration.cs
 !*/Migrations/NpgSqlConfiguration.cs
-
-# Copy WebConfig
-Web - Copy.config
