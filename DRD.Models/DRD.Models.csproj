@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="API\CompanyList.cs" />
     <Compile Include="API\RegisterResponse.cs" />
-    <Compile Include="API\SaveRegister.cs" />
+    <Compile Include="API\SaveRegistration.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentElement.cs" />

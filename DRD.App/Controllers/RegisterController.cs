@@ -23,9 +23,9 @@ namespace DRD.App.Controllers
             return View();
         }
 
-        // GET: Register/Create
+        // GET: Register/Save
         //User Registration
-        public ActionResult Create(Register register)
+        public ActionResult Save(Register register)
         {
             var service = new UserService();
             var data = service.SaveRegistration(register);
