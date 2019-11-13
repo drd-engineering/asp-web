@@ -17,8 +17,8 @@ namespace DRD.App
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 //defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-                //defaults: new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional }
-                defaults: new { controller = "Register", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional }
+                //defaults: new { controller = "Registration", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

@@ -328,7 +328,7 @@
                 btn.start();
                 console.log( $scope.model.Id, $scope.model.Name,$scope.model.Phone,$scope.model.Email,$scope.model.CompanyId)
 
-                $http.post('@Url.Action("Save", "Register")',
+                $http.post('@Url.Action("Save", "Registration")',
                     {
                         Register: {
                             Id: $scope.model.Id,
@@ -336,7 +336,6 @@
                             Phone: $scope.model.Phone,
                             Email: $scope.model.Email,
                             CompanyId: $scope.model.CompanyId,
-
                         }
                     }).then(function (response) {
                         btn.stop();
