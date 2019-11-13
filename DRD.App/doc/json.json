@@ -1,0 +1,39 @@
+﻿
+
+{
+    "Id": 30904,
+    "RegNumber": "191800001",
+    "Name": "Budi Bako",
+    "Phone": "081584870418",
+    "Email": "xbudi@yahoo.com",
+    "MemberType": 17,
+    "ImageProfile": "74b3336a-2896-4434-bbdf-0f0cd5d0af30.jpg",
+    "ImageQrCode": "QR-191800001-6669.png",
+    "ActivationKeyId": 1,
+    "ActivationType": 0,
+    "LastLogin": "2019-08-12T10:32:13.187",
+    "LastLogout": "2019-07-10T13:52:12.667",
+    "Password": null,
+    "DateCreated": "2019-05-06T22:17:37.667",
+    "AppZone": "TXJKT",
+    "MemberCoopId": 0,
+    "EmployeeId": 0,
+    "PartnerId": 0,
+    "StudentId": 0,
+    "MemberBusinessId": 0,
+    "ProfessionId": 0,
+    "AppZoneDetail": {
+        "Id": 1,
+        "Code": "TXJKT",
+        "Name": "Track Indonesia",
+        "AliasName": "TXIDN",
+        "Image1": "a75cba1b-7efc-4da5-90f8-cef493fedf42.png",
+        "Image2": "a62da638-440d-45cd-93b3-90e96f6403f9.png",
+        "ImageCard": "000ffe94-6cee-492a-a4e5-87e05ae26d15.png",
+        "BackColorBar": "#51AEFF",
+        "BackColorPage": "#eceff1",
+        "AppZoneType": 0,
+        "TnCFile": "/track/abouttrack.html",
+        "TnCFile2": "/track/abouttrack.html"
+    }
+}
