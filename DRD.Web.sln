@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Postgres", "Core.Postg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.Service", "DRD.Service\DRD.Service.csproj", "{09201891-4892-45E0-AE34-3895E0DB26F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.App", "DRD.App\DRD.App.csproj", "{B3352036-5D15-46D0-9F2E-79ED2248F722}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRD.app", "DRD.App\DRD.app.csproj", "{B3352036-5D15-46D0-9F2E-79ED2248F722}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -13,17 +13,17 @@ using DRD.Models.API.Register;
 
 namespace DRD.App.Controllers
 {
-    public class RegistrationController : Controller
+    public class RegisterController : Controller
     {
         private ServiceContext db = new ServiceContext();
 
-        // GET: Registration
+        // GET: Register
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Registration/Save
+        // GET: Register/Save
         //User Registration
         public ActionResult Save(Register register)
         {
