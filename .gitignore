@@ -276,6 +276,6 @@ __pycache__/
 # tools/
 
 # Migrations 
-/Migrations/*
+!/Migrations/*
 !*/Migrations/Configuration.cs
 !*/Migrations/NpgSqlConfiguration.cs

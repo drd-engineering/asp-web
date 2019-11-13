@@ -19,7 +19,7 @@ namespace Core.Postgres.Migrations
                 .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Core.Postgres.Models.Company", b =>
+            modelBuilder.Entity("DRD.Models.Company", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,10 +73,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Document", b =>
+            modelBuilder.Entity("DRD.Models.Document", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,10 +111,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("CompaniesId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.DocumentElement", b =>
+            modelBuilder.Entity("DRD.Models.DocumentElement", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -208,10 +208,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("ElementTypeId");
 
-                    b.ToTable("DocumentElements");
+                    b.ToTable("DocumentElements","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.ElementType", b =>
+            modelBuilder.Entity("DRD.Models.ElementType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,10 +226,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ElementTypes");
+                    b.ToTable("ElementTypes","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Member", b =>
+            modelBuilder.Entity("DRD.Models.Member", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -242,26 +242,23 @@ namespace Core.Postgres.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsAdministrator")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long>("LoginId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Plan", b =>
+            modelBuilder.Entity("DRD.Models.Plan", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -330,10 +327,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plans");
+                    b.ToTable("Plans","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Rotation", b =>
+            modelBuilder.Entity("DRD.Models.Rotation", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -388,10 +385,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("Rotations");
+                    b.ToTable("Rotations","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationMember", b =>
+            modelBuilder.Entity("DRD.Models.RotationMember", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -433,10 +430,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("WorkflowNodeId");
 
-                    b.ToTable("RotationMember");
+                    b.ToTable("RotationMembers","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNode", b =>
+            modelBuilder.Entity("DRD.Models.RotationNode", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -492,10 +489,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("WorkflowNodeId");
 
-                    b.ToTable("RotationNode");
+                    b.ToTable("RotationNodes","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeDoc", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeDoc", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -522,10 +519,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("RotationNodeId");
 
-                    b.ToTable("RotationNodeDoc");
+                    b.ToTable("RotationNodeDocs","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeRemark", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeRemark", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -545,10 +542,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("RotationNodeId");
 
-                    b.ToTable("RotationNodeRemark");
+                    b.ToTable("RotationNodeRemarks","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeUpDoc", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeUpDoc", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -570,10 +567,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("RotationNodeId");
 
-                    b.ToTable("RotationNodeUpDoc");
+                    b.ToTable("RotationNodeUpDocs","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Symbol", b =>
+            modelBuilder.Entity("DRD.Models.Symbol", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -606,10 +603,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Symbol");
+                    b.ToTable("Symbols","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Tag", b =>
+            modelBuilder.Entity("DRD.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -626,10 +623,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("CompaniesId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.User", b =>
+            modelBuilder.Entity("DRD.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -666,6 +663,9 @@ namespace Core.Postgres.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<long>("OfficialIdNo")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Password")
                         .HasColumnType("text");
 
@@ -674,10 +674,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.UserAdmin", b =>
+            modelBuilder.Entity("DRD.Models.UserAdmin", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -719,10 +719,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAdmins");
+                    b.ToTable("UserAdmins","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Workflow", b =>
+            modelBuilder.Entity("DRD.Models.Workflow", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -758,10 +758,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Workflows");
+                    b.ToTable("Workflows","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.WorkflowNode", b =>
+            modelBuilder.Entity("DRD.Models.WorkflowNode", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -818,10 +818,10 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("WorkflowNode");
+                    b.ToTable("WorkflowNodes","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.WorkflowNodeLink", b =>
+            modelBuilder.Entity("DRD.Models.WorkflowNodeLink", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -852,149 +852,149 @@ namespace Core.Postgres.Migrations
 
                     b.HasIndex("WorkflowNodeId");
 
-                    b.ToTable("WorkflowNodeLink");
+                    b.ToTable("WorkflowNodeLinks","public");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Document", b =>
+            modelBuilder.Entity("DRD.Models.Document", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Company", "Companies")
+                    b.HasOne("DRD.Models.Company", "Companies")
                         .WithMany()
                         .HasForeignKey("CompaniesId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.DocumentElement", b =>
+            modelBuilder.Entity("DRD.Models.DocumentElement", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Document", "Document")
+                    b.HasOne("DRD.Models.Document", "Document")
                         .WithMany("DocumentElements")
                         .HasForeignKey("DocumentId");
 
-                    b.HasOne("Core.Postgres.Models.ElementType", "ElementType")
+                    b.HasOne("DRD.Models.ElementType", "ElementType")
                         .WithMany()
                         .HasForeignKey("ElementTypeId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Member", b =>
+            modelBuilder.Entity("DRD.Models.Member", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Company", null)
+                    b.HasOne("DRD.Models.Company", null)
                         .WithMany("Members")
                         .HasForeignKey("CompanyId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Rotation", b =>
+            modelBuilder.Entity("DRD.Models.Rotation", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Member", "Member")
+                    b.HasOne("DRD.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("Core.Postgres.Models.Workflow", "Workflow")
+                    b.HasOne("DRD.Models.Workflow", "Workflow")
                         .WithMany()
                         .HasForeignKey("WorkflowId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationMember", b =>
+            modelBuilder.Entity("DRD.Models.RotationMember", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Member", "Member")
+                    b.HasOne("DRD.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("Core.Postgres.Models.Rotation", "Rotation")
+                    b.HasOne("DRD.Models.Rotation", "Rotation")
                         .WithMany("RotationMembers")
                         .HasForeignKey("RotationId");
 
-                    b.HasOne("Core.Postgres.Models.WorkflowNode", "WorkflowNode")
+                    b.HasOne("DRD.Models.WorkflowNode", "WorkflowNode")
                         .WithMany()
                         .HasForeignKey("WorkflowNodeId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNode", b =>
+            modelBuilder.Entity("DRD.Models.RotationNode", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Member", "Member")
+                    b.HasOne("DRD.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("Core.Postgres.Models.Rotation", "Rotation")
+                    b.HasOne("DRD.Models.Rotation", "Rotation")
                         .WithMany("RotationNodes")
                         .HasForeignKey("RotationId");
 
-                    b.HasOne("Core.Postgres.Models.RotationNode", "RotationNode_SenderRotationNodeId")
+                    b.HasOne("DRD.Models.RotationNode", "RotationNode_SenderRotationNodeId")
                         .WithMany("RotationNodes")
                         .HasForeignKey("RotationNode_SenderRotationNodeIdId");
 
-                    b.HasOne("Core.Postgres.Models.WorkflowNode", "WorkflowNode")
+                    b.HasOne("DRD.Models.WorkflowNode", "WorkflowNode")
                         .WithMany("Rotations")
                         .HasForeignKey("WorkflowNodeId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeDoc", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeDoc", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Document", "Document")
+                    b.HasOne("DRD.Models.Document", "Document")
                         .WithMany("RotationNodeDocs")
                         .HasForeignKey("DocumentId");
 
-                    b.HasOne("Core.Postgres.Models.Rotation", null)
+                    b.HasOne("DRD.Models.Rotation", null)
                         .WithMany("SumRotationNodeDocs")
                         .HasForeignKey("RotationId");
 
-                    b.HasOne("Core.Postgres.Models.RotationNode", "RotationNode")
+                    b.HasOne("DRD.Models.RotationNode", "RotationNode")
                         .WithMany("RotationNodeDocs")
                         .HasForeignKey("RotationNodeId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeRemark", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeRemark", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.RotationNode", "RotationNode")
+                    b.HasOne("DRD.Models.RotationNode", "RotationNode")
                         .WithMany("RotationNodeRemarks")
                         .HasForeignKey("RotationNodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.RotationNodeUpDoc", b =>
+            modelBuilder.Entity("DRD.Models.RotationNodeUpDoc", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Rotation", null)
+                    b.HasOne("DRD.Models.Rotation", null)
                         .WithMany("SumRotationNodeUpDocs")
                         .HasForeignKey("RotationId");
 
-                    b.HasOne("Core.Postgres.Models.RotationNode", "RotationNode")
+                    b.HasOne("DRD.Models.RotationNode", "RotationNode")
                         .WithMany("RotationNodeUpDocs")
                         .HasForeignKey("RotationNodeId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.Tag", b =>
+            modelBuilder.Entity("DRD.Models.Tag", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Company", "Companies")
+                    b.HasOne("DRD.Models.Company", "Companies")
                         .WithMany("Tags")
                         .HasForeignKey("CompaniesId");
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.WorkflowNode", b =>
+            modelBuilder.Entity("DRD.Models.WorkflowNode", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Member", "Member")
+                    b.HasOne("DRD.Models.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("Core.Postgres.Models.Symbol", "Symbol")
+                    b.HasOne("DRD.Models.Symbol", "Symbol")
                         .WithMany("WorkflowNodes")
                         .HasForeignKey("SymbolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Postgres.Models.Workflow", "Workflow")
+                    b.HasOne("DRD.Models.Workflow", "Workflow")
                         .WithMany("WorkflowNodes")
                         .HasForeignKey("WorkflowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Postgres.Models.WorkflowNodeLink", b =>
+            modelBuilder.Entity("DRD.Models.WorkflowNodeLink", b =>
                 {
-                    b.HasOne("Core.Postgres.Models.Symbol", "Symbol")
+                    b.HasOne("DRD.Models.Symbol", "Symbol")
                         .WithMany("WorkflowNodeLinks")
                         .HasForeignKey("SymbolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Postgres.Models.WorkflowNode", "WorkflowNode_WorkflowNodeId")
+                    b.HasOne("DRD.Models.WorkflowNode", "WorkflowNode_WorkflowNodeId")
                         .WithMany("WorkflowNodeLinks_WorkflowNodeId")
                         .HasForeignKey("WorkflowNodeId")
                         .OnDelete(DeleteBehavior.Cascade)
