@@ -28,7 +28,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 !System.Based.Core.dll
-!roslyn/
+!*/roslyn/*
 
 # Visual Studio 2015 cache/options directory
 .vs/
