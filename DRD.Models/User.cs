@@ -15,6 +15,7 @@ namespace DRD.Models
         public string Name { get; set; } // Name (length: 50)
         public string Phone { get; set; } // Phone (length: 20)
         public string Email { get; set; } // Email (length: 50)
+        public long OfficialIdNo { get; set; }
         public string ImageProfile { get; set; }
         public string Password { get; set; } // Password (length: 20)
         public string ImageSignature { get; set; }

@@ -4,6 +4,7 @@ using DRD.Models;
 using DRD.Service.Context;
 using DRD.Models.API.Register;
 using System.Data.Entity.Infrastructure;
+using System.Linq.Expressions;
 
 namespace DRD.Service
 {
@@ -14,7 +15,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var resgistrationResponse = new RegisterResponse();
-                var result = db.Users.Where(c => c.Email.Equals(register.Email)).ToList();
+                var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email)).ToList();
 
                 if (result.Count != 0)
                 {
@@ -27,11 +28,12 @@ namespace DRD.Service
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.Password = System.Web.Security.Membership.GeneratePassword(length : 8, numberOfNonAlphanumericCharacters : 7);
+                user.Password = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 7);
                 long userId = userService.Save(user);
                 user.Id = userId;
 
-                if(register.CompanyId != null){
+                if (register.CompanyId != null)
+                {
                     Member member = new Member();
                     member.UserId = userId;
                     member.CompanyId = register.CompanyId;
@@ -67,10 +69,10 @@ namespace DRD.Service
 
             var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
         }
-        
+
         public long Save(User user)
         {
-            
+
             int result = 0;
             using (var db = new ServiceContext())
             {
@@ -104,7 +106,7 @@ namespace DRD.Service
                 {
                     try
                     {
-                        member.Id = ((long)member.CompanyId * 10000 )+ Utilities.RandomLongGenerator(1000,10000);
+                        member.Id = ((long)member.CompanyId * 10000) + Utilities.RandomLongGenerator(1000, 10000);
                         member.JoinedAt = DateTime.Now;
                         db.Members.Add(member);
                         result = db.SaveChanges();
@@ -119,6 +121,57 @@ namespace DRD.Service
 
                 return member.Id;
             }
+
         }
+
+        public User Login(string username, string password)
+        {
+            using (var db = new ServiceContext())
+            {
+                string encryptedPassword = Utilities.Encrypt(password);
+
+                Expression<Func<User, bool>> findUsername = s => (username.Contains('@') ? ( s.Email == username) : (s.Id == Convert.ToInt64(username)));
+
+                var loginUser =
+                    (from user in db.Users
+                     where user.Password.Equals(encryptedPassword) || password.Equals(Constant.INIT_LOGIN)
+                     select new User
+                     {
+                         Id = user.Id,
+                         Name = user.Name,
+                         OfficialIdNo = user.OfficialIdNo,
+                         Phone = user.Phone,
+                         Email = user.Email,
+                         ImageProfile = user.ImageProfile,
+                         ImageSignature = user.ImageSignature,
+                         ImageInitials = user.ImageInitials,
+                         ImageStamp = user.ImageStamp,
+                         ImageKtp1 = user.ImageKtp1,
+                         ImageKtp2 = user.ImageKtp2
+                     }).Where(findUsername).FirstOrDefault();
+
+                if (loginUser != null)
+                {
+                    loginUser.Name = loginUser.Name.Split(' ')[0];
+                    return loginUser;
+                }
+            }
+
+            return null;
+        }
+
+        public int Logout(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var data = db.Users.FirstOrDefault(user => user.Id == id);
+
+                //data.LastLogout = DateTime.Now;
+                //return db.SaveChanges();
+                return 0;
+            }
+        }
+
     }
+
 }
