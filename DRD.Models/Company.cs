@@ -11,7 +11,7 @@ namespace DRD.Models
         public long Id { get; set; } // Id (Primary key)
         public string Code { get; set; } // Code (length: 10)
         public string Name { get; set; } // Name (length: 50)
-        public string Contact { get; set; } // Contact (length: 50)
+        public long OwnerId { get; set; } // OwnerId (ForeignKey to user)
         public string Phone { get; set; } // Phone (length: 20)
         public string Email { get; set; } // Email (length: 100)
         public string Descr { get; set; } // Descr
@@ -27,9 +27,6 @@ namespace DRD.Models
 
         // Reverse navigation
 
-        // FK User as owner
-        public User Owner{ get; set; } // UserId (length: 50)
-
         // public virtual ICollection<Document> Documents { get; set; } // Document.FK_Document_Company
         public virtual ICollection<Member> Members { get; set; } // Member.FK_Member_Company
         //public virtual System.Collections.Generic.ICollection<DtoMemberSubscribe> MemberSubscribes { get; set; } // MemberSubscribe.FK_MemberSubscribe_Company
@@ -42,7 +39,6 @@ namespace DRD.Models
         {
             IsActive = true;
             CreatedAt = DateTime.Now;
-            Owner = new User();
             Members = new List<Member>();
             Tags = new List<Tag>();
         }
