@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfigGenerator.cs" />
-    <Compile Include="CompanyService.cs" />
+    <Compile Include="MenuService.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Context\ServicesContext.cs" />
@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Menu.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
