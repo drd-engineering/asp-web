@@ -29,6 +29,7 @@ namespace DRD.Service
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
+                user.IsActive = true;
                 //user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
                 user.Password = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
                 long userId = userService.Save(user);
@@ -168,6 +169,15 @@ namespace DRD.Service
             return null;
         }
 
+        public bool CheckEmailAvailability(string email)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
+                if (result.Count != 0) { return false; }
+                else { return true; }
+            }
+        }
         public int Logout(long id)
         {
             using (var db = new ServiceContext())

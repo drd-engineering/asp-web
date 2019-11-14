@@ -200,6 +200,7 @@
                                             <h4>Create Your DRD Account</h4>
                                             <div class="row">
                                                 <div class="col-md-12">
+                                                    @* TODO Buat pengecekkan Nama, Tidak boleh mengandung symbol ataupun angka. *@
                                                     <label class="control-label">Name</label>
                                                     <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='user'" maxlength="50" />
                                                 </div>
@@ -212,23 +213,17 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <label class="control-label">Email</label>
-                                                    <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='user'" maxlength="50" ng-readonly="model.Id!=0" />
+                                                    <input type="email" class="form-control" ng-change="checkAvailability(model.Email)" ng-model="model.Email" ng-required="wizarno=='user'" maxlength="50" ng-readonly="model.Id!=0" />
+                                                    <div style="color:red;font-size:10px;align-self:end">{{emailStatus}}</div>
                                                 </div>
 
                                             </div>
 
                                             <hr />
                                             <h4>Company (Optional) </h4>
-
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label class="control-label">Select Your Company</label>
-                                                    @*<asp:DropDownList id="DropDownList1" runat="server">
-                                                        @foreach (var item in Model.Enrollments)
-                                                        {
-                                                            <asp:ListItem Value="item.Id" Text="item.Name"></asp:ListItem>
-                                                                          }
-                                                        </asp:DropDownList>*@ 
                                                     <input type="text" class="form-control" ng-model="model.CompanyId" ng-required="wizarno=='user'" maxlength="50" />
                                                 </div>
 
@@ -249,7 +244,8 @@
                                                             <div class="ladda-progress" style="width: 0px;"></div>
                                                         </button>*@
 
-                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="saveUser()" style="width:120px">
+                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" 
+                                                            data-spinner-color="#333" ng-click="saveUser()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
@@ -324,7 +320,6 @@
 
             }
 
-
             /*--------------------------------------------------------------
             SAVE USER
             --------------------------------------------------------------*/
@@ -386,6 +381,19 @@
                 }, 200);
             }
 
+            $scope.checkAvailability = function (emailUser) {
+                $http.get('@Url.Action("CheckEmail", "Register")?email=' + emailUser)
+                .then(function (response) {
+                    if (response.data) {
+                        document.querySelector('.btn-submit').disabled = false;
+                        $scope.emailStatus = "";
+                    }
+                    else {
+                        document.querySelector('.btn-submit').disabled = true;
+                        $scope.emailStatus = "This email has already used";
+                    }
+                });
+            }
         });
         $(function () {
         });
