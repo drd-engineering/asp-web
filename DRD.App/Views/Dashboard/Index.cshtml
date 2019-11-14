@@ -44,191 +44,8 @@
                 <!-- Content area -->
 
                 <div class="content" id="content" style="display:none;">
-                    <!-- LIST -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-lg-2">
-                                <div class="panel box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('INBOX')">
-                                        <h3 class="no-margin">{{counter.Inbox}}</h3>
-                                        Inbox
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="panel bg-slate-600 box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('INPROGRESS')">
-                                        <h3 class="no-margin">{{counter.InProgress}}</h3>
-                                        In Progress
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('COMPLETED')">
-                                        <h3 class="no-margin">{{counter.Completed}}</h3>
-                                        Completed
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#69ab3d;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('CONTACT')">
-                                        <h3 class="no-margin">{{counter.Contact}}</h3>
-                                        Contact
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#f07522;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('DOCUMENT')">
-                                        <h3 class="no-margin">{{counter.Document}}</h3>
-                                        Document
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#fbc300;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('DRDRIVE')">
-                                        <h3 class="no-margin">{{counter.DrDriveDesc}}</h3>
-                                        DRDrive
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    </div>
-
-
-
-                    <!-- /Simpanan -->
-                    <!-- /LIST -->
-                    <!--ROTATION -->
-                    <div class="row">
-
-
-                        <!-- Page header -->
-                        <div class="page-header page-header-default">
-                            <div class="page-header-content">
-                                <div class="page-title">
-                                    <h4>Rotation</h4>
-                                    <br />
-
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
-                                                <span class="input-group-btn">
-                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
-                                                        <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- /page header -->
-                        <!-- Content area -->
-
-                        <div class="content">
-                            <!-- Contextual classes -->
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="">
-                                        <button class="btn border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
-                                            &nbsp;&nbsp;Add New&nbsp;&nbsp;
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="pull-right">
-
-                                        <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
-                                            <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style="height:10px"></div>
-                            <!-- LIST -->
-                            <div calss="row">
-
-
-                                <div class="panel panel-flat">
-
-                                    <div class="table-responsive" ng-show="isView">
-
-                                        <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th width="25px">#</th>
-                                                    <th>Subject</th>
-                                                    <th>Workflow Name</th>
-                                                    <th width="175px">Created</th>
-                                                    <th width="100px">Status</th>
-                                                    <th width="100px">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="x in products">
-                                                    <td>{{$index+1 + index}}</td>
-                                                    <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
-                                                    <td>{{x.WorkflowName}}</td>
-                                                    <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-                                                    <td>
-                                                        <a ng-click="runLog(x.Status, x.Key);" ng-hide="x.Status=='00'">
-                                                            {{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span>
-                                                        </a>
-                                                        <span ng-hide="x.Status!='00'">
-                                                            {{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span>
-                                                        </span>
-                                                    </td>
-                                                    <td width="100px">
-                                                        <a ng-click="do_start(x.Id);" ng-show="x.Status=='00'">Start</a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /LIST -->
-
-                        </div>
-                        <!-- /content area -->
-                    </div>
-
-                    <!--END ROTATION -->
+                  
+                       
                 </div>
                 <!-- /content area -->
             </div>
@@ -243,7 +60,7 @@
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
 
-        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+        @*myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
@@ -480,7 +297,7 @@
                 });
             }
 
-        });
+        });*@
 
     </script>
 

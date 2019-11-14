@@ -5,7 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 
 using DRD.Models;
+using DRD.Models.View;
+using DRD.Models.Custom;
 using DRD.Service;
+
 
 namespace DRD.App.Controllers
 {
@@ -46,23 +49,15 @@ namespace DRD.App.Controllers
             Response.Redirect("/Login");
         }
 
+       
         public void CheckLogin(Controller controller)
         {
             if (controller.Session["_USER_LOGIN_"] == null) controller.Response.Redirect("/Login");
         }
 
-        public void UpdateCompanyProfile(Controller controller, Company company)
+        public UserSession GetUser(Controller controller)
         {
-            User user = (User)controller.Session["_USER_LOGIN_"];
-            if (user == null) return;
-
-            //user.Company = company;
-            controller.Session["_USER_LOGIN_"] = user;
-        }
-
-        public User GetUser(Controller controller)
-        {
-            User user = (User)controller.Session["_USER_LOGIN_"];
+            UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
             //user.Id = user.Id;
             //user.UserId = user.UserId;
             //user.Name = user.Name;
@@ -76,6 +71,28 @@ namespace DRD.App.Controllers
             return user;
         }
 
-        
+        public List<Menu> GetMenus(Controller controller, int activeId)
+        {
+            UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
+            if (user == null)
+                return null;
+            MenuService menuService = new MenuService();
+
+            return menuService.GetMenus(activeId);
+        }
+
+        public List<string> GetMenuObjectItems(List<Menu> menus, int parentId)
+        {
+            List<string> items = new List<string>();
+            foreach (Menu m in menus)
+            {
+                if (int.Parse(m.ParentCode) == parentId && m.ItemType == 1)
+                {
+                    items.Add(m.ObjectName);
+                }
+            }
+            return items;
+        }
+
     }
 }

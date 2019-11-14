@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DRD.Models;
+using DRD.Models.Custom;
 using DRD.Service.Context;
 using DRD.Models.API.Register;
 using System.Data.Entity.Infrastructure;
@@ -125,19 +126,24 @@ namespace DRD.Service
 
         }
 
-        public User Login(string username, string password)
+        public UserSession Login(string username, string password)
         {
             using (var db = new ServiceContext())
             {
                 //string encryptedPassword = Utilities.Encrypt(password);
                 string encryptedPassword = password;
 
-                Expression<Func<User, bool>> findUsername = s => (username.Contains('@') ? ( s.Email == username) : (s.Id == Convert.ToInt64(username)));
+                Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
+                if (!username.Contains('@'))
+                {
+                    long userId = Convert.ToInt64(username);
+                    findUsername = s => s.Id == userId;
+                }
 
                 var loginUser =
                     (from user in db.Users
-                     where user.Password.Equals(encryptedPassword) || password.Equals(Constant.INIT_LOGIN)
-                     select new User
+                     where user.Password.Equals(encryptedPassword)
+                     select new UserSession
                      {
                          Id = user.Id,
                          Name = user.Name,
