@@ -31,7 +31,7 @@ namespace DRD.Service
                 user.Phone = register.Phone;
                 user.IsActive = true;
                 //user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
-                user.Password = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
+                user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
                 long userId = userService.Save(user);
                 user.Id = userId;
 
@@ -43,6 +43,9 @@ namespace DRD.Service
                     long memberId = userService.Save(member);
                 }
 
+                //TODO: remove these lines when production
+                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Will sent email of : " + user.Id + " - " + user.Name);
+
                 userService.sendEmailRegistration(user);
 
                 resgistrationResponse.Id = "" + user.Id;
@@ -52,6 +55,8 @@ namespace DRD.Service
         }
         public void sendEmailRegistration(User user)
         {
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
             var configGenerator = new AppConfigGenerator();
             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
@@ -61,6 +66,10 @@ namespace DRD.Service
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration");
+            System.Diagnostics.Debug.WriteLine(strPathAndQuery);
+
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_NUMBER_}", "" + user.Id);
@@ -69,6 +78,10 @@ namespace DRD.Service
             body = body.Replace("//images", "/images");
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration");
+            System.Diagnostics.Debug.WriteLine(senderEmail);
 
             var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
         }
@@ -84,6 +97,10 @@ namespace DRD.Service
                     try
                     {
                         user.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+
+                        //TODO: remove these lines when production
+                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + user.Id);
+
                         user.ImageProfile = "icon_user.png";
                         user.CreatedAt = DateTime.Now;
                         db.Users.Add(user);

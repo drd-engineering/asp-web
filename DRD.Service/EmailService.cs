@@ -62,27 +62,11 @@ namespace DRD.Service
             smtp.UseDefaultCredentials = false;// true;
             smtp.Credentials = new System.Net.NetworkCredential(emailuser, emailpassword);// "klaxononline@gmail.com", "klaxon123");
             smtp.EnableSsl = true;
-            smtp.Timeout = 5000;
+            //smtp.Timeout = 5000;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtp.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
             await Task.Yield();
             smtp.Send(mail);//, "Klaxon");
-
-            //SmtpClient smtp = new SmtpClient(emailsmtp, int.Parse(emailport));
-            //smtp.UseDefaultCredentials = false;
-            //smtp.EnableSsl = true;
-            //smtp.Credentials = new System.Net.NetworkCredential(emailuser, emailpwd); 
-            ////smtp.Port = Convert.ToInt32("25");
-            //smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-            //smtp.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
-            ////using (var smtpClient = new SmtpClient())
-            ////{
-
-            ////await smtp.SendMailAsync(mail);
-            //smtp.Send(mail);
-            //////}
-            //////this.AsyncVoidMethod();
-
 
         }
 

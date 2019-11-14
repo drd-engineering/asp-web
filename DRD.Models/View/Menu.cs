@@ -38,6 +38,7 @@ namespace DRD.Models.View
 
         public static Menu FromCsv(string csvLine)
         {
+            /// TODO: implement ChildCount and filter neccessary standard menu
             string[] values = csvLine.Split(',');
             Menu menuItem = new Menu();
             menuItem.Code = Convert.ToString(values[0]);

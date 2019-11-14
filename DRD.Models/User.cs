@@ -11,6 +11,7 @@ namespace DRD.Models
     [Table("Users", Schema = "public")]
     public class User
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 50)
         public string Phone { get; set; } // Phone (length: 20)
@@ -30,6 +31,18 @@ namespace DRD.Models
         public bool IsActive { get; set; } // IsActive
         public DateTime CreatedAt { get; set; } // DateCreated
 
-        public User() { }
+        public User() {
+            Id = RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+        }
+
+        private long RandomLongGenerator(long minimumValue, long maximumValue)
+        {
+            Random randomClass = new Random();
+            byte[] buf = new byte[8];
+            randomClass.NextBytes(buf);
+            long longRand = BitConverter.ToInt64(buf, 0);
+
+            return (Math.Abs(longRand % (maximumValue - minimumValue)) + minimumValue);
+        }
     }
 }
