@@ -18,17 +18,14 @@ namespace DRD.App.Controllers
         private ServiceContext db = new ServiceContext();
 
         // GET: Register
+        // Index of register page
         public ActionResult Index()
         {
-            //var service = new CompanyService();
-            //var data = service.GetAllCompany();
-            //CompanyDropDown.DataSource = data;
-            //CompanyDropDown.DataBind();
             return View();
         }
 
         // GET: Register/Save
-        //User Registration
+        // Register a new User, save it to database
         public ActionResult Save(Register register)
         {
             var service = new UserService();
@@ -36,9 +33,17 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Register/GetAllCompaniesRegistered
-        //User Registration
-        public ActionResult GetAllCompaniesRegistered()
+        // GET: Register/GetAllCompany
+        // Retrieve all companny as list
+        public ActionResult GetAllCompany()
+        {
+            var service = new CompanyService();
+            var data = service.GetAllCompany();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        // GET: Register/CompanySelected?id=
+        // retrieve a single company by company id
+        public ActionResult CompanySelected(int id)
         {
             var service = new CompanyService();
             var data = service.GetAllCompany();
@@ -46,7 +51,7 @@ namespace DRD.App.Controllers
         }
 
         // GET: Register/CheckEmail
-        //User Registration
+        // Check whenever an email is already used
         public ActionResult CheckEmail(string email)
         {
             var service = new UserService();

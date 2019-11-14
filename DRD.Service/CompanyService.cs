@@ -21,8 +21,30 @@ namespace DRD.Service
                     company.Id = x.Id;
                     company.Code = x.Code;
                     company.Name = x.Name;
+                    listReturn.companies.Append(company);
                 }
                 return listReturn;
+            }
+        }
+        public Company getCompany(int id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    var returnCompany = new Company();
+                    foreach(Models.Company x in result){
+                        returnCompany.Id = x.Id;
+                        returnCompany.Name = x.Name;
+                        returnCompany.Code = x.Code;
+                    }
+                    return returnCompany;
+                }
             }
         }
     }
