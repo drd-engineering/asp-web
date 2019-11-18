@@ -16,14 +16,14 @@ namespace DRD.Models.Custom
         public string ImageProfile { get; set; }
         public string Password { get; set; } // Password (length: 20)
         public string ImageSignature { get; set; }
-
         public string ImageInitials { get; set; }
-
         public string ImageStamp { get; set; }
-
         public string ImageKtp1 { get; set; }
-
         public string ImageKtp2 { get; set; }
         public bool IsActive { get; set; }
+        public long? ActivationKeyId { get; set; } // ActivationKeyId
+        public long? CompanyId { get; set; } // CompanyId
+        public int SubscriptTypeId { get; set; } // SubscriptTypeId
+        public string ShortName { get; set; }
     }
 }

@@ -276,6 +276,4 @@ __pycache__/
 # tools/
 
 # Migrations 
-!/Migrations/*
-!*/Migrations/Configuration.cs
-!*/Migrations/NpgSqlConfiguration.cs
+Core.Postgres/Migrations/*

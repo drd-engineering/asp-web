@@ -53,6 +53,70 @@ namespace DRD.Service
                 return resgistrationResponse;
             }
         }
+
+        public UserSession Login(string username, string password)
+        {
+            using (var db = new ServiceContext())
+            {
+                //string encryptedPassword = Utilities.Encrypt(password);
+                string encryptedPassword = password;
+
+                Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
+                if (!username.Contains('@'))
+                {
+                    long userId = Convert.ToInt64(username);
+                    findUsername = s => s.Id == userId;
+                }
+
+                var loginUser =
+                    (from user in db.Users
+                     where user.Password.Equals(encryptedPassword)
+                     select new UserSession
+                     {
+                         Id = user.Id,
+                         Name = user.Name,
+                         OfficialIdNo = user.OfficialIdNo,
+                         Phone = user.Phone,
+                         Email = user.Email,
+                         ImageProfile = user.ImageProfile,
+                         ImageSignature = user.ImageSignature,
+                         ImageInitials = user.ImageInitials,
+                         ImageStamp = user.ImageStamp,
+                         ImageKtp1 = user.ImageKtp1,
+                         ImageKtp2 = user.ImageKtp2
+                     }).Where(findUsername).FirstOrDefault();
+
+                if (loginUser != null)
+                {
+                    loginUser.Name = loginUser.Name.Split(' ')[0];
+                    return loginUser;
+                }
+            }
+
+            return null;
+        }
+
+        public bool CheckEmailAvailability(string email)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
+                if (result.Count != 0) { return false; }
+                else { return true; }
+            }
+        }
+        public int Logout(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var data = db.Users.FirstOrDefault(user => user.Id == id);
+
+                //data.LastLogout = DateTime.Now;
+                //return db.SaveChanges();
+                return 0;
+            }
+        }
+
         public void sendEmailRegistration(User user)
         {
             //TODO: remove these lines when production
@@ -144,66 +208,29 @@ namespace DRD.Service
 
         }
 
-        public UserSession Login(string username, string password)
-        {
+        public User GetById(long id, long loginId)
+        { 
             using (var db = new ServiceContext())
             {
-                //string encryptedPassword = Utilities.Encrypt(password);
-                string encryptedPassword = password;
-
-                Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
-                if (!username.Contains('@'))
-                {
-                    long userId = Convert.ToInt64(username);
-                    findUsername = s => s.Id == userId;
-                }
-
-                var loginUser =
-                    (from user in db.Users
-                     where user.Password.Equals(encryptedPassword)
-                     select new UserSession
+                var result =
+                    (from c in db.Users
+                     where c.Id == id
+                     select new User
                      {
-                         Id = user.Id,
-                         Name = user.Name,
-                         OfficialIdNo = user.OfficialIdNo,
-                         Phone = user.Phone,
-                         Email = user.Email,
-                         ImageProfile = user.ImageProfile,
-                         ImageSignature = user.ImageSignature,
-                         ImageInitials = user.ImageInitials,
-                         ImageStamp = user.ImageStamp,
-                         ImageKtp1 = user.ImageKtp1,
-                         ImageKtp2 = user.ImageKtp2
-                     }).Where(findUsername).FirstOrDefault();
-
-                if (loginUser != null)
-                {
-                    loginUser.Name = loginUser.Name.Split(' ')[0];
-                    return loginUser;
-                }
-            }
-
-            return null;
-        }
-
-        public bool CheckEmailAvailability(string email)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
-                if (result.Count != 0) { return false; }
-                else { return true; }
-            }
-        }
-        public int Logout(long id)
-        {
-            using (var db = new ServiceContext())
-            {
-                var data = db.Users.FirstOrDefault(user => user.Id == id);
-
-                //data.LastLogout = DateTime.Now;
-                //return db.SaveChanges();
-                return 0;
+                         Id = c.Id,
+                         Name = c.Name,
+                         Phone = c.Phone,
+                         Email = c.Email,
+                         ImageProfile = c.ImageProfile,
+                         IsActive = c.IsActive,
+                         ImageSignature = (id == loginId ? c.ImageSignature : ""),
+                         ImageInitials = (id == loginId ? c.ImageInitials : ""),
+                         ImageStamp = (id == loginId ? c.ImageStamp : ""),
+                         ImageKtp1 = (id == loginId ? c.ImageKtp1 : ""),
+                         ImageKtp2 = (id == loginId ? c.ImageKtp2 : ""),
+                         CreatedAt = c.CreatedAt,
+                     }).FirstOrDefault();
+                return result;
             }
         }
 
