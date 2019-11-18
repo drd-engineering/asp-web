@@ -203,6 +203,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
+    <Compile Include="Controllers\DummyController.cs" />
     <Compile Include="Controllers\EmailHtmlController.cs" />
     <Compile Include="Controllers\FaspayController.cs" />
     <Compile Include="Controllers\MemberTopupPaymentController.cs" />
@@ -1096,6 +1097,7 @@
     <Folder Include="Scripts\pdfjs\" />
     <Folder Include="svg.js-master\" />
     <Folder Include="Uploaded\" />
+    <Folder Include="Views\Dummy\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
