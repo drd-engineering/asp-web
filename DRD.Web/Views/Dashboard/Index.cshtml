@@ -28,219 +28,237 @@
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         cursor: pointer;
     }
+
+    .panel {
+        border: none;
+    }
+
+    .panel-heading {
+        /*make'em transparent, cause of panel in panel thing*/
+        background-color: #f5f5f5 !important;
+    }
+
+
+    .highlight-container {
+        /*same as hightlight-container in invitation-list*/
+         background-color: #f5f5f5;
+         padding: 0;
+         width: inherit;
+    }
+
+    .highlight-container .container {
+            width: inherit;
+    }
+
+    .highlight-card {
+        background-color: white;
+        margin: inherit 10px;
+        padding: 10px;
+    }
+
+    .highlight-header {
+        border-bottom: solid 1px #e9ebf0;
+    }
+
+    .text-align-right {
+        text-align: right !important;
+    }
+
+
+    .highlight-card .card-title {
+        /*similiar with medium-text class, font-size's different. Same as card-title in invitationList*/
+        font-weight: 400;
+        line-height: 1.25;       
+        font-size: 14x;
+        
+    }
+
+    .highlight-card .card-content {
+        /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
+        padding: 5px;
+        font-weight: 300;
+        color: grey;
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    .highlight-card .card-filter {
+        /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
+
+        font-weight: 300;
+        color: black;
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    .highlight-card h1 {
+        font-size: 96px;
+        color: black;
+    }
+
+    ..highlight-card .card-image-lg {
+        height: 100%;
+    }
+
+    .highlight-card .card-image-lg img {
+        height: 80px;
+        width: 80px;
+        border-radius: 50%; /* almost all image treated like this*/
+    }
+
+    .card-content p {
+        text-align: center;
+        line-height: 1;
+        margin-top: 5px;
+    }
+
+    /*container of vertical-align content wannabe*/
+    .vertical-align-row {
+        display: flex;
+    }
+
+    .vertical-align-content {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+
 </style>
 
-<body>
+<body ng-controller="drdController">
 
-    <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
-        <!-- Page content -->
-        <div class="page-content">
 
-
-            <!-- Main content -->
-            <div class="content-wrapper">
-                
-                <!-- Content area -->
-
-                <div class="content" id="content" style="display:none;">
-                    <!-- LIST -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-lg-2">
-                                <div class="panel box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('INBOX')">
-                                        <h3 class="no-margin">{{counter.Inbox}}</h3>
-                                        Inbox
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
+        <section id="dashboard-rotation">
+            <div class="panel highlight-container">
+                <div class="highlight-card">
+                    <div class="highlight-header">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <p class="card-title"><strong>ROTATION</strong></p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="card-filter">Select 2</p>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
-                                <div class="panel bg-slate-600 box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('INPROGRESS')">
-                                        <h3 class="no-margin">{{counter.InProgress}}</h3>
-                                        In Progress
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#1f4e79;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('COMPLETED')">
-                                        <h3 class="no-margin">{{counter.Completed}}</h3>
-                                        Completed
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#69ab3d;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('CONTACT')">
-                                        <h3 class="no-margin">{{counter.Contact}}</h3>
-                                        Contact
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#f07522;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('DOCUMENT')">
-                                        <h3 class="no-margin">{{counter.Document}}</h3>
-                                        Document
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <div class="panel bg-success-600 box-rounded" style="background-color:#fbc300;color:white">
-                                    <div class="panel-body center-text" ng-click="linkPage('DRDRIVE')">
-                                        <h3 class="no-margin">{{counter.DrDriveDesc}}</h3>
-                                        DRDrive
-                                    </div>
-                                    <div class="container-fluid">
-                                        <div id="members-online"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
+
+
                     </div>
-
-
-
-                    <!-- /Simpanan -->
-                    <!-- /LIST -->
-                    <!--ROTATION -->
-                    <div class="row">
-
-
-                        <!-- Page header -->
-                        <div class="page-header page-header-default">
-                            <div class="page-header-content">
-                                <div class="page-title">
-                                    <h4>Rotation</h4>
-                                    <br />
-
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
-                                                <span class="input-group-btn">
-                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
-                                                        <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
-                                                </span>
+                    <div class="card-content">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
+                                        <div class="col-sm-3 vertical-align-content">
+                                            <div class="card-image-lg">
+                                                <img src="~/assets/ongoing.png" />
+                                                <p>Ongoing</p>
                                             </div>
                                         </div>
+                                        <div class="col-sm-9">
+                                            <div class="card-content-lg">
+                                                <h1>{{counter.InProgress}}</h1>
+                                            </div>
+
+                                        </div>
+
                                     </div>
-
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- /page header -->
-                        <!-- Content area -->
-
-                        <div class="content">
-                            <!-- Contextual classes -->
-                            <div class="row">
 
                                 <div class="col-md-6">
-                                    <div class="">
+                                    <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
+                                        <div class="col-sm-3 vertical-align-content">
+                                            <div class="card-image-lg">
+                                                <img src="~/assets/completed.png" />
+                                                <p>Completed</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="card-content-lg">
+                                                <h1>{{counter.Completed}}</h1>
+                                            </div>
 
-                                        <button class="btn border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
-                                            &nbsp;&nbsp;Add New&nbsp;&nbsp;
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="pull-right">
+                                        </div>
 
-                                        <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
-                                            <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style="height:10px"></div>
-                            <!-- LIST -->
-                            <div calss="row">
-
-
-                                <div class="panel panel-flat">
-
-                                    <div class="table-responsive" ng-show="isView">
-
-                                        <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th width="25px">#</th>
-                                                    <th>Subject</th>
-                                                    <th>Workflow Name</th>
-                                                    <th width="175px">Created</th>
-                                                    <th width="100px">Status</th>
-                                                    <th width="100px">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="x in products">
-                                                    <td>{{$index+1 + index}}</td>
-                                                    <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
-                                                    <td>{{x.WorkflowName}}</td>
-                                                    <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-                                                    <td>
-                                                        <a ng-click="runLog(x.Status, x.Key);" ng-hide="x.Status=='00'">
-                                                            {{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span>
-                                                        </a>
-                                                        <span ng-hide="x.Status!='00'">
-                                                            {{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span>
-                                                        </span>
-                                                    </td>
-                                                    <td width="100px">
-                                                        <a ng-click="do_start(x.Id);" ng-show="x.Status=='00'">Start</a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /LIST -->
-
                         </div>
-                        <!-- /content area -->
+
                     </div>
-
-                    <!--END ROTATION -->
                 </div>
-                <!-- /content area -->
             </div>
-            <!-- /main content -->
-        </div>
-        <!-- /page content -->
-    </div>
-    <!-- /page container -->
+        </section>
 
-    <script type="text/javascript">
+        <section id="dashboard-usage">
+            <div class="panel highlight-container">
+                <div class="highlight-card">
+                    <div class="highlight-header">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <p class="card-title"><strong>USAGE</strong></p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="card-filter">Select 2</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="card-content">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row vertical-align-row">
+                                        <div class="col-sm-3 vertical-align-content">
+                                            <div class="card-image-lg">
+                                                <img src="~/assets/ongoing.png" />
+                                                <p>Ongoing</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="card-content-lg">
+                                                <h1>10</h1>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row vertical-align-row">
+                                        <div class="col-sm-3 vertical-align-content">
+                                            <div class="card-image-lg">
+                                                <img src="~/assets/completed.png" />
+                                                <p>Completed</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="card-content-lg">
+                                                <h1>10</h1>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+     
+
+        <script type="text/javascript">
 
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
@@ -287,7 +305,7 @@
                 $scope.startCounting();
                 $scope.getActivityCounter();
                 $("#content").show();
-                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+               
             });
 
             $scope.getActivityCounter = function () {
@@ -327,121 +345,8 @@
             DO EDIT ROTATION
             --------------------------------------------------------------*/
 
-            $scope.do_edit = function (mid, id) {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'ROTATION'})[0].UrlPage;
-                mid=url.substr(url.indexOf('=')+1);
-                location.href = "/Rotation/Rotation?mid=" + mid + "," + id;
-            }
-            $scope.addProduct = function (mid) {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'ROTATION'})[0].UrlPage;
-                mid=url.substr(url.indexOf('=')+1);
-                location.href = "/Rotation/Rotation?mid=" + mid;
-            }
-
-            $scope.runLog = function (status, id) {
-                var code='';
-                if (status=='01')
-                    code='INPROGRESS';
-                else if (status=='98')
-                    code='DECLINED';
-                else if (status=='90')
-                    code='COMPLETED';
-
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:code})[0].UrlPage.replace('list?','?')+','+id;
-                location.href = url;
-            }
-            $scope.checkFlag = function (val, bitval) {
-                return ((val & bitval) == bitval);
-            }
-
-            $scope.do_start = function (id) {
-                swal({
-                    title: "Confirmation",
-                    text: "Data will be processed, continue with data processing?",
-                    type: "warning",
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonColor: "#2196F3",
-                    showLoaderOnConfirm: true
-                },
-                function () {
-                    setTimeout(function () {
-                        //swal({
-                        //    title: "Ajax request finished!",
-                        //    confirmButtonColor: "#2196F3"
-                        //});
-                        $scope.startProduct(id);
-                    }, 500);
-
-                });
-
-            }
-
-            $scope.startProduct = function (id) {
-                $http.post("/Rotation/start?id=" + id,
-                    {
-                    }).then(function (response) {
-                        if (response.data) {
-                            if (response.data == -1)
-                                showError("Invalid rotation.");
-                            else if (response.data == -2)
-                                showError("Invalid member plan.");
-                            else if (response.data == -3)
-                                showInfo("Your package plan has expired, please check on my plan.");
-                            else if (response.data == -4)
-                                showInfo("Rotation quota is not enough, please check on my plan.");
-
-                            else {
-                                showSuccess("Successful data process.");
-                                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
-                            }
-                        }else
-                            showInfo("process data error.");
-                    }, function (response) {
-                        //error handle\
-                        var x = 0;
-                        showInfo("process data error.");
-                    });
-            }
-            /*--------------------------------------------------------------
-            GET ASSET ITEM
-            --------------------------------------------------------------*/
-            $scope.getLiteProducts = function (kriteria, page, row) {
-                var btn = Ladda.create(document.querySelector('.btn-process'));
-                btn.start();
-                $scope.products = [];
-                $http.post('@Url.Action("GetList", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    btn.stop();
-                    if (response.data) {
-                        $scope.products = response.data;
-
-                        $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        $scope.getProductCount(kriteria);
-
-                        $scope.isView = true;
-                    }
-                }, function (response) {
-                    btn.stop();
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.changePage = function (kriteria, page, row) {
-                $scope.products = [];
-                $http.post('@Url.Action("GetList", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    if (response.data) {
-                        $scope.products = response.data;
-                        $scope.index = row * (page - 1);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
+           
+           
             $scope.getProductCount = function (kriteria) {
                 $http.post('@Url.Action("GetListCount", "Rotation")', { topCriteria: kriteria }).then(function (response) {
                     if (response.data) {
@@ -481,7 +386,7 @@
             $scope.sendEmail = function () {
                 $http.post('@Url.Action("sendemail", "dashboard")', {  }).then(function (response) {
                     if (response.data) {
-                        
+
                     }
                 }, function (response) {
                     //error handle\
@@ -500,6 +405,6 @@
 
         });
 
-    </script>
+        </script>
 
 </body>

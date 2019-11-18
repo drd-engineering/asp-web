@@ -276,6 +276,8 @@
   <ItemGroup>
     <Content Include="angular-signature-master\src\signature_pad.min.js" />
     <Content Include="appearance_content_panels.html" />
+    <Content Include="assets\completed.png" />
+    <Content Include="assets\ongoing.png" />
     <Content Include="assets\xml\clickpaystatus.xml" />
     <Content Include="assets\xml\cliclpay.xml" />
     <Content Include="assets\xml\faspay_debit.xml" />
@@ -308,6 +310,7 @@
     <Content Include="Images\Company\default_logo.png" />
     <Content Include="Images\Company\logodocurate.png" />
     <Content Include="Images\Company\no_picture.png" />
+    <Content Include="Images\completed.png" />
     <Content Include="Images\Diagram\canvas.png" />
     <Content Include="Images\Diagram\case.png" />
     <Content Include="Images\Company\drd.jpg" />
@@ -366,6 +369,7 @@
     <Content Include="Images\Member\wisnu.png" />
     <Content Include="Images\News\no_picture.png" />
     <Content Include="Images\News\no_picture_video.png" />
+    <Content Include="Images\ongoing.png" />
     <Content Include="Images\PodCast\no_picture.png" />
     <Content Include="Images\PodCast\podcast.png" />
     <Content Include="Images\PodCast\podcast_uploaded.png" />
