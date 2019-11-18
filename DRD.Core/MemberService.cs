@@ -1376,11 +1376,6 @@ namespace DRD.Core
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        /// 
         public DtoMemberMaster GetMaster()
         {
             DtoMemberMaster masters = new DtoMemberMaster();
@@ -1393,12 +1388,6 @@ namespace DRD.Core
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="memberId"></param>
-        /// <param name="planId"></param>
-        /// <returns></returns>
         public long UpgradePlan(long memberId, int planId)
         {
             

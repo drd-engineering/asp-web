@@ -291,6 +291,8 @@
             $scope.subscriptionId = "";
             $scope.userNumber = "";
 
+            $scope.aggrement = false;
+
        
 
 
@@ -357,12 +359,13 @@
                 var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
                 btn.start();
 
-                $http.post('@Url.Action("registration", "member")',
+                $http.post('@Url.Action("registration", "memberaccount")',
                     {
                         registry: {
                             MemberName: $scope.model.MemberName,
                             MemberPhone: $scope.model.MemberPhone,
                             MemberEmail: $scope.model.MemberEmail,
+                            MemberPassword: $scope.modal.MemberPassword
 
                         }
                     }).then(function (response) {
@@ -390,10 +393,20 @@
                     });
             }
 
+            $scope.setAggreement = function (value) {
+                $scope.aggrement = value;
+            }
+
+            $scope.getAggreement = function () {
+                return $scope.aggrement;
+            }
+
             $scope.validateForm = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
                 $scope.popupTnC();
+
+                $scope.updateProduct($scope.getAggreement());
             }
 
 

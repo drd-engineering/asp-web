@@ -104,22 +104,6 @@ namespace DRD.Web.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="prod"></param>
-        /// <returns></returns>
-
-        //public ActionResult Save(DtoMember prod)
-        //{
-        //    DtoMemberLogin user = getUserLogin();
-        //    prod.UserId = user.Email;
-        //    prod.CompanyId = user.CompanyId;
-        //    var srv = new MemberService();
-        //    var data = srv.Save(prod);
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
-
         public ActionResult Check(string email)
         {
             LoginController login = new LoginController();
