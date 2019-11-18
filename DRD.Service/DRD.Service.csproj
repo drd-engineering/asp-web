@@ -83,6 +83,7 @@
     <Compile Include="ServiceContext.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Utiities.cs" />
+    <Compile Include="WorkflowService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">

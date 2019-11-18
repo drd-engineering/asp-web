@@ -16,7 +16,7 @@ namespace DRD.Models
 
         // Foreign keys
         public virtual Symbol Symbol { get; set; } // FK_WorkflowNodeLink_Symbol
-        public virtual WorkflowNode WorkflowNode_WorkflowNodeId { get; set; } // FK_WorkflowNodeLink_WorkflowNode
-        // public virtual WorkflowNode WorkflowNode_WorkflowNodeToId { get; set; } // FK_WorkflowNodeLink_WorkflowNode1
+        public virtual WorkflowNode WorkflowNodes { get; set; } // FK_WorkflowNodeLink_WorkflowNode
+        public virtual WorkflowNode WorkflowNodeTos { get; set; } // FK_WorkflowNodeLink_WorkflowNode1
     }
 }

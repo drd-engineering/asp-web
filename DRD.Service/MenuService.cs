@@ -18,6 +18,7 @@ namespace DRD.Service
                                            .ToList();
             return values;
         }
+
         public string Encrypt(string data)
         {
             var result = Utilities.Encrypt(data);
@@ -30,25 +31,6 @@ namespace DRD.Service
         {
             return Encrypt(DateTime.Now.ToString("yyyyMMddHHmmssfff") + "," + id.ToString());
         }
-
-        public string Decrypt(string data)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-            var first = Reverse(data.Substring(0, data.Length / 2));
-            var result = first + data.Substring(data.Length / 2);
-            try
-            {
-                result = Utilities.Decrypt(result);
-            }
-            catch (Exception x)
-            {
-                return null;
-            }
-
-            return result;
-        }
-
         private string Reverse(string data)
         {
             string result = "";
@@ -58,6 +40,7 @@ namespace DRD.Service
             }
             return result;
         }
+
     }
 }
 

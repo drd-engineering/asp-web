@@ -50,6 +50,10 @@
     <Compile Include="API\RegisterResponse.cs" />
     <Compile Include="API\RegistrationData.cs" />
     <Compile Include="Company.cs" />
+    <Compile Include="Custom\WorkflowNodeData.cs" />
+    <Compile Include="Custom\WorkflowNodeLinkData .cs" />
+    <Compile Include="Custom\WorkflowNodeUser.cs" />
+    <Compile Include="Custom\WorkflowData.cs" />
     <Compile Include="Custom\UserSession.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentElement.cs" />

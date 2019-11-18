@@ -24,11 +24,11 @@ namespace DRD.Models
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationNode> Rotations { get; set; } // Rotation.FK_Rotation_WorkflowNode
-        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks_WorkflowNodeId { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode
-        // public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks_WorkflowNodeToId { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
+        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // 
+        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; }
 
         // Foreign keys
-        public virtual Member Member { get; set; } // FK_WorkflowNode_Member
+        public virtual User User { get; set; } // FK_WorkflowNode_Member
         public virtual Symbol Symbol { get; set; } // FK_WorkflowNode_Symbol
         public virtual Workflow Workflow { get; set; } // FK_WorkflowNode_Workflow
 
@@ -36,8 +36,8 @@ namespace DRD.Models
         {
             Flag = 0;
             Rotations = new System.Collections.Generic.List<RotationNode>();
-            WorkflowNodeLinks_WorkflowNodeId = new System.Collections.Generic.List<WorkflowNodeLink>();
-            // WorkflowNodeLinks_WorkflowNodeToId = new System.Collections.Generic.List<WorkflowNodeLink>();
+            WorkflowNodeLinks = new System.Collections.Generic.List<WorkflowNodeLink>();
+            WorkflowNodeLinkTos = new System.Collections.Generic.List<WorkflowNodeLink>();
         }
     }
 }
