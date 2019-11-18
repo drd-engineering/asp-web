@@ -16,15 +16,9 @@ namespace DRD.Models
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
-        //// Reverse navigation
-        public virtual System.Collections.Generic.ICollection<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode.FK_WorkflowNode_Symbol
-        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_Symbol
-
         public Symbol()
         {
             SymbolType = 0;
-            WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
-            WorkflowNodeLinks = new System.Collections.Generic.List<WorkflowNodeLink>();
         }
     }
 }

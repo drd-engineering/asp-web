@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using DRD.Models.API;
 
 namespace DRD.Models
 {
@@ -24,7 +25,7 @@ namespace DRD.Models
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
-        public long? AnnotateId { get; set; } // AnnotateId
+        public long? ElementId { get; set; } // AnnotateId
         public int Flag { get; set; } // Flag
         public string FlagCode { get; set; } // FlagCode (length: 20)
         public System.DateTime? FlagDate { get; set; } // FlagDate
@@ -33,7 +34,7 @@ namespace DRD.Models
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
-        //public JsonAnnotate Annotate { get; set; }
+        public Element Element { get; set; }
 
         // Foreign keys
         public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
