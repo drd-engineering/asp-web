@@ -12,7 +12,8 @@ namespace DRD.Models
         public bool IsActive { get; set; } // IsActive
         public long? CreatorId { get; set; } // CreatorId
         public bool IsTemplate { get; set; } // IsTemplate
-        public int WfType { get; set; } // WfType
+        public int Type { get; set; } // WfType
+        public int TotalUsed { get; set; } // WfType
         public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
@@ -23,7 +24,7 @@ namespace DRD.Models
         public Workflow()
         {
             WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
-            WfType = 0;
+            Type = 0;
         }
     }
 }
