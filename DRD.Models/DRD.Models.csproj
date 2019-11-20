@@ -51,6 +51,7 @@
     <Compile Include="API\Element.cs" />
     <Compile Include="API\RegisterResponse.cs" />
     <Compile Include="API\RegistrationData.cs" />
+    <Compile Include="Contact.cs" />
     <Compile Include="DocumentUser.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Custom\WorkflowNodeData.cs" />
