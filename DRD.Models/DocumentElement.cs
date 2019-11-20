@@ -34,12 +34,10 @@ namespace DRD.Models
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
-        public Element Element { get; set; }
-
         // Foreign keys
         public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
-        
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
+        public Element Element { get; set; }
 
         public DocumentElement()
         {

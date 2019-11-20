@@ -20,9 +20,10 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         
+        // FK
         public Company Companies { get; set; } //FK to Company
-
-        public DocumentUser DocumentUser { get; set; }
+        [ForeignKey("DocumentId")]
+        public DocumentUser DocumentUser { get; set; } // FK to documentuser
         
         public Document()
         {

@@ -6,25 +6,14 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\**" />
-    <Compile Remove="Migrations\**" />
     <Content Remove="Controllers\**" />
-    <Content Remove="Migrations\**" />
     <EmbeddedResource Remove="Controllers\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <EntityDeploy Remove="Migrations\**" />
     <None Remove="Controllers\**" />
-    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove=".json-template" />
     <None Remove="appsettings.json.template" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Migrations\20191118184812_trying.cs" />
-    <Compile Include="Migrations\20191118184812_trying.Designer.cs" />
-    <Compile Include="Migrations\DRDContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup>

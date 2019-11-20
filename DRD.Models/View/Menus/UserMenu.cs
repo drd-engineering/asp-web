@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace DRD.Models.View.Menus
 {
-
-
     public class UserMenu
     {
         public List<Menu> menus;
