@@ -6,9 +6,14 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\**" />
+    <Compile Remove="Migrations\**" />
     <Content Remove="Controllers\**" />
+    <Content Remove="Migrations\**" />
     <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <EntityDeploy Remove="Migrations\**" />
     <None Remove="Controllers\**" />
+    <None Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,11 +22,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Migrations\20191118184812_trying.cs" />
+    <Compile Include="Migrations\20191118184812_trying.Designer.cs" />
+    <Compile Include="Migrations\DRDContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include=".json-template" />
     <Content Include="appsettings.json.template" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -36,10 +48,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

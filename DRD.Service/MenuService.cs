@@ -41,6 +41,23 @@ namespace DRD.Service
             return result;
         }
 
+        public string Decrypt(string data)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+            var first = (data.Substring(0, data.Length / 2));
+            var result = first + data.Substring(data.Length / 2);
+            try
+            {
+                result = Utilities.Decrypt(result);
+            }
+            catch (Exception x)
+            {
+                return null;
+            }
+
+            return result;
+        }
     }
 }
 

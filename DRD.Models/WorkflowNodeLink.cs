@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace DRD.Models
 {
     [Table("WorkflowNodeLinks", Schema = "public")]

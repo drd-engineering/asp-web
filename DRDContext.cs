@@ -85,6 +85,7 @@ namespace Core.Postgres
 
             modelBuilder.Entity<Member>().HasData(member1, member2, member3);
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1]);
+
         }
     }
 }

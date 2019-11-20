@@ -14,18 +14,19 @@ namespace DRD.Models
         public long? CreatorId { get; set; } // CreatorId
         public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
-        
+
         // Reverse navigation
+        public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } // DocumentMember.FK_DocumentMember_Document
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         
         public Company Companies { get; set; } //FK to Company
 
-       // public DocumentMember DocumentMember { get; set; }
-
+        public DocumentUser DocumentUser { get; set; }
+        
         public Document()
         {
-           // DocumentMember = new DocumentMember();
+            DocumentUser = new DocumentUser();
             DocumentElements = new System.Collections.Generic.List<DocumentElement>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
