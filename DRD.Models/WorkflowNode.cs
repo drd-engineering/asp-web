@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -23,9 +24,14 @@ namespace DRD.Models
         public int Flag { get; set; } // Flag
 
         // Reverse navigation
-        public virtual System.Collections.Generic.ICollection<RotationNode> Rotations { get; set; } // Rotation.FK_Rotation_WorkflowNode
-        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // 
-        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; }
+        public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationUser.FK_RotationUser_WorkflowNode
+        public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_WorkflowNode
+        [ForeignKey("WorkflowNodeId")]
+        [InverseProperty("WorkflowNodes")]
+        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode
+        [ForeignKey("WorkflowNodeToId")]
+        [InverseProperty("WorkflowNodeTos")]
+        public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
 
         // Foreign keys
         public virtual User User { get; set; } // FK_WorkflowNode_Member
@@ -35,7 +41,8 @@ namespace DRD.Models
         public WorkflowNode()
         {
             Flag = 0;
-            Rotations = new System.Collections.Generic.List<RotationNode>();
+            RotationUsers = new System.Collections.Generic.List<RotationUser>();
+            RotationNodes = new System.Collections.Generic.List<RotationNode>();
             WorkflowNodeLinks = new System.Collections.Generic.List<WorkflowNodeLink>();
             WorkflowNodeLinkTos = new System.Collections.Generic.List<WorkflowNodeLink>();
         }

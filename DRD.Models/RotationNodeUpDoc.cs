@@ -7,7 +7,8 @@ namespace DRD.Models
     public class RotationNodeUpDoc
     {
         public long Id { get; set; } // Id (Primary key)
-        public long? DocumentUploadId { get; set; } // DocumentUploadId
+        public long? DocumentId { get; set; } // DocumentUploadId
+        public Document Document { get; set; } // DocumentUploadId
 
         // Foreign keys
         public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeUpDoc_RotationNode

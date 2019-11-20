@@ -59,6 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfigGenerator.cs" />
+    <Compile Include="DashboardService.cs" />
+    <Compile Include="DocumentService.cs" />
+    <Compile Include="IMemberDepositTrxService.cs" />
+    <Compile Include="IDocumentService.cs" />
     <Compile Include="CompanyService.cs" />
     <Compile Include="MenuService.cs" />
     <Compile Include="Config.cs" />
@@ -66,21 +70,23 @@
     <Compile Include="Context\ServicesContext.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RotationService.cs" />
     <Compile Include="ServiceContext.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Utiities.cs" />
+    <Compile Include="WorkflowDeepService.cs" />
     <Compile Include="WorkflowService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Menu.csv" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
       <Project>{9634c54d-bfac-4da4-8e04-9b65e7a84763}</Project>
       <Name>DRD.Models</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="Menu.csv" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -15,7 +15,7 @@ namespace DRD.Service
         public string Encrypt(string data)
         {
             var result = XEncryptionHelper.Encrypt(data);
-            var first = reverse(result.Substring(0, result.Length / 2));
+            var first = (result.Substring(0, result.Length / 2));
             result = first + result.Substring(result.Length / 2);
             return result;
         }
@@ -29,7 +29,7 @@ namespace DRD.Service
         {
             if (string.IsNullOrEmpty(data))
                 return null;
-            var first = reverse(data.Substring(0, data.Length / 2));
+            var first = (data.Substring(0, data.Length / 2));
             var result = first + data.Substring(data.Length / 2);
             try
             {

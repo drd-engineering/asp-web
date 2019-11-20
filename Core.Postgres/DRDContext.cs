@@ -22,15 +22,14 @@ namespace Core.Postgres
         public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-
-        // public DbSet<WorkflowNode> WorkflowNodes { get; set; }
-        // public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
+        public DbSet<WorkflowNode> WorkflowNodes { get; set; }
+        public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         // public DbSet<RotationMember> RotationMembers { get; set; }
-        // public DbSet<RotationNode> RotationNodes { get; set; }
-        // public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
-        // public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
-        // public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
-        // public DbSet<DocumentSign> DocumentSigns { get; set; }
+        public DbSet<RotationNode> RotationNodes { get; set; }
+        public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
+        public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
+        public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
+        public DbSet<DocumentSign> DocumentSigns { get; set; }
         // public DbSet<FaspayData> FaspayDatas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
