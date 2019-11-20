@@ -49,7 +49,7 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult WorkflowList(string mid)
+        public ActionResult List(string mid)
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
