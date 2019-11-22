@@ -581,6 +581,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Views\Dummy\DesktopMember.cshtml" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <Content Include="WebForm1.aspx" />
@@ -1097,7 +1098,6 @@
     <Folder Include="Scripts\pdfjs\" />
     <Folder Include="svg.js-master\" />
     <Folder Include="Uploaded\" />
-    <Folder Include="Views\Dummy\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
