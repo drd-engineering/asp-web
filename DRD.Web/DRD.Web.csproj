@@ -582,6 +582,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Views\Dummy\DesktopMember.cshtml" />
+    <Content Include="Views\Dummy\Company.cshtml" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <Content Include="WebForm1.aspx" />
