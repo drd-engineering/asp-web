@@ -58,6 +58,12 @@
 
     .highlight-header {
         border-bottom: solid 1px #e9ebf0;
+        height: auto;
+    }
+
+    .highlight-header .dropdown {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .text-align-right {
@@ -139,7 +145,18 @@
                                     <p class="card-title"><strong>ROTATION</strong></p>
                                 </div>
                                 <div class="col-md-2">
-                                    <p class="card-filter">Select 2</p>
+                                    <!-- DROPDOWN -->
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+                                            This Week
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">HTML</a></li>
+                                            <li><a href="#">CSS</a></li>
+                                            <li><a href="#">JavaScript</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

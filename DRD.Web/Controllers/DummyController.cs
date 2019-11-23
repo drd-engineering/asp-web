@@ -13,9 +13,5 @@ namespace DRD.Web.Controllers
         {
             return View();
         }
-        public ActionResult Company()
-        {
-            return View();
-        }
     }
 }
