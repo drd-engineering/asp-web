@@ -122,166 +122,187 @@
         /*make'em transparent, cause of panel in panel thing*/
         background-color: #f5f5f5 !important;
     }
+
+    /* udah ada di invitationList */
+    .panel {
+        border: none;
+        background: none;
+    }
+
+    .card-content {
+        /*similiar with small-text class, font-size's different*/
+
+        font-weight: 300;
+        color: grey;
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    form {
+        background-color: white;
+        padding: 10px 20px;
+    }
+
+    .company-title {
+        margin-bottom: 10px;
+    }
+
+    .company-title span {
+        vertical-align: middle;
+    }
+
+    .text-medium {
+        font-size: 1.2em;
+    }
+
+    .btn {
+        width: auto;
+        padding: 5px 20px;
+    }
+
+    .no-border {
+        border: none !important;
+    }
+
+    fieldset {
+        margin-bottom: 10px;
+    }
+
+    fieldset .row {
+        padding-top: 1em;
+    }
+
+    small {
+        color: grey;
+        font-size: 0.8em;
+    }
+
+    label {
+        font-weight: 700;
+        font-size: 1.2em;
+    }
+
+
+
 </style>
 
 <body>
 
-    <!-- HIGHLIGHT SECTION -->
-    <section class="panel" id="company-profile">
+    <!--  Company SECTION -->
+    <section class="panel" id="company-profile" ng-controller="drdController">
 
         <div class="section-title">
-            <h4>Company</h4>
-            <h5>PT XXX</h5>
+            <h3>Company</h3>
         </div>
 
-        
-    </section>
+        <!--MEMBER DATA-->
+        <form name="myForm" class="form-horizontal" autocomplete="off">
 
+            <div ng-show="wizarno=='product'">
+                <fieldset>
+                    <div class="company-title">
+                        <!-- company ID -->
 
-    <!-- Page container -->
-    <div class="page-container" ng-controller="drdController">
-        <!-- Page content -->
-        <div class="page-content">
-            <!-- Main content -->
-            <div class="content-wrapper">
+                        <span class="text-medium">DRD1900007</span>
+                        <img src="~/Images/Company/verified.png" />
 
-                <!-- Page header -->
-                <div class="page-header page-header-default">
-                    <div class="page-header-content">
-                        <div class="page-title">
-                            <h4>Company Profile</h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label">Name</label>
+                            <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="control-label">Phone</label>
+                            <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number />
                         </div>
                     </div>
 
-                </div>
-                <!-- /page header -->
-                <!-- Horizontal form options -->
-                <!-- Content area -->
-                <div class="content" style="display:none">
-                    <!-- Basic layout-->
-                    <div class="panel panel-flat">
-                        <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label">Address</label>
+                            <textarea class="control-label" ng-model="model.Address" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 75px;width:100%" ng-required="wizarno=='product'"></textarea>
 
-
-                            <!--MEMBER DATA-->
-
-                            <form name="myForm" class="form-horizontal" autocomplete="off">
-                                <div ng-show="wizarno=='product'">
-                                    <fieldset>
-                                        <div class="col-md-12">
-
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label class="control-label">Name</label>
-                                                    <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" />
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <label class="control-label">Address</label><br />
-                                                    <textarea class="control-label" ng-model="model.Address" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 75px;width:100%" ng-required="wizarno=='product'"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <label class="control-label"></label>
-                                                </div>
-
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <label class="control-label">Phone</label>
-                                                    <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number />
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label class="control-label">Location in Map</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
-                                                        <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <hr />
-
-                                        </div>
-                                    </fieldset>
-
-                                    <hr />
-                                    <div class="col-md-12">
-
-                                        <div class="col-md-12">
-                                            <div class="text-right">
-
-                                                <span class="input-group-btn">
-                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
-                                                </span>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </form>
-                            <!--/MEMBER DATA-->
-                            <!--CONFIRMATION THANK YOU-->
-                            <div ng-show="wizarno=='success'">
-                                <div class="col-md-12">
-                                    <div class="alert alert-success alert-styled-left">
-                                        Data saved successfully.
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label">Location in Map</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
+                                <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
                             </div>
-                            <!--/CONFIRMATION THANK YOU-->
-                            <!-- View map modal -->
-                            <div id="modal_select_map" class="modal_hide">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h6 class="modal-title">Select Location</h6>
-                                        </div>
-
-                                        <input type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
-                                        <div id="map_canvas" class="modal-body" style="height:400px">
-                                            <ui-gmap-google-map center='map.center'
-                                                                zoom='map.zoom'
-                                                                draggable="true"
-                                                                options="options"
-                                                                control="map.control" class="map_canvas">
-                                            </ui-gmap-google-map>
-                                        </div>
-
-                                        <label style="text-align:center;width:100%;margin-top:10px">{{model.LocationDetail}}</label>
-                                        <div style="width:100%;height:1px;background-color:dimgrey"></div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="setLocation()">Set</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- View map modal -->
-
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6 pull-right">
+                            <label>Member</label>
+                            <p><small>members of the company will automatically added to each member’s contact list</small></p>
+                            <!--MEMBERS NAME-->
+                            <p>Teni (owner), Bella Ziva, Fajar Nurmansyah ...</p>
+                        
+                        </div>
+                    </div>
+                    
 
-                    <!-- /basic layout -->
+                </fieldset>
 
-
-
-
+                <!-- SUBMIT BUTTON -->
+               
+                <div class="input-group-btn text-right">
+                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" ng-click="updateProduct()" >
+                        <span class="ladda-label">manage members</span><span class="ladda-spinner"></span>
+                        <div class="ladda-progress"></div>
+                    </button>
                 </div>
-                <!-- /vertical form options -->
+
+                <!-- end of SUBMIT BUTTON -->
             </div>
-            <!-- /Main content -->
+        </form>
+        <!--/MEMBER DATA-->
+
+        <!-- View map modal -->
+        <div id="modal_select_map" class="modal_hide">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h6 class="modal-title">Select Location</h6>
+                    </div>
+
+                    <input type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
+                    <div id="map_canvas" class="modal-body" style="height:400px">
+                        <ui-gmap-google-map center='map.center'
+                                            zoom='map.zoom'
+                                            draggable="true"
+                                            options="options"
+                                            control="map.control" class="map_canvas">
+                        </ui-gmap-google-map>
+                    </div>
+
+                    <label style="text-align:center;width:100%;margin-top:10px">{{model.LocationDetail}}</label>
+                    <div style="width:100%;height:1px;background-color:dimgrey"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="setLocation()">Set</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /Page content -->
-    </div>
-    <!-- /Page container -->
+        <!-- View map modal -->
+
+        <!--CONFIRMATION THANK YOU-->
+        <div ng-show="wizarno=='success'">
+            <div class="col-md-12">
+                <div class="alert alert-success alert-styled-left">
+                    Data saved successfully.
+                </div>
+            </div>
+        </div>
+        <!--/CONFIRMATION THANK YOU-->
+
+    </section>
 
     <script type="text/javascript">
 

@@ -311,6 +311,7 @@
     <Content Include="Images\Company\default_logo.png" />
     <Content Include="Images\Company\logodocurate.png" />
     <Content Include="Images\Company\no_picture.png" />
+    <Content Include="Images\Company\verified.png" />
     <Content Include="Images\completed.png" />
     <Content Include="Images\Diagram\canvas.png" />
     <Content Include="Images\Diagram\case.png" />
@@ -397,6 +398,7 @@
     <Content Include="Images\Toolbar\text.png" />
     <Content Include="Images\userlogin2.png" />
     <Content Include="Images\userlogin.png" />
+    <Content Include="Images\verified.png" />
     <Content Include="layout_navbar_sidebar_fixed.html" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
