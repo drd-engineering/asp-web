@@ -68,10 +68,6 @@ namespace DRD.Service
                 DocumentService docsvr = new DocumentService();
                 long cxdoc = docsvr.GetLiteAllCount(memberId, null);
                 counter.New.Document = (int)cxdoc;
-
-                //MessageService msgsvr = new MessageService();
-                //long cxchat = msgsvr.GetCount(memberId).Unread;
-                //counter.New.UnReadChat = (int)cxchat;
                 return counter;
 
             }

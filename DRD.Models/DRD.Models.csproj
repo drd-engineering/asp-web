@@ -88,6 +88,8 @@
     <Compile Include="User.cs" />
     <Compile Include="UserAdmin.cs" />
     <Compile Include="Versioning.cs" />
+    <Compile Include="View\Contact\ContactItem.cs" />
+    <Compile Include="View\Contact\ContactList.cs" />
     <Compile Include="View\Dashboard\CounterItem.cs" />
     <Compile Include="View\Layout.cs" />
     <Compile Include="View\List\ActivityItem.cs" />
