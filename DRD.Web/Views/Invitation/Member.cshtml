@@ -87,14 +87,13 @@
     }
 
     .member-container{
-        height: 120px;
+        height: 100px;
     }
     .content{
         padding-left: 10px;
     }
 
     div.manage-member{
-        /*max-height:60%;*/
         padding: 25px;
         margin: 25px;
         max-height:500px;
@@ -102,14 +101,81 @@
         border-style:solid;
         border-color:gray;
         border-width: thin;
+        overflow-y:scroll;
     }
-        div.invite-email{
-        /*max-height:60%;*/
+
+    .manage-member::-webkit-scrollbar {
+    -webkit-appearance: none;
+    }
+
+    .manage-member::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    .manage-member::-webkit-scrollbar:horizontal {
+        height: 11px;
+    }
+
+    .manage-member::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white; /* should match background, can't be transparent */
+        background-color: rgba(0, 0, 0, .5);
+    }
+    
+    div.request-join{
+        padding: 25px;
+        margin: 25px;
+        max-height:200px;
+        overflow: auto!important;
+        border-style:solid;
+        border-color:gray;
+        border-width: thin;
+        overflow-y:scroll;
+    }
+    
+    .request-join::-webkit-scrollbar {
+    -webkit-appearance: none;
+    }
+
+    .request-join::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    .request-join::-webkit-scrollbar:horizontal {
+        height: 11px;
+    }
+
+    .request-join::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white; /* should match background, can't be transparent */
+        background-color: rgba(0, 0, 0, .5);
+    }
+    div.invite-email{
 
         margin: 25px;
         max-height:500px;
         overflow: auto!important;
 
+    }
+
+    .btn {
+        width: auto;
+        padding: 5px 20px;
+    }
+
+    .input-group-btn button {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .no-overflow {
+        overflow: hidden !important;
+    }
+
+    .ellipsis{
+        text-overflow: ellipsis; 
+        white-space: nowrap;
+        overflow: hidden;
     }
 
 </style>
@@ -176,8 +242,8 @@
                                         <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
                                     </div>
-                                    <div class="col-sm-8 col-lg-9 content">
-                                        <strong>{{x.Invited.Name}}</strong>
+                                    <div class="col-sm-8 col-lg-9 content no-overflow">
+                                        <strong class="ellipsis">{{x.Invited.Name}}</strong>
                                         <div>{{x.Invited.Email}}</div>
                                     </div>
                                 </div>
@@ -197,25 +263,20 @@
                                 <textarea class="form-control" rows="5" id="comment"></textarea>
                             </div>
                             <div class="col-sm-2">
-                                <a class="btn bg-slate-700  btn-submit"  >
-                                    <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
-                                    <div class="ladda-progress" style="width: 0px;"></div>
-                                </a>
-
-
-                                    <span class="input-group-btn">
-                                                        <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
-                                                            <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
-                                                            <div class="ladda-progress" style="width: 0px;"></div>
-                                                        </button>
-                                                    </span>
+                                <div class="input-group-btn text-right">
+                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
+                                        <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
+                                        
+                                    </button>
+                                </div>
+                                
                             </div>
                         </div>
                         </div>
                     @*INVITE BY EMAIL*@
 
                     <!-- Content area -->
-                    <div class="content manage-member overflow-auto border border-dark" style="display:none">
+                    <div class="content request-join overflow-auto border border-dark" style="display:none">
                         <!-- Contextual classes -->
                         @*JOIN BY REQUEST*@
                         <div class="">
@@ -223,13 +284,28 @@
                             <div calss="row">
                                 <div ng-repeat="x in products" class="col-lg-6 col-md-6 col-xs-12">
                                     <div class="row member-container">
-                                        <div class="col-sm-3 col-lg-2">
+                                        <div class="col-sm-2 col-lg-2">
                                             <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
                                         </div>
-                                        <div class="col-sm-8 col-lg-9 content">
-                                            <strong>{{x.Invited.Name}}</strong>
+                                        <div class="col-sm-4 col-lg-4 content no-overflow">
+                                            <strong class="ellipsis">{{x.Invited.Name}}</strong>
                                             <div>{{x.Invited.Email}}</div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-lg-6">
+                                            <div class="input-group-btn">
+                                                <button class="btn bg-slate-700 btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
+                                                    <span class="ladda-label">Accept</span>
+                                                    
+                                                </button>
+
+                                                <button class="btn bg-slate-700 btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
+                                                    <span class="ladda-label">Reject</span>
+                                                    
+                                                </button>
+                                            </div>
+                                            
                                         </div>
                                     </div>
 
