@@ -100,7 +100,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
+             var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
                 if (result.Count != 0) { return false; }
                 else { return true; }
             }

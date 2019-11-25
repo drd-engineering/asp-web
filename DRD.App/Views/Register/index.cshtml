@@ -179,16 +179,30 @@
         <div class="page-content">
             <!-- Main content -->
             <div class="content-wrapper">
+
+                <!-- Page header -->
+                @*<div class="page-header page-header-default">
+                        <div class="page-header-content">
+                            <div class="page-title">
+                                <h4>Company Profile</h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>*@
+                <!-- /page header -->
                 <!-- Horizontal form options -->
                 <!-- Content area -->
                 <div class="content" style="display:none;">
+
                     <!-- Basic layout-->
                     <div class="panel panel-body login-form" style="width:800px;">
                         @*<div class="text-center">
-                                <img src="/Images/register-banner.jpg" style="width:100%;border-radius:10px" /><br /><br />
-                            </div>*@
+                            <img src="/Images/register-banner.jpg" style="width:100%;border-radius:10px" /><br /><br />
+                        </div>*@
                         <div style="border:solid;border-color:cornflowerblue;border-width:1px;padding:10px;min-height:200px;width:100%;text-align:right">
-                            <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%" />
+                            <img src="../../Images/back_reg2.jpg" style="max-height:100%;max-width:100%"/>
                         </div>
                         <div class="panel-body">
                             <!--MEMBER DATA-->
@@ -197,9 +211,10 @@
                                     <fieldset>
                                         <div class="col-md-12">
 
-                                            <h4>Create Your DRD Account</h4>
+                                            <h4>User</h4>
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                @*<div class="col-md-12">*@
+                                                <div class="col-md-8">
                                                     @* TODO Buat pengecekkan Nama, Tidak boleh mengandung symbol ataupun angka. *@
                                                     <label class="control-label">Name</label>
                                                     <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='user'" maxlength="50" />
@@ -219,62 +234,82 @@
 
                                             </div>
 
+
                                             <hr />
-                                            <h4>Company (Optional) </h4>
+                                            <h4>Company</h4>
+
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <label class="control-label">Select Your Company</label>
-                                                    <input type="text" class="form-control" ng-model="model.CompanyId" ng-required="wizarno=='user'" maxlength="50" />
+                                                    <label class="control-label">Name</label>
+                                                    <input type="text" class="form-control" ng-model="model.CompanyName" ng-required="wizarno=='product'" maxlength="50" />
                                                 </div>
 
                                             </div>
 
-                                        </div>
-                                    </fieldset>
-
-                                    <hr />
-                                    <div class="col-md-12">
-
-                                        <div class="col-md-12">
-                                            <div class="text-right">
-
-                                                <span class="input-group-btn">
-                                                    @*<button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                            <div class="row form-component">
+                                                <div class="col-md-6">
+                                                    <label class="control-label">
+                                                        Company (optional)
+                                                        <small class="display-block text-light">select from registered company, to make new company please contact us</small>
+                                                    </label>
+                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.CompanyId" ng-required="wizarno=='user'" maxlength="50" />
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div class="col-md-12">
+                                                <div class="text-right">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="validateForm()" style="width:120px">
                                                             <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                             <div class="ladda-progress" style="width: 0px;"></div>
-                                                        </button>*@
+                                                        </button>
 
-                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" 
-                                                            data-spinner-color="#333" ng-click="saveUser()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
+                                                        @*<div class="col-md-12">
+                                                            <div class="text-right">
 
-                                                </span>
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                                    <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                                                    </button>
 
+                                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down"
+                                                                            data-spinner-color="#333" ng-click="saveUser()" style="width:120px">
+                                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                                    </button>
+
+                                                                </span>
+
+                                                            </div>
+                                                        </div>*@
+
+                                                </div>
                                             </div>
-                                        </div>
-
-                                    </div>
-                                </div>
                             </form>
                             <!--/MEMBER DATA-->
                             <!--CONFIRMATION THANK YOU-->
                             <div ng-show="wizarno=='success'">
                                 <div class="col-md-12">
-                                    @*<div class="alert alert-success alert-styled-left">*@
-                                    Thank you for registering for the DRD subscription.<br />
+                                    <p>
+                                        You have successfully registered your account. Please check your email to get your password to be able to <a ng-href="/login">log in</a>.<br />
+                                        Subscription registration is successful.
+                                    </p><br /><br />
+
+                                    <p>if you want to register a new company to become our business partner. We’ll be glad if you contact us <a ng-href="#">here</a>.</p>
+                                    @*Thank you for registering for the DRD subscription.<br />
                                     Subscription registration is successful.<br /><br />
 
                                     Subscription Id: <b>{{subscriptionId}}</b><br />
                                     User number: <b>{{userNumber}}<br /></b><br />
 
-                                    The password will be sent to email <b>{{model.Email}}</b>.<br />
-                                    @*</div>*@
+                                    The password will be sent to email <b>{{model.Email}}</b>.<br />*@
                                 </div>
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
-
+                            <!-- View member modal -->
+                            <ng-include src="'/Include/PopupTnC'"></ng-include>
+                            <!-- View member modal -->
                         </div>
                     </div>
                     <!-- /basic layout -->
@@ -288,21 +323,27 @@
     <!-- /Page container -->
 
     <script type="text/javascript">
-
-        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngOnlyNumberApp', 'ngFileUpload'])
-
-        myApp.controller("drdController", function ($scope, Upload, $http, $filter) {
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngOnlyNumberApp', 'ngFileUpload', 'uiGmapgoogle-maps', 'google.places'])
+        //myApp.config(['uiGmapGoogleMapApiProvider', function (GoogleMapApiProviders) {
+        //    GoogleMapApiProviders.configure({
+        //        china: true
+        //    });
+        //}]);
+        myApp.controller("drdController", function ($scope, Upload, $http, $filter/*, $location, uiGmapGoogleMapApi, uiGmapIsReady*/) {
             // modal member
             $scope.model = {};
             $scope.wizarno = 'user';
             $scope.model.Id = 0;
-            $scope.isUploadImage1 = 0;
-            $scope.isUploadImage2 = 0;
-            $scope.isUploadImageCard = 0
+            $scope.model.Image1 = "no_picture.png";
+            $scope.model.Image2 = "no_picture.png";
+            $scope.model.ImageCard = "no_picture.png";
+            //$scope.isUploadImage1 = 0;
+            //$scope.isUploadImage2 = 0;
+            //$scope.isUploadImageCard = 0
 
             $scope.subscriptionId = "";
             $scope.userNumber = "";
-
+            $scope.aggrement = false;
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
@@ -319,7 +360,6 @@
             $scope.initData = function () {
 
             }
-
             /*--------------------------------------------------------------
             SAVE USER
             --------------------------------------------------------------*/
@@ -361,15 +401,64 @@
                         var x = 0;
                     });
             }
+            /*--------------------------------------------------------------
+            UPLOAD IMAGE FILE
+            --------------------------------------------------------------*/
+            //$scope.uploadFiles = function (idx, file, errFiles) {
+            //    $scope.f = file;
+            //    $scope.errFile = errFiles && errFiles[0];
+            //    if (file) {
+            //        file.upload = Upload.upload({
+            //            url: '/updownfile/uploadimage?idx=' + idx + '&fileType=9',
+            //            data: { MyImages: file }
+            //        });
 
+            //        file.upload.then(function (response) {
+            //            //$timeout(function () {
+            //            file.result = response.data;
 
-            $scope.updateProduct = function () {
+            //            if (idx == 0) {
+            //                $scope.model.Image1 = file.result.filename;
+            //                $scope.isUploadImage1 = 1;
+            //            } else if (idx == 1) {
+            //                $scope.model.Image2 = file.result.filename;
+            //                $scope.isUploadImage2 = 1;
+            //            } else if (idx == 2) {
+            //                $scope.model.ImageCard = file.result.filename;
+            //                $scope.isUploadImageCard = 1;
+            //            }
+                        
+            //        }, function (response) {
+            //            if (response.status > 0)
+            //                $scope.errorMsg = response.status + ': ' + response.data;
+            //        }, function (evt) {
+            //            file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            //        });
+            //    } else if ($scope.errFile != null) {
+            //        showInfo("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
+            //    }
+            //}
+            $scope.setAggreement = function (value) {
+                $scope.aggrement = value;
+            }
+            $scope.getAggreement = function () {
+                return $scope.aggrement;
+            }
+            $scope.validateForm = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
+                $scope.popupTnC();
 
-                $scope.saveProduct();
+                $scope.updateProduct($scope.getAggreement());
             }
-
+            $scope.updateProduct = function (aggrement) {
+                if (!aggrement) {
+                    alert("please tick the aggrement.");
+                    return;
+                }
+                $scope.saveUser();
+            }
+            
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;
@@ -379,8 +468,13 @@
                 $('html, body').animate({
                     scrollTop: $(id).offset().top
                 }, 200);
+            }          
+            $scope.backToHome = function () {
+                location.href = "/login";
             }
-
+            $scope.popupTnC = function () {
+                $("#modal_tnc").modal("show");
+            }
             $scope.checkAvailability = function (emailUser) {
                 $http.get('@Url.Action("CheckEmail", "Register")?email=' + emailUser)
                 .then(function (response) {
@@ -401,5 +495,4 @@
 
         })
     </script>
-
 </body>

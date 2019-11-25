@@ -218,5 +218,81 @@ namespace DRD.Service
             }
         }
 
+        public JsonSubscriptionRegistryResult SaveRegistration(JsonSubscriptionRegistry registry)
+        {
+            ApplConfigService.GenerateUniqueKeyLong();
+
+            var regResult = new JsonSubscriptionRegistryResult();
+
+            string pwd = DateTime.Now.ToString("ffff");
+
+            var db = new DrdContext(_connString);
+            var result = db.Members.Where(c => c.Email.Equals(registry.MemberEmail)).ToList();
+            if (result.Count != 0)
+            {
+                regResult.UserNumber = "DBLEMAIL";
+                return regResult;
+            }
+
+            var result2 = db.Companies.Where(c => c.Email.Equals(registry.CompanyEmail)).ToList();
+            if (result2.Count != 0)
+            {
+                regResult.SubscriptionId = "DBLEMAIL";
+                return regResult;
+            }
+
+            ApplConfigService appsvr = new ApplConfigService();
+            var topaz = appsvr.GetValue("APPL_NAME");
+            var admName = appsvr.GetValue("EMAILUSERDISPLAY");
+            var groupuser = appsvr.GetValue("DEF_GROUP_USER");
+
+            CompanyService csvr = new CompanyService();
+            Company comp = new Company();
+            comp.Name = registry.CompanyName;
+            comp.Contact = registry.MemberName;
+            comp.Phone = registry.CompanyPhone;
+            comp.Email = registry.CompanyEmail;
+            comp.Address = registry.CompanyAddress;
+            comp.PointLocation = registry.CompanyPointLocation;
+            comp.Latitude = registry.Latitude;
+            comp.Longitude = registry.Longitude;
+            comp.CompanyType = 0;
+            comp.Image1 = "default_panel.jpg";
+            comp.Image2 = "default_logo.png";
+            comp.BackColorBar = "#42a5f5";
+            comp.BackColorPage = "#eceff1";
+            long compId = csvr.Save(comp);
+
+            MemberService svr = new MemberService();
+            Member mem = new Member();
+            mem.Email = registry.MemberEmail;
+
+            // INI APAAN
+            mem.MemberTitleId = registry.MemberTitleId;
+
+            mem.Name = registry.MemberName.Trim();
+            mem.Phone = registry.MemberPhone;
+            mem.Password = XEncryptionHelper.Encrypt(pwd);
+            mem.MemberType = 1;
+            mem.CompanyId = compId;
+            mem.UserGroup = groupuser;
+            long memId = svr.Save(mem);
+
+            MemberPlanService plan = new MemberPlanService();
+            plan.Save(memId, registry.SubscriptTypeId);
+
+            JsonMemberRegister reg = new JsonMemberRegister();
+            reg.Name = mem.Name;
+            reg.Number = mem.Number;
+            reg.Email = mem.Email;
+            reg.Password = pwd;
+            svr.sendEmailRegistration(reg);
+
+            regResult.SubscriptionId = comp.Code;
+            regResult.UserNumber = mem.Number;
+            regResult.Email = registry.MemberEmail;
+            return regResult;
+        }
+
     }
 }
