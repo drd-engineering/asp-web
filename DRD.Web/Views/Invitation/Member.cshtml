@@ -1,0 +1,375 @@
+﻿@model DRD.Domain.JsonLayout
+@{
+
+}
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<style>
+
+    .no-border, td {
+        border: none !important;
+    }
+
+    .panel, .page-header-default {
+        box-shadow: none;
+    }
+
+    td img {
+        height: 40px;
+        width: 40px;
+        border-radius:50%;
+    }
+
+    .table-xs {
+        font-size:small;
+        width:100%;
+    }
+
+    .panel-heading {
+        /*make'em transparent, cause of panel in panel thing*/
+        background-color: #f5f5f5 !important;
+    }
+
+
+    .panel {
+        border: none;
+    }
+
+    .highlight-container {
+         background-color: #f5f5f5;
+         padding: 0;
+         width: inherit;
+    }
+
+    .highlight-container .container {
+         width: inherit;
+    }
+
+    .highlight-card {
+        background-color: white;
+        margin: inherit 10px;
+        padding: 10px;
+    }
+
+    .highlight-card .card-image img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+    }
+
+    .highlight-card .card-title {
+        /*similiar with medium-text class, font-size's different*/
+        font-weight: 400;
+        line-height: 1.25;       
+        font-size: 14px;
+        
+    }
+
+    .highlight-card .card-content {
+        /*similiar with small-text class, font-size's different*/
+
+        font-weight: 300;
+        color: grey;
+        line-height: 1;
+        font-size: 12px;
+    }
+
+    img.avatar{
+        width: 50px;
+        height: 50px;
+    }
+
+    .member-container{
+        height: 120px;
+    }
+    .content{
+        padding-left: 10px;
+    }
+
+    div.manage-member{
+        /*max-height:60%;*/
+        padding: 25px;
+        margin: 25px;
+        max-height:500px;
+        overflow: auto!important;
+        border-style:solid;
+        border-color:gray;
+        border-width: thin;
+    }
+        div.invite-email{
+        /*max-height:60%;*/
+
+        margin: 25px;
+        max-height:500px;
+        overflow: auto!important;
+
+    }
+
+</style>
+
+
+<body>
+
+    <div class="section-title">
+        <h4>Manage Members</h4>
+    </div>
+    <!-- CONTACT-LIST SECTION -->
+    <section class="panel" id="contact-list">
+        <!-- Page container -->
+
+
+
+        <div class="page-container invitation-list" ng-controller="drdController">
+            <!-- Page content -->
+
+            <div class="panel-default page-content">
+
+                <!-- Main content -->
+                <div class="content-wrapper">
+                    <!-- Page header -->
+                    <div class="page-header page-header-default">
+                        <div class="page-header-content">
+                            <div class="page-title">
+                                <h4><i class="icon-users2 position-left"></i>PT Amartha Indah </h4>
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="icon-search4"></i></span>
+                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                            <span class="input-group-btn">
+                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                                                    <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
+                                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /page header -->
+                    <!-- Content area -->
+                    <div class="content manage-member overflow-auto border border-dark" style="display:none">
+                        <!-- Contextual classes -->
+                        <!-- LIST -->
+                        <div calss="row">
+                            <div ng-repeat="x in products" class="col-lg-4 col-md-4 col-xs-6">
+                                <div class="row member-container">
+                                    <div class="col-sm-1">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-lg-2">
+                                        <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
+
+                                    </div>
+                                    <div class="col-sm-8 col-lg-9 content">
+                                        <strong>{{x.Invited.Name}}</strong>
+                                        <div>{{x.Invited.Email}}</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- /LIST -->
+                       
+                    </div>
+                    <!-- /content area -->
+                    @*INVITE BY EMAIL*@
+                    <div class="content invite-email">
+                        <strong>Invite via Email</strong>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="5" id="comment"></textarea>
+                            </div>
+                            <div class="col-sm-2">
+                                <a class="btn bg-slate-700  btn-submit"  >
+                                    <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
+                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                </a>
+
+
+                                    <span class="input-group-btn">
+                                                        <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                            <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
+                                                            <div class="ladda-progress" style="width: 0px;"></div>
+                                                        </button>
+                                                    </span>
+                            </div>
+                        </div>
+                        </div>
+                    @*INVITE BY EMAIL*@
+
+                    <!-- Content area -->
+                    <div class="content manage-member overflow-auto border border-dark" style="display:none">
+                        <!-- Contextual classes -->
+                        @*JOIN BY REQUEST*@
+                        <div class="">
+                            <!-- LIST -->
+                            <div calss="row">
+                                <div ng-repeat="x in products" class="col-lg-6 col-md-6 col-xs-12">
+                                    <div class="row member-container">
+                                        <div class="col-sm-3 col-lg-2">
+                                            <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
+
+                                        </div>
+                                        <div class="col-sm-8 col-lg-9 content">
+                                            <strong>{{x.Invited.Name}}</strong>
+                                            <div>{{x.Invited.Email}}</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- /LIST -->
+
+                        </div>
+                        @*JOIN BY REQUEST*@
+
+                    </div>
+                    <!-- /content area -->
+                </div>
+                <!-- /main content -->
+            </div>
+            <!-- /page content -->
+        </div>
+        <!-- /page container -->
+
+
+    </section>
+
+
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
+
+        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+            $scope.product = {};
+            $scope.products = [];
+            $scope.productCount = [];
+            $scope.paging = [];
+            $scope.kriteria = "";
+            $scope.page = 1;
+            $scope.row = 20;
+            $scope.currPage = 0;
+            $scope.isView = false;
+            $scope.index = 0;
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+                $(".content").show();
+                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+            });
+
+
+            /*--------------------------------------------------------------
+            GET PRODUCT
+            --------------------------------------------------------------*/
+            $scope.getLiteProducts = function (kriteria, page, row) {
+                var btn = Ladda.create(document.querySelector('.btn-process'));
+                btn.start();
+                $scope.products = [];
+                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    btn.stop();
+                    if (response.data) {
+                        $scope.products = response.data;
+
+                        $scope.index = row * (page - 1);
+
+                        $scope.paging = [];
+                        $scope.getProductCount(kriteria);
+
+                        $scope.isView = true;
+
+                        //Ladda.stopAll();
+
+                    }
+                }, function (response) {
+                    btn.stop();
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.changePage = function (kriteria, page, row) {
+                $scope.products = [];
+                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    if (response.data) {
+                        $scope.products = response.data;
+                        $scope.index = row * (page - 1);
+
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.getProductCount = function (kriteria) {
+                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+
+                        $scope.page = "1";
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            /*--------------------------------------------------------------
+            GENERAL FUNCTION
+            --------------------------------------------------------------*/
+            $scope.addMember = function (mid) {
+                location.href = "/invitation/invitation?mid=" + mid;
+            }
+
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+
+        });
+
+        $(function () {
+
+        });
+
+        $(document).ready(function () {
+
+        });
+
+    </script>
+
+</body>

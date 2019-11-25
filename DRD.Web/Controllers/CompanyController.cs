@@ -65,6 +65,33 @@ namespace DRD.Web.Controllers
             return View(layout);
         }
 
+        public ActionResult Member(string mid)
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            // begin decription menu
+            DtoMemberLogin user = login.GetUser(this);
+            var strmenu = login.ManipulateMenu(this, user, mid);
+            // end decription menu
+
+            DtoCompany product = new DtoCompany();
+            CompanyService psvr = new CompanyService();
+            product = psvr.GetById((long)user.CompanyId);
+
+            JsonLayout layout = new JsonLayout();
+            layout.activeId = int.Parse(strmenu);
+            layout.key = mid.Split(',')[0];
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.user = user;
+            layout.obj = product;
+
+            UserMenuService umsvr = new UserMenuService();
+            if (!umsvr.ValidGroupMenu(layout.user.UserGroup, layout.activeId))
+                Response.Redirect("/");
+
+            return View(layout);
+        }
         //public ActionResult Company(string mid)
         //{
         //    LoginController login = new LoginController();

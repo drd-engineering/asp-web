@@ -299,7 +299,6 @@
     <Content Include="echarts_columns_waterfalls.html" />
     <Content Include="echarts_combinations.html" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="form_checkboxes_radios.html" />
     <Content Include="form_input_groups.html" />
     <Content Include="Global.asax" />
@@ -583,6 +582,7 @@
     </None>
     <Content Include="Views\Dummy\DesktopMember.cshtml" />
     <Content Include="Views\Dummy\Company.cshtml" />
+    <Content Include="Views\Company\Member.cshtml" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <Content Include="WebForm1.aspx" />
@@ -1071,6 +1071,7 @@
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
     <Content Include="Views\Subscription\Succeed.cshtml" />
+    <Content Include="Views\Invitation\Member.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />
@@ -1101,9 +1102,6 @@
     <Folder Include="Uploaded\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
