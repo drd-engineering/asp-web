@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "Banner";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<style>
+    .align_price {
+        text-align: right;
+    }
+</style>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DRD Payment</title>
+    <!-- Global stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+
+    <link href="/assets/vendors/select2-bootstrap/select2-bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/vendors/angular-1.5.5/select2/select2.css" rel="stylesheet" type="text/css">
+
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="/assets/js/plugins/forms/selects/select2.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/app.js"></script>
+    <script type="text/javascript" src="/assets/js/pages/form_layouts.js"></script>
+    <script type="text/javascript" src="/assets/js/pages/form_bootstrap_select.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
+
+    <!-- /theme JS files -->
+
+
+    <script src="/Scripts/bootstrap.js"></script>
+    <script src="/Scripts/bootstrap-datepicker.js"></script>
+    <script src="/Scripts/respond.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+    <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/select2/select2.min.js"></script>
+
+</head>
+@*<header id="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="header-logo">
+                    <div class="w_1200">
+                        <a href="#">
+                            <img src="/images/logo.svg" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>*@
+
+<body ng-app="paymentstatusApp">
+    <!-- Page container -->
+    <div class="page-container" ng-controller="paymentstatusCon">
+        <!-- Page content -->
+        <div class="page-content">
+            <!-- Main content -->
+            <div class="content-wrapper">
+                <!-- Content area -->
+                <div class="content">
+                    <!-- Horizontal form options -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Basic layout-->
+                            @*<div ng-show="ERR_CODE=='0'">
+                                <div class="alert alert-success alert-styled-left">
+                                    <h3>
+                                        Your payment was completed.<br />
+                                        Thank you for your order!
+                                    </h3>
+                                    Order No. : {{MERCHANT_TRANID}}<br />
+                                    Amount : {{CURRENCYCODE}} <strong>{{AMOUNT | number}}</strong><br />
+                                    Description : {{DESCRIPTION}}<br />
+                                    Name : {{CUSTNAME}}<br />
+                                    Message : {{USR_MSG}}<br />
+                                </div>
+                            </div>
+                            <div ng-show="ERR_CODE!='0'">
+                                <div class="alert alert-warning alert-styled-left">
+                                    <h3>
+                                        Your payment was error.<br />
+                                        Error detail : {{ERR_CODE}} - {{ERR_DESC}}
+                                    </h3>
+                                    Order No. : {{MERCHANT_TRANID}}<br />
+                                    Amount : {{CURRENCYCODE}} <strong>{{AMOUNT | number}}</strong><br />
+                                    Description : {{DESCRIPTION}}<br />
+                                    Name : {{CUSTNAME}}<br />
+                                    Message : {{USR_MSG}}<br />
+                                </div>
+                            </div>*@
+
+
+                            <div class="alert alert-warning alert-styled-left">
+                                <h3>
+                                    Payment Status.<br />
+                                </h3>
+                                merchant_id : {{merchant_id}}<br />
+                                bill_no : {{bill_no}}<br />
+                                trx_id : {{trx_id}}<br />
+                                bill_reff : {{bill_reff}}<br />
+                                bill_total : {{bill_total}}<br />
+                                bill_amount : {{bill_amount}}<br />
+                                payment_reff : {{payment_reff}}<br />
+                                payment_date : {{payment_date}}<br />
+                                bank_user_name : {{bank_user_name}}<br />
+                                Status : {{Status}}<br />
+                            </div>
+
+                            <!-- /basic layout -->
+                        </div>
+                    </div>
+                    <!-- /vertical form options -->
+                    <!-- Centered forms -->
+                    <!-- /form centered -->
+
+                </div>
+                <!-- /content area -->
+            </div>
+            <!-- /main content -->
+
+        </div>
+        <!-- /Page content -->
+
+    </div>
+    <!-- /page container -->
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('paymentstatusApp', ['ngAnimate', 'ui.bootstrap'])
+
+        myApp.controller("paymentstatusCon", function ($scope, $location, $http, $filter) {
+
+            $scope.merchant_id = '@ViewBag.merchant_id';
+            $scope.bill_no = '@ViewBag.bill_no';
+            $scope.trx_id = '@ViewBag.trx_id';
+            $scope.bill_reff = '@ViewBag.bill_reff';
+            $scope.bill_total = '@ViewBag.bill_total';
+            $scope.payment_reff = '@ViewBag.payment_reff';
+            $scope.payment_date = '@ViewBag.payment_date';
+            $scope.bank_user_name = '@ViewBag.bank_user_name';
+            $scope.Status = '@ViewBag.Status';
+            $scope.bill_amount = '@ViewBag.bill_amount';
+
+
+            // initial data
+            angular.element(document).ready(function () {
+
+            });
+
+        });
+    </script>
+</body>
+

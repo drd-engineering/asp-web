@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<faspay>
+  <request>Inquiry Status Payment</request>
+  <trx_id>_TRX_ID_</trx_id>
+  <merchant_id>_MERCHANT_ID_</merchant_id>
+  <bill_no>_BILL_NO_</bill_no>
+  <signature>_SIGNATURE_</signature>
+</faspay>
