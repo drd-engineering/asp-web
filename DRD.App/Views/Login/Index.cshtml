@@ -1,0 +1,225 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DRD - User Login</title>
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="/assets/js/core/app.js"></script>
+    <!-- /theme JS files -->
+
+    <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+    <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+    <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+
+    <script src="~/Scripts/xpublic.js"></script>
+    <style>
+        .field-icon {
+            float: right;
+            margin-left: -25px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="login-container" ng-app="drdApp">
+    <div ng-controller="drdController">
+        <!-- Main navbar -->
+        @*<div class="navbar navbar-inverse">
+                <div class="navbar-header">
+                    <div class="navbar-brand"><img src="/assets/images/logo_light.png" alt=""></div>
+                    <ul class="nav navbar-nav pull-right visible-xs-block">
+                        <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+                    </ul>
+                </div>
+
+
+                <div class="navbar-collapse collapse" id="navbar-mobile">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="">
+                                <i class="icon-user-tie">&nbsp;<span style="font-family:Arial">Digital Rotation Document</span></i> <span class="visible-xs-inline-block position-right"></span>
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>*@
+        <!-- /main navbar -->
+        <!-- Page container -->
+        <div class="page-container">
+            <!-- Page content -->
+            <div class="page-content">
+                <!-- Main content -->
+                <div class="content-wrapper">
+
+                    <!-- Content area -->
+                    <div class="content">
+
+                        <!-- Simple login form -->
+                        <form name="myForm" class="form-horizontal" autocomplete="off">
+                            <div class="panel panel-body login-form" style="padding:0px">
+                                <div class="text-center" ">
+                                    @*<div class="icon-object border-slate-300 text-slate-300"><i class="icon-reading"></i></div>*@
+                                    <img src="/Images/login_banner.png" width="100%" /><br /><br />
+                                    <h5 class="content-group">Login to your DRD account <small class="display-block">Enter your credentials below</small></h5>
+                                </div>
+                                <div style="padding-left:40px;padding-right:40px">
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input type="text" class="form-control" placeholder="Username" ng-model="username" required>
+                                        <div class="form-control-feedback">
+                                            <i class="icon-user text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input type="password" class="form-control" placeholder="Password" ng-model="password" id="xpwd" required>
+                                        <div class="form-control-feedback">
+                                            <i class="icon-lock2 text-muted"></i>
+                                        </div>
+                                        <div style="height:5px"></div>
+                                        &ensp;<input type="checkbox" class="styled" ng-click="showPwd()"> Show password
+
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn bg-grey-400 btn-block" ng-click="submit()">Sign in <i class="icon-circle-right2 position-right"></i></button>
+                                    </div>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td>
+                                                @*<a href="/subscription/registry">Register</a>*@
+                                                <a ng-click="popupTnC()">Register</a>
+                                            </td>
+                                            <td style="text-align:right">
+                                                <a href="/login/forgotpassword">Forgot password?</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
+                                    <br />
+
+                                </div>
+
+                            </div>
+                        </form>
+                        <!-- /simple login form -->
+                        <!-- View member modal -->
+                        <ng-include src="'/Include/PopupTnC'"></ng-include>
+                        <!-- View member modal -->
+                    </div>
+                    <!-- /content area -->
+                </div>
+                <!-- /main content -->
+            </div>
+            <!-- /page content -->
+        </div>
+        <!-- /page container -->
+    </div>
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ui.bootstrap'])
+
+        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+                //$(".styled").uniform({
+                //    radioClass: 'choice',
+                //    wrapperClass: 'border-primary-600 text-primary-800'
+                //});
+
+                $(".styled, .multiselect-container input").uniform({
+                    radioClass: 'choice'
+                });
+            });
+
+            $scope.initData = function () {
+            }
+
+            $scope.showPwd = function () {
+                var x = document.getElementById("xpwd");
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
+            }
+
+            $scope.popupTnC = function () {
+                $("#modal_tnc").modal("show");
+            }
+
+            $scope.goRegistry = function () {
+                location.href = "/subscription/registry";
+            }
+
+            /*--------------------------------------------------------------
+            GET VALID USER
+            --------------------------------------------------------------*/
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+
+            $scope.submit = function () {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+
+                $http.post('@Url.Action("Login", "Login")', {
+                    username: $scope.username,
+                    password: $scope.password
+                }).then(function (response) {
+                    if (response.data) {
+                        if (response.data == -1)
+                            showInfo('Invalid username and password!');
+                        else if (response.data == 1)
+                            window.location = "/";
+                        else if (response.data == 2)
+                            window.location = "/appzone/appzonelist";
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>
