@@ -58,6 +58,13 @@
 
     .highlight-header {
         border-bottom: solid 1px #e9ebf0;
+        height: auto;
+    }
+
+    .highlight-header select {
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .text-align-right {
@@ -70,6 +77,7 @@
         font-weight: 400;
         line-height: 1.25;       
         font-size: 14x;
+        margin: 0;
         
     }
 
@@ -80,6 +88,9 @@
         color: grey;
         line-height: 1;
         font-size: 12px;
+    }
+
+    .highlight-card .card-content-lg {
     }
 
     .highlight-card .card-filter {
@@ -103,6 +114,8 @@
     .highlight-card .card-image-lg img {
         height: 80px;
         width: 80px;
+        display: block;
+        margin: auto;
         border-radius: 50%; /* almost all image treated like this*/
     }
 
@@ -112,14 +125,20 @@
         margin-top: 5px;
     }
 
-    /*container of vertical-align content wannabe*/
+
+    /*
+        container of vertical-align content wannabe
+        use this for div with .row
+    */
     .vertical-align-row {
         display: flex;
+        align-items: center;
     }
 
     .vertical-align-content {
         margin-top: auto;
         margin-bottom: auto;
+
     }
 
 
@@ -134,12 +153,17 @@
                 <div class="highlight-card">
                     <div class="highlight-header">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-md-10">
+                            <div class="row vertical-align-row">
+                                <div class="col-md-9">
                                     <p class="card-title"><strong>ROTATION</strong></p>
                                 </div>
-                                <div class="col-md-2">
-                                    <p class="card-filter">Select 2</p>
+                                <div class="col-md-3">
+                                    <!-- SELECT -->
+                                    <select class="form-control">
+                                        <option>This Week</option>
+                                        <option>Last Week</option>
+                                        <option>...</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -197,12 +221,17 @@
                 <div class="highlight-card">
                     <div class="highlight-header">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-md-10">
+                            <div class="row vertical-align-row">
+                                <div class="col-md-9">
                                     <p class="card-title"><strong>USAGE</strong></p>
                                 </div>
-                                <div class="col-md-2">
-                                    <p class="card-filter">Select 2</p>
+                                <div class="col-md-3">
+                                    <!-- SELECT -->
+                                    <select class="form-control">
+                                        <option>PT Company 1</option>
+                                        <option>PT Company 2</option>
+                                        <option>...</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -216,15 +245,16 @@
                                     <div class="row vertical-align-row">
                                         <div class="col-sm-3 vertical-align-content">
                                             <div class="card-image-lg">
-                                                <img src="~/assets/ongoing.png" />
-                                                <p>Ongoing</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <div class="card-content-lg">
-                                                <h1>10</h1>
+                                                <p>Rotation</p>
+                                                <!-- will be filled by graph -->
+                                                <img src="" />
                                             </div>
 
+                                            <!--GRAPH SUMMARY-->
+                                            <div class="card-content">
+                                                <p>13 Remaining</p>
+                                                <p>7 Used</p>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -232,19 +262,19 @@
 
                                 <div class="col-md-6">
                                     <div class="row vertical-align-row">
-                                        <div class="col-sm-3 vertical-align-content">
+                                        <div class="vertical-align-content">
                                             <div class="card-image-lg">
-                                                <img src="~/assets/completed.png" />
-                                                <p>Completed</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <div class="card-content-lg">
-                                                <h1>10</h1>
+                                                <p>Quota</p>
+                                                <!-- will be filled by GRAPH -->
+                                                <img src="" />
                                             </div>
 
+                                            <!--GRAPH SUMMARY-->
+                                            <div class="card-content">
+                                                <p>75% Remaining</p>
+                                                <p>25% Used</p>
+                                            </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

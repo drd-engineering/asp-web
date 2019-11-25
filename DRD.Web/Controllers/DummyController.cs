@@ -9,12 +9,12 @@ namespace DRD.Web.Controllers
     public class DummyController : Controller
     {
         // GET: Dummy
-        public ActionResult Index()
+        public ActionResult DesktopMember()
         {
             return View();
         }
-        public ActionResult Company()
-        {
+
+        public ActionResult Company() {
             return View();
         }
     }
