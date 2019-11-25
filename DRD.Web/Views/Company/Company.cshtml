@@ -109,9 +109,35 @@
         right: 0;
         bottom: 0;
     }
+
+
+
+    /* TAMBAHAN */
+    .panel, .page-header-default {
+        box-shadow: none;
+    }
+
+    /* udah ada di invitationList */
+    .panel-heading {
+        /*make'em transparent, cause of panel in panel thing*/
+        background-color: #f5f5f5 !important;
+    }
 </style>
 
-<body >
+<body>
+
+    <!-- HIGHLIGHT SECTION -->
+    <section class="panel" id="company-profile">
+
+        <div class="section-title">
+            <h4>Company</h4>
+            <h5>PT XXX</h5>
+        </div>
+
+        
+    </section>
+
+
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -176,7 +202,7 @@
                                             </div>
 
                                             <hr />
-                                           
+
                                         </div>
                                     </fieldset>
 
@@ -326,7 +352,7 @@
             });
 
             uiGmapGoogleMapApi.then(function (maps) {
-                
+
             });
 
 
@@ -393,7 +419,7 @@
                     });
 
                     file.upload.then(function (response) {
-                        
+
                         file.result = response.data;
 
                         if (idx==0){
@@ -406,7 +432,7 @@
                             $scope.model.ImageCard=file.result.filename;
                             $scope.isUploadImageCard=1;
                         }
-                        
+
                     }, function (response) {
                         if (response.status > 0)
                             $scope.errorMsg = response.status + ': ' + response.data;
@@ -444,7 +470,7 @@
                             Descr: $scope.model.Descr,
                             IsActive: true,
                             CompanyType:0,
-                            
+
                         }
                     }).then(function (response) {
                         btn.stop();
