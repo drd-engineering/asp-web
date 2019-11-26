@@ -88,7 +88,6 @@
                         <form name="myForm" class="form-horizontal" autocomplete="off">
                             <div class="panel panel-body login-form" style="padding:0px">
                                 <div class="text-center" ">
-                                    @*<div class="icon-object border-slate-300 text-slate-300"><i class="icon-reading"></i></div>*@
                                     <img src="/Images/login_banner.png" width="100%" /><br /><br />
                                     <h5 class="content-group">Login to your DRD account <small class="display-block">Enter your credentials below</small></h5>
                                 </div>
@@ -114,8 +113,12 @@
                                     <table style="width:100%">
                                         <tr>
                                             <td>
+<<<<<<< HEAD
                                                 @*<a href="/subscription/registry">Register</a>*@
                                                 <a ng-click="popupTnC()">Register</a>
+=======
+                                                <a ng-click="goRegistry()">Register</a>
+>>>>>>> 6f01dc588dea6b89d2f48b1d4132ff24db30c9aa
                                             </td>
                                             <td style="text-align:right">
                                                 <a href="/login/forgotpassword">Forgot password?</a>
@@ -131,9 +134,6 @@
                             </div>
                         </form>
                         <!-- /simple login form -->
-                        <!-- View member modal -->
-                        <ng-include src="'/Include/PopupTnC'"></ng-include>
-                        <!-- View member modal -->
                     </div>
                     <!-- /content area -->
                 </div>
@@ -176,9 +176,6 @@
                 }
             }
 
-            $scope.popupTnC = function () {
-                $("#modal_tnc").modal("show");
-            }
 
             $scope.goRegistry = function () {
                 location.href = "/subscription/registry";

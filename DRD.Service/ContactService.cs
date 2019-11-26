@@ -17,8 +17,8 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var result = (from User in db.Users
-                              join Contact in db.Contacts on User.Id equals Contact.ContactItemId
-                              where Contact.ContactOwnerId == user.Id
+                              join Contact in db.Contacts on User.Id equals Contact.ContactItem.Id
+                              where Contact.ContactOwner.Id == user.Id
                               select new ContactItem
                               {
                                   Id = User.Id,

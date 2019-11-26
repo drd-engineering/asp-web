@@ -1,4 +1,4 @@
-﻿@model DRD.Domain.JsonLayout
+﻿@model DRD.Models.View.Layout
 @{
     Layout = null;
 }
@@ -71,7 +71,7 @@
     <div ng-controller="drdControllerMain">
         <!-- Main navbar -->
         <div class="navbar navbar-default navbar-fixed-top header-highlight">
-            <div class="navbar-header" style="background-color:@Model.user.Company.BackColorBar">
+            <div class="navbar-header" style="background-color:black">
                 <a class="navbar-brand" href="/">
                     <img ng-src="/images/company/" alt="">
                 </a>
@@ -85,7 +85,7 @@
                     <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3" style="top:3px"></i></a></li>
                     <li>
                         <a href="/">
-                            <span style="font-size:medium;">@Model.user.Company.Name | @Model.user.Name</span>
+                            <span style="font-size:medium;">DRD | @Model.user.Name</span>
                         </a>
                     </li>
                 </ul>
@@ -131,7 +131,7 @@
             <!-- Page content -->
             <div class="page-content">
                 <!-- Main sidebar -->
-                <div class="sidebar sidebar-main sidebar-fixed" style="background-color:@Model.user.Company.BackColorBar">
+                <div class="sidebar sidebar-main sidebar-fixed" style="background-color: black">
                     <div class="sidebar-content">
                         <!-- User menu -->
 
@@ -151,7 +151,7 @@
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
                                     <li class="active">
-                                        <a href="/dashboard" style="background-color:@Model.user.Company.BackColorBar"><i class="icon-home4"></i> <span>Dashboard</span></a>
+                                        <a href="/dashboard" style="background-color:black"><i class="icon-home4"></i> <span>Dashboard</span></a>
                                     </li>
                                     <!-- /main -->
                                     @foreach (var menu in Model.menus)

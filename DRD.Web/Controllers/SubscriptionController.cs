@@ -25,6 +25,11 @@ namespace DRD.Web.Controllers
             return View(model);
         }
 
+        public ActionResult Succeed() 
+        {
+            return View();
+        }
+
         public ActionResult Save(DtoCompany prod)
         {
             var srv = new CompanyService();

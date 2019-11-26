@@ -10,7 +10,6 @@ namespace DRD.Models
     public class DocumentUser
     {
         public long Id { get; set; } // Id (Primary key)
-        [ForeignKey("DocumentId")]
         public long DocumentId { get; set; }
         public long UserId { get; set; } // MemberId
         public int FlagPermission { get; set; } // FlagPermission

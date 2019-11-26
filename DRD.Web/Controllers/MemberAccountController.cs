@@ -86,5 +86,14 @@ namespace DRD.Web.Controllers
         }
 
 
+        // JsonSubscriptionRegistry
+        public ActionResult Registration(JsonSubscriptionRegistry registry)
+        {
+            var srv = new MemberAccountService();
+            var data = srv.SaveRegistration(registry);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }

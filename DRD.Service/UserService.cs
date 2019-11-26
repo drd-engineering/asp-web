@@ -68,7 +68,7 @@ namespace DRD.Service
                     findUsername = s => s.Id == userId;
                 }
 
-                var loginUser =
+                UserSession loginUser =
                     (from user in db.Users
                      where user.Password.Equals(encryptedPassword)
                      select new UserSession

@@ -88,16 +88,7 @@ namespace DRD.Web.Controllers
         public DtoMemberLogin GetUser(Controller controller)
         {
             DtoMemberLogin user = (DtoMemberLogin)controller.Session["_USER_LOGIN_"];
-            //user.Id = user.Id;
-            //user.UserId = user.UserId;
-            //user.Name = user.Name;
-            //user.ShortName = user.ShortName;
-            //user.Location = user.Location;
-            //user.AppZone = user.CompanyCode;
-
-            //AppZoneService azsvr = new AppZoneService();
-            //azsvr.GetByCode();
-
+           
             return user;
         }
 
@@ -132,12 +123,7 @@ namespace DRD.Web.Controllers
             return items;
         }
 
-        //public int UpdatePassword(string oldPassword, string newPassword)
-        //{
-        //    UserService svr = new UserService();
-        //    JsonUser user = (JsonUser)Session["_USER_LOGIN_"];
-        //    return svr.ChangePassword(user.Id, oldPassword, newPassword);
-        //}
+        
         public int UpdatePassword(string oldPassword, string newPassword)
         {
             MemberService svr = new MemberService();

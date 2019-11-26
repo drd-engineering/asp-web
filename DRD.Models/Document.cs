@@ -22,7 +22,6 @@ namespace DRD.Models
         
         // FK
         public Company Companies { get; set; } //FK to Company
-        [ForeignKey("DocumentId")]
         public DocumentUser DocumentUser { get; set; } // FK to documentuser
         
         public Document()
