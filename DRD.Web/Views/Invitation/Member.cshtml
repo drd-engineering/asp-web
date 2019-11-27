@@ -88,20 +88,29 @@
 
     .member-container{
         height: 100px;
+        margin-top: 1em;
     }
     .content{
         padding-left: 10px;
     }
 
-    div.manage-member{
-        padding: 25px;
-        margin: 25px;
+    .content {
+        /* sama as page-header padding */
+        padding: 20px;
+        margin: 0;
+    }
+
+    .manage-member {
         max-height:500px;
         overflow: auto!important;
         border-style:solid;
         border-color:gray;
         border-width: thin;
         overflow-y:scroll;
+    }
+
+    .manage-member-header p {
+        font-weight: 700;
     }
 
     .manage-member::-webkit-scrollbar {
@@ -122,9 +131,7 @@
         background-color: rgba(0, 0, 0, .5);
     }
     
-    div.request-join {
-        padding: 25px;
-        margin: 25px;
+    .request-join {
         max-height:200px;
         overflow: auto!important;
         border-style:solid;
@@ -150,10 +157,9 @@
         border: 2px solid white; /* should match background, can't be transparent */
         background-color: rgba(0, 0, 0, .5);
     }
-    div.invite-email{
-
-        margin: 25px;
-        max-height:500px;
+    
+    .invite-email {
+        max-height: 500px;
         overflow: auto!important;
 
     }
@@ -214,6 +220,25 @@
         border-color: #ff8799 !important;
     }
 
+    /* put this class to parent div of expected right aligned content */
+    .content-align-right {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .content-align-right p {
+        text-align: right;
+    }
+
+    .clickable a {
+        color: unset;
+        text-decoration: none;
+    }
+
+    .clickable a:hover {
+        color: blue;
+    }
+
 </style>
 
 
@@ -260,46 +285,49 @@
 
                     <!-- /page header -->
 
-                    <div class="content-header">
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <p>ALL</p>
-                            </div>
-                            <div class="col-lg-2">
-                                <p>Selected (19)</p>
-                            </div>
-                        </div>
-                    </div> 
 
                     <!-- Content area -->
-                    <div class="content manage-member overflow-auto" style="display:none">
-                       
+                    <div class="content" style="display:none">
+                        <div class="manage-member-header">
+                            <div class="row content-align-right">
+                                <div class="col-lg-2">
+                                    <p class="clickable">
+                                        <a>ALL</a>
+                                    </p>
+                                </div>
+                                <div class="col-lg-2">
+                                    <p>Selected (19)</p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <!-- Contextual classes -->
-                        <!-- LIST -->
-                        <div calss="row">
-                            <div ng-repeat="x in products" class="col-lg-4 col-md-4 col-xs-6">
-                                <div class="row member-container">
-                                    <div class="col-sm-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+                        <div class="manage-member overflow-auto">
+                            <!-- LIST -->
+                            <div calss="row">
+                                <div ng-repeat="x in products" class="col-lg-4 col-md-4 col-xs-6">
+                                    <div class="row member-container">
+                                        <div class="col-sm-1">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-lg-3">
+                                            <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
+
+                                        </div>
+                                        <div class="col-sm-8 col-lg-8 no-overflow">
+                                            <strong class="ellipsis">{{x.Invited.Name}}</strong>
+                                            <div>{{x.Invited.Email}}</div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-lg-3">
-                                        <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
-                                    </div>
-                                    <div class="col-sm-8 col-lg-8 content no-overflow">
-                                        <strong class="ellipsis">{{x.Invited.Name}}</strong>
-                                        <div>{{x.Invited.Email}}</div>
-                                    </div>
                                 </div>
 
                             </div>
-
+                            <!-- /LIST -->
                         </div>
-                        <!-- /LIST -->
-                       
+    
+
                     </div>
                     <!-- /content area -->
                     @*INVITE BY EMAIL*@
@@ -322,48 +350,50 @@
                     @*INVITE BY EMAIL*@
 
                     <!-- Content area -->
-                    <div class="content request-join overflow-auto border border-dark" style="display:none">
+                    <div class="content" style="display:none">
                         <!-- Contextual classes -->
-                        @*JOIN BY REQUEST*@
-                        <div class="">
-                            <!-- LIST -->
-                            <div calss="row">
-                                <div ng-repeat="x in products" class="col-lg-6 col-md-6 col-xs-12">
-                                    <div class="row member-container">
-                                        <div class="col-sm-2 col-lg-2">
-                                            <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
+                        <div class="request-join overflow-auto">
+                            @*JOIN BY REQUEST*@
+                            <div class="">
+                                <!-- LIST -->
+                                <div calss="row">
+                                    <div ng-repeat="x in products" class="col-lg-6 col-md-6 col-xs-12">
+                                        <div class="row member-container">
+                                            <div class="col-sm-2 col-lg-2">
+                                                <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
-                                        </div>
-                                        <div class="col-sm-6 col-lg-6 content no-overflow">
-                                            <strong class="ellipsis">{{x.Invited.Name}}</strong>
-                                            <div>{{x.Invited.Email}}</div>
-                                        </div>
-
-                                        <div class="col-sm-4 col-lg-4">
-                                            <div class="input-group-btn container">
-                                                <div class="row pull-right">
-                                                    <span class="image-container-sm green-border">
-                                                        <img src="~/Images/icon/accept.png" ng-click="updateProduct()" />
-                                                    </span>
-
-                                                    <span class="image-container-sm red-border">
-                                                        <img src="~/Images/icon/reject.png" ng-click="updateProduct()" />
-                                                    </span>
-                                                </div>
-                                                
-                                                
                                             </div>
-                                            
+                                            <div class="col-sm-6 col-lg-6 no-overflow">
+                                                <strong class="ellipsis">{{x.Invited.Name}}</strong>
+                                                <div>{{x.Invited.Email}}</div>
+                                            </div>
+
+                                            <div class="col-sm-4 col-lg-4">
+                                                <div class="input-group-btn container">
+                                                    <div class="row pull-right">
+                                                        <span class="image-container-sm green-border">
+                                                            <img src="~/Images/icon/accept.png" ng-click="updateProduct()" />
+                                                        </span>
+
+                                                        <span class="image-container-sm red-border">
+                                                            <img src="~/Images/icon/reject.png" ng-click="updateProduct()" />
+                                                        </span>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
                                         </div>
+
                                     </div>
 
                                 </div>
+                                <!-- /LIST -->
 
                             </div>
-                            <!-- /LIST -->
-
+                            @*JOIN BY REQUEST*@
                         </div>
-                        @*JOIN BY REQUEST*@
 
                     </div>
                     <!-- /content area -->
