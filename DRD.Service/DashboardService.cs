@@ -46,7 +46,7 @@ namespace DRD.Service
                 counter.Old.Declined = counter.New.Declined;
                 counter.Old.Contact = counter.New.Contact;
 
-                var rotationNodes = db.RotationNodes.Where(c => c.Member.Id == memberId).ToList();
+                var rotationNodes = db.RotationNodes.Where(c => c.Member.Id == memberId).ToList(); 
                 if (rotationNodes != null)
                 {
                     counter.New.Inbox = rotationNodes.Count(c => c.Status.Equals("00"));

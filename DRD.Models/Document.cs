@@ -14,6 +14,7 @@ namespace DRD.Models
         public long? CreatorId { get; set; } // CreatorId
         public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
+        public long DocumentUserId { get; set; } 
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } // DocumentMember.FK_DocumentMember_Document
@@ -22,6 +23,7 @@ namespace DRD.Models
         
         // FK
         public Company Companies { get; set; } //FK to Company
+        [ForeignKey("DocumentUserId")]
         public DocumentUser DocumentUser { get; set; } // FK to documentuser
         
         public Document()
