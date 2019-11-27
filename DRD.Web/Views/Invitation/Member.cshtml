@@ -33,7 +33,7 @@
     }
 
     .panel-heading {
-        /*make'em transparent, cause of panel in panel thing*/
+        /* make'em transparent, cause of panel in panel thing */
         background-color: #f5f5f5 !important;
     }
 
@@ -122,7 +122,7 @@
         background-color: rgba(0, 0, 0, .5);
     }
     
-    div.request-join{
+    div.request-join {
         padding: 25px;
         margin: 25px;
         max-height:200px;
@@ -163,6 +163,11 @@
         padding: 5px 20px;
     }
 
+    .btn-confirmation {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
     .input-group-btn button {
         margin-left: 10px;
         margin-right: 10px;
@@ -176,6 +181,37 @@
         text-overflow: ellipsis; 
         white-space: nowrap;
         overflow: hidden;
+    }
+
+    .image-container-sm {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: solid 1px #888888;
+        position: relative;
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+    .image-container-sm:hover {
+        transform: scale(1.1);
+        border-width: 2px;
+    }
+
+    .image-container-sm img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+    .green-border {
+        border-color: #82a398 !important;
+    }
+
+    .red-border {
+        border-color: #ff8799 !important;
     }
 
 </style>
@@ -207,16 +243,13 @@
                                 <br />
 
                                 <div class="row">
-                                    <div class="col-lg-10">
+                                    
+                                    <div class="col-lg-6">
+                                        
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
-                                            <span class="input-group-btn">
-                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
-                                                    <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
-                                                    <div class="ladda-progress" style="width: 0px;"></div>
-                                                </button>
-                                            </span>
+                                            <input type="text" class="form-control btn-process" ng-model="kriteria" placeholder="Find members" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -226,8 +259,22 @@
                     </div>
 
                     <!-- /page header -->
+
+                    <div class="content-header">
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <p>ALL</p>
+                            </div>
+                            <div class="col-lg-2">
+                                <p>Selected (19)</p>
+                            </div>
+                        </div>
+                    </div> 
+
                     <!-- Content area -->
-                    <div class="content manage-member overflow-auto border border-dark" style="display:none">
+                    <div class="content manage-member overflow-auto" style="display:none">
+                       
+
                         <!-- Contextual classes -->
                         <!-- LIST -->
                         <div calss="row">
@@ -238,11 +285,11 @@
                                             <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
                                         </div>
                                     </div>
-                                    <div class="col-sm-3 col-lg-2">
+                                    <div class="col-sm-3 col-lg-3">
                                         <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
                                     </div>
-                                    <div class="col-sm-8 col-lg-9 content no-overflow">
+                                    <div class="col-sm-8 col-lg-8 content no-overflow">
                                         <strong class="ellipsis">{{x.Invited.Name}}</strong>
                                         <div>{{x.Invited.Email}}</div>
                                     </div>
@@ -263,12 +310,11 @@
                                 <textarea class="form-control" rows="5" id="comment"></textarea>
                             </div>
                             <div class="col-sm-2">
-                                <div class="input-group-btn text-right">
-                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
-                                        <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
+                                
+                                <button class="btn bg-slate-700 btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
+                                    <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
                                         
-                                    </button>
-                                </div>
+                                </button>
                                 
                             </div>
                         </div>
@@ -288,22 +334,24 @@
                                             <img class="avatar" ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
 
                                         </div>
-                                        <div class="col-sm-4 col-lg-4 content no-overflow">
+                                        <div class="col-sm-6 col-lg-6 content no-overflow">
                                             <strong class="ellipsis">{{x.Invited.Name}}</strong>
                                             <div>{{x.Invited.Email}}</div>
                                         </div>
 
-                                        <div class="col-sm-6 col-lg-6">
-                                            <div class="input-group-btn">
-                                                <button class="btn bg-slate-700 btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
-                                                    <span class="ladda-label">Accept</span>
-                                                    
-                                                </button>
+                                        <div class="col-sm-4 col-lg-4">
+                                            <div class="input-group-btn container">
+                                                <div class="row pull-right">
+                                                    <span class="image-container-sm green-border">
+                                                        <img src="~/Images/icon/accept.png" ng-click="updateProduct()" />
+                                                    </span>
 
-                                                <button class="btn bg-slate-700 btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
-                                                    <span class="ladda-label">Reject</span>
-                                                    
-                                                </button>
+                                                    <span class="image-container-sm red-border">
+                                                        <img src="~/Images/icon/reject.png" ng-click="updateProduct()" />
+                                                    </span>
+                                                </div>
+                                                
+                                                
                                             </div>
                                             
                                         </div>

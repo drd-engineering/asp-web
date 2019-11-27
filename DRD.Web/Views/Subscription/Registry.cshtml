@@ -212,12 +212,12 @@
                                         <div class="text-right">
                                             <span class="input-group-btn">
                                                 <button class="btn bg-slate-700 pull-right btn-submit mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="validateForm()" style="width:120px">
-                                                    <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                    <span class="ladda-label">Submit</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
 
                                                 <button class="btn bg-slate-700 pull-right btn-cancel mg-left-10" data-style="slide-down" data-spinner-color="#333" ng-click="backToHome()" style="width:120px">
-                                                    <span class="ladda-label">&nbsp;&nbsp;Back&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                    <span class="ladda-label">Back</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
 
@@ -405,8 +405,9 @@
                 if (!$scope.isValidForm($scope.myForm))
                     return;
                 $scope.popupTnC();
-
-                $scope.updateProduct($scope.getAggreement());
+                if ($scope.getAggreement()) {
+                    $scope.updateProduct($scope.getAggreement());
+                }
             }
 
 

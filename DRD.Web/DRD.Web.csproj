@@ -306,6 +306,8 @@
     <Content Include="Images\back_reg.jpg" />
     <Content Include="Images\back_reg2.jpg" />
     <Content Include="Images\Bank\creditcard.png" />
+    <Content Include="Images\cancel.png" />
+    <Content Include="Images\checked.png" />
     <Content Include="Images\Company\default_panel.jpg" />
     <Content Include="Images\Company\default_logo.png" />
     <Content Include="Images\Company\logodocurate.png" />
@@ -345,6 +347,8 @@
     <Content Include="Images\FileType\xls.png" />
     <Content Include="Images\FileType\xlsx.png" />
     <Content Include="Images\gasgauge-red.png" />
+    <Content Include="Images\icon\accept.png" />
+    <Content Include="Images\icon\reject.png" />
     <Content Include="Images\login_banner.png" />
     <Content Include="Images\Member\biliget.png" />
     <Content Include="Images\Member\Classified-Stamp.png" />
