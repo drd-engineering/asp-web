@@ -58,7 +58,7 @@ namespace DRD.App.Controllers
             var strmenu = login.ManipulateMenu(this, user, mid);
             // end decription menu
 
-            Layout layout = new Layout();
+            Layout layout = new Layout(); 
             layout.activeId = int.Parse(strmenu);
             layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
