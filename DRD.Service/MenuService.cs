@@ -12,7 +12,9 @@ namespace DRD.Service
     {
         public List<Menu> GetMenus(int activeId)
         {
-            List<Menu> values = File.ReadAllLines("Menu.csv")
+            var root = System.Web.HttpContext.Current.Server.MapPath("~");
+            var path = Path.Combine(root, @"Menu.csv");
+            List<Menu> values = File.ReadAllLines(path)
                                            .Skip(1)
                                            .Select(v => Menu.FromCsv(v))
                                            .ToList();

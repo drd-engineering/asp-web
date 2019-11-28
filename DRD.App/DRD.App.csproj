@@ -2234,6 +2234,7 @@
     <Content Include="assets\vendors\bootstrap-datepicker-1.6.4-dist\css\bootstrap-datepicker3.min.css.map" />
     <Content Include="assets\vendors\bootstrap-datepicker-1.6.4-dist\css\bootstrap-datepicker3.standalone.css.map" />
     <Content Include="assets\vendors\bootstrap-datepicker-1.6.4-dist\css\bootstrap-datepicker3.standalone.min.css.map" />
+    <Content Include="Menu.csv" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
