@@ -132,7 +132,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 Company company = GetCompany(companyId);
-                company.businessSubscription.Id = subscriptionId;
+                company.BusinessSubscriptionId = subscriptionId;
 
                 long result = db.Companies.Add(company).OwnerId;
                 db.SaveChanges();
@@ -146,7 +146,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 Company company = GetCompany(companyId);
-                company.isVerified = true;
+                company.IsVerified = true;
 
                 long result = db.Companies.Add(company).OwnerId;
                 db.SaveChanges();

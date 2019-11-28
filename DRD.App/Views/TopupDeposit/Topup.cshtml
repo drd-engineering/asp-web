@@ -96,16 +96,16 @@
                                             <div class="row">
                                                 <div class="col-md-10">
                                                     <label class="control-label">DRD Point purchase (Minimal {{minTopup|number}})</label>
-                                                    <input type="text" class="form-control" ng-model="model.Amount" ng-required="wizarno=='product'" maxlength="10" ng-only-number/>
+                                                    <input type="text" class="form-control" ng-model="model.Amount" ng-required="wizarno=='product'" maxlength="10" ng-only-number />
                                                 </div>
 
-                                               
+
                                             </div>
-                                            
+
                                         </div>
                                     </fieldset>
                                     <hr />
-                                    
+
                                     <div class="col-md-12">
 
                                         <div class="col-md-12">
@@ -134,7 +134,7 @@
                                         Date: <b>{{convertJsonDate(xresult.TopupDate) | date: 'dd/MM/yyyy'}}</b><br />
                                         Amount: <b>{{xresult.Amount|number}}</b><br />
                                         <br />
-                                        <button class="btn bg-danger" data-style="slide-down" ng-click="payment()" >
+                                        <button class="btn bg-danger" data-style="slide-down" ng-click="payment()">
                                             <span class="ladda-label">&nbsp;&nbsp;Continue with payment&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                             <div class="ladda-progress" style="width: 0px;"></div>
                                         </button>
@@ -267,7 +267,7 @@
         $(document).ready(function () {
         })
 
-        
 
-</script>
+
+    </script>
 </body>

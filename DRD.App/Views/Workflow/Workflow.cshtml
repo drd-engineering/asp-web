@@ -8,7 +8,6 @@
 @*<link rel="stylesheet" href="/assets/css/demo.css">
     <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
     <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-
     <link rel="stylesheet" href="/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
           type="text/css">
@@ -18,7 +17,6 @@
     <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
     <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
@@ -74,7 +72,6 @@
     .auto-style3 {
         width: 64px;
     }
-
     .image-wraper {
         float: left;
         margin-right: 10px;
@@ -84,7 +81,6 @@
         border: 1px solid #ddd;
         border-radius: 4px;
     }
-
     .image-content {
         width: 120px;
         cursor: pointer;
@@ -391,17 +387,13 @@
     <!-- /Page container -->
 
     <script type="text/javascript">
-
-
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
-
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
             // modal workflow
             $scope.workflow = {};
             $scope.workflows = [];
             $scope.workflowCount = [];
             // modal workflow
-
             // modal project
             $scope.project = {};
             $scope.projects = [];
@@ -413,7 +405,6 @@
             $scope.currPage = 0;
             $scope.index = 0;
             // modal project
-
             $scope.model = {};
             $scope.wizarno = 'product';
             $scope.master = {};
@@ -422,18 +413,15 @@
             $scope.isUsed = false;
             $scope.objectItems=[];
             initValues();
-
             $(".control-warning").uniform({
                 radioClass: 'choice',
                 wrapperClass: 'border-warning-600 text-warning-800'
             });
-
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 if ($scope.model.Id!=0){
-
                     setTimeout(function () {
                         var digramScope=angular.element('#xdiagramController').scope();
                         digramScope.bindDiagram(digramScope.$parent.nodes, digramScope.$parent.links);
@@ -447,19 +435,16 @@
                 }
                 $(".content").show();
             });
-
             function initValues() {
                 var product = @Html.Raw(Json.Encode(Model.obj));
                 $scope.objectItems = @Html.Raw(Json.Encode(Model.objItems));
                 if (product.Id!=0 ){
-
                     $scope.model.Id=product.Id;
                     $scope.model.Name=product.Name;
                     $scope.model.Descr= product.Descr;
                     $scope.model.IsActive= product.IsActive;
                     $scope.model.IsTemplate= product.IsTemplate;
                     $scope.project=product.Project;
-
                     $scope.nodes=product.WorkflowNodes;
                     $scope.links=product.WorkflowNodeLinks;
                     $scope.isUsed=product.IsUsed;
@@ -467,20 +452,14 @@
                         $("#canvas").css("pointer-events",'');
                     else
                         $(".is-used").show();
-
                 }else{
                     $("#canvas").css("pointer-events",'');
                 }
-
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
                 $('#checkbox2').bootstrapSwitch.defaults.size='mini';
             }
-
             $scope.initData = function () {
-
             }
-
-
             /*--------------------------------------------------------------
             SAVE PRODUCT
             --------------------------------------------------------------*/
@@ -514,7 +493,6 @@
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
-
                         }
                     }, function (response) {
                         btn.stop();
@@ -522,7 +500,6 @@
                         var x = 0;
                     });
             }
-
             $scope.saveProductDraft = function () {
                 var btn = Ladda.create(document.querySelector('.btn-submit2'));
                 btn.start();
@@ -547,7 +524,6 @@
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
-
                         }
                     }, function (response) {
                         btn.stop();
@@ -555,48 +531,38 @@
                         var x = 0;
                     });
             }
-
             $scope.updateProduct = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
-
                 if ($scope.project.Name==undefined) {
                     //showInfo("Required project");
                     //return;
                     $scope.project.Id=0;
                 }
-
                 $scope.saveProduct();
             }
-
             $scope.updateProductDraft = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
-
                 if ($scope.project.Name==undefined) {
                     //showInfo("Required project");
                     //return;
                     $scope.project.Id=0;
                 }
-
                 $scope.saveProductDraft();
             }
-
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;
             };
-
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top
                 }, 200);
             }
-
             $scope.isValidObject = function (name) {
                 return $scope.objectItems.includes(name);
             };
-
             /*--------------------------------------------------------------
                 POPUP PROJECT
             --------------------------------------------------------------*/
@@ -607,23 +573,18 @@
                 }
                 $("#modal_select_project").modal("show");
                 $scope.projects=[];
-
             }
             $scope.setProject = function (idx) {
                 $scope.project=$scope.projects[idx];
             }
-
             $scope.getLiteProjects = function (kriteria, page, row) {
                 $scope.projects = [];
                 $http.post('@Url.Action("GetLiteAll2", "Project")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
                     if (response.data) {
                         $scope.projects = response.data;
-
                         $scope.index = row * (page - 1);
-
                         $scope.paging = [];
                         $scope.getProjectCount(kriteria);
-
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -631,7 +592,6 @@
                     var x = 0;
                 });
             }
-
             $scope.changePageProjects = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("GetLiteAll2", "Project")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
@@ -644,31 +604,24 @@
                     var x = 0;
                 });
             }
-
             $scope.getProjectCount = function (kriteria) {
                 $http.post('@Url.Action("GetLiteAllCount2", "Project")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
                     if (response.data) {
-
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
-
                         $scope.page = "1";
-
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
-
             /*--------------------------------------------------------------
                 END POPUP PROJECT
             --------------------------------------------------------------*/
-
             /*--------------------------------------------------------------
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
@@ -679,14 +632,11 @@
                 }
                 $scope.workflows=[];
                 $("#modal_select_workflow").modal("show");
-
-
             }
             $scope.setWorkflow = function (idx) {
                 $scope.workflow=$scope.workflows[idx];
                 $scope.getWorkflow($scope.workflow.Id);
             }
-
             $scope.getWorkflow = function (id) {
                 $scope.users = [];
                 $http.post('@Url.Action("GetById", "workflow")', { id: id }).then(function (response) {
@@ -696,14 +646,11 @@
                             $scope.model.Name=product.Name;
                         if ($scope.model.Descr==undefined)
                             $scope.model.Descr= product.Descr;
-
                         setTimeout(function () {
                             var digramScope=angular.element('#xdiagramController').scope();
                             digramScope.clearDiagram();
-
                             $scope.nodes=product.WorkflowNodes;
                             $scope.links=product.WorkflowNodeLinks;
-
                             digramScope.bindDiagram(product.WorkflowNodes, product.WorkflowNodeLinks);//digramScope.$parent.nodes, digramScope.$parent.links);
                             $("#start-0").show();
                             $("#end-1").show();
@@ -715,18 +662,14 @@
                     var x = 0;
                 });
             }
-
             $scope.getLiteWorkflows = function (kriteria, page, row) {
                 $scope.workflows = [];
                 $http.post('@Url.Action("GetPopupAll", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
-
                         $scope.index = row * (page - 1);
-
                         $scope.paging = [];
                         $scope.getWorkflowCount(kriteria);
-
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -734,7 +677,6 @@
                     var x = 0;
                 });
             }
-
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("GetPopupAll", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
@@ -747,34 +689,25 @@
                     var x = 0;
                 });
             }
-
             $scope.getWorkflowCount = function (kriteria) {
                 $http.post('@Url.Action("GetPopupAllCount", "Workflow")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
                     if (response.data) {
-
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
-
                         $scope.page = "1";
-
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
             /*--------------------------------------------------------------
                 END POPUP WORKFLOW
             --------------------------------------------------------------*/
-
         });
-
-
-
         $(document).ready(function () {
             $('#checkbox1').bootstrapSwitch();
             $('#checkbox2').bootstrapSwitch();
@@ -787,24 +720,20 @@
                 ////      window.saveAs(blob, 'my-node.png');
                 ////  });
                 //var node = document.getElementById('canvas');
-
                 //domtoimage.toBlob(node).then(function (blob) {
                 //    window.saveAs(blob, 'my-node.png');
                 //});
-
                 //domToImage
                 //    .toBlob(document.getElementById("canvas"))
                 //    .then(function(blob) {
                 //        saveBlobAsFile(blob, "XX.png");
                 //    });
-
                 domtoimage.toBlob(document.getElementById('canvas'))
                     .then(function(blob) {
                         window.saveAs(blob, 'my-node.png');
                     });
             }
         })
-
         // this function is to convert blob to base64 img
         function saveBlobAsFile(blob, fileName) {
             var reader = new FileReader();
@@ -818,7 +747,6 @@
             };
             reader.readAsDataURL(blob);
         }
-
 </script>
     <script src="/Scripts/xcontroller/xdiagram.js" type="text/javascript"></script>
 </body>

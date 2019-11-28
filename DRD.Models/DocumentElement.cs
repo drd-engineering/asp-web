@@ -33,10 +33,13 @@ namespace DRD.Models
         public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
+        public long DocumentId {set; get;}
 
         // Foreign keys
         public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
+        [ForeignKey("DocumentId")]
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
+        [ForeignKey("ElementId")]
         public Element Element { get; set; }
 
         public DocumentElement()
