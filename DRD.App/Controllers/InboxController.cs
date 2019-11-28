@@ -22,7 +22,7 @@ namespace DRD.App.Controllers
         }
 
 
-        public ActionResult InboxList(string mid)
+        public ActionResult InboxList()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -33,15 +33,13 @@ namespace DRD.App.Controllers
             // end decription menu
 
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(strmenu);
-            layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
             return View(layout);
         }
 
-        public ActionResult Inbox(string mid)
+        public ActionResult Inbox()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -61,7 +59,6 @@ namespace DRD.App.Controllers
 
             Layout layout = new Layout();
             //layout.activeId = int.Parse(ids[0]);
-            layout.key = mid.Split(',')[0];
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
             layout.obj = product;

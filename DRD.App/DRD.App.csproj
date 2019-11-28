@@ -2779,8 +2779,8 @@
     <Content Include="Views\Workflow\Workflow.cshtml" />
     <Content Include="Views\Workflow\WorkflowList.cshtml" />
     <Content Include="Views\Include\PopupProject.cshtml" />
-    <Content Include="Views\Rotation\Rotation.cshtml" />
-    <Content Include="Views\Rotation\RotationList.cshtml" />
+    <Content Include="Views\Rotation\New.cshtml" />
+    <Content Include="Views\Rotation\List.cshtml" />
     <Content Include="Views\Include\PopupWorkflow.cshtml" />
     <Content Include="Views\Inbox\Inbox.cshtml" />
     <Content Include="Views\InProgress\InProgressList.cshtml" />

@@ -23,33 +23,32 @@ namespace DRD.App.Controllers
         }
 
         // GET: Profile/MemberList/
-        public ActionResult UserList(string mid)
+        public ActionResult UserList()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
-            var strmenu = login.ManipulateMenu(this, userSession, mid);
+            var strmenu = login.ManipulateMenu(this, userSession);
             // end decription menu
 
             Layout layout = new Layout();
             layout.activeId = int.Parse(strmenu);
-            layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
             return View(layout);
         }
 
-        public ActionResult User(string mid)
+        public ActionResult User()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
-            var strmenu = login.ManipulateSubMenu(this, userSession, mid);
+            var strmenu = login.ManipulateSubMenu(this, userSession);
             // end decription menu
 
             User user = new User();
@@ -62,7 +61,6 @@ namespace DRD.App.Controllers
 
             Layout layout = new Layout();
             layout.activeId = int.Parse(ids[0]);
-            layout.key = mid.Split(',')[0];
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = userSession;
             layout.obj = user;

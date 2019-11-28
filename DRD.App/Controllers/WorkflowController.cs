@@ -20,7 +20,7 @@ namespace DRD.App.Controllers
             return login.GetUser(this);
         }
 
-        public ActionResult Workflow(string mid)
+        public ActionResult Workflow()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -40,7 +40,6 @@ namespace DRD.App.Controllers
 
             Layout layout = new Layout();
             //layout.activeId = int.Parse(ids[0]);
-            layout.key = mid.Split(',')[0];
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.objItems = login.GetMenuObjectItems(layout.menus, layout.activeId);
             layout.user = login.GetUser(this);
@@ -49,7 +48,7 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult List(string mid)
+        public ActionResult List()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -61,7 +60,6 @@ namespace DRD.App.Controllers
 
             Layout layout = new Layout();
             //layout.activeId = int.Parse(strmenu);
-            layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
