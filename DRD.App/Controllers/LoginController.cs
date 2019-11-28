@@ -27,7 +27,7 @@ namespace DRD.App.Controllers
             if (user != null)
             {
                 ret = 1;
-                    Session["_USER_LOGIN_"] = user;
+                Session["_USER_LOGIN_"] = user;
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
         }

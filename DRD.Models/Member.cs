@@ -12,7 +12,7 @@ namespace DRD.Models
         public System.DateTime JoinedAt { get; set; } // DateCreated
         public bool IsActive { get; set; } // IsActive
         public bool IsAdministrator { get; set; } // IsActive
-
+        
         public Member()
         {
             IsAdministrator = false;

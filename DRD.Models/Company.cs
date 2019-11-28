@@ -22,11 +22,11 @@ namespace DRD.Models
         public string Image2 { get; set; } // Image2 (length: 100)
         public string ImageCard { get; set; } // ImageCard (length: 100)
         public bool IsActive { get; set; } // IsActive
-        public bool isVerified { get; set; } // IsVerified
+        public bool IsVerified { get; set; } // IsVerified
+        public long BusinessSubscriptionId { get; set; }
+        // public string SubscriptionName nanti samain atribut2 yang ada di bussinesssubscription.
 
         public DateTime CreatedAt { get; set; } // DateCreated
-
-        public BusinessSubscription businessSubscription {get;set;}
 
         // Reverse navigation
 
@@ -41,7 +41,7 @@ namespace DRD.Models
         public Company()
         {
             IsActive = true;
-            isVerified = false;
+            IsVerified = false;
             CreatedAt = DateTime.Now;
             Members = new List<Member>();
             Tags = new List<Tag>();

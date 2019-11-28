@@ -18,6 +18,9 @@ namespace DRD.Models
         public string StatusDescription { get; set; }
         public long RotationNodeId { get; set; }
         public long DefWorkflowNodeId { get; set; }
+        public long WorkflowId { get; set; }
+        public long? MemberId { get; set; }
+        public long? UserId { get; set; }
         public int FlagAction { get; set; }
         public string DecissionInfo { get; set; }
 
@@ -30,8 +33,11 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
 
         // Foreign keys
+        [ForeignKey("MemberId")]
         public virtual Member Member { get; set; } // FK_Rotation_Member company
+        [ForeignKey("UserId")]
         public virtual User User { get; set; } // FK_Rotation_User personal
+        [ForeignKey("WorkflowId")]
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
 
         public Rotation()
@@ -41,6 +47,10 @@ namespace DRD.Models
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
+
+            Member = new Member();
+            User = new User();
+            Workflow = new Workflow();
         }
     }
 }
