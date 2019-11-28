@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DRD.Models.View;
 using System.IO;
+using System.Reflection;
 
 namespace DRD.Service
 {
@@ -12,12 +11,23 @@ namespace DRD.Service
     {
         public List<Menu> GetMenus(int activeId)
         {
-            List<Menu> values = File.ReadAllLines("Menu.csv")
+            var menuPath = Path.Combine(Directory.GetCurrentDirectory(),"\\Menu.csv");
+            List <Menu> values = File.ReadAllLines(menuPath)
                                            .Skip(1)
                                            .Select(v => Menu.FromCsv(v))
                                            .ToList();
             return values;
         }
+        public List<Menu> GetMenus(string path, int activeId)
+        {
+            var menuPath = Path.Combine(path,"..\\Menu.csv");
+            List<Menu> values = File.ReadAllLines(menuPath)
+                                           .Skip(1)
+                                           .Select(v => Menu.FromCsv(v))
+                                           .ToList();
+            return values;
+        }
+
         public string Encrypt(string data)
         {
             var result = Utilities.Encrypt(data);
