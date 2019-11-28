@@ -65,9 +65,7 @@ namespace DRD.Service
 
                 }
 
-                DocumentService docsvr = new DocumentService();
-                long cxdoc = docsvr.GetLiteAllCount(memberId, null);
-                counter.New.Document = (int)cxdoc;
+                
                 return counter;
 
             }
