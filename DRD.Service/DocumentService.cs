@@ -863,7 +863,7 @@ namespace DRD.Service
                 if (rotationNodeId < 0)
                 {
                     var rid = Math.Abs(rotationNodeId);
-                    var rnx = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == documentId && c.RotationNode.UserId == memberId && !c.RotationNode.Status.Equals((int)RotationItem.StatusName.Open) && c.RotationNode.Rotation.Id == rid);
+                    var rnx = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == documentId && c.RotationNode.UserId == memberId && !c.RotationNode.Status.Equals((int)Constant.RotationStatus.Open) && c.RotationNode.Rotation.Id == rid);
                     if (rnx == null)
                         return 0;
 
