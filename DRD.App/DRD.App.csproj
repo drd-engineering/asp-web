@@ -2903,6 +2903,7 @@
     <Content Include="Views\Payment\XAggregator.cshtml" />
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
+    <Content Include="Views\Contact\index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />
