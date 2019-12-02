@@ -20,6 +20,24 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
+        public ActionResult GetRotationFromAllCompany()
+        {
+            LoginController login = new LoginController();
+            CounterItem counter = (CounterItem)Session["_COUNTER_"];
+            if (counter == null)
+                counter = new CounterItem();
+
+            var user = login.GetUser(this);
+            if (user == null)
+                return Json(null, JsonRequestBehavior.AllowGet);
+
+            var dashboardService = new DashboardService();
+            var data = dashboardService.GetActivityCounter(user.Id, counter);
+            Session["_COUNTER_"] = data;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
         public ActionResult GetActivityCounter()
         {
             LoginController login = new LoginController();
@@ -33,6 +51,23 @@ namespace DRD.App.Controllers
 
             var dashboardService = new DashboardService();
             var data = dashboardService.GetActivityCounter(user.Id, counter);
+            Session["_COUNTER_"] = data;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetActivityCounter(long CompanyId)
+        {
+            LoginController login = new LoginController();
+            CounterItem counter = (CounterItem)Session["_COUNTER_"];
+            if (counter == null)
+                counter = new CounterItem();
+
+            var user = login.GetUser(this);
+            if (user == null)
+                return Json(null, JsonRequestBehavior.AllowGet);
+
+            var dashboardService = new DashboardService();
+            var data = dashboardService.GetActivityCounter(user.Id, counter, CompanyId);
             Session["_COUNTER_"] = data;
             return Json(data, JsonRequestBehavior.AllowGet);
         }

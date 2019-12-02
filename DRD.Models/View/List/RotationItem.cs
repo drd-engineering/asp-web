@@ -8,22 +8,7 @@ namespace DRD.Models.View.List
 {
     public class RotationItem
     {
-        public enum StatusName
-        {
-            Open = 00,
-            In_Progress = 01,
-            Pending= 02,
-            Signed = 03,
-            Revision = 05,
-            Altered = 06,
-            Completed = 90,
-            Declined = 98,
-            Canceled = 99,
-            Waiting_For_Response = 10,
-            Accepted = 11,
-            Expired = 97
-        }
-
+        
         public string Key { get; set; }
         public long Id { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 2)
@@ -46,10 +31,6 @@ namespace DRD.Models.View.List
         {
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
             
-        }
-        public static string getStatusName(int statusCode)
-        {
-            return Enum.GetName(typeof(StatusName), statusCode).Replace("_"," ");
         }
     }
 }

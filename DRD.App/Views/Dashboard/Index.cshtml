@@ -733,17 +733,9 @@
                 });
             }
             $scope.resetCounter = function () {
-                $scope.counter.Rotation = 0;
-                $scope.counter.Inbox = 0;
-                $scope.counter.Altered = 0;
-                $scope.counter.Revised = 0;
                 $scope.counter.InProgress = 0;
-                $scope.counter.Pending = 0;
-                $scope.counter.Signed = 0;
-                $scope.counter.Declined = 0;
                 $scope.counter.Completed = 0;
-                $scope.counter.Document = 0;
-                $scope.counter.Contact = 0;
+
             }
             $scope.linkPage = function (name) {
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:name})[0].UrlPage;
