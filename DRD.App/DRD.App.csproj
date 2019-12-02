@@ -630,6 +630,7 @@
     <Content Include="assets\images\signature.png" />
     <Content Include="assets\images\ui\datepicker_trigger.png" />
     <Content Include="assets\images\ui\map_marker.png" />
+    <Content Include="assets\ongoing-no-bg.png" />
     <Content Include="assets\swf\datatables\flashExport.swf" />
     <Content Include="assets\swf\handsontable\zero_clipboard.swf" />
     <Content Include="assets\vendors\angular-1.5.5\angular-animate.js" />
