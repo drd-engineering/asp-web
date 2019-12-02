@@ -46,9 +46,9 @@
         /*width: inherit;*/
     }
 
-        .highlight-container .container {
+    .highlight-container .container {
             width: inherit;
-        }
+    }
 
     .highlight-card {
         background-color: white;
@@ -60,6 +60,21 @@
         border-bottom: solid 1px #e9ebf0;
     }
 
+    .highlight-header select {
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    select {
+        width: auto !important;
+        max-width: 100px;
+    }
+
+    .push-left {
+        margin-left: auto !important;
+    }
+
     .text-align-right {
         text-align: right !important;
     }
@@ -69,6 +84,10 @@
         font-weight: 400;
         line-height: 1.25;
         font-size: 14x;
+    }
+
+    p.card-title {
+        margin: 0 !important;
     }
 
     .highlight-card .card-content {
@@ -108,9 +127,14 @@
         line-height: 1;
         margin-top: 5px;
     }
-    /*container of vertical-align content wannabe*/
+    
+    /*
+        container of vertical-align content wannabe
+        use this for div with .row
+    */
     .vertical-align-row {
         display: flex;
+        align-items: center;
     }
 
     .vertical-align-content {
@@ -128,12 +152,17 @@
                     <div class="highlight-card">
                         <div class="highlight-header">
                             <div class="container">
-                                <div class="row">
-                                    <div class="col-md-10">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-6">
                                         <p class="card-title"><strong>ROTATION</strong></p>
                                     </div>
-                                    <div class="col-md-2">
-                                        <p class="card-filter">Select 2</p>
+                                    <div class="col-md-3 push-left">
+                                        <!-- SELECT -->
+                                        <select class="form-control card-filter">
+                                            <option class="card-filter">This Week</option>
+                                            <option class="card-filter">Last Week</option>
+                                            <option class="card-filter">...</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -191,14 +220,20 @@
                     <div class="highlight-card">
                         <div class="highlight-header">
                             <div class="container">
-                                <div class="row">
-                                    <div class="col-md-10">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-6">
                                         <p class="card-title"><strong>USAGE</strong></p>
                                     </div>
-                                    <div class="col-md-2">
-                                        <p class="card-filter">Select 2</p>
+                                    <div class="col-md-3 push-left">
+                                        <!-- SELECT -->
+                                        <select class="form-control card-filter">
+                                            <option class="card-filter">This Week</option>
+                                            <option class="card-filter">Last Week</option>
+                                            <option class="card-filter">...</option>
+                                        </select>
                                     </div>
                                 </div>
+                                
                             </div>
 
 
