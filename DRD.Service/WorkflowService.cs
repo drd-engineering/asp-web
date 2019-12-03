@@ -78,14 +78,20 @@ namespace DRD.Service
                             workflowNodeData.posTop = workflowNode.PosTop;
                             workflowNodeData.width = workflowNode.Width;
                             workflowNodeData.height = workflowNode.Height;
-                            workflowNodeData.user = (workflowNode.User != null ? new WorkflowNodeUser
+                            User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.MemberId).FirstOrDefault();
+                            if (user != null) {
+                                workflowNodeData.user = new WorkflowNodeUser
+                                {
+                                    id = user.Id,
+                                    name = user.Name,
+                                    email = user.Email,
+                                    imageProfile = user.ImageProfile,
+                                };
+                            }
+                            else
                             {
-                                id = workflowNode.User.Id,
-                                name = workflowNode.User.Name,
-                                email = workflowNode.User.Email,
-                                imageProfile = workflowNode.User.ImageProfile,
-                            } : null);
-
+                                workflowNodeData.user = null;
+                            }
                             result.WorkflowNodes.Add(workflowNodeData);
                             dmid++;
                         }
@@ -379,7 +385,9 @@ namespace DRD.Service
                             var node = new WorkflowNode();
                             node.WorkflowId = product.Id;
                             node.MemberId = (jnode.memberId == 0 ? null : jnode.memberId);
-                            node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
+                            node.SymbolCode = getSymbolsFromCsvByCode("START").Id;
+                            //node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
+
                             node.Caption = jnode.caption;
                             node.Info = jnode.info;
                             node.Operator = jnode.Operator;
@@ -421,7 +429,6 @@ namespace DRD.Service
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Symbols.csv");
             Symbol values = File.ReadAllLines(path)
-                                           .Skip(1)
                                            .Select(v => Symbol.FromCsv(v))
                                            .Where(c => c.Code.Equals(code)).FirstOrDefault();
                                            
@@ -432,7 +439,6 @@ namespace DRD.Service
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Symbols.csv");
             Symbol values = File.ReadAllLines(path)
-                                           .Skip(1)
                                            .Select(v => Symbol.FromCsv(v))
                                            .Where(c => c.Id == id).FirstOrDefault();
 

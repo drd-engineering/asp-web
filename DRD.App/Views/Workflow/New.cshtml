@@ -133,7 +133,7 @@
 
                                                 <div class="col-md-10">
                                                     <label class="control-label">Description</label><br />
-                                                    <textarea class="control-label" ng-model="model.Descr" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 100px;width:100%" ng-required="wizarno=='product'"></textarea>
+                                                    <textarea class="control-label" ng-model="model.Description" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 100px;width:100%" ng-required="wizarno=='product'"></textarea>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -397,7 +397,7 @@
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Name=product.Name;
-                    $scope.model.Descr= product.Descr;
+                    $scope.model.Description= product.Description;
                     $scope.model.IsActive= product.IsActive;
                     $scope.model.IsTemplate= product.IsTemplate;
                     $scope.project=product.Project;
@@ -429,7 +429,7 @@
                         prod: {
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
-                            Descr: $scope.model.Descr,
+                            Description: $scope.model.Description,
                             ProjectId:$scope.project.Id,
                             IsActive: $('#checkbox1')[0].checked,
                             IsTemplate: $('#checkbox2')[0].checked,
@@ -466,7 +466,7 @@
                         prod: {
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
-                            Descr: $scope.model.Descr,
+                            Description: $scope.model.Description,
                             ProjectId:$scope.project.Id,
                             IsActive: $('#checkbox1')[0].checked,
                             IsTemplate: $('#checkbox2')[0].checked,
@@ -600,8 +600,8 @@
                         var product=response.data;
                         if ($scope.model.Name==undefined)
                             $scope.model.Name=product.Name;
-                        if ($scope.model.Descr==undefined)
-                            $scope.model.Descr= product.Descr;
+                        if ($scope.model.Description==undefined)
+                            $scope.model.Description= product.Description;
                         setTimeout(function () {
                             var digramScope=angular.element('#xdiagramController').scope();
                             digramScope.clearDiagram();

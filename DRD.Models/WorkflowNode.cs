@@ -34,7 +34,6 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
 
         // Foreign keys
-        public virtual User User { get; set; } // FK_WorkflowNode_Member
         public virtual Workflow Workflow { get; set; } // FK_WorkflowNode_Workflow
 
         public WorkflowNode()
