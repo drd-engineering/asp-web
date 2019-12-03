@@ -39,7 +39,7 @@ namespace DRD.Service
                 {
                     Member member = new Member();
                     member.UserId = userId;
-                    member.CompanyId = register.CompanyId;
+                    member.CompanyId = register.CompanyId.Value;
                     long memberId = userService.Save(member);
                 }
 

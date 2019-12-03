@@ -56,9 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessSubscription.cs" />
-	<Compile Include="CompanyQuota.cs" />
-	<Compile Include="View\Symbol.cs" />
     <Compile Include="View\CompanyProfile.cs" />
+	<Compile Include="CompanyQuota.cs" 
+	<Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyList.cs" />
     <Compile Include="API\Element.cs" />
