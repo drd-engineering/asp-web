@@ -328,13 +328,30 @@ namespace DRD.Service
                      {
                          ActivityName = rotation.Caption,
                          WorkflowNodeId = rotation.Id,
-                         User = rotation.User,
-                         Email = (rotation.User.Id == null ? "" : rotation.User.Email),
-                         Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
-                         Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
-                         Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
+                         Id = rotation.MemberId.Value,
+                         //User = (from db.User)
+                         //Email = (rotation.User.Id == null ? "" : rotation.User.Email),
+                         //Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
+                         //Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
+                         //Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
                      }).ToList();
-
+                foreach (RotationUser item in result)
+                {
+                    if(item.MemberId != 0)
+                    {
+                        User userAsMemberCompany = (from user in db.Users
+                                                    join member in db.Members on user.Id equals member.UserId
+                                                    where member.Id == item.MemberId).FirstOrDefault();
+                        if (userAsMemberCompany != null)
+                        {
+                            item.User = userAsMemberCompany;
+                            item.Email = userAsMemberCompany.Email;
+                            item.Id = userAsMemberCompany.Id;
+                            item.Name = userAsMemberCompany.Name;
+                            item.Picture = userAsMemberCompany.ImageProfile;
+                        }
+                    }
+                }
                 return result;
             }
         }
