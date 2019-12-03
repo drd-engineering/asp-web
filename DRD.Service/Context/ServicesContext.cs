@@ -30,7 +30,7 @@ namespace DRD.Service.Context
         public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Stamp> Stamps { get; set; }
-        public DbSet<Symbol> Symbols{ get; set; }
+       // public DbSet<Symbol> Symbols{ get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }

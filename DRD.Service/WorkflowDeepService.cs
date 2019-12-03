@@ -91,9 +91,9 @@ namespace DRD.Service
                 {
                     rotationNode.Note = "Waiting for action from: ";
                     var rtpending = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNode.Id);
-                    var wfnto = rtpending.WorkflowNode.WorkflowNodeLinks.FirstOrDefault(c => c.Symbol.Code.Equals(Constant.EnumActivityAction.SUBMIT.ToString()));
+                    var wfnto = rtpending.WorkflowNode.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString()));
 
-                    var nodetos = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == wfnto.WorkflowNodeToId && c.Symbol.Code.Equals(Constant.EnumActivityAction.SUBMIT.ToString())).ToList();
+                    var nodetos = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == wfnto.WorkflowNodeToId && c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString())).ToList();
                     foreach (WorkflowNodeLink workflowNodeLink in nodetos)
                     {
                         int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
@@ -108,7 +108,7 @@ namespace DRD.Service
                 // set note for alter link
                 else if (rotationNode.Status.Equals((int) Constant.RotationStatus.Open))
                 {
-                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.Symbol.Code.Equals(Constant.EnumActivityAction.ALTER.ToString()));
+                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.SymbolCode.Equals(Constant.EnumActivityAction.ALTER.ToString()));
                     if (node != null)
                     {
                         if (node.Operator != null)
@@ -135,7 +135,7 @@ namespace DRD.Service
                     if (rotationNode.PrevWorkflowNodeId != null)
                     {
                         var wfn = db.WorkflowNodes.FirstOrDefault(c => c.Id == rotationNode.PrevWorkflowNodeId);
-                        if (wfn.Symbol.Code.Equals("PARALLEL"))
+                        if (wfn.SymbolCode.Equals("PARALLEL"))
                         {
                             var wfnIds = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeToId == wfn.Id).Select(c => c.WorkflowNodeId).ToArray();
                             var rns = db.RotationNodes.Where(c => wfnIds.Contains(c.WorkflowNode.Id)).ToList();
@@ -492,7 +492,7 @@ namespace DRD.Service
                 var result = db.SaveChanges();
 
                 // first node, node after start symbol
-                var wfstarts = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.Workflow.Id && c.WorkflowNodes.Symbol.Code.Equals("START")).ToList();
+                var wfstarts = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.Workflow.Id && c.WorkflowNodes.SymbolCode.Equals("START")).ToList();
                 if (wfstarts.Count() == 0)
                 {
                     retvalues.Add(createActivityResult(-1));
@@ -533,7 +533,7 @@ namespace DRD.Service
                 RotationNode rtnode = db.RotationNodes.FirstOrDefault(c => c.Id == param.RotationNodeId);
                 #region submit penerima transfer
                 //get node is tranfer 
-                if (strbit.Equals("SUBMIT") && rtnode.WorkflowNode.Symbol.Code.Equals("ACTIVITY") && rtnode.SenderRotationNodeId != null)// && rtnode.Value != null && rtnode.Value.StartsWith("TRF"))
+                if (strbit.Equals("SUBMIT") && rtnode.WorkflowNode.SymbolCode.Equals("ACTIVITY") && rtnode.SenderRotationNodeId != null)// && rtnode.Value != null && rtnode.Value.StartsWith("TRF"))
                 {
                     // get sender node value
                     RotationNode senderRotNode = rtnode.RotationNode_SenderRotationNodeId;
@@ -543,7 +543,7 @@ namespace DRD.Service
                     long? prevWfNodeId = rtnode.PrevWorkflowNodeId;
                     // get transfer node
                     var prevWfNode = db.WorkflowNodes.FirstOrDefault(c => c.Id == prevWfNodeId);
-                    if (prevWfNode.Symbol.Code.Equals("TRANSFER"))
+                    if (prevWfNode.SymbolCode.Equals("TRANSFER"))
                     {
                         decimal transfer = decimal.Parse(prevWfNode.Value);
                         if (transfer > 0)
@@ -581,12 +581,12 @@ namespace DRD.Service
                 else if (strbit.Equals("REJECT"))
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
 
-                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNode.Id && c.Symbol.Code.Equals(strbit)).ToList();
+                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNode.Id && c.SymbolCode.Equals(strbit)).ToList();
                 List<RotationNode> rotnodes = new List<RotationNode>();
                 foreach (WorkflowNodeLink wfnl in wfnodes)
                 {
                     var nodeto = wfnl.WorkflowNodeTos;
-                    if (nodeto.Symbol.Code.Equals("ACTIVITY"))
+                    if (nodeto.SymbolCode.Equals("ACTIVITY"))
                     {
 
                         RotationNode rtnode2 = new RotationNode();
@@ -603,7 +603,7 @@ namespace DRD.Service
                         db.RotationNodes.Add(rtnode2);
                         retvalues.Add(createActivityResult(rtnode2.UserId));
                     }
-                    else if (nodeto.Symbol.Code.Equals("PARALLEL"))
+                    else if (nodeto.SymbolCode.Equals("PARALLEL"))
                     {
                         bool ispending = false;
                         foreach (WorkflowNodeLink wfnlx in wfnl.WorkflowNodeTos.WorkflowNodeLinkTos)
@@ -668,13 +668,13 @@ namespace DRD.Service
                             }
                         }
                     }
-                    else if (nodeto.Symbol.Code.Equals("DECISION"))
+                    else if (nodeto.SymbolCode.Equals("DECISION"))
                     {
                         WorkflowNodeLink nodeToNext;
                         //if (decissionValue(rtnode.Value, nodeto.Value, nodeto.Operator))
-                        //    nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.Symbol.Code.Equals("YES"));
+                        //    nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("YES"));
                         //else
-                            nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.Symbol.Code.Equals("NO"));
+                            nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("NO"));
 
                         RotationNode rtnode2 = new RotationNode();
 
@@ -690,7 +690,7 @@ namespace DRD.Service
                         db.RotationNodes.Add(rtnode2);
                         retvalues.Add(createActivityResult(rtnode2.UserId));
                     }
-                    else if (nodeto.Symbol.Code.Equals("TRANSFER"))
+                    else if (nodeto.SymbolCode.Equals("TRANSFER"))
                     {
                         WorkflowNodeLink nodeToNext;
                         nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault();
@@ -714,7 +714,7 @@ namespace DRD.Service
                             retvalues.Add(createActivityResult(rtnode2.UserId));
                         }
                     }
-                    else if (nodeto.Symbol.Code.Equals("CASE"))
+                    else if (nodeto.SymbolCode.Equals("CASE"))
                     {
                         WorkflowNodeLink nodeToNext = null; ;
                         WorkflowNodeLink elseLink = null;
@@ -751,7 +751,7 @@ namespace DRD.Service
                             retvalues.Add(createActivityResult(rtnode2.UserId));
                         }
                     }
-                    else if (nodeto.Symbol.Code.Equals("END"))
+                    else if (nodeto.SymbolCode.Equals("END"))
                     {
                         if (rtnode.Status.Equals((int) Constant.RotationStatus.Declined))
                             updateAllStatus(db, rtnode.Rotation.Id, (int) Constant.RotationStatus.Declined);

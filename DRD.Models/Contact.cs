@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DRD.Models.View.Contact;
 
 namespace DRD.Models
 {
@@ -21,5 +22,10 @@ namespace DRD.Models
         public virtual User ContactOwner { get; set; }
         [ForeignKey("ContactItemId")]
         public virtual User ContactItem { get; set; }
+
+        public static implicit operator Contact(ContactItem v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

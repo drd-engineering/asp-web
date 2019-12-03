@@ -141,14 +141,10 @@
         <div class="section-title">
             <h3>Entry Rotation</h3>
         </div>
-
-
         <!-- ROTATION FORM-->
         <form name="myForm" class="form-horizontal" autocomplete="off">
-
             <div ng-show="wizarno=='product'">
                 <fieldset>
-
                     <div class="row">
                         <div class="col-md-6">
                             <label class="control-label">Subject</label>
@@ -183,7 +179,7 @@
                                     <label class="control-label">Important Notes</label>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" ng-model="model.Subject" ng-required="wizarno=='product'" maxlength="100" />
+                                    <input type="text" class="form-control" ng-model="model.ImportantNotes" ng-required="wizarno=='product'" maxlength="100" />
                                 </div>
                                 <div class="col-sm-4">
                                     <select class="form-control">
@@ -200,23 +196,18 @@
                                     <label class="control-label">Tags</label>
                                 </div>
                                 <div class="col-sm-12">
-                                    <input type="text" class="form-control" ng-model="model.Subject" ng-required="wizarno=='product'" maxlength="100" />
+                                    <input type="text" class="form-control" ng-model="model.Tags" ng-required="wizarno=='product'" maxlength="100" />
                                 </div>
                             </div>
                         </div>
-
-
-                </fieldset>
-
+                </fieldset
                 <!-- SUBMIT BUTTON -->
-
                 <div class="input-group-btn text-right">
                     <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" ng-click="updateProduct()">
                         <span class="ladda-label">manage members</span><span class="ladda-spinner"></span>
                         <div class="ladda-progress"></div>
                     </button>
                 </div>
-
                 <!-- end of SUBMIT BUTTON -->
             </div>
         </form>
@@ -248,13 +239,8 @@
         <ng-include src="'/Include/PopupWorkflow'"></ng-include>
         <ng-include src="'/Include/PopupMember'"></ng-include>
         <!-- View member modal -->
-
     </section>
-
-
     <script type="text/javascript">
-
-
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
         myApp.directive('onFinishRender', function ($timeout) {
             return {
