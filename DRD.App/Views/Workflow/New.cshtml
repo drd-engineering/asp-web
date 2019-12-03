@@ -1,26 +1,10 @@
-﻿@using DRD.Domain;
-@model JsonLayout
+﻿@using DRD.Models.View;
+@model Layout
 
 @{
     ViewBag.Title = "";
 }
 
-@*<link rel="stylesheet" href="/assets/css/demo.css">
-    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
-    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>*@
 
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
@@ -101,18 +85,14 @@
     <div class="page-container" ng-controller="drdController" id="drdController">
         <!-- Page content -->
         <div class="page-content">
-
-
             <!-- Main content -->
             <div class="content-wrapper">
                 <!-- Page header -->
                 <div class="page-header page-header-default">
                     <div class="page-header-content">
                         <div class="page-title">
-                            <h4>@*<i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">Home</span> -*@Entry Workflow</h4>
-
+                            <h4>Entry Workflow</h4>
                         </div>
-
                     </div>
 
                 </div>
@@ -120,26 +100,17 @@
                 <!-- Horizontal form options -->
                 <!-- Content area -->
                 <div class="content" style="display:none">
-
-
                     <!-- Basic layout-->
-
-
                     <div class="panel panel-flat">
                         <div class="panel-body">
-
-
                             <!--MEMBER DATA-->
-
                             <form name="myForm" class="form-horizontal" autocomplete="off">
-
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
                                             <div class="row">
                                                 <div class="col-md-5">
                                                     <label class="control-label">Workflow Name</label>
-                                                    
                                                     <div class="input-group">
                                                         <div>
                                                             <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="100" />
@@ -147,8 +118,7 @@
                                                         <span class="input-group-addon" style="cursor:pointer" ng-click="popupWorkflow()"><i class="icon-insert-template"></i></span>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-5">
+                                                @*<div class="col-md-5">
                                                     <label class="control-label">Project</label>
                                                     <div class="input-group">
                                                         <div>
@@ -157,7 +127,7 @@
                                                         <span class="input-group-addon" style="cursor:pointer" ng-click="popupProject()" ><i class="icon-cogs"></i></span>
                                                         
                                                     </div>
-                                                </div>
+                                                </div>*@
                                             </div>
                                             <div class="row">
 
@@ -167,7 +137,6 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-
                                                 <div class="col-md-5">
                                                     <label class="control-label">Status Active</label><br />
                                                     <input id="checkbox1" type="checkbox" data-off-text="Inactive" data-on-text="Active" class="BSswitch" ng-model="model.IsActive">
@@ -183,7 +152,6 @@
                                     </fieldset>
                                     <hr />
                                     <!--CANVAS-->
-                                    @*<svg id="svg1" style="margin: 0 auto; display: block;"></svg>*@
                                     <div id="xdiagramController" ng-controller="xdiagramController">
                                         <div class="modal-header bg-grey-300">
                                             <button id="downloadDiagam" class="close" type="button"><i class="icon-file-download pull-right"></i></button>
@@ -324,14 +292,11 @@
                                             <!-- View member modal -->
                                         </div>
                                     </div>
-
                                     <!--/CANVAS-->
                                     <hr />
                                     <div class="col-md-12">
-
                                         <div class="col-md-12">
                                             <div class="text-right">
-
                                                 @*<span class="input-group-btn">*@
                                                     <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Save&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
@@ -358,9 +323,6 @@
                                         Data successfully saved. @*Click <a href='/home/productlist'>disini</a> untuk kembali ke list data.*@
                                     </div>
                                 </div>
-
-
-
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
                             <!-- View member modal -->
@@ -370,13 +332,7 @@
 
                         </div>
                     </div>
-
-
                     <!-- /basic layout -->
-
-
-
-
                 </div>
                 <!-- /vertical form options -->
             </div>
