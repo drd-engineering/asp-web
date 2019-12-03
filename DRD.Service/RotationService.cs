@@ -341,7 +341,8 @@ namespace DRD.Service
                     {
                         User userAsMemberCompany = (from user in db.Users
                                                     join member in db.Members on user.Id equals member.UserId
-                                                    where member.Id == item.MemberId).FirstOrDefault();
+                                                    where member.Id == item.MemberId
+                                                    select user).FirstOrDefault();
                         if (userAsMemberCompany != null)
                         {
                             item.User = userAsMemberCompany;
