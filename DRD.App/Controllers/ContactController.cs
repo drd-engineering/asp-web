@@ -19,6 +19,7 @@ namespace DRD.App.Controllers
             layout.menus = login.GetMenus(this, 0);
             layout.user = login.GetUser(this);
             layout.activeId = 0;
+
             return View(layout);
         }
             

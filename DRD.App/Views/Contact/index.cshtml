@@ -261,6 +261,7 @@
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+            $scope.companies = {};
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
@@ -277,6 +278,7 @@
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 $(".content").show();
+                $scope.getAllCompanies();
                 $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
             });
 
@@ -284,6 +286,15 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
+            $scope.getAllCompanies = function () {
+                $scope.companies = {}; // ga penting??
+                $http.get('@Url.Action("GetData", "Contact")')
+                    .then(function (response) {
+                        $scope.companies = response.data;
+                    
+                });
+            }
+
             $scope.getLiteProducts = function (kriteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
