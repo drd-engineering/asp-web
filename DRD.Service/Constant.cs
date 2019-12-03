@@ -1,3 +1,5 @@
+using System;
+
 namespace DRD.Service
 {
     public class Constant
@@ -19,6 +21,31 @@ namespace DRD.Service
         /// Constructor
         public Constant(){}
         
+        public enum RotationStatus
+        {
+            Open = 00,
+            In_Progress = 01,
+            Pending= 02,
+            Signed = 03,
+            Revision = 05,
+            Altered = 06,
+            Completed = 90,
+            Declined = 98,
+            Canceled = 99,
+            Waiting_For_Response = 10,
+            Accepted = 11,
+            Expired = 97
+        }
+
+        public static string getRotationStatusName(int statusCode)
+        {
+            return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
+        }
+        public enum SubscriptionType
+        {
+            PERSONAL = 1,
+            BUSINESS = 2
+        }
         public enum EnumContentType
         {
             ARTICLE = 1,

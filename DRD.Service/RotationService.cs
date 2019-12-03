@@ -106,7 +106,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                int[] finishedStatus = { (int)RotationItem.StatusName.Completed, (int)RotationItem.StatusName.Canceled, (int)RotationItem.StatusName.Declined};
+                int[] finishedStatus = { (int)Constant.RotationStatus.Completed, (int)Constant.RotationStatus.Canceled, (int)Constant.RotationStatus.Declined};
                 var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && !finishedStatus.Contains(rotation.Rotation.Status)).ToList();
 
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
@@ -213,7 +213,7 @@ namespace DRD.Service
                          WorkflowName = rotationNode.Rotation.Workflow.Name,
                          ActivityName = rotationNode.WorkflowNode.Caption,
                          UserId = rotationNode.UserId,
-                         StatusDescription = RotationItem.getStatusName(rotationNode.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotationNode.Status),
                          DateCreated = rotationNode.DateCreated,
                          DateUpdated = rotationNode.DateUpdated,
                          DateStarted = rotationNode.Rotation.DateUpdated,
@@ -239,12 +239,12 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && rotation.Status.Equals((int)RotationItem.StatusName.Open)).ToList();
+                var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && rotation.Status.Equals((int)Constant.RotationStatus.Open)).ToList();
 
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals((int)RotationItem.StatusName.In_Progress)).ToList();
+                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals((int)Constant.RotationStatus.In_Progress)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
 
@@ -280,7 +280,7 @@ namespace DRD.Service
                          DefWorkflowNodeId = rotationNode.WorkflowNode.Id,
                          FlagAction = 0,
                          DecissionInfo = "",
-                         StatusDescription = RotationItem.getStatusName(rotationNode.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotationNode.Status),
                          Workflow = new Workflow
                          {
                              Id = rotationNode.Rotation.Workflow.Id,
@@ -386,7 +386,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.User.Id,
-                         StatusDescription = RotationItem.getStatusName(rotation.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
@@ -488,7 +488,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.User.Id,
-                         StatusDescription = RotationItem.getStatusName(rotation.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
@@ -590,7 +590,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.User.Id,
-                         StatusDescription = RotationItem.getStatusName(rotation.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateStarted,
@@ -693,7 +693,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Rotation.Workflow.Id,
                          WorkflowName = rotation.Rotation.Workflow.Name,
                          ActivityName = rotation.WorkflowNode.Caption,
-                         StatusDescription = RotationItem.getStatusName(rotation.Status),
+                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          UserId = rotation.User.Id,
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,

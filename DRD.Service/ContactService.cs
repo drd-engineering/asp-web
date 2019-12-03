@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using DRD.Models.View.Contact;
 using DRD.Service.Context;
 using DRD.Models.Custom;
+using DRD.Models.API.Register;
+using DRD.Models;
 
 namespace DRD.Service
 {
@@ -70,5 +72,44 @@ namespace DRD.Service
                 return listReturned;
             }
         }
+
+        public long CountMemberOfCompany(UserSession user, long CompanyIdOfUser) {
+            using (var db = new ServiceContext())
+            {
+                var MemberOfCompany = db.Members.Where(memberItem => memberItem.UserId == user.Id && memberItem.CompanyId == CompanyIdOfUser).ToList();
+
+                return MemberOfCompany.Count;
+            }
+
+        }
+
+
+        public CompanyList GetListOfCompany(UserSession user) {
+            using (var db = new ServiceContext()) { 
+                var MemberOfCompany = db.Members.Where(memberItem => memberItem.UserId == user.Id).ToList();
+                long[] MemberIds = (from c in MemberOfCompany select c.UserId).ToArray();
+                
+                var Companies = db.Companies.Where(company => MemberIds.Contains(company.Id)).ToList();
+
+                CompanyList companyList = new CompanyList();
+                List<CompanyItem> companyItems = new List<CompanyItem>();
+
+                foreach (Company c in Companies) {
+                    CompanyItem item = new CompanyItem();
+
+                    item.Name = c.Name;
+                    item.Id = c.Id;
+                    item.Code = c.Code;
+
+                    companyItems.Add(item);
+                }
+                companyList.companies = companyItems;
+                
+                return companyList;
+            }
+        }
+
+
+
     }
 }

@@ -22,6 +22,8 @@ namespace DRD.Models
         public long? MemberId { get; set; }
         public long? UserId { get; set; }
         public int FlagAction { get; set; }
+        public byte SubscriptionType { get; set; }
+        public long SubscriptionOf { set; get; }
         public string DecissionInfo { get; set; }
 
         // Document summaries

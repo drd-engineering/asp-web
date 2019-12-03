@@ -30,6 +30,23 @@ namespace DRD.Service
         {
             _connString = Constant.CONSTRING;
         }
+        public CounterItem GetActivityCounter(long memberId, CounterItem counter, long CompanyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                counter.Old.InProgress = counter.New.InProgress;
+                counter.Old.Completed = counter.New.Completed;
+                
+                var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == CompanyId).ToList();
+                if (rotation != null)
+                {
+                    counter.New.InProgress = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
+                    counter.New.Completed = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));
+                }
+                return counter;
+            }
+        }
+
         public CounterItem GetActivityCounter(long memberId, CounterItem counter)
         {
             using (var db = new ServiceContext())
@@ -46,7 +63,7 @@ namespace DRD.Service
                 counter.Old.Declined = counter.New.Declined;
                 counter.Old.Contact = counter.New.Contact;
 
-                var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList(); 
+                var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList();
                 if (rotationNodes != null)
                 {
                     counter.New.Inbox = rotationNodes.Count(c => c.Status.Equals("00"));
@@ -65,7 +82,7 @@ namespace DRD.Service
 
                 }
 
-                
+
                 return counter;
 
             }
