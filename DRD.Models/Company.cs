@@ -23,7 +23,7 @@ namespace DRD.Models
         public string ImageCard { get; set; } // ImageCard (length: 100)
         public bool IsActive { get; set; } // IsActive
         public bool IsVerified { get; set; } // IsVerified
-        public long BusinessSubscriptionId { get; set; }
+
         // public string SubscriptionName nanti samain atribut2 yang ada di bussinesssubscription.
 
         public DateTime CreatedAt { get; set; } // DateCreated

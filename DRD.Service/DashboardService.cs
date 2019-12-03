@@ -30,18 +30,30 @@ namespace DRD.Service
         {
             _connString = Constant.CONSTRING;
         }
-        public CounterItem GetActivityCounter(long memberId, CounterItem counter, long CompanyId)
+        public CounterItem GetActivityCounter(long memberId, CounterItem counter, long companyId)
         {
             using (var db = new ServiceContext())
             {
+                CompanyService companyService = new CompanyService();
+
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
+                counter.Old.StorageQuota = counter.New.StorageQuota;
+                counter.Old.StorageUsage = counter.New.StorageUsage;
+
                 
-                var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == CompanyId).ToList();
+                var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
+                var storages = companyService.getActiveSubscription(companyId: companyId);
+
                 if (rotation != null)
                 {
                     counter.New.InProgress = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
                     counter.New.Completed = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));
+                }
+                if (storages != null)
+                {
+                    counter.New.StorageQuota = storages.StorageQuota;
+                    counter.New.StorageUsage = storages.StorageUsage;
                 }
                 return counter;
             }
@@ -51,40 +63,20 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                counter.Old.Inbox = counter.New.Inbox;
-                counter.Old.Altered = counter.New.Altered;
-                counter.Old.Revised = counter.New.Revised;
-                counter.Old.Pending = counter.New.Pending;
-                counter.Old.Signed = counter.New.Signed;
-
-                counter.Old.Rotation = counter.New.Rotation;
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
-                counter.Old.Declined = counter.New.Declined;
-                counter.Old.Contact = counter.New.Contact;
+
 
                 var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList();
                 if (rotationNodes != null)
-                {
-                    counter.New.Inbox = rotationNodes.Count(c => c.Status.Equals("00"));
-                    counter.New.Altered = rotationNodes.Count(c => c.Status.Equals("06"));
-                    counter.New.Revised = rotationNodes.Count(c => c.Status.Equals("05"));
-                    counter.New.Pending = rotationNodes.Count(c => c.Status.Equals("02"));
-                    counter.New.Signed = rotationNodes.Count(c => c.Status.Equals("03"));
-
+                { 
                     long[] Ids = (from c in rotationNodes select c.Rotation.Id).ToArray();
                     var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.Member.Id == memberId).ToList();
-                    //var rot = db.Rotations.Where(c => c.CreatorId == memberId).ToList();
-                    counter.New.Rotation = rot.Count(c => c.Status.Equals("00") && c.CreatorId == memberId);
-                    counter.New.InProgress = rot.Count(c => c.Status.Equals("01"));
-                    counter.New.Completed = rot.Count(c => c.Status.Equals("90"));
-                    counter.New.Declined = rot.Count(c => c.Status.Equals("98"));
-
+                    
+                    counter.New.InProgress = rot.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
+                    counter.New.Completed = rot.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));
                 }
-
-
                 return counter;
-
             }
         }
     }
