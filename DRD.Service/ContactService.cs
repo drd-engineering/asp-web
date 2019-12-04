@@ -111,7 +111,7 @@ namespace DRD.Service
                     item.Id = c.Id;
                     item.Code = c.Code;
 
-                    // get count member and exlude Current User being counted
+                    // get count member and exlude Current User
                     item.TotalMember = CountMemberOfCompany(c.Id) - 1;
 
                     companyItems.Add(item);

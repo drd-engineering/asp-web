@@ -104,7 +104,7 @@
                                    
                                 </div>
                                 <div class="card-content">
-                                    <p>{{contacts.Count}} Contacts</p>
+                                    <p>{{personalContact.Count}} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -113,9 +113,9 @@
                 </div>
             </div>
             <!-- end of CARD 1 -->
-
+            
             <!-- CARD 2 -->
-            <div class="col-md-3" ng-repeat="x in companies">
+            <div class="col-md-3" ng-repeat="x in companies" ng-if="isMemberOfACompany()">
                 <div class="highlight-card">
                     <div class="container">
                         <div class="row">
@@ -160,9 +160,9 @@
                                     <div class="col-lg-10">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getData(kriteria)">
+                                            <input type="text" class="form-control" ng-model="searchKey" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, row)">
                                             <span class="input-group-btn">
-                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getData()" style="width:120px">
+                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getPersonalContact()" style="width:120px">
                                                     <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -190,7 +190,7 @@
 
                                     <table class="table-xs">
                                         <tbody>
-                                            <tr ng-repeat="x in contacts.Items">                                               
+                                            <tr ng-repeat="x in personalContact.Items">                                               
                                                 {{ x }}
                                                 <td>
                                                     <img ng-src="/Images/Member/{{x.ImageProfile}}" />
@@ -211,7 +211,7 @@
 
                             <div class="col-md-6">
                                 <div class="pull-right">
-                                    <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                    <select ng-model="page" class="form-control" ng-change="updatePage(page, size)">
                                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                     </select>
                                 </div>
@@ -240,71 +240,72 @@
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            // NEW
-            $scope.companies = [];
-            $scope.contacts = { Count: 0, CompanyName: "", Items: [], Type: "" }
             
-            $scope.product = {};
-            $scope.products = [];
-            $scope.productCount = [];
-            $scope.paging = [];
-            $scope.kriteria = "";
-            $scope.page = 1;
-            $scope.row = 20;
-            $scope.currPage = 0;
+            $scope.companies = [];
+            $scope.personalContact = { Count: 0, CompanyName: "", Items: [], Type: "" }
+            $scope.hasPersonalContactAccessed = false;
             $scope.isView = false;
-            $scope.index = 0;
+            
+            // PAGINATION
+            $scope.paging = [];
+            $scope.searchKey = "";
+            $scope.page = 1;
+            $scope.size = 20;
+            $scope.totalPage = 0;
 
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 $(".content").show();
-                $scope.getData();
-                //$scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+                $scope.getCompaniesData();
+                $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
+                $scope.totalPage = $scope.countTotalPage($scope.personalContact.Count, $scope.size);
             });
 
 
             /*--------------------------------------------------------------
             GET DATA THAT CONTACT PAGE NEED
             --------------------------------------------------------------*/
-            $scope.getData = function () {
-                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then( ...
-                
-                $http.get('@Url.Action("GetData", "Contact")')
+            // get all cards data (Personal and Companies data)
+            $scope.getCompaniesData = function () {
+                $http.get('@Url.Action("GetCompaniesData", "Contact")')
                     .then(function (response) {
-                        $scope.companyList = response.data.CompanyList;
-                        $scope.companies = $scope.companyList.companies;
 
-                        $scope.contacts = response.data.ContactList;
+                        if (response.data) {
+                            $scope.companies = response.data;
                         
-                        $scope.isView = true;
+                        }
+        
+                });
+            }
 
-                        console.log("Contact Response");
-                        console.log(response);
+            $scope.getPersonalContact = function (searchKey, page, pageSize) {
+                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: searchKey, page: page, pageSize: row }).then( ...
+                
+                $http.get('@Url.Action("GetPersonalContact", "Contact")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.index = row * (page - 1);
+                        
+                            $scope.personalContact.Items = response.data.Items;
+
+                            // init total of personal data when first calling
+                            if (!$scope.hasPersonalContactAccessed) {
+                                $scope.personalContact.Count = response.data.Count;
+                            }
+
+                            $scope.isView = true;
+                            $scope.hasPersonalContactBeenAccessed = true;
+                        }
 
                     
                 });
             }
            
-
-            $scope.changePage = function (kriteria, page, row) {
-                $scope.products = [];
-                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    if (response.data) {
-                        $scope.products = response.data;
-                        $scope.index = row * (page - 1);
-
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.getProductCount = function (kriteria) {
-                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: kriteria }).then(function (response) {
+            $scope.getProductCount = function (searchKey) {
+                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: searchKey }).then(function (response) {
                     if (response.data) {
 
                         var jumlahData = response.data;
@@ -323,8 +324,25 @@
             }
 
             /*--------------------------------------------------------------
+            HANDLE PAGINATION
+            --------------------------------------------------------------*/
+
+            $scope.countTotalPage = function (totalItem, size) {
+                return Math.ceil(totalItem / size);
+            }
+
+            $scope.updatePage = function (page, size) {
+
+            }
+
+
+            /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
+            $scope.isMemberOfACompany = function () {
+                return $scope.companies.length > 0;
+            }
+
             $scope.addMember = function (mid) {
                 location.href = "/invitation/invitation?mid=" + mid;
             }
@@ -337,6 +355,8 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
+
+
 
         });
 

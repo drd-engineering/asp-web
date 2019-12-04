@@ -22,10 +22,18 @@ namespace DRD.App.Controllers
 
             return View(layout);
         }
-            
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
 
         // GET: Contact/GetPersonalContact
-        public ActionResult GetPersonalContact()
+        public ActionResult GetPersonalContact(string criteria, int page, int pageSize)
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -48,21 +56,17 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Contact/GetData
-        public ActionResult GetData() {
+        
+        public ActionResult GetCompaniesData() {
+
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
             ContactService service = new ContactService();
-
-            CompanyService s1 = new CompanyService(); 
-
-            var data = new ContactData();
-            data.CompanyList = service.GetListOfCompany(login.GetUser(this));
-            data.ContactList = service.GetPersonalContact(login.GetUser(this));
-           
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var data = service.GetListOfCompany(login.GetUser(this));
             
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
 
