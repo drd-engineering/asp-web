@@ -323,18 +323,19 @@ namespace DRD.Service
             {
                 var result =
                     (from rotation in db.WorkflowNodes
-                     where rotation.WorkflowId == workflowId && rotation.SymbolCode.Equals("ACTIVITY")
-                     select new RotationUser
+                     join user in db.Users on rotation.MemberId equals user.Id
+                     where rotation.WorkflowId == workflowId && rotation.SymbolCode == 5
+                     select new
                      {
                          ActivityName = rotation.Caption,
                          WorkflowNodeId = rotation.Id,
-                         Id = rotation.MemberId.Value,
-                         //User = (from db.User)
-                         //Email = (rotation.User.Id == null ? "" : rotation.User.Email),
-                         //Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
-                         //Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
-                         //Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
-                     }).ToList();
+                         Id = rotation.MemberId.Value
+                     }).ToList().Select(x => new RotationUser
+                     {
+                         ActivityName = x.ActivityName,
+                         WorkflowNodeId = x.WorkflowNodeId,
+                         Id = x.Id
+                     });
                 foreach (RotationUser item in result)
                 {
                     if(item.MemberId != 0)
