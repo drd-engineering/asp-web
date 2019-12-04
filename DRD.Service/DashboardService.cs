@@ -62,7 +62,7 @@ namespace DRD.Service
         public CounterItem GetActivityCounter(long memberId, CounterItem counter)
         {
             using (var db = new ServiceContext())
-            {
+            { 
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
 

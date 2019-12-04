@@ -22,18 +22,6 @@ namespace DRD.App.Controllers
             return View(layout);
         }
             
-        public ActionResult Index(long companyId)
-        {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, 0);
-            layout.user = login.GetUser(this);
-            layout.activeId = 0;
-
-            return View(layout);
-        }
 
         // GET: Contact/GetPersonalContact
         public ActionResult GetPersonalContact()

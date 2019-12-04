@@ -1,33 +1,33 @@
-2283,1,2079,1,2079,,Content,icon-iphone,,0,0,2078,0,
-2284,1,2080,1,2080,,Article/Event,,/news/newslist,0,0,2079,0,
-2341,1,2088,1,2088,ADDROTATION,ADD ROTATION,,/rotation/rotation,0,0,2086,0,
-2339,1,2086,1,2086,,PRIMARY,,,0,0,0,0,
-2340,1,2087,1,2087,,ADVANCE,,,1,0,0,0,
-2342,1,2089,1,2089,,-,,,1,0,2086,0,
-2287,1,2083,1,2083,,Is Template,,,1,0,2050,1,ISTEMPLATE
-2325,1,2084,1,2084,,Is Template,,,1,0,2061,1,ISTEMPLATEDRD
-2210,1,2062,1,2062,ALTERED,Altered,icon-split,/altered/list,1,0,2093,0,
-2217,1,2069,1,2069,,Master,,,1,0,2087,0,
-2213,1,2065,1,2065,INPROGRESS,In Progress,,/inprogress/list,1,0,2060,0,
-2214,1,2066,1,2066,DECLINED,Declined,,/declined/declinedlist,2,0,2060,0,
-2205,1,2055,1,2055,PENDING,Pending,icon-stop,/pending/pendinglist,2,0,2093,0,
-2285,1,2081,1,2081,,Video Tube,,/newsvideo/newsvideolist,2,0,2079,0,
-2335,1,2085,1,2085,,Setting,,,2,0,2087,0,
-2346,1,2093,1,2093,,Drd Log,,,3,0,2087,0,
-2211,1,2063,1,2063,REVISED,Revised,icon-reset,/revised/list,3,0,2093,0,
-2204,1,2052,1,2052,INBOX,INBOX,icon-envelope,/inbox/list,3,0,2086,0,
-2215,1,2067,1,2067,COMPLETED,Completed,,/completed/list,3,0,2060,0,
-2216,1,2068,1,2068,ROTATION,ROTATION,icon-stack2,/rotation/list,4,0,2086,0,
-2206,1,2056,1,2056,SIGNED,Signed,icon-pencil3,/signed/list,4,0,2093,0,
-2286,1,2082,1,2082,,Pod Cast,,/podcast/podcastlist,4,0,2079,0,
-2202,1,2050,1,2050,WORKFLOW,Workflow,icon-cog3,/workflow/list,5,0,2069,0,
-2258,1,2075,1,2075,,Company Profile,icon-profile,/company/company,5,0,2085,0,
-2343,1,2090,1,2090,,-,,,5,0,2086,0,
-2280,1,2076,1,2076,,Stamp,icon-stamp,/stamp/stamplist,6,0,2085,0,
-2212,1,2064,1,2064,DOCUMENT,DOCUMENT,icon-files-empty,/document/list,6,0,2086,0,
-2219,1,2071,1,2071,,Project,icon-stack-check,/project/list,6,0,2069,0,
-2344,1,2091,1,2091,,-,,,7,0,2086,0,
-2282,1,2078,1,2078,,Admin,,,7,0,0,0,
-2281,1,2077,1,2077,CONTACT,CONTACT,icon-users2,/Invitation/list,8,0,2086,0,
-2345,1,2092,1,2092,,-,,,11,0,2086,0,
-2209,1,2061,1,2061,DRDRIVE,DRD DRIVE,icon-cloud-upload,/drdrive,12,0,2086,0,
+2079,,Content,icon-iphone,,2078,,0
+2080,,Article/Event,,/news/list,2079,,0
+2088,ADDROTATION,ADD ROTATION,,/rotation/rotation,2086,,0
+2086,,PRIMARY,,,0,,0
+2087,,ADVANCE,,,0,,0
+2089,,-,,,2086,,0
+2083,,Is Template,,,2050,ISTEMPLATE,1
+2084,,Is Template,,,2061,ISTEMPLATEDRD,1
+2062,ALTERED,Altered,icon-split,/altered/alteredlist,2093,,0
+2069,,Master,,,2087,,0
+2065,INPROGRESS,In Progress,,/inprogress/inprogresslist,2060,,0
+2066,DECLINED,Declined,,/declined/declinedlist,2060,,0
+2055,PENDING,Pending,icon-stop,/pending/pendinglist,2093,,0
+2081,,Video Tube,,/newsvideo/newsvideolist,2079,,0
+2085,,Setting,,,2087,,0
+2093,,Drd Log,,,2087,,0
+2063,REVISED,Revised,icon-reset,/revised/list,2093,,0
+2052,INBOX,INBOX,icon-envelope,/inbox/list,2086,,0
+2067,COMPLETED,Completed,,/completed/list,2060,,0
+2068,ROTATION,ROTATION,icon-stack2,/rotation/list,2086,,0
+2056,SIGNED,Signed,icon-pencil3,/signed/list,2093,,0
+2082,,Pod Cast,,/podcast/podcastlist,2079,,0
+2050,WORKFLOW,Workflow,icon-cog3,/workflow/list,2069,,0
+2075,,Company Profile,icon-profile,/company/company,2085,,0
+2090,,-,,,2086,,0
+2076,,Stamp,icon-stamp,/stamp/stamplist,2085,,0
+2064,DOCUMENT,DOCUMENT,icon-files-empty,/document/list,2086,,0
+2071,,Project,icon-stack-check,/project/list,2069,,0
+2091,,-,,,2086,,0
+2078,,Admin,,,0,,0
+2077,CONTACT,CONTACT,icon-users2,/contact,2086,,0
+2092,,-,,,2086,,0
+2061,DRDRIVE,DRD DRIVE,icon-cloud-upload,/drdrive,2086,,0
