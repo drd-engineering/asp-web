@@ -18,8 +18,12 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
+
+                var myQuery = db.Contacts.Where(contact => contact.ContactOwnerId == user.Id);
+                // Scenario:
+                // login using user with id = "11111211"
                 var result = (from User in db.Users
-                              join Contact in db.Contacts on User.Id equals Contact.ContactItem.Id
+                              join Contact in db.Contacts on User.Id equals Contact.ContactItemId
                               where Contact.ContactOwner.Id == user.Id
                               select new ContactItem
                               {
@@ -32,14 +36,20 @@ namespace DRD.Service
                               ).ToList();
                 ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
                 int counter = 0;
+                
                 foreach (ContactItem x in result)
+                
                 {
                     listReturned.Items.Add(x);
+                    counter = counter + 1;
                 }
+
                 listReturned.Count = counter;
+                
                 return listReturned;
             }
         }
+
 
         public ContactList GetContactFromCompany(UserSession user, long CompanyIdOfUser)
         {
@@ -73,23 +83,23 @@ namespace DRD.Service
             }
         }
 
-        public long CountMemberOfCompany(UserSession user, long CompanyIdOfUser) {
+        public long CountMemberOfCompany(long CompanyIdOfUser) {
             using (var db = new ServiceContext())
             {
-                var MemberOfCompany = db.Members.Where(memberItem => memberItem.UserId == user.Id && memberItem.CompanyId == CompanyIdOfUser).ToList();
+                var MemberOfCompany = db.Members.Where(memberItem => memberItem.CompanyId == CompanyIdOfUser).ToList();
 
                 return MemberOfCompany.Count;
             }
 
         }
 
-
+        // list all company that relate to the user (a member)
         public CompanyList GetListOfCompany(UserSession user) {
             using (var db = new ServiceContext()) { 
-                var MemberOfCompany = db.Members.Where(memberItem => memberItem.UserId == user.Id).ToList();
-                long[] MemberIds = (from c in MemberOfCompany select c.UserId).ToArray();
+                var MemberOfCompany = db.Members.Where(member => member.UserId == user.Id).ToList();
+                long[] CompanyIds = (from c in MemberOfCompany select c.CompanyId).ToArray();
                 
-                var Companies = db.Companies.Where(company => MemberIds.Contains(company.Id)).ToList();
+                var Companies = db.Companies.Where(company => CompanyIds.Contains(company.Id)).ToList();
 
                 CompanyList companyList = new CompanyList();
                 List<CompanyItem> companyItems = new List<CompanyItem>();
@@ -100,6 +110,9 @@ namespace DRD.Service
                     item.Name = c.Name;
                     item.Id = c.Id;
                     item.Code = c.Code;
+
+                    // get count member and exlude Current User being counted
+                    item.TotalMember = CountMemberOfCompany(c.Id) - 1;
 
                     companyItems.Add(item);
                 }

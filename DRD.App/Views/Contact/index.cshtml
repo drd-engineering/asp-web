@@ -81,9 +81,9 @@
 </style>
 
 
-<body>
+<body ng-controller="drdController">
     <!-- HIGHLIGHT SECTION -->
-    <section class="panel highlight-container container" id="highlight-contact">
+    <section class="panel highlight-container container" id="highlight-contact" >
 
         <div class="section-title">
             <h4>Contact</h4>
@@ -101,10 +101,10 @@
                             <div class="col-xs-8">
                                 <div class="card-title">
                                     <p>Personal</p>
-                                    <br />
+                                   
                                 </div>
                                 <div class="card-content">
-                                    <p>58 Contacts</p>
+                                    <p>{{contacts.Count}} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -113,8 +113,9 @@
                 </div>
             </div>
             <!-- end of CARD 1 -->
+
             <!-- CARD 2 -->
-            <div class="col-md-3">
+            <div class="col-md-3" ng-repeat="x in companies">
                 <div class="highlight-card">
                     <div class="container">
                         <div class="row">
@@ -123,10 +124,10 @@
                             </div>
                             <div class="col-xs-8">
                                 <div class="card-title">
-                                    <p>PT Simposium Pratama</p>
+                                    <p>{{ x.Name }}</p>
                                 </div>
                                 <div class="card-content">
-                                    <p>158 Contacts</p>
+                                    <p>{{ x.TotalMember }} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -135,35 +136,14 @@
                 </div>
             </div>
             <!-- end of CARD 2 -->
-            <!-- CARD 3 -->
-            <div class="col-md-3">
-                <div class="highlight-card">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <div class="card-image"><img src="~/Images/Member/icon_female.png" /></div>
-                            </div>
-                            <div class="col-xs-8">
-                                <div class="card-title">
-                                    <p>PT Simposium Pratama</p>
-                                </div>
-                                <div class="card-content">
-                                    <p>2358 Contacts</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- end of CARD 3 -->
+            
         </div>
     </section>
 
     <!-- CONTACT-LIST SECTION -->
     <section class="panel" id="contact-list">
         <!-- Page container -->
-        <div class="page-container invitation-list" ng-controller="drdController">
+        <div class="page-container invitation-list">
             <!-- Page content -->
 
             <div class="panel-default page-content">
@@ -176,14 +156,13 @@
                             <div class="page-title">
                                 <h4><i class="icon-users2 position-left"></i>Personal</h4>
                                 <br />
-
                                 <div class="row">
                                     <div class="col-lg-10">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getData(kriteria)">
                                             <span class="input-group-btn">
-                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getData()" style="width:120px">
                                                     <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -206,26 +185,13 @@
 
 
                             <div class="panel panel-flat no-border">
-
+                                
                                 <div class="table-responsive" ng-show="isView">
 
                                     <table class="table-xs">
                                         <tbody>
-                                            @*
-        <tr ng-repeat="x in products">
-
-            <td>
-                <img ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
-                &ensp;&ensp;{{x.Invited.Name}}
-            </td>
-            <td>{{x.Invited.Phone}}</td>
-            <td>{{x.Invited.Email}}</td>
-
-        </tr>
-                                            *@
-
-                                            <tr ng-repeat="x in contacts">
-
+                                            <tr ng-repeat="x in contacts.Items">                                               
+                                                {{ x }}
                                                 <td>
                                                     <img ng-src="/Images/Member/{{x.ImageProfile}}" />
                                                     &ensp;&ensp;{{x.Name}}
@@ -275,12 +241,9 @@
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             // NEW
-            $scope.companyList = {};
             $scope.companies = [];
-
-            $scope.contactList = {}
-            $scope.contacts = []
-
+            $scope.contacts = { Count: 0, CompanyName: "", Items: [], Type: "" }
+            
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
@@ -297,52 +260,33 @@
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 $(".content").show();
-                $scope.getAllCompanies();
-                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+                $scope.getData();
+                //$scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
             });
 
 
             /*--------------------------------------------------------------
-            GET PRODUCT
+            GET DATA THAT CONTACT PAGE NEED
             --------------------------------------------------------------*/
-            $scope.getAllCompanies = function () {
-                $scope.companies = {}; // ga penting??
+            $scope.getData = function () {
+                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then( ...
+                
                 $http.get('@Url.Action("GetData", "Contact")')
                     .then(function (response) {
-                        $scope.companyList = response.data;
+                        $scope.companyList = response.data.CompanyList;
                         $scope.companies = $scope.companyList.companies;
 
-                        $scope.contactList = response.data;
-                        $scope.contacts = $scope.contactList.items;
+                        $scope.contacts = response.data.ContactList;
+                        
+                        $scope.isView = true;
+
+                        console.log("Contact Response");
+                        console.log(response);
+
                     
                 });
             }
-
-            $scope.getLiteProducts = function (kriteria, page, row) {
-                var btn = Ladda.create(document.querySelector('.btn-process'));
-                btn.start();
-                $scope.products = [];
-                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    btn.stop();
-                    if (response.data) {
-                        $scope.products = response.data;
-
-                        $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        $scope.getProductCount(kriteria);
-
-                        $scope.isView = true;
-
-                        //Ladda.stopAll();
-
-                    }
-                }, function (response) {
-                    btn.stop();
-                    //error handle\
-                    var x = 0;
-                });
-            }
+           
 
             $scope.changePage = function (kriteria, page, row) {
                 $scope.products = [];

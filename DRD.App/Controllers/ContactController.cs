@@ -55,13 +55,14 @@ namespace DRD.App.Controllers
 
             ContactService service = new ContactService();
 
-            var data = new ContactData();
+            CompanyService s1 = new CompanyService(); 
 
+            var data = new ContactData();
             data.CompanyList = service.GetListOfCompany(login.GetUser(this));
             data.ContactList = service.GetPersonalContact(login.GetUser(this));
            
-            //return Json(data, JsonRequestBehavior.AllowGet);
-            return View(data);
+            return Json(data, JsonRequestBehavior.AllowGet);
+            
         }
 
 
