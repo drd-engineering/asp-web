@@ -211,14 +211,27 @@
 
                                     <table class="table-xs">
                                         <tbody>
-                                            <tr ng-repeat="x in products">
+                                            @*
+        <tr ng-repeat="x in products">
+
+            <td>
+                <img ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
+                &ensp;&ensp;{{x.Invited.Name}}
+            </td>
+            <td>{{x.Invited.Phone}}</td>
+            <td>{{x.Invited.Email}}</td>
+
+        </tr>
+                                            *@
+
+                                            <tr ng-repeat="x in contacts">
 
                                                 <td>
-                                                    <img ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
-                                                    &ensp;&ensp;{{x.Invited.Name}}
+                                                    <img ng-src="/Images/Member/{{x.ImageProfile}}" />
+                                                    &ensp;&ensp;{{x.Name}}
                                                 </td>
-                                                <td>{{x.Invited.Phone}}</td>
-                                                <td>{{x.Invited.Email}}</td>
+                                                <td>{{x.Phone}}</td>
+                                                <td>{{x.Email}}</td>
 
                                             </tr>
                                         </tbody>
@@ -261,7 +274,13 @@
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            $scope.companies = {};
+            // NEW
+            $scope.companyList = {};
+            $scope.companies = [];
+
+            $scope.contactList = {}
+            $scope.contacts = []
+
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
@@ -290,7 +309,11 @@
                 $scope.companies = {}; // ga penting??
                 $http.get('@Url.Action("GetData", "Contact")')
                     .then(function (response) {
-                        $scope.companies = response.data;
+                        $scope.companyList = response.data;
+                        $scope.companies = $scope.companyList.companies;
+
+                        $scope.contactList = response.data;
+                        $scope.contacts = $scope.contactList.items;
                     
                 });
             }
