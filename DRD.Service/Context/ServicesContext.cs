@@ -14,7 +14,7 @@ namespace DRD.Service.Context
         public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
-
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
         // public DbSet<DocumentSign> DocumentSigns { get; set; }

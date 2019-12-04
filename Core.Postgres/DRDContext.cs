@@ -14,6 +14,7 @@ namespace Core.Postgres
         public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
@@ -25,7 +26,6 @@ namespace Core.Postgres
         public DbSet<User> Users { get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         // public DbSet<RotationMember> RotationMembers { get; set; }
@@ -45,7 +45,7 @@ namespace Core.Postgres
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = 11111121, Name = "amanudin bin saleh", Phone = "085858585858", Email = "a@hotmail.com",
-                OfficialIdNo = 3511202020202020, ImageProfile = "hahahaha.png", Password = "kapandeadline",
+                OfficialIdNo = 3511202020202020, ImageProfile = "no_picture.png", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
@@ -70,6 +70,22 @@ namespace Core.Postgres
                 new Company{Id = 1111122, Code = "DG23JJ2PDO", Name = "PT SEMPUA", Phone = "0218229103", Email = "sempuasupport@sempua.com", 
                     Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211",  IsActive = true, 
                     OwnerId = listOfUserCreated[1].Id, CreatedAt = DateTime.Now});
+            //listOfCompanyCreated.Add(
+            //    new Company
+            //    {
+            //        Id = 1111222,
+            //        Code = "DG23JJ2PD1",
+            //        Name = "PT SAMPOERNA",
+            //        Phone = "02212345",
+            //        Email = "x@sampoerna.com",
+            //        Descr = "a company dummy",
+            //        Address = "jalan haha nomor 3, haha, kota haha, provinsi haha",
+            //        PostalCode = "333333",
+            //        IsActive = true,
+            //        OwnerId = listOfUserCreated[1].Id,
+            //        CreatedAt = DateTime.Now
+            //    });
+
             Member member1 = new Member();
             member1.Id = 11212;
             member1.CompanyId = listOfCompanyCreated[0].Id;
@@ -88,9 +104,21 @@ namespace Core.Postgres
             member3.IsActive = true;
             member3.UserId = listOfUserCreated[1].Id;
 
+            Contact contact1 = new Contact();
+            contact1.ContactOwnerId = listOfUserCreated[0].Id;
+            contact1.ContactItemId = listOfUserCreated[1].Id;
+
+            Contact contact2 = new Contact();
+            contact1.ContactOwnerId = listOfUserCreated[0].Id;
+            contact1.ContactItemId = listOfUserCreated[2].Id;
+
+
             modelBuilder.Entity<Member>().HasData(member1, member2, member3);
+            modelBuilder.Entity<Contact>().HasData(contact1);
+
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1]);
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
+
         }
     }
 }
