@@ -9,6 +9,7 @@ using DRD.Models.View.Contact;
 
 namespace DRD.Models
 {
+    [Table("Contacts", Schema = "public")]
     public class Contact
     {
         public long Id { get; set; }

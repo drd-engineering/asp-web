@@ -14,6 +14,7 @@ namespace Core.Postgres
         public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
@@ -25,7 +26,6 @@ namespace Core.Postgres
         public DbSet<User> Users { get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         // public DbSet<RotationMember> RotationMembers { get; set; }

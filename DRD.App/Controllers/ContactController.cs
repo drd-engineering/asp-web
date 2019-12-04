@@ -60,7 +60,8 @@ namespace DRD.App.Controllers
             data.CompanyList = service.GetListOfCompany(login.GetUser(this));
             data.ContactList = service.GetPersonalContact(login.GetUser(this));
            
-            return Json(data, JsonRequestBehavior.AllowGet);
+            //return Json(data, JsonRequestBehavior.AllowGet);
+            return View(data);
         }
 
 
