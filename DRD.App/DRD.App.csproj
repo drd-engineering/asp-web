@@ -271,6 +271,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\IncludeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
@@ -2729,6 +2730,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
+    <None Include="Views\Company\Member.cshtml" />
     <Content Include="WebForm1.aspx" />
     <Content Include="doc\json.json" />
     <Content Include="Testing\shared\cv.pdf" />
@@ -2777,7 +2779,7 @@
     <Content Include="Views\Login\ChangePassword.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
-    <Content Include="Views\Inbox\InboxList.cshtml" />
+    <Content Include="Views\Inbox\List.cshtml" />
     <Content Include="Views\Workflow\New.cshtml" />
     <Content Include="Views\Workflow\List.cshtml" />
     <Content Include="Views\Include\PopupProject.cshtml" />
@@ -2820,12 +2822,12 @@
     <Content Include="Views\Revised\Revised.cshtml" />
     <Content Include="Views\Revised\RevisedList.cshtml" />
     <Content Include="Views\Document\Document.cshtml" />
-    <Content Include="Views\Document\DocumentList.cshtml" />
+    <Content Include="Views\Document\List.cshtml" />
     <Content Include="Views\Include\PopupDocument.cshtml" />
     <Content Include="Views\Member\Member.cshtml" />
     <Content Include="Views\Member\MemberList.cshtml" />
     <Content Include="Views\Company\CompanyList.cshtml" />
-    <Content Include="Views\Company\Company.cshtml" />
+    <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Project\Project.cshtml" />
     <Content Include="Views\Project\ProjectList.cshtml" />
     <Content Include="Views\Include\PopupCompany.cshtml" />

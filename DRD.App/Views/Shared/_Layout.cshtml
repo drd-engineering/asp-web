@@ -1,478 +1,456 @@
 ﻿@model DRD.Models.View.Layout
 @{
-    Layout = null;
+    
 }
+    <head>
+        <meta charset="utf-8" />
+        <link href="/Images/logo-color-background.ico" rel="shortcut icon" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width" />
 
-<title>DRD</title>
-<!-- Global stylesheets -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-<link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/core.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/components.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-<!-- /global stylesheets -->
-<!-- Core JS files -->
-<script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
-<!-- /core JS files -->
-<!-- Theme JS files -->
-<script type="text/javascript" src="/assets/js/plugins/ui/nicescroll.min.js"></script>
-<script type="text/javascript" src="/assets/js/core/app.js"></script>
-<script type="text/javascript" src="/assets/js/pages/layout_fixed_custom.js"></script>
-<script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
-<!-- /theme JS files -->
-<!-- Theme JS files -->
+        <title>DRD - @ViewBag.Title</title>
 
-<script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
-<script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
+        <!-- Global stylesheets -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+        <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/pages/layout.css" rel="stylesheet" type="text/css">
+        <!-- /global stylesheets -->
+        <!-- /Custom Stylesheet-->
+        @RenderSection("Styles", false/*required*/)
+        <!-- /Custom Stylesheet-->
+        <!-- Core JS files -->
+        <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+        <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+        <!-- /core JS files -->
+        <!-- Theme JS files -->
+        <script type="text/javascript" src="/assets/js/plugins/ui/nicescroll.min.js"></script>
+        <script type="text/javascript" src="/assets/js/core/app.js"></script>
+        <script type="text/javascript" src="/assets/js/pages/layout_fixed_custom.js"></script>
+        <script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
+        <!-- /theme JS files -->
+        <!-- Theme JS files -->
+        <script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
+        <script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
+        <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+        <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+        <script src="~/Scripts/xpublic.js"></script>
+        <!-- /theme JS files -->
+        <!-- /Custom JS-->
+        @RenderSection("Scripts", false/*required*/)
+        <!-- /Custom JS-->
+    </head>
 
-<!-- /theme JS files -->
-
-<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
-<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
-
-<script src="~/Scripts/xpublic.js"></script>
-
-<style>
-    .sidebar-user-material .desktop_layout {
-        background: url(/images/company/) center center no-repeat;
-        background-repeat: no-repeat;
-        background-position: center center;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-    }
-    .navbar-brand img {
-        margin-top:-5px;
-        height:30px;
-    }
-    .icon-bubble9 {
-        top:3px;
-    }
-    .dropdown-toggle img {
-        height:18px;
-    }
-    .sidebar-user-material .category-content, .desktop_layout {
-        height:100px;
-    }
-    .sidebar-content i {
-        top:3px;
-    }
-    .category-content {
-        display:none;
-    }
-</style>
-<body class="navbar-top" ng-app="drdApp">
-    <div ng-controller="drdControllerMain">
-        <!-- Main navbar -->
-        <div class="navbar navbar-default navbar-fixed-top header-highlight">
-            <div class="navbar-header" style="background-color:black">
-                <a class="navbar-brand" href="/">
-                    <img ng-src="/images/company/" alt="">
-                </a> 
-                <ul class="nav navbar-nav visible-xs-block">
-                    <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
-                    <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
-                </ul>
-            </div>
-            <div class="navbar-collapse collapse" id="navbar-mobile">
-                <ul class="nav navbar-nav">
-                    <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3" style="top:3px"></i></a></li>
-                    <li>
-                        <a href="/">
-                            @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@
-                        </a>
-                    </li>
-                </ul>
-                <div class="navbar-right">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="/chat/chat">
-                                <i class="icon-bubble9"></i>
-                                <span class="visible-xs-inline-block position-right">Chat</span>
-                                <span class="badge bg-warning-400" ng-hide="counter.UnReadChat==0">{{counter.UnReadChat}}</span>
-                            </a>
-                        </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="~/Images/Member/@Model.user.ImageProfile" alt="">
-                                <span>@Model.user.ShortName</span>
-                                <i class="caret"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="/member/myprofile"><i class="icon-user-check"></i> <span>My Profile</span></a></li>
-                                <li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>My Plan</span></a></li>
-                                <li><a href="/memberaccount/memberaccountlist"><i class="icon-home8"></i> <span>My Bank Account</span></a></li>
-                                <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>My DRD Point</span></a></li>
-                                <li class="divider"></li>
-                                <li><a href="/Login/ChangePassword"><i class="icon-cog5"></i> <span>Change Password</span></a></li>
-                                <li class="divider"></li>
-                                <li><a href="/Login/Logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
-                            </ul>
-                        </li>
+    <body class="navbar-top" ng-app="drdApp">
+        <div ng-controller="drdControllerMain">
+            <!-- Main navbar -->
+            <div class="navbar navbar-default navbar-fixed-top header-highlight">
+                <div class="navbar-header" style="background-color:black">
+                    <a class="navbar-brand" href="/" style="color:white">
+                        <img ng-src="/Images/logo-color-background.png" alt="">
+</a>
+                    <ul class="nav navbar-nav visible-xs-block">
+                        <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+                        <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
                     </ul>
                 </div>
+                <div class="navbar-collapse collapse" id="navbar-mobile">
+                    <ul class="nav navbar-nav">
+                        <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3" style="top:3px"></i></a></li>
+                        <li>
+                            <a href="/">
+                                @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-right">
+                        <ul class="nav navbar-nav">
+                            @*<li>
+                                <a href="/chat/chat">
+                                    <i class="icon-bubble9"></i>
+                                    <span class="visible-xs-inline-block position-right">Chat</span>
+                                    <span class="badge bg-warning-400" ng-hide="counter.UnReadChat==0">{{counter.UnReadChat}}</span>
+                                </a>
+                            </li>*@
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="~/Images/Member/@Model.user.ImageProfile" alt="">
+                                    @*<span>@Model.user.ShortName</span>*@
+                                    <i class="caret"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="/profile"><i class="icon-user-check"></i> <span>Profile</span></a></li>
+                                    @*<li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>Plan</span></a></li>
+                                    <li><a href="/memberaccount/memberaccountlist"><i class="icon-home8"></i> <span>Bank Account</span></a></li>
+                                    <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>DRD Point</span></a></li>*@
+                                    <li><a href="/Login/ChangePassword"><i class="icon-cog5"></i> <span>Change Password</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="/Login/Logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- /main navbar -->
-        <!-- Page container -->
-        <div class="page-container">
-            <!-- Page content -->
-            <div class="page-content">
-                <!-- Main sidebar -->
-                <div class="sidebar sidebar-main sidebar-fixed" style="background-color: black">
-                    <div class="sidebar-content">
-                        <!-- User menu -->
+            <!-- /main navbar -->
+            <!-- Page container -->
+            <div class="page-container">
+                <!-- Page content -->
+                <div class="page-content">
+                    <!-- Main sidebar -->
+                    <div class="sidebar sidebar-main sidebar-fixed" style="background-color: black">
+                        <div class="sidebar-content">
+                            <!-- User menu -->
 
-                        <div class="sidebar-user-material">
-                            <div class="category-content desktop_layout">
+                            <div class="sidebar-user-material">
+                                <div class="category-content desktop_layout">
+
+                                </div>
+
 
                             </div>
 
+                            <!-- /user menu -->
+                            <!-- Main navigation -->
+                            <div class="sidebar-category sidebar-category-visible">
+                                <div class="category-content no-padding" id="menu-content">
 
-                        </div>
-
-                        <!-- /user menu -->
-                        <!-- Main navigation -->
-                        <div class="sidebar-category sidebar-category-visible">
-                            <div class="category-content no-padding" id="menu-content">
-
-                                <ul class="navigation navigation-main navigation-accordion">
-                                    <!-- Main -->
-                                    <li class="active">
-                                        <a href="/Dashboard" style="background-color:black"><i class="icon-home4"></i> <span>Dashboard</span></a>
-                                    </li>
-                                    <!-- /main -->
-                                    @foreach (var menu in Model.menus)
-                                    {
-                                        if (@menu.ParentCode.Equals("0") /*&& @menu.ChildCount > 0*/)
+                                    <ul class="navigation navigation-main navigation-accordion">
+                                        <!-- Main -->
+                                        <li class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
+                                            <a href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")"><i class="icon-home4"></i> <span>Dashboard</span></a>
+                                        </li>
+                                        @foreach (var submenu in Model.menus)
                                         {
-                                            <li class="navigation-header">
-                                                <span style="font-size:large">@menu.Name</span>
-                                                @if (!@menu.Icon.Equals(""))
-                                                {
-                                                    <i class="@menu.Icon"></i>
-                                                }
+                                            <li class="@( submenu.SecondaryKey.Equals(ViewBag.Submenu) ? "active":"")">
+                                                <a href="@(submenu.UrlPage)" style="background-color:@( submenu.SecondaryKey.Equals(ViewBag.Submenu)? "grey": "black")"><i class="@submenu.Icon"></i> <span>@submenu.Name</span></a>
                                             </li>
-
-                                            foreach (var menu2 in Model.menus)
+                                        }
+                                        <!-- /main -->
+                                        @*@foreach (var menu in Model.menus)
+                                        {
+                                            if (@menu.ParentCode.Equals("0") /*&& @menu.ChildCount > 0*/)
                                             {
-                                                if (@menu2.ParentCode.Equals(@menu.Code))
+                                                <li class="navigation-header">
+                                                    <span style="font-size:large">@menu.Name</span>
+                                                    @if (!@menu.Icon.Equals(""))
+                                                    {
+                                                        <i class="@menu.Icon"></i>
+                                                    }
+                                                </li>
+
+                                                foreach (var menu2 in Model.menus)
                                                 {
-                                                    if (@menu2.Name.Equals("-"))
+                                                    if (@menu2.ParentCode.Equals(@menu.Code))
                                                     {
-                                                        <li class="navigation-divider"></li>
-                                                    }
-                                                    else
-                                                    if (@menu2.ChildCount > 0 && @menu2.UrlPage.Equals(""))
-                                                    {
-                                                        <li @(@menu2.SecondaryKey.Equals("ROTATIONROOT") ? "class=active" : "")>
-                                                            <a href="#">
-                                                                @if (!@menu2.Icon.Equals(""))
-                                                                {
-                                                                    <i class="@menu2.Icon"></i>
-                                                                }
-                                                                <span>@menu2.Name</span>
-                                                                @if (@menu2.SecondaryKey.Equals("ROTATIONROOT"))
-                                                                {
-                                                                    <span class="label bg-danger-800">{{(counter.Rotation+counter.Completed+counter.Declined+counter.InProgress==0?'':counter.Rotation+counter.Completed+counter.Declined+counter.InProgress)}}</span>
-                                                                }
-                                                            </a>
-                                                            <ul>
-                                                                @foreach (var menu3 in Model.menus)
-                                                                {
-                                                                    if (@menu3.ParentCode.Equals(@menu2.Code))
-                                                                    {
-                                                                        if (@menu3.Name.Equals("-"))
-                                                                        {
-                                                                            <li class="navigation-divider"></li>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <li class="@(menu3.IsActive ? "active" :"")">
-                                                                                <a href="@menu3.UrlPage">
-                                                                                    @if (!@menu3.Icon.Equals(""))
-                                                                                    {
-                                                                                        <i class="@menu3.Icon"></i>
-                                                                                    }
-                                                                                    @menu3.Name
-                                                                                    @if (@menu3.SecondaryKey.Equals("ROTATION"))
-                                                                                    {
-                                                                                        <span class="label bg-danger-800">{{(counter.Rotation==0?'':counter.Rotation)}}</span>
-                                                                                    }
-                                                                                    else if (@menu3.SecondaryKey.Equals("INPROGRESS"))
-                                                                                    {
-                                                                                        <span class="label bg-danger-800">{{(counter.InProgress==0?'':counter.InProgress)}}</span>
-                                                                                    }
-                                                                                    else if (@menu3.SecondaryKey.Equals("DECLINED"))
-                                                                                    {
-                                                                                        <span class="label bg-danger-800">{{(counter.Declined==0?'':counter.Declined)}}</span>
-                                                                                    }
-                                                                                    else if (@menu3.SecondaryKey.Equals("COMPLETED"))
-                                                                                    {
-                                                                                        <span class="label bg-danger-800">{{(counter.Completed==0?'':counter.Completed)}}</span>
-                                                                                    }
-                                                                                </a>
-                                                                            </li>
-                                                                        }
-                                                                    }
-
-                                                                }
-                                                            </ul>
-                                                        </li>
-                                                    }
-                                                    else if (!@menu2.UrlPage.Equals(""))
-                                                    {
-
                                                         if (@menu2.Name.Equals("-"))
                                                         {
                                                             <li class="navigation-divider"></li>
                                                         }
                                                         else
+                                                        if (@menu2.ChildCount > 0 && @menu2.UrlPage.Equals(""))
                                                         {
-                                                            <li class="@(menu2.IsActive ? "active" :"")">
-                                                                <a href="@(menu2.UrlPage != "" && !menu2.SecondaryKey.Equals("FUNC") ? menu2.UrlPage : "")" ng-click="@(menu2.UrlPage != "" && menu2.SecondaryKey.Equals("FUNC") ? "customFunction()" : "")">
+                                                            <li @(@menu2.SecondaryKey.Equals(@ViewBag.Menu) ? "class=active" : "")>
+                                                                <a href="#">
                                                                     @if (!@menu2.Icon.Equals(""))
                                                                     {
                                                                         <i class="@menu2.Icon"></i>
                                                                     }
-                                                                    @menu2.Name
-
-                                                                    @if (@menu2.SecondaryKey.Equals("INBOX"))
+                                                                    <span>@menu2.Name</span>
+                                                                    @if (@menu2.SecondaryKey.Equals(@ViewBag.Menu))
                                                                     {
-                                                                        <span class="label bg-danger-800">{{(counter.Inbox==0?'':counter.Inbox)}}</span>
+                                                                        <span class="label bg-danger-800">{{(counter.Rotation+counter.Completed+counter.Declined+counter.InProgress==0?'':counter.Rotation+counter.Completed+counter.Declined+counter.InProgress)}}</span>
                                                                     }
-
-                                                                    else if (@menu2.SecondaryKey.Equals("PENDING"))
-                                                                    {
-                                                                        <span class="label bg-danger-800">{{(counter.Pending==0?'':counter.Pending)}}</span>
-                                                                    }
-                                                                    else if (@menu2.SecondaryKey.Equals("SIGNED"))
-                                                                    {
-                                                                        <span class="label bg-danger-800">{{(counter.Signed==0?'':counter.Signed)}}</span>
-                                                                    }
-
-                                                                    else if (@menu2.SecondaryKey.Equals("ALTERED"))
-                                                                    {
-                                                                        <span class="label bg-danger-800">{{(counter.Altered==0?'':counter.Altered)}}</span>
-                                                                    }
-                                                                    else if (@menu2.SecondaryKey.Equals("REVISED"))
-                                                                    {
-                                                                        <span class="label bg-danger-800">{{(counter.Revised==0?'':counter.Revised)}}</span>
-                                                                    }
-
                                                                 </a>
+                                                                <ul>
+                                                                    @foreach (var menu3 in Model.menus)
+                                                                    {
+                                                                        if (@menu3.ParentCode.Equals(@menu2.Code))
+                                                                        {
+                                                                            if (@menu3.Name.Equals("-"))
+                                                                            {
+                                                                                <li class="navigation-divider"></li>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <li class="@(menu3.IsActive ? "active" :"")">
+                                                                                    <a href="@menu3.UrlPage">
+                                                                                        @if (!@menu3.Icon.Equals(""))
+                                                                                        {
+                                                                                            <i class="@menu3.Icon"></i>
+                                                                                        }
+                                                                                        @menu3.Name
+                                                                                        @if (@menu3.SecondaryKey.Equals("ROTATION"))
+                                                                                        {
+                                                                                            <span class="label bg-danger-800">{{(counter.Rotation==0?'':counter.Rotation)}}</span>
+                                                                                        }
+                                                                                        else if (@menu3.SecondaryKey.Equals("INPROGRESS"))
+                                                                                        {
+                                                                                            <span class="label bg-danger-800">{{(counter.InProgress==0?'':counter.InProgress)}}</span>
+                                                                                        }
+                                                                                        else if (@menu3.SecondaryKey.Equals("DECLINED"))
+                                                                                        {
+                                                                                            <span class="label bg-danger-800">{{(counter.Declined==0?'':counter.Declined)}}</span>
+                                                                                        }
+                                                                                        else if (@menu3.SecondaryKey.Equals("COMPLETED"))
+                                                                                        {
+                                                                                            <span class="label bg-danger-800">{{(counter.Completed==0?'':counter.Completed)}}</span>
+                                                                                        }
+                                                                                    </a>
+                                                                                </li>
+                                                                            }
+                                                                        }
 
-
-
+                                                                    }
+                                                                </ul>
                                                             </li>
                                                         }
+                                                        else if (!@menu2.UrlPage.Equals(""))
+                                                        {
 
+                                                            if (@menu2.Name.Equals("-"))
+                                                            {
+                                                                <li class="navigation-divider"></li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="@(menu2.IsActive ? "active" :"")">
+                                                                    <a href="@(menu2.UrlPage != "" && !menu2.SecondaryKey.Equals("FUNC") ? menu2.UrlPage : "")" ng-click="@(menu2.UrlPage != "" && menu2.SecondaryKey.Equals("FUNC") ? "customFunction()" : "")">
+                                                                        @if (!@menu2.Icon.Equals(""))
+                                                                        {
+                                                                            <i class="@menu2.Icon"></i>
+                                                                        }
+                                                                        @menu2.Name
+
+                                                                        @if (@menu2.SecondaryKey.Equals("INBOX"))
+                                                                        {
+                                                                            <span class="label bg-danger-800">{{(counter.Inbox==0?'':counter.Inbox)}}</span>
+                                                                        }
+
+                                                                        else if (@menu2.SecondaryKey.Equals("PENDING"))
+                                                                        {
+                                                                            <span class="label bg-danger-800">{{(counter.Pending==0?'':counter.Pending)}}</span>
+                                                                        }
+                                                                        else if (@menu2.SecondaryKey.Equals("SIGNED"))
+                                                                        {
+                                                                            <span class="label bg-danger-800">{{(counter.Signed==0?'':counter.Signed)}}</span>
+                                                                        }
+
+                                                                        else if (@menu2.SecondaryKey.Equals("ALTERED"))
+                                                                        {
+                                                                            <span class="label bg-danger-800">{{(counter.Altered==0?'':counter.Altered)}}</span>
+                                                                        }
+                                                                        else if (@menu2.SecondaryKey.Equals("REVISED"))
+                                                                        {
+                                                                            <span class="label bg-danger-800">{{(counter.Revised==0?'':counter.Revised)}}</span>
+                                                                        }
+
+                                                                    </a>
+
+
+
+                                                                </li>
+                                                            }
+
+                                                        }
                                                     }
+
                                                 }
 
                                             }
 
-                                        }
-
-                                    }
+                                        }*@
 
 
-                                </ul>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- /main sidebar -->
-                <!-- Main content -->
-                <div class="content-wrapper">
-                    <!-- Content area -->
-                    <div class="content">
-                        <div class="panel panel-flat">
-
-
-                            <div class="panel-heading">
-                                @RenderBody()
+                                    </ul>
+                                </div>
                             </div>
 
-
+                        </div>
+                    </div>
+                    <!-- /main sidebar -->
+                    <!-- Main content -->
+                    <div class="content-wrapper">
+                        <!-- Content area -->
+                        <div class="content">
+                            @RenderBody()
                         </div>
 
+
+
+
+                        <!-- /content area -->
                     </div>
-
-
-
-
-                    <!-- /content area -->
+                    <!-- /main content -->
                 </div>
-                <!-- /main content -->
+                <!-- /page content -->
             </div>
-            <!-- /page content -->
+            <!-- /page container -->
+
         </div>
-        <!-- /page container -->
 
-    </div>
-    <script type="text/javascript">
+    </body>
+
+        @RenderSection("ScriptsBottom", false/*required*/)
+        <script type="text/javascript">
 
 
 
-        myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
+    myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
 
-            $scope.$on("$destroy", function (event) {
-                clearInterval(xtimer);
-            }
-            );
+        $scope.$on("$destroy", function (event) {
+            clearInterval(xtimer);
+        }
+        );
 
-            $scope.counter = { Inbox: 0, InProgress: 0, Pending: 0 };
-            $scope.notiftime = 5000;
-            $scope.xtimer = 0;
+        $scope.counter = { Inbox: 0, InProgress: 0, Pending: 0 };
+        $scope.notiftime = 5000;
+        $scope.xtimer = 0;
 
-            $scope.startCounting = function () {
-                $scope.xtimer = setInterval(() => {
-                    $scope.getActivityCounter();
-                }, 5000);
-
-            };
-
-            /*--------------------------------------------------------------
-            INIT DATA
-            --------------------------------------------------------------*/
-            angular.element(document).ready(function () {
-                //$scope.getFolders();
-                $scope.startCounting();
+        $scope.startCounting = function () {
+            $scope.xtimer = setInterval(() => {
                 $scope.getActivityCounter();
-                $("#menu-content").show();
-            });
+            }, 5000);
 
-            $scope.goUrl = function (url) {
-                location.href = url;
-            };
+        };
 
-
-            /*--------------------------------------------------------------
-            GET ASSET ITEM
-            --------------------------------------------------------------*/
-            $scope.getActivityCounter = function () {
-                $scope.products = [];
-                $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
-                    if (response.data) {
-                        $scope.counter = response.data.New;
-                        var counter = response.data;
-                        $.jGrowl.defaults.closer = false;
-                        var val = counter.New.Inbox - counter.Old.Inbox;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' inbox', {
-                                header: 'Inbox Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.InProgress - counter.Old.InProgress;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' in progress', {
-                                header: 'In Progress Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-
-                        val = counter.New.Signed - counter.Old.Signed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' signed', {
-                                header: 'Signed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Declined - counter.Old.Declined;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' declined', {
-                                header: 'Declined Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-danger'
-                            });
-                        }
-                        val = counter.New.Completed - counter.Old.Completed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' completed', {
-                                header: 'Completed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Altered - counter.Old.Altered;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' altered', {
-                                header: 'Altered Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Revised - counter.Old.Revised;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' revised', {
-                                header: 'Revised Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        if (counter.New.DepositBalance != counter.Old.DepositBalance) {
-                            $.jGrowl("DRD Point " + $filter('number')(counter.New.DepositBalance, 0), {
-                                header: 'DRD Point ',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-success-400'
-                            });
-                        }
-                    }
-                    else {
-                        $scope.resetCounter();
-                        clearInterval($scope.xtimer);
-                        swal({
-                            title: "Session expired!",
-                            text: "The session has expired, the page will redirect to login. I will close in 10 seconds.",
-                            confirmButtonColor: "#2196F3",
-                            timer: 10000
-                        }, function () {
-                            swal.close();
-                            location.href = "/Login";
-                        });
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.resetCounter = function () {
-                $scope.counter.Rotation = 0;
-                $scope.counter.Inbox = 0;
-                $scope.counter.Altered = 0;
-                $scope.counter.Revised = 0;
-                $scope.counter.InProgress = 0;
-                $scope.counter.Pending = 0;
-                $scope.counter.Signed = 0;
-                $scope.counter.Declined = 0;
-                $scope.counter.Completed = 0;
-            }
-
-            /*--------------------------------------------------------------
-            JS
-            --------------------------------------------------------------*/
-            $scope.customFunction = function () {
-                alert("Under construction");
-            };
+        /*--------------------------------------------------------------
+        INIT DATA
+        --------------------------------------------------------------*/
+        angular.element(document).ready(function () {
+            //$scope.getFolders();
+            $scope.startCounting();
+            $scope.getActivityCounter();
+            $("#menu-content").show();
         });
 
-    </script>
-</body>
+        $scope.goUrl = function (url) {
+            location.href = url;
+        };
+
+
+        /*--------------------------------------------------------------
+        GET ASSET ITEM
+        --------------------------------------------------------------*/
+        $scope.getActivityCounter = function () {
+            $scope.products = [];
+            $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
+                if (response.data) {
+                    $scope.counter = response.data.New;
+                    var counter = response.data;
+                    $.jGrowl.defaults.closer = false;
+                    var val = counter.New.Inbox - counter.Old.Inbox;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' inbox', {
+                            header: 'Inbox Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+                    val = counter.New.InProgress - counter.Old.InProgress;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' in progress', {
+                            header: 'In Progress Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+
+                    val = counter.New.Signed - counter.Old.Signed;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' signed', {
+                            header: 'Signed Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+                    val = counter.New.Declined - counter.Old.Declined;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' declined', {
+                            header: 'Declined Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-danger'
+                        });
+                    }
+                    val = counter.New.Completed - counter.Old.Completed;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' completed', {
+                            header: 'Completed Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+                    val = counter.New.Altered - counter.Old.Altered;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' altered', {
+                            header: 'Altered Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+                    val = counter.New.Revised - counter.Old.Revised;
+                    if (val > 0) {
+                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' revised', {
+                            header: 'Revised Notification',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }
+                    if (counter.New.DepositBalance != counter.Old.DepositBalance) {
+                        $.jGrowl("DRD Point " + $filter('number')(counter.New.DepositBalance, 0), {
+                            header: 'DRD Point ',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-success-400'
+                        });
+                    }
+                }
+                else {
+                    $scope.resetCounter();
+                    clearInterval($scope.xtimer);
+                    swal({
+                        title: "Session expired!",
+                        text: "The session has expired, the page will redirect to login. I will close in 10 seconds.",
+                        confirmButtonColor: "#2196F3",
+                        timer: 10000
+                    }, function () {
+                        swal.close();
+                        location.href = "/Login";
+                    });
+                }
+            }, function (response) {
+                //error handle\
+                var x = 0;
+            });
+        }
+
+        $scope.resetCounter = function () {
+            $scope.counter.Rotation = 0;
+            $scope.counter.Inbox = 0;
+            $scope.counter.Altered = 0;
+            $scope.counter.Revised = 0;
+            $scope.counter.InProgress = 0;
+            $scope.counter.Pending = 0;
+            $scope.counter.Signed = 0;
+            $scope.counter.Declined = 0;
+            $scope.counter.Completed = 0;
+        }
+
+        /*--------------------------------------------------------------
+        JS
+        --------------------------------------------------------------*/
+        $scope.customFunction = function () {
+            alert("Under construction");
+        };
+    });
+
+        </script>

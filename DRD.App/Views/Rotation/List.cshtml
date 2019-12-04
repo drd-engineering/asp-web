@@ -1,6 +1,8 @@
 ﻿@model DRD.Models.View.Layout
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "Rotation";
+    ViewBag.Submenu = "ROTATION";
+
     if (!Model.isLayout)
     {
         Layout = null;
@@ -51,113 +53,115 @@
     }
 </style>
 <body @*ng-app="drdApp"*@>
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <!-- Page container -->
+            <div class="page-container" ng-controller="drdController">
+                <!-- Page content -->
+                <div class="page-content">
 
-    <!-- Page container -->
-    <div class="page-container" ng-controller="drdController">
-        <!-- Page content -->
-        <div class="page-content">
 
+                    <!-- Main content -->
+                    <div class="content-wrapper">
+                        <!-- Page header -->
+                        <div class="page-header page-header-default">
+                            <div class="page-header-content">
+                                <div class="page-title">
+                                    <h4>Rotation</h4>
+                                    <br />
 
-            <!-- Main content -->
-            <div class="content-wrapper">
-                <!-- Page header -->
-                <div class="page-header page-header-default">
-                    <div class="page-header-content">
-                        <div class="page-title">
-                            <h4>Rotation</h4>
-                            <br />
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="icon-search4"></i></span>
+                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                                <span class="input-group-btn">
+                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                                                        <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
+                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- /page header -->
+                        <!-- Content area -->
+
+                        <div class="content" style="display:none">
+                            <!-- Contextual classes -->
                             <div class="row">
-                                <div class="col-lg-10">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
-                                        <span class="input-group-btn">
-                                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
-                                                <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
-                                                <div class="ladda-progress" style="width: 0px;"></div>
-                                            </button>
-                                        </span>
+
+                                <div class="col-md-6">
+                                    <div class="">
+                                        <button class="btn border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
+                                            &nbsp;&nbsp;Add New&nbsp;&nbsp;
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="pull-right">
+
+                                        <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                            <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div style="height:10px"></div>
+                            <!-- LIST -->
+                            <div calss="row">
+
+
+                                <div class="panel panel-flat">
+
+                                    <div class="table-responsive" ng-show="isView">
+
+                                        <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th width="25px">#</th>
+                                                    <th>Subject</th>
+                                                    <th>Workflow Name</th>
+                                                    <th width="175px">Created</th>
+                                                    <th width="100px">Status</th>
+                                                    <th width="100px">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="x in products">
+                                                    <td>{{$index+1 + index}}</td>
+                                                    <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
+                                                    <td>{{x.WorkflowName}}</td>
+                                                    <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
+                                                    <td width="100px">
+                                                        <a ng-click="do_start(x.Id);" ng-show="x.Status=='00'">Start</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
+                            <!-- /LIST -->
 
                         </div>
+                        <!-- /content area -->
                     </div>
+                    <!-- /main content -->
                 </div>
-
-                <!-- /page header -->
-                <!-- Content area -->
-
-                <div class="content" style="display:none">
-                    <!-- Contextual classes -->
-                    <div class="row">
-
-                        <div class="col-md-6">
-                            <div class="">
-                                <button class="btn border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
-                                    &nbsp;&nbsp;Add New&nbsp;&nbsp;
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="pull-right">
-
-                                <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
-                                    <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div style="height:10px"></div>
-                    <!-- LIST -->
-                    <div calss="row">
-
-
-                        <div class="panel panel-flat">
-
-                            <div class="table-responsive" ng-show="isView">
-
-                                <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th width="25px">#</th>
-                                            <th>Subject</th>
-                                            <th>Workflow Name</th>
-                                            <th width="175px">Created</th>
-                                            <th width="100px">Status</th>
-                                            <th width="100px">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="x in products">
-                                            <td>{{$index+1 + index}}</td>
-                                            <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
-                                            <td>{{x.WorkflowName}}</td>
-                                            <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-                                            <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
-                                            <td width="100px">
-                                                <a ng-click="do_start(x.Id);" ng-show="x.Status=='00'">Start</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /LIST -->
-
-                </div>
-                <!-- /content area -->
+                <!-- /page content -->
             </div>
-            <!-- /main content -->
+            <!-- /page container -->
+            </div>
         </div>
-        <!-- /page content -->
-    </div>
-    <!-- /page container -->
-
-    <script type="text/javascript">
+            <script type="text/javascript">
 
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
@@ -344,6 +348,6 @@
 
         });
 
-    </script>
+            </script>
 
 </body>
