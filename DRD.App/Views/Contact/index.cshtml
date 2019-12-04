@@ -78,6 +78,34 @@
             line-height: 1;
             font-size: 12px;
         }
+
+    .pagination a {
+      color: black;
+      padding: 8px 12px;
+      text-decoration: none;
+      transition: background-color .3s;
+      border-radius: 50%;
+      font-size: 14px;
+    }
+
+    .pagination a.active {
+      font-weight: 700;
+    }
+
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+
+    .pagination-container {
+        text-align: center;
+    }
+
+    p.pagination-info {
+        margin-top: 10px;
+        font-weight: 300;
+        color: #8F8C8C;
+        letter-spacing: 2px;
+    }
+
+    
 </style>
 
 
@@ -160,7 +188,7 @@
                                     <div class="col-lg-10">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="searchKey" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, row)">
+                                            <input type="text" class="form-control" ng-model="searchKey" ng-change="getPersonalContact(searchKey, page, size)" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, size)">
                                             <span class="input-group-btn">
                                                 <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getPersonalContact()" style="width:120px">
                                                     <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
@@ -190,15 +218,13 @@
 
                                     <table class="table-xs">
                                         <tbody>
-                                            <tr ng-repeat="x in personalContact.Items">                                               
-                                                {{ x }}
+                                            <tr ng-repeat="x in personalContact.Items">
                                                 <td>
                                                     <img ng-src="/Images/Member/{{x.ImageProfile}}" />
                                                     &ensp;&ensp;{{x.Name}}
                                                 </td>
                                                 <td>{{x.Phone}}</td>
                                                 <td>{{x.Email}}</td>
-
                                             </tr>
                                         </tbody>
                                     </table>
@@ -207,15 +233,27 @@
                         </div>
 
                         <!-- PAGINATION -->
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="pull-right">
-                                    <select ng-model="page" class="form-control" ng-change="updatePage(page, size)">
-                                        <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                    </select>
-                                </div>
+                        @*
+                            ng-if="hasContact()"    
+                        *@
+                        
+                         <div class="pagination-container">
+                             
+                            <div class="pagination" ng-change="updatePage(searchKey, page, size)">
+                                <a href="#">&laquo;</a>
+                                <a href="#">{{ page - 1 }}</a>
+                                <a class="active" href="#">{{ page }}</a>
+                                <a href="#">{{ page + 1 }}</a>
+                                <a href="#">&raquo;</a>
                             </div>
+                                
+                                @*
+                                <select ng-model="page" class="form-control" ng-change="updatePage(page, size)">
+                                    <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
+                                </select>
+                                *@
+                             <p class="pagination-info">19 of 86</p>
+                            
                         </div>
                         <!-- end of PAGINATION -->
                         <!-- /LIST -->
@@ -260,7 +298,9 @@
                 $(".content").show();
                 $scope.getCompaniesData();
                 $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
+                $scope.getTotalPersonalContact();
                 $scope.totalPage = $scope.countTotalPage($scope.personalContact.Count, $scope.size);
+                $scope.initPage($scope.totalPage);
             });
 
 
@@ -274,61 +314,50 @@
 
                         if (response.data) {
                             $scope.companies = response.data;
+                            console.log("COMPANIES",$scope.companies);                        
+                        }
+        
+                });
+            }
+
+            $scope.getPersonalContact = function (searchKey, page, size) {
+                //$http.get('@Url.Action("GetPersonalContact", "Contact")', { searchKey: searchKey, page: page, pageSize: size })
+                $http.get('@Url.Action("GetPersonalContact", "Contact")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.personalContact.Items = response.data.Items;
+                            
+                            console.log("Personal Contact", $scope.personalContact);
+                        }
+                });
+            }
+
+            $scope.getTotalPersonalContact = function() {
+                $http.get('@Url.Action("GetTotalPersonalContact", "Contact")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.personalContact.Count = response.data;
+                            console.log("TOTAL PERSONAL CONTACT", $scope.personalCount.Count);      
                         
                         }
         
                 });
             }
 
-            $scope.getPersonalContact = function (searchKey, page, pageSize) {
-                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: searchKey, page: page, pageSize: row }).then( ...
-                
-                $http.get('@Url.Action("GetPersonalContact", "Contact")')
-                    .then(function (response) {
-
-                        if (response.data) {
-                            $scope.index = row * (page - 1);
-                        
-                            $scope.personalContact.Items = response.data.Items;
-
-                            // init total of personal data when first calling
-                            if (!$scope.hasPersonalContactAccessed) {
-                                $scope.personalContact.Count = response.data.Count;
-                            }
-
-                            $scope.isView = true;
-                            $scope.hasPersonalContactBeenAccessed = true;
-                        }
-
-                    
-                });
-            }
-           
-            $scope.getProductCount = function (searchKey) {
-                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: searchKey }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
             /*--------------------------------------------------------------
-            HANDLE PAGINATION
+            PAGINATION HANDLER
             --------------------------------------------------------------*/
 
             $scope.countTotalPage = function (totalItem, size) {
                 return Math.ceil(totalItem / size);
+            }
+
+            $scope.initPage = function (jumlahPage) {
+                for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push(i);
+                }
             }
 
             $scope.updatePage = function (page, size) {
@@ -341,6 +370,10 @@
             --------------------------------------------------------------*/
             $scope.isMemberOfACompany = function () {
                 return $scope.companies.length > 0;
+            }
+
+            $scope.hasContact = function () {
+                return $scope.personalContact.Count > 0;
             }
 
             $scope.addMember = function (mid) {

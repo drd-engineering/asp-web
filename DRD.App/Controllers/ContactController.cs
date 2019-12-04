@@ -33,7 +33,7 @@ namespace DRD.App.Controllers
         /// <returns></returns>
 
         // GET: Contact/GetPersonalContact
-        public ActionResult GetPersonalContact(string criteria, int page, int pageSize)
+        public ActionResult GetPersonalContact()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -42,6 +42,30 @@ namespace DRD.App.Controllers
             
             ContactList data = ContactServiceInstance.GetPersonalContact(login.GetUser(this));
             return  Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
+        public ActionResult GetPersonalContact(string searchKey, int page, int size)
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            ContactService ContactServiceInstance = new ContactService();
+
+            ContactList data = ContactServiceInstance.GetPersonalContact(login.GetUser(this), searchKey, page, size);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Contact/GetTotalPersonalContact
+        public ActionResult GetTotalPersonalContact()
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            ContactService ContactServiceInstance = new ContactService();
+
+            var data = ContactServiceInstance.GetTotalPersonalContact(login.GetUser(this));
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Contact/GetContactFromCompany/Id
