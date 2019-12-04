@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="BusinessSubscription.cs" />
     <Compile Include="View\CompanyProfile.cs" />
+    <Compile Include="CompanyQuota.cs" />
+	<Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyList.cs" />
     <Compile Include="API\Element.cs" />
@@ -85,7 +87,6 @@
     <Compile Include="RotationNodeDoc.cs" />
     <Compile Include="RotationNodeRemark.cs" />
     <Compile Include="RotationNodeUpDoc.cs" />
-    <Compile Include="Symbol.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserAdmin.cs" />

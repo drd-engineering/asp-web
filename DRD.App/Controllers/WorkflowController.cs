@@ -20,27 +20,14 @@ namespace DRD.App.Controllers
             return login.GetUser(this);
         }
 
-        public ActionResult Workflow(string mid)
+        // GET : Workflow/new
+        public ActionResult New()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
-
-            // begin decription menu
             UserSession user = login.GetUser(this);
-           // var strmenu = login.ManipulateSubMenu(this, user, mid);
-            // end decription menu
-
             WorkflowData product = new WorkflowData();
-            //string[] ids = strmenu.Split(',');
-            //if (ids.Length > 1 && !ids[1].Equals("0"))
-            //{
-            //    WorkflowService psvr = new WorkflowService();// getUserLogin().AppZone.Code);
-              //  product = psvr.GetById(int.Parse(ids[1]));
-            //}
-
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(ids[0]);
-            layout.key = mid.Split(',')[0];
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.objItems = login.GetMenuObjectItems(layout.menus, layout.activeId);
             layout.user = login.GetUser(this);
@@ -49,22 +36,15 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult List(string mid)
+        //GET : Workflow/list
+        public ActionResult List()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
-
-            // begin decription menu
             UserSession user = login.GetUser(this);
-            //var strmenu = login.ManipulateMenu(this, user, mid);
-            // end decription menu
-
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(strmenu);
-            layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
-
             return View(layout);
         }
         public ActionResult GetById(long id)

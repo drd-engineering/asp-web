@@ -127,17 +127,51 @@ namespace DRD.Service
             }
         }
 
-        public long chooseSubscription(long subscriptionId, long companyId)
+        public long chooseSubscription(int subscriptionId, long companyId)
         {
             using (var db = new ServiceContext())
             {
-                Company company = GetCompany(companyId);
-                company.BusinessSubscriptionId = subscriptionId;
+                CompanyQuota companyQuota = new CompanyQuota();
+                SubscriptionDictionary subscriptionDictionary = new SubscriptionDictionary();
 
-                long result = db.Companies.Add(company).OwnerId;
+                Company company = GetCompany(companyId);
+                CompanyQuota lastSubscription = getLastSubscription(companyId);
+                Subscription subscription = subscriptionDictionary.getBusinessSubscription[subscriptionId];
+
+                if (company != null && subscription != null)
+                {
+                    companyQuota.CompanyId = company.Id;
+                    companyQuota.startedAt = DateTime.Now;
+                    companyQuota.expiredAt = DateTime.Now.AddDays(subscription.DurationInDays);
+                    companyQuota.AdministratorQuota = subscription.AdministratorQuota;
+                    companyQuota.StorageQuota = subscription.StorageQuotaInByte;
+                    companyQuota.BusinessSubscriptionId = subscriptionId;
+                    companyQuota.StorageUsage = lastSubscription == null ? 0 : lastSubscription.StorageUsage;
+                    companyQuota.isActive = true;
+                    lastSubscription.isActive = false;
+                }
+
+
+                long result = db.CompanyQuotas.Add(companyQuota).Id;
+                long lastResult = db.CompanyQuotas.Add(lastSubscription).Id;
                 db.SaveChanges();
 
                 return result;
+            }
+        }
+
+        public CompanyQuota getLastSubscription(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                return db.CompanyQuotas.Where(companyItem => companyItem.CompanyId == companyId).LastOrDefault();
+            }
+        }
+        public CompanyQuota getActiveSubscription(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                return db.CompanyQuotas.Where(companyItem => companyItem.CompanyId == companyId && companyItem.isActive).FirstOrDefault();
             }
         }
 

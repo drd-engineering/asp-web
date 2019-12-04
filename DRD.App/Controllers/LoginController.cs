@@ -94,39 +94,14 @@ namespace DRD.App.Controllers
             return items;
         }
 
-        public string ManipulateMenu(Controller controller, UserSession user, string data)
+        public string ManipulateMenu(Controller controller, UserSession user)
         {
-            MenuService msvr = new MenuService();
-            string decx = msvr.Decrypt(data);
-            if (decx == null)
-            {
-                controller.Response.Redirect("/error/invalidpage");
-                return null;
-            }
-            string[] datas = decx.Split(',');
-            if (long.Parse(datas[0]) != user.Id)
-            {
-                controller.Response.Redirect("/error/invalidpage");
-                return null;
-            }
-            return datas[1];
+            return "";
         }
 
-        public string ManipulateSubMenu(Controller controller, UserSession user, string data)
+        public string ManipulateSubMenu(Controller controller, UserSession user)
         {
-            string[] xdatas = data.Split(',');
-            string data1 = ManipulateMenu(controller, user, xdatas[0]);
-
-            if (xdatas.Length == 1)
-                return data1 + ",0";
-
-            MenuService msvr = new MenuService();
-            string decx = msvr.Decrypt(xdatas[1]);
-            if (decx == null)
-                controller.Response.Redirect("/error/invalidpage");
-            string[] datas = decx.Split(',');
-
-            return data1 + "," + datas[1];
+            return "";
         }
     }
 }

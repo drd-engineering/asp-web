@@ -10,7 +10,7 @@ namespace DRD.Models
         public long Id { get; set; } // Id (Primary key)
         public long WorkflowId { get; set; } // WorkflowId
         public long? MemberId { get; set; } // MemberId
-        public int SymbolId { get; set; } // SymbolId
+        public int SymbolCode { get; set; } // SymbolId
         public string Caption { get; set; } // Caption (length: 100)
         public string Info { get; set; } // Info (length: 1000)
         public string Operator { get; set; } // Operator (length: 10)
@@ -34,8 +34,6 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
 
         // Foreign keys
-        public virtual User User { get; set; } // FK_WorkflowNode_Member
-        public virtual Symbol Symbol { get; set; } // FK_WorkflowNode_Symbol
         public virtual Workflow Workflow { get; set; } // FK_WorkflowNode_Workflow
 
         public WorkflowNode()

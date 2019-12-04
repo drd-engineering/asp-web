@@ -19,17 +19,10 @@ namespace DRD.Models.View.Dashboard
 
         public class Item
         {
-            public int Rotation { get; set; }
-            public int Inbox { get; set; }
-            public int Altered { get; set; }
-            public int Revised { get; set; }
             public int InProgress { get; set; }
-            public int Pending { get; set; }
-            public int Signed { get; set; }
-            public int Declined { get; set; }
             public int Completed { get; set; }
-            public int Contact { get; set; }
-            public int Document { get; set; }
+            public long StorageQuota { get; set; }
+            public long StorageUsage { get; set; }
         }
     }
 }

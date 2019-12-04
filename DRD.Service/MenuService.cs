@@ -14,7 +14,6 @@ namespace DRD.Service
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Menu.csv");
             List <Menu> values = File.ReadAllLines(path)
-                                           .Skip(1)
                                            .Select(v => Menu.FromCsv(v))
                                            .ToList();
             return values;

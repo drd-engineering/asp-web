@@ -295,19 +295,19 @@ namespace DRD.Service
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(rotation => rotation.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
-                    if (workflowNodeLink.Symbol.Code.Equals("SUBMIT"))
+                    if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
                     {
                         result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
-                        if (workflowNodeLink.WorkflowNodeTos.Symbol.Code.Equals("DECISION"))
+                        if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("DECISION"))
                             result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTos.Operator + " " + workflowNodeLink.WorkflowNodeTos.Value;
-                        else if (workflowNodeLink.WorkflowNodeTos.Symbol.Code.Equals("CASE"))
+                        else if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("CASE"))
                             result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTos.Value;
                     }
-                    else if (workflowNodeLink.Symbol.Code.Equals("REJECT"))
+                    else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
-                    else if (workflowNodeLink.Symbol.Code.Equals("REVISI"))
+                    else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
-                    else if (workflowNodeLink.Symbol.Code.Equals("ALTER"))
+                    else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
 
                 }
@@ -323,18 +323,36 @@ namespace DRD.Service
             {
                 var result =
                     (from rotation in db.WorkflowNodes
-                     where rotation.WorkflowId == workflowId && rotation.Symbol.Code.Equals("ACTIVITY")
+                     where rotation.WorkflowId == workflowId && rotation.SymbolCode.Equals("ACTIVITY")
                      select new RotationUser
                      {
                          ActivityName = rotation.Caption,
                          WorkflowNodeId = rotation.Id,
-                         User = rotation.User,
-                         Email = (rotation.User.Id == null ? "" : rotation.User.Email),
-                         Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
-                         Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
-                         Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
+                         Id = rotation.MemberId.Value,
+                         //User = (from db.User)
+                         //Email = (rotation.User.Id == null ? "" : rotation.User.Email),
+                         //Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
+                         //Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
+                         //Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
                      }).ToList();
-
+                foreach (RotationUser item in result)
+                {
+                    if(item.MemberId != 0)
+                    {
+                        User userAsMemberCompany = (from user in db.Users
+                                                    join member in db.Members on user.Id equals member.UserId
+                                                    where member.Id == item.MemberId
+                                                    select user).FirstOrDefault();
+                        if (userAsMemberCompany != null)
+                        {
+                            item.User = userAsMemberCompany;
+                            item.Email = userAsMemberCompany.Email;
+                            item.Id = userAsMemberCompany.Id;
+                            item.Name = userAsMemberCompany.Name;
+                            item.Picture = userAsMemberCompany.ImageProfile;
+                        }
+                    }
+                }
                 return result;
             }
         }

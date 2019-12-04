@@ -1,0 +1,14 @@
+0,START,Start,Start,#ffffff,#64b5f6,NULL,0,start,SYS,2018-01-01 00:00:00.000,NULL
+1,END,End,End,#ffffff,#ffcc80,NULL,0,end,SYS,2018-01-01 00:00:00.000,NULL
+2,PARALLEL,Parallel,Parallel,#ffffff,#e57373,NULL,0,node-pararrel,SYS,2018-01-01 00:00:00.000,NULL
+5,ACTIVITY,Activity,Activity,#ffffff,#66bb6a,NULL,0,node-activity,SYS,2018-01-01 00:00:00.000,NULL
+6,DECISION,Decision,Decision,#ffffff,#dce775,NULL,0,node-decision,SYS,2018-01-01 00:00:00.000,NULL
+7,CASE,Case,Case,#ffffff,#e57373,NULL,0,node-case,SYS,2018-01-01 00:00:00.000,NULL
+20,SUBMIT,Submit,Submit,#ffffff,#dce775,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+21,REJECT,Reject,Reject,#ffffff,#66bb6a,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+22,REVISI,Revision,Revision,#ffffff,#e57373,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+23,ALTER,Alter,Alter,#ffffff,#e57373,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+24,YES,Yes,Decision yes,#ffffff,#e57373,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+25,NO,No,Decision no,#ffffff,#e57373,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+26,SUBMITCASE,Submit,Submit Case,#ffffff,#e57373,NULL,1,NULL,SYS,2018-01-01 00:00:00.000,NULL
+27,TRANSFER,Transfer,Transfer,#ffffff,#e57373,NULL,0,node-transfer,SYS,2019-01-01 00:00:00.000,NULL

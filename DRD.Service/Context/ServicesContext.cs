@@ -13,6 +13,8 @@ namespace DRD.Service.Context
         public ServicesContext() : base("AppContext"){    }
         public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<CompanyQuota> CompanyQuotas { get; set; }
+
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
         // public DbSet<DocumentSign> DocumentSigns { get; set; }
@@ -28,7 +30,7 @@ namespace DRD.Service.Context
         public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Stamp> Stamps { get; set; }
-        public DbSet<Symbol> Symbols{ get; set; }
+       // public DbSet<Symbol> Symbols{ get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }

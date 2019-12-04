@@ -2236,6 +2236,7 @@
     <Content Include="assets\vendors\bootstrap-datepicker-1.6.4-dist\css\bootstrap-datepicker3.standalone.css.map" />
     <Content Include="assets\vendors\bootstrap-datepicker-1.6.4-dist\css\bootstrap-datepicker3.standalone.min.css.map" />
     <Content Include="Menu.csv" />
+    <Content Include="Symbols.csv" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2777,11 +2778,11 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Inbox\InboxList.cshtml" />
-    <Content Include="Views\Workflow\Workflow.cshtml" />
-    <Content Include="Views\Workflow\WorkflowList.cshtml" />
+    <Content Include="Views\Workflow\New.cshtml" />
+    <Content Include="Views\Workflow\List.cshtml" />
     <Content Include="Views\Include\PopupProject.cshtml" />
-    <Content Include="Views\Rotation\Rotation.cshtml" />
-    <Content Include="Views\Rotation\RotationList.cshtml" />
+    <Content Include="Views\Rotation\New.cshtml" />
+    <Content Include="Views\Rotation\List.cshtml" />
     <Content Include="Views\Include\PopupWorkflow.cshtml" />
     <Content Include="Views\Inbox\Inbox.cshtml" />
     <Content Include="Views\InProgress\InProgressList.cshtml" />
@@ -2814,7 +2815,6 @@
     <Content Include="Views\Include\PopupLinkCase.cshtml" />
     <Content Include="Views\Flow\TestAngular.cshtml" />
     <Content Include="Views\Flow\Demo6Modif.cshtml" />
-    <Content Include="Views\Workflow\Workflow - Copy.cshtml" />
     <Content Include="Views\Altered\Altered.cshtml" />
     <Content Include="Views\Altered\AlteredList.cshtml" />
     <Content Include="Views\Revised\Revised.cshtml" />
