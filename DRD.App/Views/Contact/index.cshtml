@@ -188,7 +188,7 @@
                                     <div class="col-lg-10">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="searchKey" ng-change="getPersonalContact(searchKey, page, size)" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, size)">
+                                            <input type="text" class="form-control" ng-model="searchKey" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, row)">
                                             <span class="input-group-btn">
                                                 <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getPersonalContact()" style="width:120px">
                                                     <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
@@ -239,11 +239,11 @@
                         
                          <div class="pagination-container">
                              
-                            <div class="pagination" ng-change="updatePage(searchKey, page, size)">
+                            <div class="pagination">
                                 <a href="#">&laquo;</a>
-                                <a href="#">{{ page - 1 }}</a>
-                                <a class="active" href="#">{{ page }}</a>
-                                <a href="#">{{ page + 1 }}</a>
+                                <a href="#">1</a>
+                                <a class="active" href="#">2</a>
+                                <a href="#">3</a>
                                 <a href="#">&raquo;</a>
                             </div>
                                 
@@ -298,9 +298,7 @@
                 $(".content").show();
                 $scope.getCompaniesData();
                 $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
-                $scope.getTotalPersonalContact();
                 $scope.totalPage = $scope.countTotalPage($scope.personalContact.Count, $scope.size);
-                $scope.initPage($scope.totalPage);
             });
 
 
@@ -314,50 +312,60 @@
 
                         if (response.data) {
                             $scope.companies = response.data;
-                            console.log("COMPANIES",$scope.companies);                        
+                            console.log("COMPANIES", $scope.companies);
                         }
         
                 });
             }
 
-            $scope.getPersonalContact = function (searchKey, page, size) {
-                //$http.get('@Url.Action("GetPersonalContact", "Contact")', { searchKey: searchKey, page: page, pageSize: size })
+            $scope.getPersonalContact = function (searchKey, page, pageSize) {
+                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: searchKey, page: page, pageSize: row }).then( ...
+                
                 $http.get('@Url.Action("GetPersonalContact", "Contact")')
                     .then(function (response) {
 
                         if (response.data) {
                             $scope.personalContact.Items = response.data.Items;
-                            
-                            console.log("Personal Contact", $scope.personalContact);
+
+                            // init total of personal data when first calling
+                            if (!$scope.hasPersonalContactAccessed) {
+                                $scope.personalContact.Count = response.data.Count;
+                            }
+
+                            console.log("PERSONAL CONTACT", $scope.personalContact);
+                            $scope.isView = true;
+                            $scope.hasPersonalContactBeenAccessed = true;
                         }
+
+                    
                 });
             }
+           
+            $scope.getProductCount = function (searchKey) {
+                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: searchKey }).then(function (response) {
+                    if (response.data) {
 
-            $scope.getTotalPersonalContact = function() {
-                $http.get('@Url.Action("GetTotalPersonalContact", "Contact")')
-                    .then(function (response) {
-
-                        if (response.data) {
-                            $scope.personalContact.Count = response.data;
-                            console.log("TOTAL PERSONAL CONTACT", $scope.personalCount.Count);      
-                        
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push(i);
                         }
-        
+
+                        
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
                 });
             }
 
             /*--------------------------------------------------------------
-            PAGINATION HANDLER
+            HANDLE PAGINATION
             --------------------------------------------------------------*/
 
             $scope.countTotalPage = function (totalItem, size) {
                 return Math.ceil(totalItem / size);
-            }
-
-            $scope.initPage = function (jumlahPage) {
-                for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push(i);
-                }
             }
 
             $scope.updatePage = function (page, size) {
