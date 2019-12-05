@@ -22,7 +22,7 @@ namespace DRD.App.Controllers
         }
 
 
-        public ActionResult InboxList()
+        public ActionResult List()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
