@@ -102,14 +102,13 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var MemberOfCompany = db.Members.Where(memberItem => memberItem.UserId == user.Id && memberItem.CompanyId == CompanyIdOfUser).ToList();
-                if(MemberOfCompany.Count == 0)
-                {
-                    return null;
-                }
+                var hisSelfAsMember = db.Members.Where(member => member.UserId == user.Id).ToList();
+                if (hisSelfAsMember.Count == 0) { return null; }
+                long[] companyIds = (from m in hisSelfAsMember where CompanyIdOfUser == m.CompanyId select m.CompanyId).ToArray();
+                if (companyIds.Length == 0) { return null; }
                 var result = (from Member in db.Members
                               join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == CompanyIdOfUser
+                              where Member.CompanyId == CompanyIdOfUser && User.Id != user.Id
                               select new ContactItem
                               {
                                   Id = User.Id,
@@ -124,6 +123,7 @@ namespace DRD.Service
                 foreach (ContactItem x in result)
                 {
                     listReturned.Items.Add(x);
+                    counter += 1;
                 }
                 listReturned.Count = counter;
                 return listReturned;
