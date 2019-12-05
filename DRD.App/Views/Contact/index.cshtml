@@ -78,12 +78,40 @@
             line-height: 1;
             font-size: 12px;
         }
+
+    .pagination a {
+      color: black;
+      padding: 8px 12px;
+      text-decoration: none;
+      transition: background-color .3s;
+      border-radius: 50%;
+      font-size: 14px;
+    }
+
+    .pagination a.active {
+      font-weight: 700;
+    }
+
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+
+    .pagination-container {
+        text-align: center;
+    }
+
+    p.pagination-info {
+        margin-top: 10px;
+        font-weight: 300;
+        color: #8F8C8C;
+        letter-spacing: 2px;
+    }
+
+    
 </style>
 
 
-<body>
+<body ng-controller="drdController">
     <!-- HIGHLIGHT SECTION -->
-    <section class="panel highlight-container container" id="highlight-contact">
+    <section class="panel highlight-container container" id="highlight-contact" >
 
         <div class="section-title">
             <h4>Contact</h4>
@@ -101,10 +129,10 @@
                             <div class="col-xs-8">
                                 <div class="card-title">
                                     <p>Personal</p>
-                                    <br />
+                                   
                                 </div>
                                 <div class="card-content">
-                                    <p>58 Contacts</p>
+                                    <p>{{personalContact.Count}} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -113,8 +141,9 @@
                 </div>
             </div>
             <!-- end of CARD 1 -->
+            
             <!-- CARD 2 -->
-            <div class="col-md-3">
+            <div class="col-md-3" ng-repeat="x in companies" ng-if="isMemberOfACompany()">
                 <div class="highlight-card">
                     <div class="container">
                         <div class="row">
@@ -123,10 +152,10 @@
                             </div>
                             <div class="col-xs-8">
                                 <div class="card-title">
-                                    <p>PT Simposium Pratama</p>
+                                    <p>{{ x.Name }}</p>
                                 </div>
                                 <div class="card-content">
-                                    <p>158 Contacts</p>
+                                    <p>{{ x.TotalMember }} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -135,35 +164,14 @@
                 </div>
             </div>
             <!-- end of CARD 2 -->
-            <!-- CARD 3 -->
-            <div class="col-md-3">
-                <div class="highlight-card">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <div class="card-image"><img src="~/Images/Member/icon_female.png" /></div>
-                            </div>
-                            <div class="col-xs-8">
-                                <div class="card-title">
-                                    <p>PT Simposium Pratama</p>
-                                </div>
-                                <div class="card-content">
-                                    <p>2358 Contacts</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- end of CARD 3 -->
+            
         </div>
     </section>
 
     <!-- CONTACT-LIST SECTION -->
     <section class="panel" id="contact-list">
         <!-- Page container -->
-        <div class="page-container invitation-list" ng-controller="drdController">
+        <div class="page-container invitation-list">
             <!-- Page content -->
 
             <div class="panel-default page-content">
@@ -176,14 +184,13 @@
                             <div class="page-title">
                                 <h4><i class="icon-users2 position-left"></i>Personal</h4>
                                 <br />
-
                                 <div class="row">
                                     <div class="col-lg-10">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                            <input type="text" class="form-control" ng-model="searchKey" ng-change="getPersonalContact(searchKey, page, size)" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getPersonalContact(searchKey, page, size)">
                                             <span class="input-group-btn">
-                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                                                <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getPersonalContact()" style="width:120px">
                                                     <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -206,20 +213,18 @@
 
 
                             <div class="panel panel-flat no-border">
-
+                                
                                 <div class="table-responsive" ng-show="isView">
 
                                     <table class="table-xs">
                                         <tbody>
-                                            <tr ng-repeat="x in products">
-
+                                            <tr ng-repeat="x in personalContact.Items">
                                                 <td>
-                                                    <img ng-src="/Images/Member/{{x.Invited.ImageProfile}}" />
-                                                    &ensp;&ensp;{{x.Invited.Name}}
+                                                    <img ng-src="/Images/Member/{{x.ImageProfile}}" />
+                                                    &ensp;&ensp;{{x.Name}}
                                                 </td>
-                                                <td>{{x.Invited.Phone}}</td>
-                                                <td>{{x.Invited.Email}}</td>
-
+                                                <td>{{x.Phone}}</td>
+                                                <td>{{x.Email}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -228,15 +233,27 @@
                         </div>
 
                         <!-- PAGINATION -->
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="pull-right">
-                                    <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
-                                        <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                    </select>
-                                </div>
+                        @*
+                            ng-if="hasContact()"    
+                        *@
+                        
+                         <div class="pagination-container">
+                             
+                            <div class="pagination" ng-change="updatePage(searchKey, page, size)">
+                                <a href="#">&laquo;</a>
+                                <a href="#">{{ page - 1 }}</a>
+                                <a class="active" href="#">{{ page }}</a>
+                                <a href="#">{{ page + 1 }}</a>
+                                <a href="#">&raquo;</a>
                             </div>
+                                
+                                @*
+                                <select ng-model="page" class="form-control" ng-change="updatePage(page, size)">
+                                    <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
+                                </select>
+                                *@
+                             <p class="pagination-info">19 of 86</p>
+                            
                         </div>
                         <!-- end of PAGINATION -->
                         <!-- /LIST -->
@@ -261,92 +278,104 @@
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            $scope.product = {};
-            $scope.products = [];
-            $scope.productCount = [];
-            $scope.paging = [];
-            $scope.kriteria = "";
-            $scope.page = 1;
-            $scope.row = 20;
-            $scope.currPage = 0;
+            
+            $scope.companies = [];
+            $scope.personalContact = { Count: 0, CompanyName: "", Items: [], Type: "" }
+            $scope.hasPersonalContactAccessed = false;
             $scope.isView = false;
-            $scope.index = 0;
+            
+            // PAGINATION
+            $scope.paging = [];
+            $scope.searchKey = "";
+            $scope.page = 1;
+            $scope.size = 20;
+            $scope.totalPage = 0;
 
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 $(".content").show();
-                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+                $scope.getCompaniesData();
+                $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
+                $scope.getTotalPersonalContact();
+                $scope.totalPage = $scope.countTotalPage($scope.personalContact.Count, $scope.size);
+                $scope.initPage($scope.totalPage);
             });
 
 
             /*--------------------------------------------------------------
-            GET PRODUCT
+            GET DATA THAT CONTACT PAGE NEED
             --------------------------------------------------------------*/
-            $scope.getLiteProducts = function (kriteria, page, row) {
-                var btn = Ladda.create(document.querySelector('.btn-process'));
-                btn.start();
-                $scope.products = [];
-                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    btn.stop();
-                    if (response.data) {
-                        $scope.products = response.data;
+            // get all cards data (Personal and Companies data)
+            $scope.getCompaniesData = function () {
+                $http.get('@Url.Action("GetCompaniesData", "Contact")')
+                    .then(function (response) {
 
-                        $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        $scope.getProductCount(kriteria);
-
-                        $scope.isView = true;
-
-                        //Ladda.stopAll();
-
-                    }
-                }, function (response) {
-                    btn.stop();
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.changePage = function (kriteria, page, row) {
-                $scope.products = [];
-                $http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    if (response.data) {
-                        $scope.products = response.data;
-                        $scope.index = row * (page - 1);
-
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.getProductCount = function (kriteria) {
-                $http.post('@Url.Action("GetInvitedLiteAllCount", "invitation")', { topCriteria: kriteria }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
+                        if (response.data) {
+                            $scope.companies = response.data;
+                            console.log("COMPANIES",$scope.companies);                        
                         }
+        
+                });
+            }
 
-                        $scope.page = "1";
+            $scope.getPersonalContact = function (searchKey, page, size) {
+                //$http.get('@Url.Action("GetPersonalContact", "Contact")', { searchKey: searchKey, page: page, pageSize: size })
+                $http.get('@Url.Action("GetPersonalContact", "Contact")')
+                    .then(function (response) {
 
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
+                        if (response.data) {
+                            $scope.personalContact.Items = response.data.Items;
+                            
+                            console.log("Personal Contact", $scope.personalContact);
+                        }
+                });
+            }
+
+            $scope.getTotalPersonalContact = function() {
+                $http.get('@Url.Action("GetTotalPersonalContact", "Contact")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.personalContact.Count = response.data;
+                            console.log("TOTAL PERSONAL CONTACT", $scope.personalCount.Count);      
+                        
+                        }
+        
                 });
             }
 
             /*--------------------------------------------------------------
+            PAGINATION HANDLER
+            --------------------------------------------------------------*/
+
+            $scope.countTotalPage = function (totalItem, size) {
+                return Math.ceil(totalItem / size);
+            }
+
+            $scope.initPage = function (jumlahPage) {
+                for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push(i);
+                }
+            }
+
+            $scope.updatePage = function (page, size) {
+
+            }
+
+
+            /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
+            $scope.isMemberOfACompany = function () {
+                return $scope.companies.length > 0;
+            }
+
+            $scope.hasContact = function () {
+                return $scope.personalContact.Count > 0;
+            }
+
             $scope.addMember = function (mid) {
                 location.href = "/invitation/invitation?mid=" + mid;
             }
@@ -359,6 +388,8 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
+
+
 
         });
 

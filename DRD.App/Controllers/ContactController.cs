@@ -19,21 +19,18 @@ namespace DRD.App.Controllers
             layout.menus = login.GetMenus(this, 0);
             layout.user = login.GetUser(this);
             layout.activeId = 0;
-            return View(layout);
-        }
-            
-        public ActionResult Index(long companyId)
-        {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, 0);
-            layout.user = login.GetUser(this);
-            layout.activeId = 0;
 
             return View(layout);
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
 
         // GET: Contact/GetPersonalContact
         public ActionResult GetPersonalContact()
@@ -45,6 +42,30 @@ namespace DRD.App.Controllers
             
             ContactList data = ContactServiceInstance.GetPersonalContact(login.GetUser(this));
             return  Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
+        public ActionResult GetPersonalContact(string searchKey, int page, int size)
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            ContactService ContactServiceInstance = new ContactService();
+
+            ContactList data = ContactServiceInstance.GetPersonalContact(login.GetUser(this), searchKey, page, size);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: Contact/GetTotalPersonalContact
+        public ActionResult GetTotalPersonalContact()
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            ContactService ContactServiceInstance = new ContactService();
+
+            var data = ContactServiceInstance.GetTotalPersonalContact(login.GetUser(this));
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Contact/GetContactFromCompany/Id
@@ -59,18 +80,16 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Contact/GetData
-        public ActionResult GetData() {
+        
+        public ActionResult GetCompaniesData() {
+
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
             ContactService service = new ContactService();
+            var data = service.GetListOfCompany(login.GetUser(this));
+            
 
-            var data = new ContactData();
-
-            data.CompanyList = service.GetListOfCompany(login.GetUser(this));
-            data.ContactList = service.GetPersonalContact(login.GetUser(this));
-           
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

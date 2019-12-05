@@ -15,7 +15,7 @@ namespace DRD.Service.Context
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
-
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentUser> DocumentUsers { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
@@ -35,6 +35,6 @@ namespace DRD.Service.Context
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         public DbSet<Stamp> Stamps { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
+
     }
 }
