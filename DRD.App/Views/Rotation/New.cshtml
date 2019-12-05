@@ -200,7 +200,53 @@
                                 </div>
                             </div>
                         </div>
-                </fieldset
+                        <div style="height:5px"></div>
+                        <div class="col-md-10">
+                            <div class="row">
+                                <label class="control-label">Recipient Determination</label>
+                                <table class="table-xxs table-bordered table-striped" style="font-size:small;width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th width="25px">#</th>
+                                            <th>Activity</th>
+                                            <th>Recipient</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="x in users" ng-init="topIdx = $index">
+                                        <tr style="vertical-align:top" on-finish-render="ngRepeatFinished">
+                                            <td width="25px" rowspan="2">{{$index+1 + index}}</td>
+                                            <td rowspan="2">{{x.ActivityName}}</td>
+                                            <td>
+                                                <table style="width:100%;">
+                                                    <tr>
+                                                        <td style="width:50px;">
+                                                            <img ng-src="/Images/Member/{{x.Picture}}" height="40" width="40" style="cursor:pointer;border-radius:10%;" ng-click="editMember($index)" />
+                                                        </td>
+                                                        <td style="font-size:xx-small">
+                                                            <span class="text-format">{{x.Name}}</span><br />
+                                                            <span class="text-format">{{x.Email}}</span><br />
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:xx-small">
+                                                <span style="font-size:small;color:brown">Permission :&ensp;</span>
+                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
+                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-success" ng-checked="{{getFlagPemission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+</fieldset>
                 <!-- SUBMIT BUTTON -->
                 <div class="input-group-btn text-right">
                     <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" ng-click="updateProduct()">

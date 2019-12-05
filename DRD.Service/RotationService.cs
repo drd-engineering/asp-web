@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
 using DRD.Models.API;
+using DRD.Models.Custom;
 using DRD.Models.View.List;
 using DRD.Service.Context;
 
@@ -317,26 +318,20 @@ namespace DRD.Service
             }
         }
 
-        public IEnumerable<RotationUser> GetUsersWorkflow(long workflowId)
+        public IEnumerable<RotationUserData> GetUsersWorkflow(long workflowId)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.WorkflowNodes
-                     join user in db.Users on rotation.MemberId equals user.Id
                      where rotation.WorkflowId == workflowId && rotation.SymbolCode == 5
-                     select new
+                     select new RotationUserData
                      {
                          ActivityName = rotation.Caption,
                          WorkflowNodeId = rotation.Id,
-                         Id = rotation.MemberId.Value
-                     }).ToList().Select(x => new RotationUser
-                     {
-                         ActivityName = x.ActivityName,
-                         WorkflowNodeId = x.WorkflowNodeId,
-                         Id = x.Id
-                     });
-                foreach (RotationUser item in result)
+                         MemberId = rotation.MemberId.Value
+                     }).ToList();
+                foreach (RotationUserData item in result)
                 {
                     if(item.MemberId != 0)
                     {
@@ -346,9 +341,7 @@ namespace DRD.Service
                                                     select user).FirstOrDefault();
                         if (userAsMemberCompany != null)
                         {
-                            item.User = userAsMemberCompany;
                             item.Email = userAsMemberCompany.Email;
-                            item.Id = userAsMemberCompany.Id;
                             item.Name = userAsMemberCompany.Name;
                             item.Picture = userAsMemberCompany.ImageProfile;
                         }
