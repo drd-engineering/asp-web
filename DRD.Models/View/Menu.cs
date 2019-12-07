@@ -44,9 +44,9 @@ namespace DRD.Models.View
             string[] values = csvLine.Split(',');
             Menu menuItem = new Menu();
             //System.Diagnostics.Debug.WriteLine(":");
-            System.Diagnostics.Debug.WriteLine(values);
-            //System.Diagnostics.Debug.WriteLine(values.ToString());
-            if (menuItem != null)
+            System.Diagnostics.Debug.WriteLine("THIS IS SPLIT : "+values);
+            System.Diagnostics.Debug.WriteLine("THIS IS ORI : " + csvLine);
+            if (csvLine != "")
             {
                 menuItem.Code = Convert.ToString(values[0]);
                 menuItem.SecondaryKey = Convert.ToString(values[1]);

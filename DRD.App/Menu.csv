@@ -1,33 +1,6 @@
-2079,,Content,icon-iphone,,2078,,0
-2080,,Article/Event,,/news/list,2079,,0
-2088,ADDROTATION,ADD ROTATION,,/rotation/rotation,2086,,0
-2086,,PRIMARY,,,0,,0
-2087,,ADVANCE,,,0,,0
-2089,,-,,,2086,,0
-2083,,Is Template,,,2050,ISTEMPLATE,1
-2084,,Is Template,,,2061,ISTEMPLATEDRD,1
-2062,ALTERED,Altered,icon-split,/altered/alteredlist,2093,,0
-2069,,Master,,,2087,,0
-2065,INPROGRESS,In Progress,,/inprogress/inprogresslist,2060,,0
-2066,DECLINED,Declined,,/declined/declinedlist,2060,,0
-2055,PENDING,Pending,icon-stop,/pending/pendinglist,2093,,0
-2081,,Video Tube,,/newsvideo/newsvideolist,2079,,0
-2085,,Setting,,,2087,,0
-2093,,Drd Log,,,2087,,0
-2063,REVISED,Revised,icon-reset,/revised/list,2093,,0
 2052,INBOX,INBOX,icon-envelope,/inbox/list,2086,,0
-2067,COMPLETED,Completed,,/completed/list,2060,,0
 2068,ROTATION,ROTATION,icon-stack2,/rotation/list,2086,,0
-2056,SIGNED,Signed,icon-pencil3,/signed/list,2093,,0
-2082,,Pod Cast,,/podcast/podcastlist,2079,,0
-2050,WORKFLOW,Workflow,icon-cog3,/workflow/list,2069,,0
-2075,,Company Profile,icon-profile,/company/company,2085,,0
-2090,,-,,,2086,,0
-2076,,Stamp,icon-stamp,/stamp/stamplist,2085,,0
 2064,DOCUMENT,DOCUMENT,icon-files-empty,/document/list,2086,,0
-2071,,Project,icon-stack-check,/project/list,2069,,0
-2091,,-,,,2086,,0
-2078,,Admin,,,0,,0
 2077,CONTACT,CONTACT,icon-users2,/contact,2086,,0
-2092,,-,,,2086,,0
-2061,DRDRIVE,DRD DRIVE,icon-cloud-upload,/drdrive,2086,,0
+2061,COMPANY,COMPANY,icon-cloud-upload,/company,2086,,0
+2050,WORKFLOW,WORKFLOW,icon-cog3,/workflow/list,2086,,0

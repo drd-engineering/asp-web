@@ -1,688 +1,506 @@
 ﻿@model DRD.Models.View.Layout
 
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.Submenu = "DASHBOARD";
+}
 
-<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
-<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
-<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+@section Scripts
+{
+    <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+    <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+    <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
 
-<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
-<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
-<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-
-
-
-<!-- Theme JS files -->
-<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
-<script type="text/javascript" src="assets/js/plugins/visualization/d3/d3.min.js"></script>
-<script type="text/javascript" src="assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
-
-<!-- /theme JS files -->
-<style>
-       
-    .center-text {
-        text-align: center;
-    }
-
-    .box-rounded {
-        border-radius: 15px;
-        padding: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        cursor: pointer;
-    }
-
-    .panel {
-        border: none;
-    }
-
-    .panel-heading {
-        /*make'em transparent, cause of panel in panel thing*/
-        background-color: #f5f5f5 !important;
-    }
-
-    .highlight-container {
-        /*same as hightlight-container in invitation-list*/
-        background-color: #f5f5f5;
-        padding: 0;
-        /*width: inherit;*/
-    }
-
-    .highlight-container .container {
-            width: inherit;
-    }
-
-    .highlight-card {
-        background-color: white;
-        margin: inherit 10px;
-        padding: 10px;
-    }
-
-    .highlight-header {
-        border-bottom: solid 1px #e9ebf0;
-        margin-bottom: 10px;
-    }
-
-    .highlight-header select {
-        border: none;
-        margin-top: 5px;
-        margin-bottom: 5px;
-    }
-
-    select {
-        width: auto !important;
-        max-width: 100px;
-    }
-
-    .select-lg {
-            max-width: 320px;
-    }
-
-    .push-left {
-        margin-left: auto !important;
-    }
-
-    .push-left select {
-        display: block;
-        margin-left: auto;
-    }
-
-    .text-align-right {
-        text-align: right !important;
-    }
-
-    .highlight-card .card-title {
-        /*similiar with medium-text class, font-size's different. Same as card-title in invitationList*/
-        font-weight: 400;
-        line-height: 1.25;
-        font-size: 14px;
-    }
-
-    .highlight-card .sub-card-title {
-        padding-left: 5px;
-        font-weight: 400;
-        color: #979494;
-        font-size: 13px;
-    }
-
-    p.card-title, p.sub-card-title {
-        margin: 0 !important;
-    }
-
-    .highlight-card .card-content {
-        /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
-        padding: 5px;
-        font-weight: 300;
-        color: grey;
-        line-height: 1;
-        font-size: 12px;
-    }
-
-    .highlight-card .card-filter {
-        /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
-        font-weight: 300;
-        color: black;
-        line-height: 1;
-        font-size: 12px;
-    }
-
-    .highlight-card h1 {
-        font-size: 96px;
-        color: black;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    ..highlight-card .card-image-lg {
-        height: 100%;
-    }
+    <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+    <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
 
-    .round-img, .round-img img {
-        border-radius: 50%; /* almost all image treated like this*/
-    }
 
-    .highlight-card .card-image-lg img {
-        height: 80px;
-        width: 80px;
-    }
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/visualization/d3/d3.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
+    <!-- /theme JS files -->
+ }
+@section Styles{ 
+    <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
+}
+    <body ng-controller="drdController">
+        <div class="page-container" ng-controller="drdController">
+            <section id="dashboard-highlight">
+                <div class="row">
 
-    .highlight-card .card-image img {
-        max-height: 60px;
-        max-width: 56px;
-    }
-
-    .highlight-card .card-image-xs img {
-        height: 30px;
-        width: 30px;
-    }
-
-    .card-content p {
-        
-        line-height: 1;
-        margin-top: 5px;
-    }
-    
-    /*
-        container of vertical-align content wannabe
-        use this for div with .row
-    */
-    .vertical-align-row {
-        display: flex;
-        align-items: center;
-    }
-
-    .vertical-align-content {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-
-    .log-header {
-        /* imitate col-md-* style */
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-    .log-header span:first-child {
-        padding-right: 5px;
-        margin-right: 5px;
-    }
-
-    /* default text*/
-    p {
-        font-weight: 400;
-        font-size: 14px;
-
-    }
-
-    .text-light {
-        font-weight: 300;
-    }
-
-    .log {
-        margin-top: 30px;
-    }
-
-        .log:last-child {
-            margin-bottom: 30px;
-        }
-
-</style>
-
-<body ng-controller="drdController">
-
-    <div class="page-container" ng-controller="drdController">
-        <section id="dashboard-highlight">
-            <div class="row">
-
-                <!-- DASHBOARD - ROTATION -->
-                <div class="col-sm-12 col-md-6" id="dashboard-rotation">
-                    <div class="panel highlight-container">
-                        <div class="highlight-card">
-                            <!-- HEADER -->
-                            <div class="highlight-header">
-                                <div class="container">
-                                    <div class="row vertical-align-row">
-                                        <div class="col-md-6">
-                                            <p class="card-title"><strong>ROTATION</strong></p>
-                                        </div>
-                                        <div class="col-md-3 push-left">
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">This Week</option>
-                                                <option class="card-filter">Last Week</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- CONTENT -->
-                            <div class="card-content">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
-                                                <div class="col-sm-6 vertical-align-content">
-                                                    <div class="card-image-lg round-img">
-                                                        <img src="~/assets/ongoing.png" />
-                                                        <p>Ongoing</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="card-content-lg">
-                                                        <h1>{{counter.InProgress}}</h1>
-                                                    </div>
-
-                                                </div>
-
+                    <!-- DASHBOARD - ROTATION -->
+                    <div class="col-sm-12 col-md-6" id="dashboard-rotation">
+                        <div class="panel highlight-container">
+                            <div class="highlight-card">
+                                <!-- HEADER -->
+                                <div class="highlight-header">
+                                    <div class="container">
+                                        <div class="row vertical-align-row">
+                                            <div class="col-md-6">
+                                                <p class="card-title"><strong>ROTATION</strong></p>
                                             </div>
-                                        </div>
-
-                                        <div class="col-sm-6">
-                                            <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
-                                                <div class="col-sm-6 vertical-align-content">
-                                                    <div class="card-image-lg round-img">
-                                                        <img src="~/assets/completed.png" />
-                                                        <p>Completed</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="card-content-lg">
-                                                        <h1>{{counter.Completed}}</h1>
-                                                    </div>
-
-                                                </div>
-
+                                            <div class="col-md-3 push-left">
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">This Week</option>
+                                                    <option class="card-filter">Last Week</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- CONTENT -->
+                                <div class="card-content">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
+                                                    <div class="col-sm-6 vertical-align-content">
+                                                        <div class="card-image-lg round-img">
+                                                            <img src="~/assets/ongoing.png" />
+                                                            <p>Ongoing</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="card-content-lg">
+                                                            <h1>{{counter.InProgress}}</h1>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
+                                                    <div class="col-sm-6 vertical-align-content">
+                                                        <div class="card-image-lg round-img">
+                                                            <img src="~/assets/completed.png" />
+                                                            <p>Completed</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="card-content-lg">
+                                                            <h1>{{counter.Completed}}</h1>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <!-- end of DASHBOARD - ROTATION -->
+                    <!-- DASHBOARD - USAGE-->
+                    <div class="col-sm-12 col-md-6" id="dashboard-usage">
+                        <div class="panel highlight-container">
+                            <div class="highlight-card">
+
+                                <!-- HEADER -->
+                                <div class="highlight-header">
+                                    <div class="container">
+                                        <div class="row vertical-align-row">
+                                            <div class="col-md-6">
+                                                <p class="card-title"><strong>USAGE</strong></p>
+                                            </div>
+                                            <div class="col-md-3 push-left">
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">This Week</option>
+                                                    <option class="card-filter">Last Week</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CONTENT -->
+                                <div class="card-content">
+                                    <div class="container">
+                                        <div class="row vertical-align-row">
+                                            <div class="col-sm-5 vertical-align-content">
+
+                                                <canvas id="myChart" width="100" height="100"></canvas>
+
+                                            </div>
+
+                                            <div class="col-sm-5 vertical-align-content">
+                                                <div class="card-image-lg">
+                                                    <canvas id="otherPie" width="100" height="100"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of DASHBOARD - USAGE-->
+
+                </div>
+            </section>
+
+            <section id="dashboard-log">
+
+                <div class="panel highlight-container">
+                    <div class="highlight-card">
+                        <!-- HEADER -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-6">
+                                        <p class="card-title"><strong>LOG</strong></p>
+                                    </div>
+                                    <div class="col-md-4 push-left">
+                                        <!-- SELECT -->
+                                        <select class="card-filter select-lg">
+                                            <option class="card-filter">PT Company 1</option>
+                                            <option class="card-filter">PT Company 2</option>
+                                            <option class="card-filter">...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTER, SORT -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-4">
+                                        <!-- FILTER -->
+                                        <p class="sub-card-title">Filter</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Time</option>
+                                                    <option class="card-filter">This Week</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <!-- SORT -->
+                                        <p class="sub-card-title">Sort</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Subject</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Workflow</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="card-content">
+                            <!-- each LOG -->
+                            <div class="log container">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="card-image">
+                                                    <img src="~/assets/ongoing-no-bg.png" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row log-header">
+                                                    <span class="border-right">
+                                                        <strong>XCD/II/2019</strong>
+                                                    </span>
+                                                    <span>
+                                                        Workflow Apagitu
+                                                    </span>
+                                                </div>
+
+                                                <p>Permintaan Persetujuan</p>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2 text-align-right border-right">
+                                        <i>Important Note (Nominal, Due Date, etx.)</i>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-light">
+                                            Deskripsi...
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <p class="text-align-right"><strong>04.09 PM</strong></p>
+                                        <div class="row pull-right">
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="log container">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="card-image">
+                                                    <img src="~/assets/ongoing-no-bg.png" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row log-header">
+                                                    <span class="border-right">
+                                                        <strong>XCD/II/2019</strong>
+                                                    </span>
+                                                    <span>
+                                                        Workflow Apagitu
+                                                    </span>
+                                                </div>
+
+                                                <p>Permintaan Persetujuan</p>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2 text-align-right border-right">
+                                        <i>Important Note (Nominal, Due Date, etx.)</i>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-light">
+                                            Deskripsi...
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <p class="text-align-right"><strong>04.09 PM</strong></p>
+                                        <div class="row pull-right">
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="log container">
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="card-image">
+                                                    <img src="~/assets/ongoing-no-bg.png" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row log-header">
+                                                    <span class="border-right">
+                                                        <strong>XCD/II/2019</strong>
+                                                    </span>
+                                                    <span>
+                                                        Workflow Apagitu
+                                                    </span>
+                                                </div>
+
+                                                <p>Permintaan Persetujuan</p>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-2 text-align-right border-right">
+                                        <i>Important Note (Nominal, Due Date, etx.)</i>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="text-light">
+                                            Deskripsi...
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <p class="text-align-right"><strong>04.09 PM</strong></p>
+                                        <div class="row pull-right">
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+
+                                            <span class="card-image-xs round-img">
+                                                <img src="~/assets/ongoing-no-bg.png" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <!-- end of DASHBOARD - ROTATION -->
-                <!-- DASHBOARD - USAGE-->
-                <div class="col-sm-12 col-md-6" id="dashboard-usage">
-                    <div class="panel highlight-container">
-                        <div class="highlight-card">
-
-                            <!-- HEADER -->
-                            <div class="highlight-header">
-                                <div class="container">
-                                    <div class="row vertical-align-row">
-                                        <div class="col-md-6">
-                                            <p class="card-title"><strong>USAGE</strong></p>
-                                        </div>
-                                        <div class="col-md-3 push-left">
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">This Week</option>
-                                                <option class="card-filter">Last Week</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- CONTENT -->
-                            <div class="card-content">
-                                <div class="container">
-                                    <div class="row vertical-align-row">
-                                        <div class="col-sm-5 vertical-align-content">
-
-                                            <canvas id="myChart" width="100" height="100"></canvas>
-
-                                        </div>
-
-                                        <div class="col-sm-5 vertical-align-content">
-                                            <div class="card-image-lg">
-                                                <canvas id="otherPie" width="100" height="100"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end of DASHBOARD - USAGE-->
-
-            </div>
-        </section>
-
-        <section id="dashboard-log">
-            
-            <div class="panel highlight-container">
-                <div class="highlight-card">
-                    <!-- HEADER -->
-                    <div class="highlight-header">
-                        <div class="container">
-                            <div class="row vertical-align-row">
-                                <div class="col-md-6">
-                                    <p class="card-title"><strong>LOG</strong></p>
-                                </div>
-                                <div class="col-md-4 push-left">
-                                    <!-- SELECT -->
-                                    <select class="card-filter select-lg">
-                                        <option class="card-filter">PT Company 1</option>
-                                        <option class="card-filter">PT Company 2</option>
-                                        <option class="card-filter">...</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FILTER, SORT -->
-                    <div class="highlight-header">
-                        <div class="container">
-                            <div class="row vertical-align-row">
-                                <div class="col-md-4">
-                                    <!-- FILTER -->
-                                    <p class="sub-card-title">Filter</p>
-                                    <div class="select-group">
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Status</option>
-                                                <option class="card-filter">Ongoing</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Code</option>
-                                                <option class="card-filter">??</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Time</option>
-                                                <option class="card-filter">This Week</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <!-- SORT -->
-                                    <p class="sub-card-title">Sort</p>
-                                    <div class="select-group">
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Status</option>
-                                                <option class="card-filter">Ongoing</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Subject</option>
-                                                <option class="card-filter">??</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Code</option>
-                                                <option class="card-filter">???</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-
-                                        <span>
-                                            <!-- SELECT -->
-                                            <select class="card-filter">
-                                                <option class="card-filter">Workflow</option>
-                                                <option class="card-filter">???</option>
-                                                <option class="card-filter">...</option>
-                                            </select>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CONTENT -->
-                    <div class="card-content">
-                        <!-- each LOG -->
-                        <div class="log container">
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="card-image">
-                                                <img src="~/assets/ongoing-no-bg.png" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row log-header">
-                                                <span class="border-right">
-                                                    <strong>XCD/II/2019</strong>
-                                                </span>
-                                                <span>
-                                                    Workflow Apagitu
-                                                </span>
-                                            </div>
-
-                                            <p>Permintaan Persetujuan</p>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-2 text-align-right border-right">
-                                    <i>Important Note (Nominal, Due Date, etx.)</i>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="text-light">
-                                        Deskripsi...
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="text-align-right"><strong>04.09 PM</strong></p>
-                                    <div class="row pull-right">
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
 
 
-                        </div>
+            </section>
+        </div>
 
-                        <div class="log container">
+        <script>
+            var ctx = document.getElementById('myChart');
+            var data = {
+                datasets: [{
+                    data: [13, 87],
+                    backgroundColor: [
+                        'rgba(153, 165, 255, 1)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ]
+                }],
 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="card-image">
-                                                <img src="~/assets/ongoing-no-bg.png" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row log-header">
-                                                <span class="border-right">
-                                                    <strong>XCD/II/2019</strong>
-                                                </span>
-                                                <span>
-                                                    Workflow Apagitu
-                                                </span>
-                                            </div>
-
-                                            <p>Permintaan Persetujuan</p>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-2 text-align-right border-right">
-                                    <i>Important Note (Nominal, Due Date, etx.)</i>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="text-light">
-                                        Deskripsi...
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="text-align-right"><strong>04.09 PM</strong></p>
-                                    <div class="row pull-right">
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                        <div class="log container">
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="card-image">
-                                                <img src="~/assets/ongoing-no-bg.png" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row log-header">
-                                                <span class="border-right">
-                                                    <strong>XCD/II/2019</strong>
-                                                </span>
-                                                <span>
-                                                    Workflow Apagitu
-                                                </span>
-                                            </div>
-
-                                            <p>Permintaan Persetujuan</p>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-2 text-align-right border-right">
-                                    <i>Important Note (Nominal, Due Date, etx.)</i>
-                                </div>
-                                <div class="col-md-4">
-                                    <p class="text-light">
-                                        Deskripsi...
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="text-align-right"><strong>04.09 PM</strong></p>
-                                    <div class="row pull-right">
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-
-                                        <span class="card-image-xs round-img">
-                                            <img src="~/assets/ongoing-no-bg.png" />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            
-
-        </section>
-    </div>
-
-    <script>
-        var ctx = document.getElementById('myChart');
-        var data = {
-            datasets: [{
-                data: [13, 87],
-            backgroundColor: [
-                'rgba(153, 165, 255, 1)',
-                'rgba(54, 162, 235, 0.2)'
-            ]
-            }],
-
-            // These labels appear in the legend and in the tooltips when hovering different arcs
-            labels: [
-                '13 Remaining',
-                '87 Remaining'
-            ]
-        };
-        var options = {
-            cutoutPercentage: 0
-        };
-       var myPieChart = new Chart(ctx, {
-            type: 'pie',
-            data: data
-       });
+                // These labels appear in the legend and in the tooltips when hovering different arcs
+                labels: [
+                    '13 Remaining',
+                    '87 Remaining'
+                ]
+            };
+            var options = {
+                cutoutPercentage: 0
+            };
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: data
+            });
 
 
 
-         var ctxs = document.getElementById('otherPie');
-        var datas = {
-            datasets: [{
-                data: [75,25],
-            backgroundColor: [
-                'rgba(153, 255, 190, 1)',
-                'rgba(54, 162, 235, 0.2)'
-            ]
-            }],
+            var ctxs = document.getElementById('otherPie');
+            var datas = {
+                datasets: [{
+                    data: [75, 25],
+                    backgroundColor: [
+                        'rgba(153, 255, 190, 1)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ]
+                }],
 
-            // These labels appear in the legend and in the tooltips when hovering different arcs
-            labels: [
-                '75% Remaining',
-                '25% Used'
-            ]
-        };
-        var optionss = {
-            cutoutPercentage: 0
-        };
-       var myPieCharts = new Chart(ctxs, {
-            type: 'pie',
-            data: datas
-        });
-    </script>
+                // These labels appear in the legend and in the tooltips when hovering different arcs
+                labels: [
+                    '75% Remaining',
+                    '25% Used'
+                ]
+            };
+            var optionss = {
+                cutoutPercentage: 0
+            };
+            var myPieCharts = new Chart(ctxs, {
+                type: 'pie',
+                data: datas
+            });
+        </script>
 
-    <script type="text/javascript">
+        <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             $scope.product = {};
@@ -786,6 +604,6 @@
         });
         $(document).ready(function () {
         });
-    </script>
+        </script>
 
-</body>
+    </body>
