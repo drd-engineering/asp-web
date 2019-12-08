@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfigGenerator.cs" />
+    <Compile Include="InboxService.cs" />
     <Compile Include="ContactService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="DocumentService.cs" />
