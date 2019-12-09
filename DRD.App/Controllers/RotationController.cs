@@ -64,7 +64,6 @@ namespace DRD.App.Controllers
         {
             UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
-            prod.User.Id = user.Id;
 
             var srv = new RotationService();// user.AppZone.Code);
             var data = srv.Save(prod);

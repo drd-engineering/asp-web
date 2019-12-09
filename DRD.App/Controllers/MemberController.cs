@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+
 using DRD.Models.API;
-using DRD.Models.API.Register;
+using DRD.Models.Custom;
+
 using DRD.Service;
 
 namespace DRD.App.Controllers

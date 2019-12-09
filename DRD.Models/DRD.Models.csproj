@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\MemberData.cs" />
     <Compile Include="BusinessSubscription.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
     <Compile Include="View\CompanyProfile.cs" />

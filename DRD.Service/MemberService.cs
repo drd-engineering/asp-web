@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using DRD.Models;
 using DRD.Models.API;
+using DRD.Models.Custom;
 
 using DRD.Service;
 using DRD.Service.Context;
@@ -81,15 +82,15 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public IEnumerable<MemberData> GetLiteGroupAll(long memberId, string topCriteria, int page, int pageSize)
+        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize)
         {
-            return GetLiteGroupAll(memberId, topCriteria, page, pageSize, null, null);
+            return GetLiteGroupAll(userId, topCriteria, page, pageSize, null, null);
         }
-        public IEnumerable<MemberData> GetLiteGroupAll(long memberId, string topCriteria, int page, int pageSize, string order)
+        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize, string order)
         {
-            return GetLiteGroupAll(memberId, topCriteria, page, pageSize, order, null);
+            return GetLiteGroupAll(userId, topCriteria, page, pageSize, order, null);
         }
-        public IEnumerable<MemberData> GetLiteGroupAll(long memberId, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize, string order, string criteria)
         {
             int skip = pageSize * (page - 1);
             string ordering = "Name";
@@ -109,51 +110,51 @@ namespace DRD.Service
 
             using (var db = new ServiceContext())
             {
-                var selfCompany = ().ToList();
-                var result =
-                    (from c in db.MemberInviteds
-                     where c.MemberId == memberId && c.Status.Equals("11") && (topCriteria.Equals("") || tops.All(x => (c.Member_InvitedId.Name + " " + c.Member_InvitedId.Number + " " + c.Member_InvitedId.Phone + " " + c.Member_InvitedId.Email).Contains(x)))
-                     select new DtoMemberLite
-                     {
-                         Id = c.Member_InvitedId.Id,
-                         Name = c.Member_InvitedId.Name,
-                         Phone = c.Member_InvitedId.Phone,
-                         Number = c.Member_InvitedId.Number,
-                         Email = c.Member_InvitedId.Email,
-                         ImageProfile = c.Member_InvitedId.ImageProfile,
-                         ImageQrCode = c.Member_InvitedId.ImageQrCode,
-                         UserGroup = c.Member_InvitedId.UserGroup,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
-                if (page == 1)
+                var result = new List<MemberData>();
+                var contactFromPersonal = (from Contact in db.Contacts
+                                           join User in db.Users on Contact.ContactItemId equals User.Id
+                                           where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                           select new MemberData
+                                           {
+                                               Id = User.Id,
+                                               Name = User.Name,
+                                               Phone = User.Phone,
+                                               Email = User.Email,
+                                               ImageProfile = User.ImageProfile
+                                           }).ToList();
+                foreach(var contact in contactFromPersonal)
                 {
-                    var creator =
-                    (from c in db.Members
-                     where c.Id == memberId && (topCriteria == null || tops.All(x => (c.Name + " " + c.Number + " " + c.Phone + " " + c.Email).Contains(x)))
-                     select new DtoMemberLite
-                     {
-                         Id = c.Id,
-                         Name = c.Name,
-                         Phone = c.Phone,
-                         Number = c.Number,
-                         Email = c.Email,
-                         ImageProfile = c.ImageProfile,
-                         ImageQrCode = c.ImageQrCode,
-                         UserGroup = c.UserGroup,
-                     }).FirstOrDefault();
-
-                    if (creator != null)
-                    {
-                        if (result == null)
-                            result = new List<DtoMemberLite>();
-
-                        result.Insert(0, creator);
-                    }
-
+                    result.Add(contact);
                 }
-
+                var CompanyList = (from member in db.Members
+                                   join company in db.Companies on member.CompanyId equals company.Id
+                                   where member.UserId == userId
+                                   select new
+                                   {
+                                       companyId = company.Id,
+                                       companyName = company.Name
+                                   }).ToList();
+                foreach (var hisCompany in CompanyList)
+                {
+                    var datafromcompanyx = (from Member in db.Members
+                              join User in db.Users on Member.UserId equals User.Id
+                              where Member.CompanyId == hisCompany.companyId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                            select new MemberData
+                              {
+                                  Id = User.Id,
+                                  Name = User.Name,
+                                  Phone = User.Phone,
+                                  Email = User.Email,
+                                  ImageProfile = User.ImageProfile,
+                                  CompanyName = hisCompany.companyName
+                              }).ToList();
+                    foreach (var data in datafromcompanyx)
+                    {
+                        result.Add(data);
+                    }
+                }
+                result = result.Skip(skip).Take(pageSize).ToList();
                 return result;
-
             }
         }
     }

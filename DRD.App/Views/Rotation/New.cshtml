@@ -403,7 +403,7 @@
                             Subject: $scope.model.Subject,
                             Remark: $scope.model.Remark,
                             WorkflowId:$scope.workflow.Id,
-                            Status:"00",
+                            Status: "00",
                             RotationMembers:$scope.users,
                             //IsActive: $('#checkbox1')[0].checked,
                         }
@@ -530,7 +530,7 @@
             }
 
             $scope.getUsersWorkflow = function (id) {
-                $scope.users = [];
+                $getLiteMembers = [];
                 $http.post('@Url.Action("GetUsersWorkflow", "rotation")', { id: id }).then(function (response) {
                     if (response.data) {
                         $scope.users = response.data;
@@ -612,10 +612,9 @@
 
             $scope.setMember = function (idx) {
                 $scope.users[$scope.memberIdx].MemberId=$scope.members[idx].Id;
-                $scope.users[$scope.memberIdx].MemberNumber=$scope.members[idx].Number;
-                $scope.users[$scope.memberIdx].MemberName=$scope.members[idx].Name;
-                $scope.users[$scope.memberIdx].MemberEmail=$scope.members[idx].Email;
-                $scope.users[$scope.memberIdx].MemberPicture=$scope.members[idx].ImageProfile;
+                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
+                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
+                $scope.users[$scope.memberIdx].Picture=$scope.members[idx].ImageProfile;
             }
 
             $scope.getLiteMembers = function (kriteria, page, row) {
