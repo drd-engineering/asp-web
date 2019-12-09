@@ -5,19 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace DRD.Models
 {
     [Table("Inbox", Schema = "public")]
-    class Inbox
+    public class Inbox
     {
-        public long Id;
-        public Boolean IsUnread;
-        public String Message;
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long Id { get; set; } // Id (Primary key)
+        public bool IsUnread { get; set; }
+        public String Message { get; set; }
 
-        // public [?] ActivityId;
+        [ForeignKey("Activity")]
+        public long ActivityId { get; set; }
+        public RotationActivity Activity { get; set; }
 
-        [ForeignKey("UserId")]
+        [ForeignKey("User")]
+        public long UserId { get; set; }
         public User User { get; set; }
 
         public System.DateTime CreatedAt;

@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using DRD.Service;
-using DRD.Models.View;
-using DRD.Models.View.Contact;
+using DRD.Models.API;
+using DRD.Models.API.Contact;
 using DRD.Models;
 using System.Collections.Generic;
 

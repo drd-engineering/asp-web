@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using DRD.Models;
-using DRD.Models.View.List;
+using DRD.Models.API.List;
 
 namespace DRD.Service
 {

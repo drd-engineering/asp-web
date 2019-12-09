@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DRD.Models.View.Contact;
+using DRD.Models.API.Contact;
 using DRD.Service.Context;
 using DRD.Models.Custom;
 using DRD.Models.API.Register;
