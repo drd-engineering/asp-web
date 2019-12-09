@@ -5,7 +5,7 @@ using System.Linq;
 using DRD.Models;
 using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Models.View.List;
+using DRD.Models.API.List;
 using DRD.Service.Context;
 
 using Newtonsoft.Json;

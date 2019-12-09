@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.Custom;
-using DRD.Models.View;
+using DRD.Models.API;
 
 namespace DRD.App.Controllers
 {
@@ -62,6 +62,7 @@ namespace DRD.App.Controllers
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
             layout.obj = product;
+
             //layout.dbmenus = login.GetDashbordMenus(this, layout.activeId);
             return View(layout);
         }

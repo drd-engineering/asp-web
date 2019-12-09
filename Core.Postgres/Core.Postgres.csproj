@@ -12,6 +12,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20191204062908_SeedInitialData.cs" />
+    <Compile Remove="Migrations\20191204062908_SeedInitialData.Designer.cs" />
+    <Compile Remove="Migrations\20191204063515_SeedInitialData.cs" />
+    <Compile Remove="Migrations\20191204063515_SeedInitialData.Designer.cs" />
+    <Compile Remove="Migrations\20191204063807_SeedInitialData.cs" />
+    <Compile Remove="Migrations\20191204063807_SeedInitialData.Designer.cs" />
+    <Compile Remove="Migrations\20191204064011_SeedInitialData.cs" />
+    <Compile Remove="Migrations\20191204064011_SeedInitialData.Designer.cs" />
+    <Compile Remove="Migrations\20191204070242_SeedInitialData_More.cs" />
+    <Compile Remove="Migrations\20191204070242_SeedInitialData_More.Designer.cs" />
+    <Compile Remove="Migrations\20191204072452_SeedNewContact.cs" />
+    <Compile Remove="Migrations\20191204072452_SeedNewContact.Designer.cs" />
+    <Compile Remove="Migrations\20191204073601_Initial.cs" />
+    <Compile Remove="Migrations\20191204073601_Initial.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove=".json-template" />
     <None Remove="appsettings.json.template" />
   </ItemGroup>

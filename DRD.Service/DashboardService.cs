@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 
 using DRD.Service.Context;
-using DRD.Models.View.Dashboard;
+using DRD.Models.API.Dashboard;
 using DRD.Service;
 
 namespace DRD.Service
