@@ -109,8 +109,9 @@
                                                             <div class="col-md-12 padding-bottom">
                                                                 <label class="control-label">Subscription</label>
                                                                 <p>manage your company subscription</p>
+                                                                <p ng-if="x.SubscriptionName!=null">your subscription is <strong>{{x.SubscriptionName}}</strong> package</p>
                                                                 <div class="input-group">
-                                                                    <button ng-click="editSubscription($index)" class="btn btn-default btn-ladda btn-process">Choose Subscription</button>
+                                                                    <button ng-click="editSubscription($index)" class="btn btn-default btn-ladda btn-process">{{x.SubscriptionName!=null? 'Change Subscription' : 'Choose Subscription'}}</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -602,6 +603,7 @@
 
             $scope.setSubscription = function (idx) {
                 $scope.CompanyList[$scope.companyIndex].SubscriptionId = $scope.SubscriptionList[idx].Id;
+                $scope.CompanyList[$scope.companyIndex].SubscriptionName = $scope.SubscriptionList[idx].Name;
       
                 console.log("company index : " + $scope.companyIndex + ", subs Id : " + $scope.CompanyList[$scope.companyIndex].SubscriptionId + ", get : " + $scope.SubscriptionList[idx].Id + "  " + idx);
                 console.log("Company List :: ", $scope.CompanyList);
