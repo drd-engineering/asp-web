@@ -130,7 +130,7 @@ namespace DRD.Service
                     }
                 }
 
-                if (rotationNode.Id == rotation.RotationNodeId && rotation.User.Id == rotationNode.User.Id && rotationNode.Status.Equals((int) Constant.RotationStatus.Open) && (rotationNode.PrevWorkflowNodeId != null || rotationNode.SenderRotationNodeId != null))
+                if (rotationNode.Id == rotation.RotationNodeId && rotation.UserId == rotationNode.User.Id && rotationNode.Status.Equals((int) Constant.RotationStatus.Open) && (rotationNode.PrevWorkflowNodeId != null || rotationNode.SenderRotationNodeId != null))
                 {
                     if (rotationNode.PrevWorkflowNodeId != null)
                     {
@@ -342,32 +342,20 @@ namespace DRD.Service
             {
                 if (prod.Id != 0)
                 {
-                    //if (!string.IsNullOrEmpty(prod.Code))
-                    //{
-                    //    var cxmember = db.Rotations.Count(c => c.Code == prod.Code && c.Id != prod.Id);
-                    //    if (cxmember > 0)
-                    //        return -1;
-                    //}
-
                     product = db.Rotations.FirstOrDefault(c => c.Id == prod.Id);
                 }
                 else
                 {
-                    //if (!string.IsNullOrEmpty(prod.Code))
-                    //{
-                    //    var cxmember = db.Rotations.Count(c => c.Code == prod.Code);
-                    //    if (cxmember > 0)
-                    //        return -1;
-                    //}
-
                     product = new Rotation();
                 }
                 product.Subject = prod.Subject;
-                product.Workflow.Id = prod.Workflow.Id;
+                Workflow workflowitem = db.Workflows.FirstOrDefault(w => w.Id == prod.WorkflowId);
+                product.Workflow = workflowitem;
                 product.Remark = prod.Remark;
                 product.Status = prod.Status;
                 product.CreatorId = prod.CreatorId;
-                product.User.Id = prod.User.Id;
+                product.UserId = prod.UserId;
+                product.MemberId = prod.MemberId;
                 if (prod.Id == 0)
                 {
                     product.DateCreated = DateTime.Now;
@@ -450,63 +438,54 @@ namespace DRD.Service
             return ret;
         }
 
-        public List<ActivityItem> Start(long id)
+        //ini bakal dibuat di service terpisah
+        public bool isSubscriptionValid(long subscriptionId, bool isCompanySubscription)
         {
+            
+            return true;
+        }
+
+        // subscription Id is either userId or companyId
+        public List<ActivityItem> Start(long rotationId, long subscriptionId, bool isCompanySubscription)
+        {
+            if (!isSubscriptionValid(subscriptionId,isCompanySubscription))
+            {
+                return null;
+            }
+
             List<ActivityItem> retvalues = new List<ActivityItem>();
 
             using (var db = new ServiceContext())
             {
-                var rt = db.Rotations.FirstOrDefault(c => c.Id == id);
+                var rt = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
                 if (!rt.Status.Equals((int) Constant.RotationStatus.Open))
                 {
                     retvalues.Add(createActivityResult(-1));
                     return retvalues; //Invalid rotation
                 }
 
-                //var plan = db.MemberPlans.FirstOrDefault(c => c.UserId == rt.User.Id && c.IsDefault);
-                //if (plan == null)
-                //{
-                //    retvalues.Add(createActivityResult(-2));
-                //    return retvalues; //Invalid member plan
-                //}
-
-                //if (plan.ValidPackage < DateTime.Now)
-                //{
-                //    retvalues.Add(createActivityResult(-3));
-                //    return retvalues; //expired package
-                //}
-
-                //if (plan.RotationCount + plan.RotationCountAdd - plan.RotationCountUsed <= 0)
-                //{
-                //    retvalues.Add(createActivityResult(-4));
-                //    return retvalues; //The used rotation exceeds the data packet quota number
-                //}
-
-                //save usage rotation 
-                //plan.RotationCountUsed++;
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
                 rt.DateUpdated = DateTime.Now;
-                rt.DateCreated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
                 var result = db.SaveChanges();
 
                 // first node, node after start symbol
-                var wfstarts = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.Workflow.Id && c.WorkflowNodes.SymbolCode.Equals("START")).ToList();
-                if (wfstarts.Count() == 0)
+                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.Workflow.Id && c.WorkflowNodes.SymbolCode.Equals("START")).ToList();
+                if (workflowNodeLinks.Count() == 0)
                 {
                     retvalues.Add(createActivityResult(-1));
                     return retvalues; //Invalid rotation
                 }
 
                 // send to all activity under start node 
-                foreach (WorkflowNodeLink wfnl in wfstarts)
+                foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
                     RotationNode rtnode = new RotationNode();
-                    rtnode.Rotation.Id = id;
-                    rtnode.WorkflowNode.Id = wfnl.WorkflowNodeToId;
+                    rtnode.Rotation.Id = rotationId;
+                    rtnode.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
                     rtnode.SenderRotationNodeId = null;
-                    rtnode.UserId = (long)wfnl.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == wfnl.WorkflowNodeToId && c.Rotation.Id == id).User.Id;
+                    rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == id).User.Id;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
                     rtnode.Value = "";
                     rtnode.DateCreated = DateTime.Now;
@@ -583,20 +562,20 @@ namespace DRD.Service
 
                 var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNode.Id && c.SymbolCode.Equals(strbit)).ToList();
                 List<RotationNode> rotnodes = new List<RotationNode>();
-                foreach (WorkflowNodeLink wfnl in wfnodes)
+                foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                 {
-                    var nodeto = wfnl.WorkflowNodeTos;
+                    var nodeto = workflowNodeLink.WorkflowNodeTos;
                     if (nodeto.SymbolCode.Equals("ACTIVITY"))
                     {
 
                         RotationNode rtnode2 = new RotationNode();
 
                         rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                        rtnode2.WorkflowNode.Id = wfnl.WorkflowNodeToId;
+                        rtnode2.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
                         rtnode2.SenderRotationNodeId = rtnode.Id;
-                        //rtnode2.UserId = (long)wfnl.WorkflowNodeTos.UserId;
-                        rtnode2.UserId = (long)wfnl.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == wfnl.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                        rtnode2.PrevWorkflowNodeId = wfnl.WorkflowNodeId;// tested OK
+                        //rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.UserId;
+                        rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
                         rtnode2.DateCreated = DateTime.Now;
@@ -606,9 +585,9 @@ namespace DRD.Service
                     else if (nodeto.SymbolCode.Equals("PARALLEL"))
                     {
                         bool ispending = false;
-                        foreach (WorkflowNodeLink wfnlx in wfnl.WorkflowNodeTos.WorkflowNodeLinkTos)
+                        foreach (WorkflowNodeLink workflowNodeLinkx in workflowNodeLink.WorkflowNodeTos.WorkflowNodeLinkTos)
                         {
-                            var rotnode = db.RotationNodes.FirstOrDefault(c => c.WorkflowNode.Id == wfnlx.WorkflowNodeId);
+                            var rotnode = db.RotationNodes.FirstOrDefault(c => c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId);
                             if (rotnode.WorkflowNode.Id != rtnode.WorkflowNode.Id)
                             {
                                 //var isready02 = false;
@@ -620,7 +599,7 @@ namespace DRD.Service
                                                      c.Rotation.Id == rotnode.Rotation.Id &&
                                                      c.UserId == rotnode.UserId &&
                                                      c.PrevWorkflowNodeId == rotnode.PrevWorkflowNodeId &&
-                                                     c.WorkflowNode.Id == wfnlx.WorkflowNodeId &&
+                                                     c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId &&
                                                      c.Status.Equals(Constant.RotationStatus.Pending));
                                     //isready02 = (retnode02 != null);
                                     if (retnode02 != null) rotnode = retnode02;
@@ -659,7 +638,7 @@ namespace DRD.Service
                                 rtnode2.SenderRotationNodeId = rtnode.Id;
                                 //rtnode2.UserId = (long)lnk.WorkflowNodeTos.UserId;
                                 rtnode2.UserId = (long)lnk.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == lnk.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                                rtnode2.PrevWorkflowNodeId = wfnl.WorkflowNodeToId; // tested OK
+                                rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId; // tested OK
                                 rtnode2.Status = (int)Constant.RotationStatus.Open;
                                 rtnode2.Value = rtnode.Value;
                                 rtnode2.DateCreated = DateTime.Now;
@@ -683,7 +662,7 @@ namespace DRD.Service
                         rtnode2.SenderRotationNodeId = rtnode.Id;
                         //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
                         rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                        rtnode2.PrevWorkflowNodeId = wfnl.WorkflowNodeId;//tested OK
+                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;//tested OK
                         rtnode2.Status = (int) Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
                         rtnode2.DateCreated = DateTime.Now;
@@ -702,7 +681,7 @@ namespace DRD.Service
                         rtnode2.SenderRotationNodeId = rtnode.Id;
                         //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
                         rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                        rtnode2.PrevWorkflowNodeId = wfnl.WorkflowNodeToId;// tested OK
+                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;// "TRF:" + nodeto.Value + ",ID:" + rtnode.Id + ",MEMBER:" + rtnode.UserId;
                         rtnode2.DateCreated = DateTime.Now;
@@ -743,7 +722,7 @@ namespace DRD.Service
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
                             rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                            rtnode2.PrevWorkflowNodeId = wfnl.WorkflowNodeToId;// tested OK
+                            rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
                             rtnode2.Status = (int) Constant.RotationStatus.Open;
                             rtnode2.Value = rtnode.Value;
                             rtnode2.DateCreated = DateTime.Now;

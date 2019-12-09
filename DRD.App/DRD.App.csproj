@@ -271,6 +271,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\IncludeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
