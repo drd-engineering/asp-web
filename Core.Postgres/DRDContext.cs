@@ -36,7 +36,7 @@ namespace Core.Postgres
         public DbSet<DocumentSign> DocumentSigns { get; set; }
         // public DbSet<FaspayData> FaspayDatas { get; set; }
 
-        public DbSet<RotationActivity> RotationActvities { get; set; }
+        //public DbSet<RotationActivity> RotationActvities { get; set; }
         public DbSet<Inbox> Inbox { get; set; }
 
 

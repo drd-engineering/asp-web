@@ -1,11 +1,9 @@
-﻿using DRD.Models.Custom;
-using System;
+﻿using DRD.Models.API;
+using DRD.Models.Custom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DRD.Models.API
+
+namespace DRD.Models.View
 {
     public class Layout
     {

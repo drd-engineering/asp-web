@@ -599,6 +599,13 @@
                 console.log("idx : "+idx);
                 $("#modal_select_business_subscription").modal("show");
             }
+
+            $scope.setSubscription = function (idx) {
+                $scope.CompanyList[$scope.companyIndex].SubscriptionId = $scope.SubscriptionList[idx].Id;
+      
+                console.log("company index : " + $scope.companyIndex + ", subs Id : " + $scope.CompanyList[$scope.companyIndex].SubscriptionId + ", get : " + $scope.SubscriptionList[idx].Id + "  " + idx);
+                console.log("Company List :: ", $scope.CompanyList);
+            }
             
             $scope.showLocation = function (idx) {
                 var element = document.getElementById('modal_select_map');

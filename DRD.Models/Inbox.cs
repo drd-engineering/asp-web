@@ -17,9 +17,9 @@ namespace DRD.Models
         public bool IsUnread { get; set; }
         public String Message { get; set; }
 
-        [ForeignKey("Activity")]
-        public long ActivityId { get; set; }
-        public RotationActivity Activity { get; set; }
+        //[ForeignKey("Activity")]
+        //public long ActivityId { get; set; }
+        //public RotationActivity Activity { get; set; }
 
         [ForeignKey("User")]
         public long UserId { get; set; }

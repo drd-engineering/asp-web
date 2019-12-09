@@ -16,22 +16,18 @@
                 <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                     <thead>
                         <tr>
-                            <th width="25px">#</th>
-                           
-                            <th>Nomor</th>
+                            <th width="25px">Number</th>
                             <th>Name</th>
-                            <th>Phone</th>
-                            @*<th>Email</th>*@
+                            <th>Total Administrator</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in subscriptions" style="vertical-align:top">
-                            <td width="25px">{{$index+1 + index}}</td>
-                            @*<td width="25px"><a data-dismiss="modal" ng-click="setMember($index);">Select</a></td>*@
-                            <td><a data-dismiss="modal" ng-click="setSubscription($index);">{{x.Number}}</a></td>
+                        <tr data-dismiss="modal" ng-click="setSubscription($index);" style="cursor:pointer" ng-repeat="x in SubscriptionList" style="vertical-align:top">
+                            <td width="25px">{{x.Id}}</td>
                             <td>{{x.Name}}</td>
-                            <td>{{x.Phone}}</td>
-                            @*<td>{{x.Email}}</td>*@
+                            <td>{{x.AdministratorQuota}}</td>
+                            <td>{{x.Price}}</td>
                         </tr>
                     </tbody>
                 </table>

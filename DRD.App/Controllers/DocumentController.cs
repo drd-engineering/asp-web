@@ -9,7 +9,7 @@ using System.IO;
 using DRD.Service;
 using DRD.Models;
 using DRD.Models.Custom;
-using DRD.Models.API;
+using DRD.Models.View;
 
 namespace DRD.App.Controllers
 {
