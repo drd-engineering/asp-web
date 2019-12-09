@@ -160,7 +160,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="API\InboxList.cs" />
     <Compile Include="BusinessSubscription.cs" />
     <Compile Include="RotationActivity.cs" />
@@ -168,16 +167,12 @@
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="CompanyQuota.cs" />
     <Compile Include="View\List\InboxItem.cs" />
-=======
     <Compile Include="API\BusinessSubscription.cs" />
     <Compile Include="API\MemberData.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
     <Compile Include="PlanBusiness.cs" />
     <Compile Include="PlanPersonal.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
-    <Compile Include="View\CompanyProfile.cs" />
-    <Compile Include="CompanyQuota.cs" />
->>>>>>> 3e9f7b31faaa84ac5960665de604ea474055651d
     <Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyList.cs" />
