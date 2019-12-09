@@ -25,12 +25,12 @@ namespace DRD.Models
 
         public String Info { get; set; }
         
-        [ForeignKey("PreviousActivity")]
-        public long PreviousActivityId { get; set; }
-        [ForeignKey("NextActivity")]
-        public long NextActivityId { get; set; }
-        public RotationActivity PreviousActivity { get; set; }
-        public RotationActivity NextActivity { get; set; }
+        //[ForeignKey("PreviousActivity")]
+        //public long PreviousActivityId { get; set; }
+        //[ForeignKey("NextActivity")]
+        //public long NextActivityId { get; set; }
+        //public RotationActivity PreviousActivity { get; set; }
+        //public RotationActivity NextActivity { get; set; }
 
         // PreviousAction
         // NextAction
