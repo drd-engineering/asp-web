@@ -103,6 +103,16 @@
 
 .manage-admin {
     width: 640px;
-    height: 400px;
-    margin: 0 auto;
+
+}
+
+div.modal-content{
+    width: 640px;
+
+}
+
+div.transfer-double{
+    border: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }

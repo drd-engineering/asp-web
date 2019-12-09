@@ -62,6 +62,7 @@
     <Compile Include="ContactService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="DocumentService.cs" />
+    <Compile Include="SubscriptionService.cs" />
     <Compile Include="IMemberDepositTrxService.cs" />
     <Compile Include="IDocumentService.cs" />
     <Compile Include="CompanyService.cs" />

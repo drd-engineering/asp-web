@@ -31,9 +31,12 @@ namespace DRD.Service
             }
         }
 
-        public Member getAdministrator(long CompanyId)
+        public List<Member> getAdministrators(long CompanyId)
         {
-            return null;
+            using (var db = new ServiceContext())
+            {
+                return db.Members.Where(memberItem => memberItem.CompanyId == CompanyId && memberItem.IsAdministrator).ToList();
+            }
         }
 
         public bool changeAdministratorAccess(long memberId, bool beAdmin)

@@ -21,7 +21,7 @@ namespace Core.Postgres
         public DbSet<BusinessSubscription> BusinessSubscriptions { get; set; }
 
         public DbSet<Member> Members { get; set; }
-        public DbSet<Plan> Plans { get; set; }
+        public DbSet<PlanBusiness> PlanBusinesses { get; set; }
         public DbSet<Rotation> Rotations { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserAdmin> UserAdmins { get; set; }

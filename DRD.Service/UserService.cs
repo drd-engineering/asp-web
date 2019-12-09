@@ -208,8 +208,23 @@ namespace DRD.Service
 
         }
 
-        public User GetById(long id, long loginId)
+        public String GetName(long id)
         { 
+            using (var db = new ServiceContext())
+            {
+                var result =
+                    (from c in db.Users
+                     where c.Id == id
+                     select new UserSession
+                     {
+                         Id = c.Id,
+                         Name = c.Name
+                     }).FirstOrDefault();
+                return result.Name;
+            }
+        }
+        public User GetById(long id, long loginId)
+        {
             using (var db = new ServiceContext())
             {
                 var result =
