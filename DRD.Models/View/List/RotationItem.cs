@@ -14,7 +14,8 @@ namespace DRD.Models.API.List
         public string Subject { get; set; } // Subject (length: 2)
         public long WorkflowId { get; set; } // WorkflowId
         public int Status { get; set; } // Status (length: 2)
-        public long UserId { get; set; } // MemberId
+        public long? UserId { get; set; } // userid
+        public long? MemberId { get; set; } //memberid
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
         public System.DateTime? DateStatus { get; set; } // DateUpdated

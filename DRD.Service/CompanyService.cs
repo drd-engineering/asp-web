@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
+using DRD.Models.View.Company;
 using DRD.Models.API.Register;
 using DRD.Service.Context;
 namespace DRD.Service
@@ -25,6 +26,50 @@ namespace DRD.Service
                     company.Name = x.Name;
                     listReturn.companies.Append(company);
                 }
+                return listReturn;
+            }
+        }
+
+        public CompanyList GetAllCompanyDetails(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                MemberService memberService = new MemberService();
+                UserService userService = new UserService();
+
+                var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId==userId && companyItem.IsActive).ToList();
+                var listReturn = new CompanyList();
+                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies );
+                foreach (Company x in ownerCompanies)
+                {
+                    var company = new CompanyItem();
+                    company.Id = x.Id;
+                    company.Code = x.Code;
+                    company.Name = x.Name;
+                    company.Phone = x.Phone;
+                    company.Address = x.Address;
+                    company.PointLocation = x.PointLocation;
+                    company.OwnerId = x.OwnerId;
+                    company.OwnerName = userService.GetName(company.OwnerId);
+                    company.IsActive = x.IsActive;
+                    company.IsVerified = x.IsVerified;
+                    company.Administrators = memberService.getAdministrators(company.Id);
+                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
+
+                    listReturn.addCompany(company);
+                }
+
+                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST :: " + listReturn.companies.Count);
+
+
+                //var adminCompanies = (from Company in db.Companies
+                //              join Member in db.Members on Company.Id equals Member.CompanyId
+                //              where Member.Id == userId && Member.IsAdministrator 
+                //              select new CompanyDetail
+                //              {
+
+                //              }
+                //              ).ToList();
                 return listReturn;
             }
         }

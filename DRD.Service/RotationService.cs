@@ -46,8 +46,8 @@ namespace DRD.Service
                          Subject = rotation.Subject,
                          Remark = rotation.Remark,
                          Status = rotation.Status,
-                         User = rotation.User, // filled when using personal plan
-                         Member = rotation.Member, // filled when using business plan
+                         UserId = rotation.UserId, // filled when using personal plan
+                         MemberId = rotation.MemberId, // filled when using business plan
                          DateUpdated = rotation.DateUpdated,
                          Workflow = new Workflow
                          {
@@ -86,7 +86,8 @@ namespace DRD.Service
                          Subject = rotation.Subject,
                          Status = rotation.Status,
                          Remark = rotation.Remark,
-                         User = rotation.User,
+                         UserId = rotation.UserId,
+                         MemberId = rotation.MemberId,
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateStarted,
@@ -112,7 +113,7 @@ namespace DRD.Service
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
                 foreach (Rotation rt in rots)
@@ -143,7 +144,7 @@ namespace DRD.Service
 
 
                 //var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && rotation.Status.Equals(status)).ToList();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && statuses.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && statuses.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
 
@@ -271,8 +272,8 @@ namespace DRD.Service
                          Id = rotationNode.Rotation.Id,
                          Subject = rotationNode.Rotation.Subject,
                          Status = rotationNode.Status,
-                         User = rotationNode.User,
-                         Member = rotationNode.Member,
+                         UserId = rotationNode.User.Id,
+                         MemberId = rotationNode.Member.Id,
                          DateCreated = rotationNode.DateCreated,
                          DateUpdated = rotationNode.DateUpdated,
                          DateStarted = rotationNode.Rotation.DateUpdated,
@@ -290,7 +291,7 @@ namespace DRD.Service
                      }).FirstOrDefault();
 
                 WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-                result = workflowDeepService.assignNodes(db, result, result.User.Id, new DocumentService());
+                result = workflowDeepService.assignNodes(db, result, result.UserId.Value, new DocumentService());
 
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(rotation => rotation.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
@@ -317,25 +318,20 @@ namespace DRD.Service
             }
         }
 
-        public IEnumerable<RotationUser> GetUsersWorkflow(long workflowId)
+        public IEnumerable<RotationUserData> GetUsersWorkflow(long workflowId)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.WorkflowNodes
-                     where rotation.WorkflowId == workflowId && rotation.SymbolCode.Equals("ACTIVITY")
-                     select new RotationUser
+                     where rotation.WorkflowId == workflowId && rotation.SymbolCode == 5
+                     select new RotationUserData
                      {
                          ActivityName = rotation.Caption,
                          WorkflowNodeId = rotation.Id,
-                         Id = rotation.MemberId.Value,
-                         //User = (from db.User)
-                         //Email = (rotation.User.Id == null ? "" : rotation.User.Email),
-                         //Id = (rotation.User.Id == null ? -1 : rotation.User.Id),
-                         //Name = (rotation.User.Id == null ? "Undefined" : rotation.User.Name),
-                         //Picture = (rotation.User.Id == null ? "icon_user.png" : rotation.User.ImageProfile),
+                         MemberId = rotation.MemberId.Value
                      }).ToList();
-                foreach (RotationUser item in result)
+                foreach (RotationUserData item in result)
                 {
                     if(item.MemberId != 0)
                     {
@@ -345,9 +341,7 @@ namespace DRD.Service
                                                     select user).FirstOrDefault();
                         if (userAsMemberCompany != null)
                         {
-                            item.User = userAsMemberCompany;
                             item.Email = userAsMemberCompany.Email;
-                            item.Id = userAsMemberCompany.Id;
                             item.Name = userAsMemberCompany.Name;
                             item.Picture = userAsMemberCompany.ImageProfile;
                         }
@@ -403,7 +397,8 @@ namespace DRD.Service
                          Status = rotation.Status,
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.User.Id,
+                         UserId = rotation.UserId,
+                         MemberId = rotation.MemberId,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
@@ -496,7 +491,7 @@ namespace DRD.Service
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 var result =
                     (from rotation in db.Rotations
-                     where (Ids.Contains(rotation.Id) || rotation.User.Id == userId) &&
+                     where (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new RotationItem
                      {
@@ -505,7 +500,8 @@ namespace DRD.Service
                          Status = rotation.Status,
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.User.Id,
+                         UserId = rotation.UserId,
+                         MemberId = rotation.MemberId,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
@@ -542,7 +538,7 @@ namespace DRD.Service
                 var result =
                     (from rotation in db.Rotations
                      where //_appZoneAccess.Contains(rotation.AppZone) &&
-                            (Ids.Contains(rotation.Id) || rotation.User.Id == userId) &&
+                            (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new Rotation
                      {
@@ -598,7 +594,7 @@ namespace DRD.Service
                 var result =
                     (from rotation in db.Rotations
                      where statuses.Contains(rotation.Status) &&
-                            (rotation.User.Id == userId || rotation.RotationNodes.Any(RotationUser => RotationUser.User.Id == userId)) &&
+                            (rotation.UserId == userId || rotation.RotationNodes.Any(RotationUser => RotationUser.User.Id == userId)) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new RotationItem
                      {
@@ -607,7 +603,8 @@ namespace DRD.Service
                          Status = rotation.Status,
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.User.Id,
+                         UserId = rotation.UserId,
+                         MemberId = rotation.MemberId,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
@@ -653,7 +650,7 @@ namespace DRD.Service
                 var result =
                     (from rotation in db.Rotations
                      where statuses.Contains(rotation.Status) &&
-                            (Ids.Contains(rotation.Id) || rotation.User.Id == userId) &&
+                            (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new Rotation
                      {

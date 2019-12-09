@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.API;
+using DRD.Models.API.Register;
 using DRD.Models.Custom;
 using DRD.Models.API;
 
@@ -21,22 +22,16 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
-            // begin decription menu
             UserSession user = login.GetUser(this);
-            //var strmenu = login.ManipulateMenu(this, user, mid);
-            // end decription menu
-            //ViewBag.Title = "Company";
+
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(strmenu);
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
-            CompanyProfile companyProfile = new CompanyProfile();
-            
             CompanyService companyService = new CompanyService();
-            MemberService memberService = new MemberService();
+            CompanyList companyList = companyService.GetAllCompanyDetails(user.Id);
 
-            
+            ViewBag.companies = companyList;
 
             return View(layout);
         }
@@ -45,17 +40,37 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
-            // begin decription menu
             UserSession user = login.GetUser(this);
-            // end decription menu
 
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(strmenu);
-            //layout.key = mid;
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
             return View(layout);
+        }
+        // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
+        public ActionResult GetCompanyList()
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+            UserSession user = login.GetUser(this);
+
+            CompanyService companyService = new CompanyService();
+            CompanyList data = companyService.GetAllCompanyDetails(user.Id);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetSubscriptionList()
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+            UserSession user = login.GetUser(this);
+
+            SubscriptionService subscriptionService = new SubscriptionService();
+            List<BusinessSubscription> data = subscriptionService.getSubscription();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
     }

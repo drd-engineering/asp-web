@@ -35,10 +35,6 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
 
         // Foreign keys
-        [ForeignKey("MemberId")]
-        public virtual Member Member { get; set; } // FK_Rotation_Member company
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; } // FK_Rotation_User personal
         [ForeignKey("WorkflowId")]
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
 
@@ -49,10 +45,6 @@ namespace DRD.Models
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
-
-            Member = new Member();
-            User = new User();
-            Workflow = new Workflow();
         }
     }
 }

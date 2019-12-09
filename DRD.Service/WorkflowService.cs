@@ -153,13 +153,13 @@ namespace DRD.Service
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
                 
             using (var db = new ServicesContext())
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria == null || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
+                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
                      select new WorkflowData
                      {
                          Id = workflow.Id,
@@ -202,14 +202,14 @@ namespace DRD.Service
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             using (var db = new ServicesContext())
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria == null || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
-                     select new Workflow
+                     where workflow.CreatorId == creatorId && (topCriteria == "" || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
+                     select new WorkflowData
                      {
                          Id = workflow.Id,
                          Type = workflow.Type,
@@ -385,7 +385,7 @@ namespace DRD.Service
                             var node = new WorkflowNode();
                             node.WorkflowId = product.Id;
                             node.MemberId = (jnode.memberId == 0 ? null : jnode.memberId);
-                            node.SymbolCode = getSymbolsFromCsvByCode("START").Id;
+                            node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
                             //node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
 
                             node.Caption = jnode.caption;

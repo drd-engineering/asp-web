@@ -47,206 +47,188 @@
     <link href="/assets/css/pages/company.css" rel="stylesheet" type="text/css">
 }
 
-<body ng-app="drdApp">
+<body ng-app="drdApp" ng-controller="drdController">
+    
+    <div ng-repeat="x in CompanyList" ng-init="topIdx = $index">
+        <h2>Company</h2>
+        <h3><strong>{{x.Name}} </strong><span ng-if="x.IsVerified == true"><img src="~/Images/verified.png" /></span><span ng-if="x.IsVerified == false" ><img src="~/Images/unverified.png" /></span></h3>
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                                <!--MEMBER DATA-->
+                                <form name="{{x.Id}}" class="form-horizontal" autocomplete="off" >
+                                    <div ng-show="wizarno=='product'">
+                                        <fieldset>
+                                            <div class="col-md-12">
+                                                <div class="row padding-bottom">
+                                                    <div class="col-md-6 ">
+                                                        <label class="control-label">Name</label>
+                                                        <input type="text" class="form-control" ng-model="x.Name" ng-required="wizarno=='product'" maxlength="50"  ng-readonly="!x.IsVerified" />
+                                                    </div>
+                                                    <div class="col-md-6 ">
+                                                        <label class="control-label">Phone</label>
+                                                        <input type="text" class="form-control" ng-model="x.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number  ng-readonly="!x.IsVerified"/>
+                                                    </div>
+                                                </div>
 
-    <h2>Company</h2>
-    <h3><strong>PT Artha Amitha Sempurna </strong><span><img src="~/Images/verified.png" /></span></h3>
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <!-- Page container -->
-            <div class="page-container" ng-controller="drdController">
+                                                <div class="row padding-bottom">
+                                                    <div class="col-md-6 ">
+                                                        <label class="control-label">Address</label><br />
+                                                        <textarea class="control-label" ng-model="x.Address" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 75px;width:100%" ng-required="wizarno=='product'"  ng-readonly="!x.IsVerified"></textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="control-label">Point Location</label>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" ng-model="x.PointLocation" readonly />
+                                                            <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation($index)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                <!-- Page content -->
-                <div class="page-content">
-                    <!-- Main content -->
-                    <div class="content-wrapper">
+                                                <div class="row padding-bottom">
+                                                    <div class="col-md-6">
+                                                        <div class="row ">
+                                                            <div class="col-md-12 padding-bottom">
+                                                                <label class="control-label">Owner</label>
+                                                                <p>owner has access to all company management setting and manegement dashboard</p>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" ng-model="x.OwnerName" readonly />
+                                                                    <input type="text" class="form-control" ng-model="x.OwnerId" hidden />
+                                                                    <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-user"></i></span>
+                                                                </div>
+                                                            </div>
 
-                        <!-- Page header -->
-                        @*<div class="page-header page-header-default">
-                                <div class="page-header-content">
-                                    <div class="page-title">
-                                        <h4>Company Profile</h4>
+                                                            <div class="col-md-12 padding-bottom">
 
-                                    </div>
+                                                                <label class="control-label">Administrator</label>
+                                                                <p>administrator can manage members and edit company profile</p>
+                                                                <div class="input-group" ng-click="showAdmins($index)" style="cursor:pointer">
+                                                                    <input type="text" class="form-control" ng-model="x.Administrators" readonly />
+                                                                    <span class="input-group-addon" data-toggle="modal" data-target="#modal_manage_admin"><i class="icon-users"></i></span>
+                                                                </div>
+                                                            </div>
 
-                                </div>
+                                                            <div class="col-md-12 padding-bottom">
+                                                                <label class="control-label">Subscription</label>
+                                                                <p>manage your company subscription</p>
+                                                                <div class="input-group">
+                                                                    <a href="company/member?id=1" class="btn btn-default btn-ladda btn-process">Choose Subscription</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="control-label">Members</label>
+                                                        <p>members of the company will automatically added to each member’s contact list</p>
+                                                        <div class="input-group">
+                                                            <a href="company/member?id=1" class="btn btn-default btn-ladda btn-process">Manage Members</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                            </div>*@
-                        <!-- /page header -->
-                        <!-- Horizontal form options -->
-                        <!-- Content area -->
-                        <div class="content" style="display:none;">
-                            <!--MEMBER DATA-->
-                            <form name="myForm" class="form-horizontal" autocomplete="off">
-                                <div ng-show="wizarno=='product'">
-                                    <fieldset>
+
+                                            </div>
+                                        </fieldset>
+
+                                        <hr />
                                         <div class="col-md-12">
-                                            <div class="row padding-bottom">
-                                                <div class="col-md-6 ">
-                                                    <label class="control-label">Name</label>
-                                                    <input type="text" class="form-control" ng-model="model.CompanyName" ng-required="wizarno=='product'" maxlength="50" />
-                                                </div>
-                                                <div class="col-md-6 ">
-                                                    <label class="control-label">Phone</label>
-                                                    <input type="text" class="form-control" ng-model="model.CompanyPhone" ng-required="wizarno=='product'" maxlength="20" ng-only-number />
-                                                </div>
-                                            </div>
 
-                                            <div class="row padding-bottom">
-                                                <div class="col-md-6 ">
-                                                    <label class="control-label">Address</label><br />
-                                                    <textarea class="control-label" ng-model="model.CompanyAddress" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 75px;width:100%" ng-required="wizarno=='product'"></textarea>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="control-label">Point Location</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
-                                                        <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="text-right">
 
-                                            <div class="row padding-bottom">
-                                                <div class="col-md-6">
-                                                    <div class="row ">
-                                                        <div class="col-md-12 padding-bottom">
-                                                            <label class="control-label">Owner</label>
-                                                            <p>owner has access to all company management setting and manegement dashboard</p>
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
-                                                                <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-user"></i></span>
-                                                            </div>
-                                                        </div>
+                                                    <span class="input-group-btn">
+                                                        @*<button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                                <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                                <div class="ladda-progress" style="width: 0px;"></div>
+                                                            </button>*@
 
-                                                        <div class="col-md-12 padding-bottom">
-
-                                                            <label class="control-label">Administrator</label>
-                                                            <p>administrator can manage members and edit company profile</p>
-                                                            <div class="input-group" ng-click="showAdmins()">
-                                                                <input type="text" class="form-control" ng-model="model.PointLocation" readonly />
-                                                                <span class="input-group-addon" style="cursor:pointer" data-toggle="modal" data-target="#modal_manage_admin"><i class="icon-users"></i></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-md-12 padding-bottom">
-                                                            <label class="control-label">Subscription</label>
-                                                            <p>manage your company subscription</p>
-                                                            <div class="input-group">
-                                                                <a href="company/member?id=1" class="btn btn-default btn-ladda btn-process">Choose Subscription</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="control-label">Members</label>
-                                                    <p>members of the company will automatically added to each member’s contact list</p>
-                                                    <div class="input-group">
-                                                        <a href="company/member?id=1" class="btn btn-default btn-ladda btn-process">Manage Members</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                    </fieldset>
-
-                                    <hr />
-                                    <div class="col-md-12">
-
-                                        <div class="col-md-12">
-                                            <div class="text-right">
-
-                                                <span class="input-group-btn">
-                                                    @*<button class="btn bg-slate-700 pull-right btn-ladda btn-ladda-spinner" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                        <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
                                                             <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                             <div class="ladda-progress" style="width: 0px;"></div>
-                                                        </button>*@
+                                                        </button>
 
-                                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
+                                                    </span>
 
-                                                </span>
+                                                </div>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                </form>
+                                <!--/MEMBER DATA-->
+                                <!--CONFIRMATION THANK YOU-->
+                                <div ng-show="wizarno=='success'">
+                                    <div class="col-md-12">
+                                        @*<div class="alert alert-success alert-styled-left">*@
+                                        Thank you for registering for the DRD subscription.<br />
+                                        Subscription registration is successful.<br /><br />
+
+                                        Subscription Id: <b>{{subscriptionId}}</b><br />
+                                        User number: <b>{{userNumber}}<br /></b><br />
+
+                                        The password will be sent to email <b>{{model.MemberEmail}}</b>.<br />
+                                        @*</div>*@
+                                    </div>
+                                </div>
+                                <!--/CONFIRMATION THANK YOU-->
+                                <!-- /basic layout -->
+                                <!-- View map modal -->
+                                <div id="modal_select_map" class="modal_hide">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header" style="background:black; color:white;padding:10px;">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h6 class="modal-title">Select Location</h6>
+                                            </div>
+
+                                            <input style="width:70%;margin:auto; margin-top:10px" type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
+                                            <label style="text-align:center;width:100%;margin:10px">{{model.LocationDetail}}</label>
+                                            <div id="map_canvas" class="modal-body" style="height:400px">
+                                                <ui-gmap-google-map center='map.center'
+                                                                    zoom='map.zoom'
+                                                                    draggable="true"
+                                                                    options="options"
+                                                                    control="map.control" class="map_canvas">
+                                                </ui-gmap-google-map>
+                                            </div>
+
+
+                                            <div class="modal-footer" style="margin-top:15px">
+                                                @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
+                                                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setLocation()">Set</button>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-                            </form>
-                            <!--/MEMBER DATA-->
-                            <!--CONFIRMATION THANK YOU-->
-                            <div ng-show="wizarno=='success'">
-                                <div class="col-md-12">
-                                    @*<div class="alert alert-success alert-styled-left">*@
-                                    Thank you for registering for the DRD subscription.<br />
-                                    Subscription registration is successful.<br /><br />
-
-                                    Subscription Id: <b>{{subscriptionId}}</b><br />
-                                    User number: <b>{{userNumber}}<br /></b><br />
-
-                                    The password will be sent to email <b>{{model.MemberEmail}}</b>.<br />
-                                    @*</div>*@
-                                </div>
-                            </div>
-                            <!--/CONFIRMATION THANK YOU-->
-                            <!-- /basic layout -->
-                            <!-- View map modal -->
-                            <div id="modal_select_map" class="modal_hide">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="background:black; color:white;padding:10px;">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h6 class="modal-title">Select Location</h6>
-                                        </div>
-
-                                        <input style="width:70%;margin:auto; margin-top:10px" type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
-                                        <label style="text-align:center;width:100%;margin:10px">{{model.LocationDetail}}</label>
-                                        <div id="map_canvas" class="modal-body" style="height:400px">
-                                            <ui-gmap-google-map center='map.center'
-                                                                zoom='map.zoom'
-                                                                draggable="true"
-                                                                options="options"
-                                                                control="map.control" class="map_canvas">
-                                            </ui-gmap-google-map>
-                                        </div>
-
-
-                                        <div class="modal-footer" style="margin-top:15px">
-                                            @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
-                                            <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setLocation()">Set</button>
+                                <!-- View map modal -->
+                                <!-- View Manage Admin modal -->
+                                <div id="modal_manage_admin" class="modal_hide">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header" style="background:black; color:white;padding:10px;">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h6 class="modal-title">Select Location</h6>
+                                            </div>
+                                            <div id="manage-admin-content" class="manage-admin"></div>
+                                            <div class="modal-footer" style="margin-top:15px">
+                                                @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
+                                                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- View map modal -->
-                            <!-- View Manage Admin modal -->
-                            <div id="modal_manage_admin" class="modal_hide">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div id="manage-admin-content" class="manage-admin"></div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer" style="margin-top:15px">
-                                    @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
-                                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
-                                </div>
-                            </div>
-                            <!-- View Manage Admin modal -->
+                                <!-- View Manage Admin modal -->
 
+                            </div>
+                            <!-- /vertical form options -->
                         </div>
-                        <!-- /vertical form options -->
+                        <!-- /Main content -->
                     </div>
-                    <!-- /Main content -->
-                </div>
-                <!-- /Page content -->
-            </div>
-            <!-- /Page container -->
-        </div>
-    </div>
+                    <!-- /Page content -->
+               
+                <!-- /Page container -->
+           
 </body>
 
 @section ScriptsBottom
@@ -274,10 +256,12 @@
             $scope.model.Image1 = "no_picture.png";
             $scope.model.Image2 = "no_picture.png";
             $scope.model.ImageCard = "no_picture.png";
+            $scope.CompanyList = [];
+            $scope.companyIndex=-1;
             $scope.isUploadImage1 = 0;
             $scope.isUploadImage2 = 0;
             $scope.isUploadImageCard = 0
-
+            $scope.index = 0;
             $scope.subscriptionId = "";
             $scope.userNumber = "";
 
@@ -356,11 +340,26 @@
                 $scope.getLocationAddress($scope.currentLocation.latitude, $scope.currentLocation.longitude);
 
                 $scope.createMarker();
+
+
             });
+
+
             //
             //END MAP
             //
 
+             $scope.getCompanyList = function () {
+                $http.get('@Url.Action("GetCompanyList", "company")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.CompanyList = response.data.companies;
+
+                            console.log("Company List :: ", $scope.CompanyList);
+                        }
+                });
+            }
 
             /*--------------------------------------------------------------
             INIT DATA
@@ -372,6 +371,7 @@
                 $scope.model.Image1 = "no_picture.png";
                 $scope.model.Image2 = "no_picture.png";
                 $scope.model.ImageCard = "no_picture.png";
+                $scope.getCompanyList();
                 $(".content").show();
             });
 
@@ -568,6 +568,7 @@
 
                     $scope.getLocationAddress(lat, lng);
 
+                    console.log($scope.model.LocationDetail);
                     $scope.map.control.refresh({
                         latitude: lat,
                         longitude: lng
@@ -577,11 +578,16 @@
 
             }
 
-            $scope.showLocation = function (val) {
+            
+            $scope.showLocation = function (idx) {
                 var element = document.getElementById('modal_select_map');
                 if (element.className != 'modal fade') {
                     element.className = 'modal fade';
                 }
+
+                $scope.companyIndex=idx;
+                $scope.company = [];
+
                 $scope.createMarker();
 
                 $scope.map.center.latitude = $scope.currentLocation.latitude;
@@ -589,6 +595,7 @@
                 $scope.map.zoom = 16;
 
             }
+
              $scope.showAdmins = function () {
                  var element = document.getElementById('modal_manage_admin');
                 if (element.className != 'modal fade') {
@@ -600,10 +607,13 @@
            SET LOCATION
            --------------------------------------------------------------*/
             $scope.setLocation = function () {
-                $scope.model.PointLocation = $scope.model.LocationDetail;
+                $scope.CompanyList[$scope.companyIndex].PointLocation = $scope.model.LocationDetail;
                 $scope.currentLocation.latitude = $scope.dummyCurrentLocation.latitude;
                 $scope.currentLocation.longitude = $scope.dummyCurrentLocation.longitude;
-                angular.element('#modal_select_map').modal('hide');
+                console.log("company index : " + $scope.companyIndex + ", point location : " + $scope.CompanyList[$scope.companyIndex].PointLocation + ", get : " + $scope.model.LocationDetail);
+                console.log("Company List :: ", $scope.CompanyList);
+
+                angular.element('#modal_select_map').modal('hide'); 
             }
 
             $scope.setAdmin = function () {

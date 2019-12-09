@@ -24,26 +24,11 @@ namespace DRD.App.Controllers
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
-
-            // begin decription menu
-            //UserSession user = login.GetUser(this);
-            //var strmenu = login.ManipulateSubMenu(this, user, mid);
-            // end decription menu
-
             Rotation product = new Rotation();
-            //string[] ids = strmenu.Split(',');
-            //if (ids.Length > 1 && !ids[1].Equals("0"))
-            //{
-            //    RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
-            //    product = psvr.GetHeaderById(int.Parse(ids[1]));
-            //}
-
             Layout layout = new Layout();
-            //layout.activeId = int.Parse(ids[0]);
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
             layout.obj = product;
-            //layout.dbmenus = login.GetDashbordMenus(this, layout.activeId);
             return View(layout);
         }
 
@@ -79,7 +64,6 @@ namespace DRD.App.Controllers
         {
             UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
-            prod.User.Id = user.Id;
 
             var srv = new RotationService();// user.AppZone.Code);
             var data = srv.Save(prod);

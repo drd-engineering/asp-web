@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
-    [Table("Plans", Schema = "public")]
-    public class Plan
+    [Table("PlanPersonals", Schema = "public")]
+    public class PlanPersonal
     {
         public long Id { get; set; } // Id (Primary key)
         public long MemberId { get; set; } // MemberId
@@ -28,7 +28,7 @@ namespace DRD.Models
         public bool IsDefault { get; set; } // IsDefault
         public System.DateTime DateCreated { get; set; } // DateCreated
 
-        public Plan()
+        public PlanPersonal()
         {
             Price = 0m;
             RotationCount = 0;
