@@ -22,7 +22,6 @@ namespace DRD.Service.Context
         // public DbSet<DocumentSign> DocumentSigns { get; set; }
         // public DbSet<FaspayData> FaspayDatas { get; set; }
         public DbSet<Member> Members { get; set; }
-        public DbSet<Plan> Plans { get; set; }
         public DbSet<Rotation> Rotations { get; set; }
         public DbSet<RotationUser> RotationUsers { get; set; }
         public DbSet<RotationNode> RotationNodes { get; set; }
@@ -35,6 +34,6 @@ namespace DRD.Service.Context
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         public DbSet<Stamp> Stamps { get; set; }
-
+        public DbSet<PlanBusiness> PlanBusinesses { get; internal set; }
     }
 }

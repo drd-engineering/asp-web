@@ -21,7 +21,7 @@ namespace DRD.Service.Context
         public DbSet<DocumentUser> DocumentUsers { get; set; }
         // public DbSet<FaspayData> FaspayDatas { get; set; }
         public DbSet<Member> Members { get; set; }
-        public DbSet<Plan> Plans { get; set; }
+        public DbSet<PlanBusiness> PlanBusinesses { get; set; }
         public DbSet<Rotation> Rotations { get; set; }
         public DbSet<RotationUser> RotaitonUsers { get; set; }
         public DbSet<RotationNode> RotationNodes { get; set; }

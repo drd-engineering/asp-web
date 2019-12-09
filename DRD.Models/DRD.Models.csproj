@@ -55,10 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessSubscription.cs" />
+    <Compile Include="API\BusinessSubscription.cs" />
+    <Compile Include="PlanPersonal.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="CompanyQuota.cs" />
-	<Compile Include="View\Symbol.cs" />
+    <Compile Include="View\Company\CompanyDetail.cs" />
+    <Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyList.cs" />
     <Compile Include="API\Element.cs" />
@@ -79,7 +81,7 @@
     <Compile Include="DocumentSign.cs" />
     <Compile Include="ElementType.cs" />
     <Compile Include="Member.cs" />
-    <Compile Include="Plan.cs" />
+    <Compile Include="PlanBusiness.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rotation.cs" />
     <Compile Include="RotationUser.cs" />

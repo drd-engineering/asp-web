@@ -1,0 +1,43 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div id="modal_select_business_subscription" class="modal fade" z-index="10000">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title">Select Subscription</h6>
+            </div>
+
+            <div style="height:450px" class="table-responsive">
+                @*class="modal-body"*@
+                <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                    <thead>
+                        <tr>
+                            <th width="25px">#</th>
+                           
+                            <th>Nomor</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            @*<th>Email</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in subscription" style="vertical-align:top">
+                            <td width="25px">{{$index+1 + index}}</td>
+                            @*<td width="25px"><a data-dismiss="modal" ng-click="setMember($index);">Select</a></td>*@
+                            <td><a data-dismiss="modal" ng-click="setSubscription($index);">{{x.Number}}</a></td>
+                            <td>{{x.Name}}</td>
+                            <td>{{x.Phone}}</td>
+                            @*<td>{{x.Email}}</td>*@
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
