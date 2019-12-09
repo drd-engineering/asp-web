@@ -63,7 +63,6 @@
     <Compile Include="ContactService.cs" />
     <Compile Include="DashboardService.cs" />
     <Compile Include="DocumentService.cs" />
-    <Compile Include="SubscriptionService.cs" />
     <Compile Include="IMemberDepositTrxService.cs" />
     <Compile Include="IDocumentService.cs" />
     <Compile Include="CompanyService.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="RotationService.cs" />
     <Compile Include="ServiceContext.cs" />
     <Compile Include="SubscriptionDictionary.cs" />
+    <Compile Include="SubscriptionService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Utiities.cs" />
     <Compile Include="WorkflowDeepService.cs" />

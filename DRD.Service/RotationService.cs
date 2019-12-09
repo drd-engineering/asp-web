@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
+using DRD.Models.Custom;
 using DRD.Models.API;
 using DRD.Models.API.List;
 using DRD.Service.Context;
