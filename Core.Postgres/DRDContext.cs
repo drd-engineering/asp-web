@@ -24,7 +24,6 @@ namespace Core.Postgres
         public DbSet<PlanBusiness> PlanBusinesses { get; set; }
         public DbSet<Rotation> Rotations { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
@@ -70,55 +69,25 @@ namespace Core.Postgres
                 new Company{Id = 1111122, Code = "DG23JJ2PDO", Name = "PT SEMPUA", Phone = "0218229103", Email = "sempuasupport@sempua.com", 
                     Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211",  IsActive = true, 
                     OwnerId = listOfUserCreated[1].Id, CreatedAt = DateTime.Now});
-            //listOfCompanyCreated.Add(
-            //    new Company
-            //    {
-            //        Id = 1111222,
-            //        Code = "DG23JJ2PD1",
-            //        Name = "PT SAMPOERNA",
-            //        Phone = "02212345",
-            //        Email = "x@sampoerna.com",
-            //        Descr = "a company dummy",
-            //        Address = "jalan haha nomor 3, haha, kota haha, provinsi haha",
-            //        PostalCode = "333333",
-            //        IsActive = true,
-            //        OwnerId = listOfUserCreated[1].Id,
-            //        CreatedAt = DateTime.Now
-            //    });
+            
+            Member member1 = new Member { Id = 11212, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, UserId = listOfUserCreated[2].Id };
 
-            Member member1 = new Member();
-            member1.Id = 11212;
-            member1.CompanyId = listOfCompanyCreated[0].Id;
-            member1.IsActive = true;
-            member1.UserId = listOfUserCreated[2].Id;
+            Member member2 = new Member { Id = 12212, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, UserId = listOfUserCreated[3].Id};
+            
+            Member member3 = new Member { Id = 13212, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, UserId = listOfUserCreated[1].Id };
 
-            Member member2 = new Member();
-            member2.Id = 12212;
-            member2.CompanyId = listOfCompanyCreated[1].Id;
-            member2.IsActive = true;
-            member2.UserId = listOfUserCreated[3].Id;
+            Member member4 = new Member { Id = 14212, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true};
 
-            Member member3 = new Member();
-            member3.Id = 13212;
-            member3.CompanyId = listOfCompanyCreated[1].Id;
-            member3.IsActive = true;
-            member3.UserId = listOfUserCreated[1].Id;
+            Member member5 = new Member { Id = 14312, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, UserId = listOfUserCreated[2].Id };
 
-            Contact contact1 = new Contact();
-            contact1.ContactOwnerId = listOfUserCreated[0].Id;
-            contact1.ContactItemId = listOfUserCreated[1].Id;
+            Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id};
+            Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id};
 
-            Contact contact2 = new Contact();
-            contact1.ContactOwnerId = listOfUserCreated[0].Id;
-            contact1.ContactItemId = listOfUserCreated[2].Id;
-
-
-            modelBuilder.Entity<Member>().HasData(member1, member2, member3);
-            modelBuilder.Entity<Contact>().HasData(contact1);
-
-            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1]);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5);
+            modelBuilder.Entity<Contact>().HasData(contact1, contact2);
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
-
+            listOfCompanyCreated[0].OwnerId = member2.Id;
+            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1]);
         }
     }
 }

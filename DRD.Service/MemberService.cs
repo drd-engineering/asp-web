@@ -160,5 +160,13 @@ namespace DRD.Service
                 return result;
             }
         }
+        public bool isAdmin(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberCompany = 
+            }
+            return false
+        }
     }
 }

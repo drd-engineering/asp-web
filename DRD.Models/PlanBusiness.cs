@@ -8,7 +8,7 @@ namespace DRD.Models
     {
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // Id (Primary key)
-        public int SubscriptionType { get; set; } // MemberId
+        public string SubscriptionName { get; set; } // MemberId
         public decimal Price { get; set; } // Price
         public System.DateTime? StartedAt { get; set; } // ValidPackage
         public System.DateTime? ExpiredAt { get; set; } // ValidDrDrive
