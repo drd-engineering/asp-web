@@ -256,6 +256,7 @@
             $scope.model.Image2 = "no_picture.png";
             $scope.model.ImageCard = "no_picture.png";
             $scope.CompanyList = [];
+            $scope.SubscriptionList = [];
             $scope.companyIndex=-1;
             $scope.isUploadImage1 = 0;
             $scope.isUploadImage2 = 0;
@@ -357,6 +358,20 @@
 
                             console.log("Company List :: ", $scope.CompanyList);
                         }
+                });
+            }
+
+            $scope.getSubscriptionList = function () {
+                $scope.members = [];
+                $http.post('/Company/GetSubscriptionList').then(function (response) {
+                    if (response.data) {
+                        $scope.SubscriptionList = response.data;
+
+                        console.log("Subscription List :: ", $scope.SubscriptionList);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
                 });
             }
 
@@ -580,6 +595,7 @@
             $scope.editSubscription = function (idx) {
                 $scope.companyIndex = idx;
                 $scope.company = [];
+                $scope.getSubscriptionList();
                 console.log("idx : "+idx);
                 $("#modal_select_business_subscription").modal("show");
             }

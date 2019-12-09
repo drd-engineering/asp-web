@@ -8,7 +8,7 @@ using DRD.Models;
 using DRD.Models.View;
 using DRD.Models.Custom;
 using DRD.Service;
-
+using System.Web.UI;
 
 namespace DRD.App.Controllers
 {
@@ -49,7 +49,7 @@ namespace DRD.App.Controllers
             Response.Redirect("/Login");
         }
 
-       
+        [OutputCache(Duration = 1800, VaryByParam = "none", Location = OutputCacheLocation.Client, NoStore = true)]
         public void CheckLogin(Controller controller)
         {
             if (controller.Session["_USER_LOGIN_"] == null) controller.Response.Redirect("/Login");
