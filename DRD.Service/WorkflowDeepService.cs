@@ -485,7 +485,7 @@ namespace DRD.Service
                     rtnode.Rotation.Id = rotationId;
                     rtnode.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
                     rtnode.SenderRotationNodeId = null;
-                    rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == id).User.Id;
+                    rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User.Id;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
                     rtnode.Value = "";
                     rtnode.DateCreated = DateTime.Now;
