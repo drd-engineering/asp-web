@@ -92,7 +92,6 @@
                                                                 <p>owner has access to all company management setting and manegement dashboard</p>
                                                                 <div class="input-group">
                                                                     <input type="text" class="form-control" ng-model="x.OwnerName" readonly />
-                                                                    <input type="text" class="form-control" ng-model="x.OwnerId" hidden />
                                                                     <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation(model.Location)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-user"></i></span>
                                                                 </div>
                                                             </div>
@@ -111,7 +110,7 @@
                                                                 <label class="control-label">Subscription</label>
                                                                 <p>manage your company subscription</p>
                                                                 <div class="input-group">
-                                                                    <a href="company/member?id=1" class="btn btn-default btn-ladda btn-process">Choose Subscription</a>
+                                                                    <button ng-click="editSubscription($index)" class="btn btn-default btn-ladda btn-process">Choose Subscription</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -219,7 +218,7 @@
                                     </div>
                                 </div>
                                 <!-- View Manage Admin modal -->
-
+                                <ng-include src="'/Include/PopupBusinessSubscription'"></ng-include>
                             </div>
                             <!-- /vertical form options -->
                         </div>
@@ -578,6 +577,12 @@
 
             }
 
+            $scope.editSubscription = function (idx) {
+                $scope.companyIndex = idx;
+                $scope.company = [];
+                console.log("idx : "+idx);
+                $("#modal_select_business_subscription").modal("show");
+            }
             
             $scope.showLocation = function (idx) {
                 var element = document.getElementById('modal_select_map');
