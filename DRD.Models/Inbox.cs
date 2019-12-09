@@ -16,7 +16,9 @@ namespace DRD.Models
         public String Message;
 
         // public [?] ActivityId;
-        // public [RotationActivity] Userid;
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
 
         public System.DateTime CreatedAt;
         public String DateNote;
