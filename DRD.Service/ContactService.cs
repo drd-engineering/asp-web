@@ -93,6 +93,13 @@ namespace DRD.Service
                                 .Take(size)
                                 .ToList();
                 ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
+                int counter = 0;
+                foreach (ContactItem x in result)
+                {
+                    listReturned.Items.Add(x);
+                    counter += 1;
+                }
+                listReturned.Count = counter;
                 return listReturned;
             }
         }
