@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.View.List
+namespace DRD.Models.API.List
 {
     public class ActivityItem
     {

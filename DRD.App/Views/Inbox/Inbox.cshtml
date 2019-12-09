@@ -5,25 +5,6 @@
     ViewBag.Title = "";
 }
 
-@*<link rel="stylesheet" href="/assets/css/demo.css">
-    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
-    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
-
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
-    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>*@
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -69,8 +50,6 @@
     .image-content {
         width: 120px;
         cursor: pointer;
-        /*padding: 5px;*/
-        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -436,7 +415,9 @@
                     $scope.sumDocuments=product.SumRotationNodeDocs;
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
 
-                    if ($scope.model.Status=='00'){
+                    if ($scope.model.Status == '00') {
+                        // bukan yg pertama?
+
                         if ($scope.currentRotationNode.SenderRotationNodeId!=null){
                             //var sender=angular.copy($scope.currentRotationNode);
                             // copy doc and updoc from sender
@@ -510,15 +491,11 @@
                             confirmButtonText: "Yes, sign it!",
                             cancelButtonText: "No, cancel please!",
                         },
-                        function (isConfirm) {
-                            //setTimeout(function () {
+                        function (isConfirm) 
                             if (isConfirm){
-                                //var doc=$scope.docs[idx];
-                                //doc.FlagAction|=1;
                                 $scope.signDocumentValidation(idx);
                             }
                             swal.close();
-                            //}, 500);
 
                         });
 
@@ -576,14 +553,10 @@
                             cancelButtonText: "No, cancel please!",
                         },
                         function (isConfirm) {
-                            //setTimeout(function () {
                             if (isConfirm){
-                                //var doc=$scope.docs[idx];
-                                //doc.FlagAction|=32;
                                 $scope.stampDocumentValidation(idx);
                             }
                             swal.close();
-                            //}, 500);
 
                         });
 

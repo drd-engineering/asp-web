@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Models.View.List;
+using DRD.Models.API;
+using DRD.Models.API.List;
 using DRD.Service.Context;
 
 namespace DRD.Service
@@ -784,13 +784,14 @@ namespace DRD.Service
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             MemberService memberService = new MemberService();
-            
-            MemberService userService = new MemberService();
-            foreach (JsonActivityResult act in ret)
-            {
-                userService.sendEmailInbox(act);
-            }
-            return ret.FirstOrDefault().ExitCode;
+            // BENERIN INI
+            //MemberService userService = new MemberService();
+            //foreach (JsonActivityResult act in ret)
+            //{
+            //    userService.sendEmailInbox(act);
+            //}
+            //return ret.FirstOrDefault().ExitCode;
+            return 0;
         }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)

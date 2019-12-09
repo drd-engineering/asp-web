@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\ListSubscription.cs" />
+    <Compile Include="API\InboxList.cs" />
     <Compile Include="View\BusinessSubscription.cs" />
     <Compile Include="API\MemberData.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
@@ -62,6 +64,8 @@
     <Compile Include="PlanPersonal.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
     <Compile Include="View\CompanyProfile.cs" />
+    <Compile Include="View\List\InboxItem.cs" />
+    <Compile Include="Inbox.cs" />
     <Compile Include="CompanyQuota.cs" />
     <Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
