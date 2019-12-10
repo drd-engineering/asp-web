@@ -70,12 +70,12 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Start(long rotationId, long subscriptionId)
+        public ActionResult Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
         {
             UserSession user = getUserLogin();
 
             var srv = new RotationService();// user.AppZone.Code);
-            var data = srv.Start(user.Id, rotationId, subscriptionId);
+            var data = srv.Start(rotationId, subscriptionId, isSubscriptionCompany);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

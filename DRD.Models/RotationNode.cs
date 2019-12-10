@@ -7,7 +7,6 @@ namespace DRD.Models
     public class RotationNode
     {
         public long Id { get; set; } // Id (Primary key)
-
         public long UserId { get; set; } // UserId (Foreign Key)
         public long MemberId { get; set; } // MemberId (Foreign Key)
         public long RotationId { get; set; } // RotationId (Foreign Key)

@@ -780,11 +780,12 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-        public int Start(long userId, long rotationId, long subscriptionId)
+        public int Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
+            var status = workflowDeepService.Start(rotationId, subscriptionId, isSubscriptionCompany);
             MemberService memberService = new MemberService();
-            // BENERIN INI
+            
             //MemberService userService = new MemberService();
             //foreach (JsonActivityResult act in ret)
             //{
