@@ -354,6 +354,10 @@
                 return isvalid;
             };
 
+            $scope.popupTnC = function () {
+                $("#modal_tnc").modal("show");
+            }
+
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top

@@ -68,7 +68,6 @@
                         <form name="myForm" class="form-horizontal" autocomplete="off">
                             <div class="panel panel-body login-form" style="padding:0px">
                                 <div class="text-center" ">
-                                    @*<div class="icon-object border-slate-300 text-slate-300"><i class="icon-reading"></i></div>*@
                                     <img src="/Images/login_banner.png" width="100%" /><br /><br />
                                     <h5 class="content-group">Login to your DRD account <small class="display-block">Enter your credentials below</small></h5>
                                 </div>
@@ -94,7 +93,7 @@
                                     <table style="width:100%">
                                         <tr>
                                             <td>
-                                                <a ng-click="popupTnC()">Register</a>
+                                                <a href="/Register">Register</a>
                                             </td>
                                             <td style="text-align:right">
                                                 <a href="/login/forgotpassword">Forgot password?</a>
@@ -110,9 +109,7 @@
                             </div>
                         </form>
                         <!-- /simple login form -->
-                        <!-- View member modal -->
-                        <ng-include src="'/Include/PopupTnC'"></ng-include>
-                        <!-- View member modal -->
+                        
                     </div>
                     <!-- /content area -->
                 </div>
