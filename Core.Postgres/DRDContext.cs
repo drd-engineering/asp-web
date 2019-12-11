@@ -45,22 +45,22 @@ namespace Core.Postgres
         {
             List < User > listOfUserCreated = new List<User>();
             listOfUserCreated.Add(new User { Id = 11111111, Name = "aminudin bin saleh", Phone = "085140451404", Email = "r@hotmail.com",
-                OfficialIdNo = 3511101010101010, ImageProfile = "hehehehe.png", Password = "kapandeadline",
+                OfficialIdNo = 3511101010101010, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = 11111121, Name = "amanudin bin saleh", Phone = "085858585858", Email = "a@hotmail.com",
-                OfficialIdNo = 3511202020202020, ImageProfile = "no_picture.png", Password = "kapandeadline",
+                OfficialIdNo = 3511202020202020, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = 11111211, Name = "amirudin bin saleh", Phone = "085151515151", Email = "n@hotmail.com",
-                OfficialIdNo = 3511303030303030, ImageProfile = "huhuhuhu.png", Password = "kapandeadline",
+                OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = 11112111, Name = "amiradin bin saleh", Phone = "085888811111", Email = "i@hotmail.com",
-                OfficialIdNo = 3511404040404040, ImageProfile = "hohohoho.png", Password = "kapandeadline",
+                OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
@@ -68,7 +68,7 @@ namespace Core.Postgres
 
             List<Company> listOfCompanyCreated = new List<Company>();
             listOfCompanyCreated.Add(
-                new Company{Id = 1111112, Code = "DG23JJKL3L", Name = "PT SEMPOA", Phone = "0214556372", Email = "sempoasupport@sempoa.com", 
+                new Company{Id = 1111112, Code = "DG23JJKL3L", Name = "PT AMARTHA INDAH SENTOSA", Phone = "0214556372", Email = "sempoasupport@sempoa.com", 
                     Descr = "a company dummy", Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe", PostalCode = "122122",  IsActive = true, 
                     OwnerId = listOfUserCreated[0].Id, CreatedAt = DateTime.Now});
             listOfCompanyCreated.Add(
@@ -95,18 +95,24 @@ namespace Core.Postgres
             member1.Id = 11212;
             member1.CompanyId = listOfCompanyCreated[0].Id;
             member1.IsActive = true;
+            member1.isCompanyAccept = true;
+            member1.isMemberAccept = true;
             member1.UserId = listOfUserCreated[2].Id;
 
             Member member2 = new Member();
             member2.Id = 12212;
             member2.CompanyId = listOfCompanyCreated[1].Id;
             member2.IsActive = true;
+            member1.isCompanyAccept = true;
+            member1.isMemberAccept = true;
             member2.UserId = listOfUserCreated[3].Id;
 
             Member member3 = new Member();
             member3.Id = 13212;
             member3.CompanyId = listOfCompanyCreated[1].Id;
             member3.IsActive = true;
+            member1.isCompanyAccept = true;
+            member1.isMemberAccept = true;
             member3.UserId = listOfUserCreated[1].Id;
 
             Contact contact1 = new Contact();

@@ -18,12 +18,12 @@ namespace DRD.Models.View.Company
         public string Phone { get; set; } // Phone (length: 20)
         public string Address { get; set; } // Address (length: 1000)
         public string PointLocation { get; set; } // PointLocation (length: 1000)
-        public List<Member> Members { get; set; }
-        public List<Member> Administrators { get; set; }
+        public List<DRD.Models.Member> Members { get; set; }
+        public List<DRD.Models.Member> Administrators { get; set; }
         public CompanyDetail()
         {
-            Members = new List<Member>();
-            Administrators = new List<Member>();
+            Members = new List<DRD.Models.Member>();
+            Administrators = new List<DRD.Models.Member>();
         }
     }
 }

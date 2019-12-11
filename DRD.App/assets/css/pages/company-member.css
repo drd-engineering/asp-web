@@ -1,0 +1,223 @@
+.no-border, td {
+    border: none !important;
+}
+
+.panel, .page-header-default {
+    box-shadow: none;
+}
+
+td img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+.table-xs {
+    font-size: small;
+    width: 100%;
+}
+
+.panel-heading {
+    /* make'em transparent, cause of panel in panel thing */
+    background-color: #f5f5f5 !important;
+}
+
+
+.panel {
+    border: none;
+}
+
+.highlight-container {
+    background-color: #f5f5f5;
+    padding: 0;
+    width: inherit;
+}
+
+    .highlight-container .container {
+        width: inherit;
+    }
+
+.highlight-card {
+    background-color: white;
+    margin: inherit 10px;
+    padding: 10px;
+}
+
+    .highlight-card .card-image img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+    }
+
+    .highlight-card .card-title {
+        /*similiar with medium-text class, font-size's different*/
+        font-weight: 400;
+        line-height: 1.25;
+        font-size: 14px;
+    }
+
+    .highlight-card .card-content {
+        /*similiar with small-text class, font-size's different*/
+        font-weight: 300;
+        color: grey;
+        line-height: 1;
+        font-size: 12px;
+    }
+
+img.avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.member-container {
+    height: 100px;
+    margin-top: 1em;
+}
+
+.content {
+    padding-left: 10px;
+}
+
+.content {
+    /* sama as page-header padding */
+    padding: 20px;
+    margin: 0;
+}
+
+.manage-member {
+    max-height: 500px;
+    overflow: auto !important;
+    border-style: solid;
+    border-color: gray;
+    border-width: thin;
+    overflow-y: scroll;
+}
+
+.manage-member-header p {
+    font-weight: 700;
+}
+
+.manage-member::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+    .manage-member::-webkit-scrollbar:vertical {
+        width: 11px;
+    }
+
+    .manage-member::-webkit-scrollbar:horizontal {
+        height: 11px;
+    }
+
+.manage-member::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.request-join {
+    max-height: 200px;
+    overflow: auto !important;
+    border-style: solid;
+    border-color: gray;
+    border-width: thin;
+    overflow-y: scroll;
+}
+
+    .request-join::-webkit-scrollbar {
+        -webkit-appearance: none;
+    }
+
+        .request-join::-webkit-scrollbar:vertical {
+            width: 11px;
+        }
+
+        .request-join::-webkit-scrollbar:horizontal {
+            height: 11px;
+        }
+
+    .request-join::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        border: 2px solid white; /* should match background, can't be transparent */
+        background-color: rgba(0, 0, 0, .5);
+    }
+
+.invite-email {
+    max-height: 500px;
+    overflow: auto !important;
+}
+
+.btn {
+    width: auto;
+    padding: 5px 20px;
+}
+
+.btn-confirmation {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.input-group-btn button {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.no-overflow {
+    overflow: hidden !important;
+}
+
+.ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.image-container-sm {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: solid 1px #888888;
+    position: relative;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+    .image-container-sm:hover {
+        transform: scale(1.1);
+        border-width: 2px;
+    }
+
+    .image-container-sm img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+
+.green-border {
+    border-color: #82a398 !important;
+}
+
+.red-border {
+    border-color: #ff8799 !important;
+}
+
+/* put this class to parent div of expected right aligned content */
+.content-align-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+    .content-align-right p {
+        text-align: right;
+    }
+
+.clickable a {
+    color: unset;
+    text-decoration: none;
+}
+
+    .clickable a:hover {
+        color: blue;
+    }

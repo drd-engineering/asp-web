@@ -203,6 +203,8 @@
     <Compile Include="View\Company\CompanyDetail.cs" />
     <Compile Include="CompanyQuota.cs" />
     <Compile Include="View\List\InboxItem.cs" />
+    <Compile Include="View\Member\MemberItem.cs" />
+    <Compile Include="View\Member\MemberList.cs" />
     <Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyList.cs" />

@@ -277,6 +277,7 @@
     <Compile Include="Controllers\IncludeController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\InboxController.cs" />

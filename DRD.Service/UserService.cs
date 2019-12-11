@@ -223,6 +223,7 @@ namespace DRD.Service
                 return result.Name;
             }
         }
+
         public User GetById(long id, long loginId)
         {
             using (var db = new ServiceContext())
@@ -248,7 +249,6 @@ namespace DRD.Service
                 return result;
             }
         }
-
     }
 
 }

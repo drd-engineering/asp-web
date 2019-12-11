@@ -27,6 +27,12 @@ namespace DRD.Service
             return values;
         }
 
+        public string getSubscriptionName(long subscriptionId)
+        {
+            List<BusinessSubscription> businessSubscriptions = getSubscription();
+            return businessSubscriptions[(int)subscriptionId - 1].Name;
+        }
+
         public bool isSubscriptionValid(int subscriptionId, bool isCompanySubscription)
         {
             using (var db = new ServiceContext())

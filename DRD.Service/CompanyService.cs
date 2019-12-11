@@ -30,12 +30,42 @@ namespace DRD.Service
             }
         }
 
+        public CompanyItem GetCompanyItem(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = (from Company in db.Companies
+                              where Company.Id == companyId
+                              select new CompanyItem
+                              {
+                                  Id = Company.Id,
+                                  Name = Company.Name,
+                                  Phone = Company.Phone,
+                                  Email = Company.Email
+                              }
+                            ).FirstOrDefault();
+                return result;
+            }
+        }
+        public PlanBusiness getCompanySubscription(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                if (db.PlanBusinesses != null)
+                {
+                    var subscription = db.PlanBusinesses.Where(subs => subs.CompanyId == companyId && subs.IsActive).FirstOrDefault();
+                    return subscription;
+                }
+                return null;
+            }
+        }
         public CompanyList GetAllCompanyDetails(long userId)
         {
             using (var db = new ServiceContext())
             {
                 MemberService memberService = new MemberService();
                 UserService userService = new UserService();
+                SubscriptionService subscriptionService = new SubscriptionService();
 
                 var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId==userId && companyItem.IsActive).ToList();
                 var listReturn = new CompanyList();
@@ -43,6 +73,8 @@ namespace DRD.Service
                 foreach (Company x in ownerCompanies)
                 {
                     var company = new CompanyItem();
+                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.Id );
+                    var subscription = getCompanySubscription(x.Id);
                     company.Id = x.Id;
                     company.Code = x.Code;
                     company.Name = x.Name;
@@ -51,6 +83,8 @@ namespace DRD.Service
                     company.PointLocation = x.PointLocation;
                     company.OwnerId = x.OwnerId;
                     company.OwnerName = userService.GetName(company.OwnerId);
+                    if (subscription != null) { company.SubscriptionId = subscription.Id; }
+                    if (subscription != null) { company.SubscriptionName = subscriptionService.getSubscriptionName(subscription.Id); }
                     company.IsActive = x.IsActive;
                     company.IsVerified = x.IsVerified;
                     company.Administrators = memberService.getAdministrators(company.Id);

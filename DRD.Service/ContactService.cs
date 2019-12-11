@@ -147,7 +147,24 @@ namespace DRD.Service
             }
 
         }
-
+        public ContactItem getContact(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = (from User in db.Users 
+                              where User.Id == userId
+                              select new ContactItem
+                              {
+                                  Id = User.Id,
+                                  Name = User.Name,
+                                  Phone = User.Phone,
+                                  Email = User.Email,
+                                  ImageProfile = User.ImageProfile
+                              }
+                             ).FirstOrDefault();
+                return result;
+            }
+        }
         // list all company that relate to the user (a member)
         public CompanyList GetListOfCompany(UserSession user) {
             using (var db = new ServiceContext()) { 

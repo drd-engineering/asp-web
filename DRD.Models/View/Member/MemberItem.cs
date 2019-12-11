@@ -1,10 +1,14 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using DRD.Models.API.Contact;
+using DRD.Models.API.Register;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DRD.Models
+namespace DRD.Models.View.Member
 {
-    [Table("Members", Schema = "public")]
-    public class Member
+    public class MemberItem
     {
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // CompanyId
@@ -15,10 +19,13 @@ namespace DRD.Models
         public bool isMemberAccept { get; set; }
         public bool IsAdministrator { get; set; } // IsActive
         
-        public Member()
+        public ContactItem User { get; set; }
+        public CompanyItem Company{ get; set; }
+
+        public MemberItem()
         {
-            IsAdministrator = false;
-            IsActive = true;
+            User = new ContactItem();
+            Company = new CompanyItem();
         }
     }
 }

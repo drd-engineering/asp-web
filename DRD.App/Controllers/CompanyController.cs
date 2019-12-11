@@ -41,11 +41,21 @@ namespace DRD.App.Controllers
             login.CheckLogin(this);
 
             UserSession user = login.GetUser(this);
+            CompanyService companyService = new CompanyService();
 
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
+            var company = companyService.GetCompany(id);
+            
+            if(company == null)
+            {
+                throw new HttpException(404, "Not found");
+                return HttpNotFound();
+            }
+
+            ViewBag.Company = company.Name;
             return View(layout);
         }
         // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20

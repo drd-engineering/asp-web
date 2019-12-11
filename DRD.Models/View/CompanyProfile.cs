@@ -27,14 +27,14 @@ namespace DRD.Models.View
         public string PointLocation { get; set; }
         public bool isVerified { get; set; }
         public BusinessSubscription businessSubscription { get; set; }
-        public virtual ICollection<Member> Members { get; set; }
-        public virtual ICollection<Member> Administrators { get; set; }
+        public virtual ICollection<DRD.Models.Member> Members { get; set; }
+        public virtual ICollection<DRD.Models.Member> Administrators { get; set; }
 
         public CompanyProfileItem()
         {
             isVerified = false;
-            Members = new List<Member>();
-            Administrators = new List<Member>();
+            Members = new List<DRD.Models.Member>();
+            Administrators = new List<DRD.Models.Member>();
         }
 
     }
