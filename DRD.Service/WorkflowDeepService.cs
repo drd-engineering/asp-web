@@ -236,16 +236,16 @@ namespace DRD.Service
                          Title = d.Document.Title,
                          FileName = d.Document.FileName,
                          FileSize = d.Document.FileSize,
-                         DocumentUser =
-                             (from dm in d.Document.DocumentUsers
-                              where dm.UserId == memId // default inbox member
-                              select new DocumentUser
-                              {
-                                  Id = dm.Id,
-                                  DocumentId = dm.DocumentId,
-                                  UserId = dm.UserId,
-                                  FlagAction = dm.FlagAction,
-                              }).FirstOrDefault(),
+                         //DocumentUser =
+                         //    (from dm in d.Document.DocumentUsers
+                         //     where dm.UserId == memId // default inbox member
+                         //     select new DocumentUser
+                         //     {
+                         //         Id = dm.Id,
+                         //         DocumentId = dm.DocumentId,
+                         //         UserId = dm.UserId,
+                         //         FlagAction = dm.FlagAction,
+                         //     }).FirstOrDefault(),
                          
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
@@ -293,15 +293,15 @@ namespace DRD.Service
                 //DocumentService docSvr = new DocumentService();
                 foreach (RotationNodeDoc rnd in result)
                 {
-                    if (rnd.Document.DocumentUser == null)
-                    {
-                        rnd.Document.DocumentUser = new DocumentUser();
-                        rnd.Document.DocumentUser.UserId = memId;
-                        rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
-                    }
-                    if (curRnId == 0)
-                        curRnId = -rnd.RotationNode.Rotation.Id;
-                    rnd.Document.DocumentUser.FlagPermission = docSvr.GetPermission(memId, curRnId, (long)rnd.Document.Id);
+                    //if (rnd.Document.DocumentUser == null)
+                    //{
+                    //    rnd.Document.DocumentUser = new DocumentUser();
+                    //    rnd.Document.DocumentUser.UserId = memId;
+                    //    rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
+                    //}
+                    //if (curRnId == 0)
+                    //    curRnId = -rnd.RotationNode.Rotation.Id;
+                    //rnd.Document.DocumentUser.FlagPermission = docSvr.GetPermission(memId, curRnId, (long)rnd.Document.Id);
                 }
             }
 
@@ -859,7 +859,7 @@ namespace DRD.Service
                             Document upload = new Document();
                             
                             upload.CreatorId = rotationNode.UserId;
-                            upload.DateCreated = DateTime.Now;
+                            upload.CreatedAt = DateTime.Now;
                             db.Documents.Add(upload);
                             db.SaveChanges();
                             rnc.DocumentId = upload.Id;

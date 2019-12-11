@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DRD.Models;
 using DRD.Models.API.List;
-
+using DRD.Models.Custom;
 using DRD.Service.Context;
 
 namespace DRD.Service
@@ -157,7 +157,8 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == creatorId  && (topCriteria == null || tops.All(x => (c.Title ).Contains(x)))
+                 where c.CreatorId == creatorId  && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                 orderby c.CreatedAt descending
                  select new DocumentItem
                  {
                      Id = c.Id,
@@ -502,39 +503,144 @@ namespace DRD.Service
         }
         public int Save(Document prod)
         {
+            int result;
+            Document document;
+            using (var db = new ServiceContext())
+            {
+                if (prod.Id == 0)
+                    document = Create(prod);
+                else document = Update(prod);
+                result = db.SaveChanges();
+            }
 
-            Document product;
-            int result = 0;
+            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, document.DocumentElements);
+            return result;
+
+        }
+
+        public Document Create(Document newDocument)
+        {
+            using (var db = new ServiceContext())
+            {
+                Document document = new Document();
+
+                // validate first
+                long companyId = db.Members.Where(m => m.UserId == newDocument.CreatorId).FirstOrDefault().CompanyId;
+                PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
+                ValidateWithPlan(document, newDocument, plan);
+
+                // mapping value
+                document.Title = newDocument.Title;
+                document.Description = newDocument.Description;
+                document.FileName = newDocument.FileName;
+                document.FileSize = newDocument.FileSize;
+
+                document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
+                document.UserEmail = newDocument.UserEmail;
+                document.CreatedAt = DateTime.Now;
+
+                // NEW
+                document.ExpiryDay = newDocument.ExpiryDay;
+                document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
+                document.MaxPrintPerActivity = newDocument.MaxPrintPerActivity;
+                document.IsCurrent = true; // ??
+
+                // upload, get file directory, controller atau di service?
+                document.FileUrl = newDocument.FileUrl;
+
+                // update subscription storage
+                plan.StorageUsedinByte = plan.StorageUsedinByte - document.FileSize; // update storage limit
+                
+
+                db.Documents.Add(document);
+
+                db.SaveChanges();
+
+                return document;
+            }
+            
+        }
+
+        public Document Update(Document newDocument) {
+            
 
             using (var db = new ServiceContext())
             {
-                if (prod.Id != 0)
-                    product = db.Documents.FirstOrDefault(c => c.Id == prod.Id);
-                else
-                    product = new Document();
-
-                product.Title = prod.Title;
-                product.Description = prod.Description;
-                product.FileName = prod.FileName;
-                product.FileSize = prod.FileSize;
-                product.CreatorId = prod.CreatorId;
-                product.UserEmail = prod.UserEmail;
-                if (prod.Id == 0)
-                {
-                    product.CreatedAt = DateTime.Now;
-                    db.Documents.Add(product);
-                }
-                else
-                    product.UpdatedAt= DateTime.Now;
-
-                result = db.SaveChanges();
+                Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
+                
+                // GET Plan
+                long companyId = db.Members.Where(m => m.UserId == document.CreatorId).FirstOrDefault().CompanyId;
+                PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
+                
+                // validation
+                ValidateWithPlan(document, newDocument, plan);
+                Validate(newDocument);
 
 
-                SaveAnnos(product.Id, (long)prod.CreatorId, prod.UserEmail, prod.DocumentElements);
-                return result;
+                // mapping value
+                document.Title = newDocument.Title;
+                document.Description = newDocument.Description;
+                document.FileName = newDocument.FileName;
+
+                document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
+                document.UserEmail = newDocument.UserEmail;
+                document.CreatedAt = DateTime.Now;
+
+                // NEW
+                document.ExpiryDay = newDocument.ExpiryDay;
+                document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
+                document.MaxPrintPerActivity = newDocument.MaxPrintPerActivity;
+
+                // upload, get file directory, controller atau di service?
+                document.FileUrl = newDocument.FileUrl;
+
+                // update subscription storage
+                plan.StorageUsedinByte = (plan.StorageUsedinByte - document.FileSize) - newDocument.FileSize; // update storage limit
+
+                // update file size
+                document.FileSize = newDocument.FileSize;
+                document.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
+
+                return document;
             }
 
         }
+
+        // Validate Document with Company's or Personal's Plan
+        public bool ValidateWithPlan(Document oldDocument, Document newDocument, PlanBusiness plan) {
+
+            if (!plan.IsActive) throw new NotImplementedException();
+            
+            // TANYAIN
+            //if (plan.SubscriptionName != "Business") throw new NotImplementedException();
+
+            // reach out the storage limit
+            if (plan.StorageUsedinByte < (newDocument.FileSize - oldDocument.FileSize)) 
+                throw new NotImplementedException();
+            return true;
+        }
+
+        // Currently, this method only used when Update Document
+        public bool Validate(Document document)
+        {
+            if (document.ExpiryDay < 0) throw new NotImplementedException();
+            
+            // kalo isCurrent salah gimana? pindahin ke orang pertama itu di document service???
+            return true;
+        }
+
+        public void DoRevision(long documentId) {
+
+            using (var db = new ServiceContext())
+            {
+                //document.IsCurrent = false;
+            }
+            
+            throw new NotImplementedException();
+        }
+
+
 
         public ICollection<DocumentElement> FillAnnos(Document doc)
         {
@@ -881,5 +987,7 @@ namespace DRD.Service
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

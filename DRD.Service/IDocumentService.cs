@@ -2,11 +2,17 @@
 
 using DRD.Models;
 using DRD.Models.API.List;
+using DRD.Models.Custom;
 
 namespace DRD.Service
 {
     public interface IDocumentService
     {
+        Document Create(Document document);
+        Document Update(Document document);
+        //void DoRevision(Document document);
+
+
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
         ICollection<DocumentElement> FillAnnos(Document doc);

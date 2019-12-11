@@ -30,7 +30,7 @@ namespace DRD.Models
         public string FlagCode { get; set; } // FlagCode (length: 20)
         public System.DateTime? FlagDate { get; set; } // FlagDate
         public string FlagImage { get; set; } // FlagImage (length: 100)
-        public long UserId { get; set; } // UserId (length: 50)
+        public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public long DocumentId {set; get;}
