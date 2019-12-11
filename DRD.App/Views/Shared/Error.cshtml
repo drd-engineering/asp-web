@@ -1,31 +1,49 @@
-﻿@model DRD.Models.View.ErrorInfo
+﻿@model DRD.Models.View.Layout
 @{
     ViewBag.Title = "Problem";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="middle-container">
+    <body>
 
 
-    <link rel="stylesheet" href="/Content/css/thankyou.css">
-    <!--- middle Container ---->
+        <!--- middle Container ---->
 
-    <div class="middle-container">
-        <div class="paddings thankyou-section" data-moduleid="2050" id="ContactUsPane">
-            @if (Model != null)
-            {
-                <h1>@Model.Message</h1>
-                <p>@Model.Description</p>
-            }
-            else
-            {
-                <h1>An Error Has Occured</h1>
-                <p>An unexpected error occured on our website. The website administrator has been notified.</p>
-            }
+        <div class="middle-container" ng-controller="drdController">
+            <div class="paddings thankyou-section" data-moduleid="2050" id="ContactUsPane">
+                @if (Model.errorInfo != null)
+                {
+                    <h1>@Model.errorInfo.Message</h1>
+                    <p>@Model.errorInfo.Description</p>
+                }
+                else
+                {
+                    <h1>An Error Has Occured</h1>
+                    <p>An unexpected error occured on our website. The website administrator has been notified.</p>
+                }
 
-            <p><a href="/" class="btn-read-more">Go To Home Page</a></p>
+                <p><a ng-click="goBack()" class="btn-read-more">Go Back To Previous Page</a></p>
+                <p><a href="/" class="btn-read-more">Go To Home Page</a></p>
+
+            </div>
         </div>
-    </div>
-    <!--- middle Container ---->
+        <!--- middle Container ---->
+        <Script type="text/javascript">
 
-</div>
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
+
+            myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+
+                /*--------------------------------------------------------------
+                INIT DATA
+                --------------------------------------------------------------*/
+                angular.element(document).ready(function () {
+                    $(".content").show();
+                });
+                $scope.goBack = function () {
+                  window.history.back();
+                }
+            });
+        </Script >
+    </body>

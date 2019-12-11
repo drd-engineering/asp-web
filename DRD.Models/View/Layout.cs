@@ -17,7 +17,7 @@ namespace DRD.Models.View
         public string url { get; set; }
         public int dataId { get; set; } // cover godeg program
         public bool isLayout { get; set; }
-
+        public ErrorInfo errorInfo { get; set; }
         public Layout()
         {
             isLayout = true;

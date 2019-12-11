@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Runtime.Remoting.Contexts;
 using System.Web;
 using System.Web.Mvc;
 
@@ -52,11 +54,12 @@ namespace DRD.App.Controllers
             
             if(company == null)
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            if(companyService.checkIsOwner(user.Id, id) && memberService.checkIsAdmin(user.Id, id))
+            
+            if(!companyService.checkIsOwner(user.Id, id) && !memberService.checkIsAdmin(user.Id, id))
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
 
             ViewBag.Company = company.Name;
