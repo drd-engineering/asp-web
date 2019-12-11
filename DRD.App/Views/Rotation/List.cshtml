@@ -59,8 +59,6 @@
             <div class="page-container" ng-controller="drdController">
                 <!-- Page content -->
                 <div class="page-content">
-
-
                     <!-- Main content -->
                     <div class="content-wrapper">
                         <!-- Page header -->
@@ -69,7 +67,6 @@
                                 <div class="page-title">
                                     <h4>Rotation</h4>
                                     <br />
-
                                     <div class="row">
                                         <div class="col-lg-10">
                                             <div class="input-group">
@@ -88,10 +85,8 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- /page header -->
                         <!-- Content area -->
-
                         <div class="content" style="display:none">
                             <!-- Contextual classes -->
                             <div class="row">
@@ -113,15 +108,11 @@
                                 </div>
 
                             </div>
-                            <div style="height:10px"></div>
+                            <div style="height:10px" ng-init="getLiteProducts(kriteria, page, row)"></div>
                             <!-- LIST -->
                             <div calss="row">
-
-
                                 <div class="panel panel-flat">
-
                                     <div class="table-responsive" ng-show="isView">
-
                                         <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
                                             <thead>
                                                 <tr>
@@ -150,7 +141,6 @@
                                 </div>
                             </div>
                             <!-- /LIST -->
-
                         </div>
                         <!-- /content area -->
                     </div>
@@ -161,11 +151,8 @@
             <!-- /page container -->
             </div>
         </div>
-            <script type="text/javascript">
-
-
+    <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
-
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             $scope.product = {};
             $scope.products = [];
@@ -183,12 +170,9 @@
             INIT DATA
             --------------------------------------------------------------*/
             function initValues() {
-
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
             }
-
             angular.element(document).ready(function () {
-
                 //$scope.GetPartners();
                 $(".content").show();
             });
@@ -328,7 +312,6 @@
             GENERAL FUNCTION
             --------------------------------------------------------------*/
 
-
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
@@ -337,17 +320,12 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
-
         });
-
         $(function () {
-
         });
-
         $(document).ready(function () {
 
         });
-
-            </script>
+    </script>
 
 </body>

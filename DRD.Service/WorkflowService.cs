@@ -130,20 +130,22 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public IEnumerable<WorkflowData> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize)
+        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize)
         {
-            return GetLiteAll(creatorId, topCriteria, page, pageSize, null, null);
+            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            return GetListMatch(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
         }
 
-        public IEnumerable<WorkflowData> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<Workflow, string>> order)
+        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
         {
-            return GetLiteAll(creatorId, topCriteria, page, pageSize, order, null);
+            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            return GetListMatch(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public IEnumerable<WorkflowData> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<Workflow, string>> order, Expression<System.Func<DRD.Models.Workflow ,bool>> criteria)
+        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData ,bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<Workflow, string>> ordering = Workflow => Workflow.Name;
+            Expression<Func<WorkflowData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
             if (order != null)
                 ordering = order;
@@ -171,7 +173,7 @@ namespace DRD.Service
                          UserId = workflow.UserId,
                          DateCreated = workflow.DateCreated,
                          DateUpdated = workflow.DateUpdated,
-                     }).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
                 {
@@ -186,17 +188,13 @@ namespace DRD.Service
             }
         }
 
-        public long GetLiteAllCount(long creatorId, string topCriteria)
+        public long GetListMatchCount(long creatorId, string topCriteria)
         {
-            return GetLiteAllCount(creatorId, topCriteria, null);
+            return GetListMatchCount(creatorId, topCriteria, null);
         }
 
-        public long GetLiteAllCount(long creatorId, string topCriteria, string criteria)
+        public long GetListMatchCount(long creatorId, string topCriteria, Expression<Func<WorkflowData, bool>> criteria)
         {
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
@@ -213,7 +211,7 @@ namespace DRD.Service
                      {
                          Id = workflow.Id,
                          Type = workflow.Type,
-                     }).Count();
+                     }).Where(criteria).Count();
 
                 return result;
 
@@ -233,28 +231,25 @@ namespace DRD.Service
             return GetPopupAll(creatorId, topCriteria, page, pageSize, null, null);
         }
 
-        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, string order)
+        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
         {
             return GetPopupAll(creatorId, topCriteria, page, pageSize, order, null);
         }
 
-        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "IsTemplate desc, Name";
+            Expression<Func<WorkflowData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
 
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             using (var db = new ServicesContext())
             {
@@ -272,7 +267,7 @@ namespace DRD.Service
                          UserId = workflow.UserId,
                          DateCreated = workflow.DateCreated,
                          DateUpdated = workflow.DateUpdated,
-                     }).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
                 {
@@ -292,12 +287,8 @@ namespace DRD.Service
             return GetPopupAllCount(creatorId, topCriteria, null);
         }
 
-        public long GetPopupAllCount(long creatorId, string topCriteria, string criteria)
+        public long GetPopupAllCount(long creatorId, string topCriteria, Expression<Func<WorkflowData, bool>> criteria)
         {
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
