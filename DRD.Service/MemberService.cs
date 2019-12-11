@@ -16,6 +16,9 @@ namespace DRD.Service
 {
     public class MemberService
     {
+        CompanyService companyService = new CompanyService();
+        ContactService contactService = new ContactService();
+
         public Member getMember(long memberId)
         {
             using (var db = new ServiceContext())
@@ -31,63 +34,57 @@ namespace DRD.Service
                 return db.Members.Where(memberItem => memberItem.UserId == userId && memberItem.CompanyId == companyId).FirstOrDefault();
             }
         }
+        public void mappingMember(List<Member> membersFromDb, MemberList listReturn)
+        {
+            foreach (Member x in membersFromDb)
+            {
 
-        public MemberList getAllAcceptedMember(long companyId)
+                var memberItem = new MemberItem();
+                memberItem.Id = x.Id;
+                memberItem.CompanyId = x.CompanyId;
+                memberItem.UserId = x.UserId;
+                memberItem.Company = companyService.GetCompanyItem(memberItem.CompanyId);
+                memberItem.User = contactService.getContact(memberItem.UserId);
+                System.Diagnostics.Debug.WriteLine("USER MEMBER :: " + memberItem.User.Name);
+
+                listReturn.addMember(memberItem);
+            }
+        }
+        public MemberList getAcceptedMember(long companyId)
         {
             using (var db = new ServiceContext())
             {
-                CompanyService companyService = new CompanyService();
-                ContactService contactService = new ContactService();
-
-                var ownerCompanies = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept == true && memberItem.isMemberAccept == true).ToList();
-
                 var listReturn = new MemberList();
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies);
-                foreach (Member x in ownerCompanies)
-                {
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept  && memberItem.isMemberAccept && memberItem.IsActive).ToList();
 
-                    var memberItem = new MemberItem();
-                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.Id);
-                    memberItem.Id = x.Id;
-                    memberItem.CompanyId = x.CompanyId;
-                    memberItem.UserId = x.UserId;
-                    memberItem.Company = companyService.GetCompanyItem(memberItem.CompanyId);
-                    memberItem.User = contactService.getContact(memberItem.UserId);
-                    listReturn.addMember(memberItem);
-                }
-                //return db.Members.Where(memberItem =>  memberItem.CompanyId == companyId && memberItem.isCompanyAccept==true && memberItem.isMemberAccept==true).ToList();
+                mappingMember(membersFromDb, listReturn);
                 return listReturn;
             }
         }
-        public MemberList getAllWaitingMember(long companyId)
+        public MemberList getWaitingMember(long companyId)
         {
             using (var db = new ServiceContext())
             {
-                    CompanyService companyService = new CompanyService();
-                    ContactService contactService = new ContactService();
+                var listReturn = new MemberList(); ;
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive).ToList();
 
-                    var ownerCompanies = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept == false && memberItem.isMemberAccept == true).ToList();
-
-                    var listReturn = new MemberList(); ;
-                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies);
-                    foreach (Member x in ownerCompanies)
-                    {
-                        var memberItem = new MemberItem();
-                        System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.UserId);
-                        memberItem.Id = x.Id;
-                        memberItem.CompanyId = x.CompanyId;
-                        memberItem.UserId = x.UserId;
-                        memberItem.Company = companyService.GetCompanyItem(memberItem.CompanyId);
-                        memberItem.User = contactService.getContact(memberItem.UserId);
-                        listReturn.addMember(memberItem);
-                        System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + memberItem.User.Name);
-                    }
-                    //return db.Members.Where(memberItem =>  memberItem.CompanyId == companyId && memberItem.isCompanyAccept==true && memberItem.isMemberAccept==true).ToList();
-                    return listReturn;
-                
-                //return db.Members.Where(memberItem =>  memberItem.CompanyId == companyId).ToList();
+                mappingMember(membersFromDb, listReturn);
+                return listReturn;   
             }
         }
+
+        public MemberList getAcceptedMember(long companyId, bool isAdmin)
+        {
+            using (var db = new ServiceContext())
+            {
+                var listReturn = new MemberList(); ;
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive && memberItem.IsAdministrator == isAdmin).ToList();
+
+                mappingMember(membersFromDb, listReturn);
+                return listReturn;
+            }
+        }
+
         public bool checkIsAdmin(long userId, long companyId)
         {
             using (var db = new ServiceContext())
@@ -171,14 +168,6 @@ namespace DRD.Service
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
         public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize)
         {
             return GetLiteGroupAll(userId, topCriteria, page, pageSize, null, null);

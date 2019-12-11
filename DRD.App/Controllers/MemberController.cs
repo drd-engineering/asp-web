@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DRD.Models;
-using DRD.Models.API;
 using DRD.Models.Custom;
+using DRD.Models.View;
 using DRD.Models.View.Member;
 
 using DRD.Service;
@@ -14,55 +14,64 @@ namespace DRD.App.Controllers
 {
     public class MemberController : Controller
     {
+        LoginController login = new LoginController();
+        MemberService memberService = new MemberService();
 
-        /// <summary>
-        /// POST: Member / Getlitegroupall
-        /// </summary>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        UserSession user;
+        Layout layout = new Layout();
+
+        public void Initialize()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.user = login.GetUser(this);
+        }
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+        }
+
         public ActionResult GetLiteGroupAll(string topCriteria, int page, int pageSize)
         {
-            LoginController login = new LoginController();
-            UserSession user = login.GetUser(this);
-            var service = new MemberService();
-            var data = service.GetLiteGroupAll(user.Id, topCriteria, page, pageSize, null);
+            InitializeAPI();
+
+            var data = memberService.GetLiteGroupAll(user.Id, topCriteria, page, pageSize, null);
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetAcceptedMember(long companyId)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
-
-            MemberService memberService = new MemberService();
-            MemberList data = memberService.getAllAcceptedMember(companyId);
-
-            System.Diagnostics.Debug.WriteLine("COUNT ACCEPTED  : " );
+            InitializeAPI();
             
+            MemberList data = memberService.getAcceptedMember(companyId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetAcceptedMemberOrAdmin(long companyId, bool isAdmin)
+        {
+            InitializeAPI();
+            System.Diagnostics.Debug.WriteLine("USER MEMBER :: " + companyId +"  "+isAdmin);
+
+            MemberList data = memberService.getAcceptedMember(companyId, isAdmin);
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetWaitingMember(long companyId)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
+            InitializeAPI();
 
-            MemberService memberService = new MemberService();
-            MemberList data = memberService.getAllWaitingMember(companyId);
+            MemberList data = memberService.getWaitingMember(companyId);
                         
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult addMemberToCompany(long companyId, long userId)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
+            InitializeAPI();
 
-            MemberService memberService = new MemberService();
             bool data = memberService.addMemberToCompany(userId,companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -70,11 +79,8 @@ namespace DRD.App.Controllers
 
         public ActionResult addCompanyToMember(long companyId, long userId)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
+            InitializeAPI();
 
-            MemberService memberService = new MemberService();
             bool data = memberService.addCompanyToMember(userId, companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
