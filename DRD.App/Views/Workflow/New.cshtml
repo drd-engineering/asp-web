@@ -430,7 +430,6 @@
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
                             Description: $scope.model.Description,
-                            ProjectId:$scope.project.Id,
                             IsActive: $('#checkbox1')[0].checked,
                             IsTemplate: $('#checkbox2')[0].checked,
                             WorkflowNodes:data.nodes,
@@ -467,7 +466,6 @@
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
                             Description: $scope.model.Description,
-                            ProjectId:$scope.project.Id,
                             IsActive: $('#checkbox1')[0].checked,
                             IsTemplate: $('#checkbox2')[0].checked,
                             WorkflowNodes:data.nodes,
@@ -490,21 +488,11 @@
             $scope.updateProduct = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
-                if ($scope.project.Name==undefined) {
-                    //showInfo("Required project");
-                    //return;
-                    $scope.project.Id=0;
-                }
                 $scope.saveProduct();
             }
             $scope.updateProductDraft = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
-                if ($scope.project.Name==undefined) {
-                    //showInfo("Required project");
-                    //return;
-                    $scope.project.Id=0;
-                }
                 $scope.saveProductDraft();
             }
             $scope.isValidForm = function (theForm) {
@@ -520,65 +508,6 @@
                 return $scope.objectItems.includes(name);
             };
             /*--------------------------------------------------------------
-                POPUP PROJECT
-            --------------------------------------------------------------*/
-            $scope.popupProject = function () {
-                if ($scope.isUsed){
-                    showInfo("Project data can not be changed.");
-                    return;
-                }
-                $("#modal_select_project").modal("show");
-                $scope.projects=[];
-            }
-            $scope.setProject = function (idx) {
-                $scope.project=$scope.projects[idx];
-            }
-            $scope.getLiteProjects = function (kriteria, page, row) {
-                $scope.projects = [];
-                $http.post('@Url.Action("GetLiteAll2", "Project")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
-                    if (response.data) {
-                        $scope.projects = response.data;
-                        $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        $scope.getProjectCount(kriteria);
-                        $scope.isView = true;
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-            $scope.changePageProjects = function (kriteria, page, row) {
-                $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll2", "Project")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
-                    if (response.data) {
-                        $scope.projects = response.data;
-                        $scope.index = row * (page - 1);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-            $scope.getProjectCount = function (kriteria) {
-                $http.post('@Url.Action("GetLiteAllCount2", "Project")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
-                    if (response.data) {
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-            /*--------------------------------------------------------------
-                END POPUP PROJECT
-            --------------------------------------------------------------*/
-            /*--------------------------------------------------------------
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
             $scope.popupWorkflow = function () {
@@ -591,9 +520,9 @@
             }
             $scope.setWorkflow = function (idx) {
                 $scope.workflow=$scope.workflows[idx];
-                $scope.getWorkflow($scope.workflow.Id);
+                $scope.getWorkflowById($scope.workflow.Id);
             }
-            $scope.getWorkflow = function (id) {
+            $scope.getWorkflowById = function (id) {
                 $scope.users = [];
                 $http.post('@Url.Action("GetById", "workflow")', { id: id }).then(function (response) {
                     if (response.data){
@@ -618,14 +547,19 @@
                     var x = 0;
                 });
             }
-            $scope.getLiteWorkflows = function (kriteria, page, row) {
+            $scope.findWorkflows = function (kriteria, page, row) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("GetPopupAll", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data;
+                        $scope.workflows = response.data.Items;
                         $scope.index = row * (page - 1);
                         $scope.paging = [];
-                        $scope.getWorkflowCount(kriteria);
+                        var jumlahData = response.data.Count;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -635,25 +569,10 @@
             }
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetPopupAll", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-            $scope.getWorkflowCount = function (kriteria) {
-                $http.post('@Url.Action("GetPopupAllCount", "Workflow")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
-                    if (response.data) {
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
                     }
                 }, function (response) {
                     //error handle\

@@ -43,7 +43,7 @@ namespace DRD.Service
 
         public void GetInboxItem(UserSession user, long inboxId)
         {
-            List<RotationItem> rotationLog = new List<RotationItem>();
+            List<RotationData> rotationLog = new List<RotationData>();
             // should update isUnread
             using (var db = new ServiceContext())
             {
@@ -58,7 +58,7 @@ namespace DRD.Service
                     from r in db.Rotations
                     //join ra in db.RotationActivities on r.Id equals ra.WorkflowId
                     //where ra.WorkflowId == r.Id
-                    select new RotationItem { 
+                    select new RotationData { 
                     
                         // lanjutin
                         // ambil dari rotation

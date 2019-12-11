@@ -87,18 +87,11 @@ namespace DRD.App.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
 
-        public ActionResult GetList(string topCriteria, int page, int pageSize)
+        public ActionResult FindRotations(string topCriteria, int page, int pageSize)
         {
             var srv = new RotationService();// getUserLogin().AppZone.Code);
             UserSession user = getUserLogin();
-            var data = srv.GetList(user.Id, topCriteria, page, pageSize);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult GetListCount(string topCriteria)
-        {
-            var srv = new RotationService();// getUserLogin().AppZone.Code);
-            UserSession user = getUserLogin();
-            var data = srv.GetListCount(user.Id, topCriteria);
+            var data = srv.FindRotations(user.Id, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

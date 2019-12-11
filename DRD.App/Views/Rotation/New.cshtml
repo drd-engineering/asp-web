@@ -543,17 +543,21 @@
                 });
             }
 
-            $scope.getLiteWorkflows = function (kriteria, page, row) {
+            $scope.findWorkflows = function (kriteria, page, row) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("GetLiteAll2", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data;
+                        $scope.workflows = response.data.Items;
 
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getWorkflowCount(kriteria);
-
+                        var jumlahData = response.data.Count;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -564,9 +568,9 @@
 
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll2", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data;
+                        $scope.workflows = response.data.Items;
                         $scope.index = row * (page - 1);
                     }
                 }, function (response) {
@@ -574,26 +578,6 @@
                     var x = 0;
                 });
             }
-
-            $scope.getWorkflowCount = function (kriteria) {
-                $http.post('@Url.Action("GetLiteAllCount2", "Workflow")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
             /*--------------------------------------------------------------
                 END POPUP WORKFLOW
             --------------------------------------------------------------*/
@@ -615,17 +599,22 @@
                 $scope.users[$scope.memberIdx].Picture=$scope.members[idx].ImageProfile;
             }
 
-            $scope.getLiteMembers = function (kriteria, page, row) {
+            $scope.findMembers = function (kriteria, page, row) {
                 $scope.members = [];
-                $http.post('/Member/GetLiteGroupAll', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
-                        $scope.members = response.data;
+                        $scope.members = response.data.Items;
 
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getMemberCount(kriteria);
+                        var jumlahData = response.data.Count;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
 
+                        $scope.page = "1";
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -640,25 +629,6 @@
                     if (response.data) {
                         $scope.members = response.data;
                         $scope.index = row * (page - 1);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
-            $scope.getMemberCount = function (kriteria) {
-                $http.post('/Member/GetLiteGroupAllCount', { topCriteria: kriteria }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
                     }
                 }, function (response) {
                     //error handle\

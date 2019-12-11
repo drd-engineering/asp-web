@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -179,24 +180,23 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize)
+        public ListMemberData FindMembers(long userId, string topCriteria, int page, int pageSize)
         {
-            return GetLiteGroupAll(userId, topCriteria, page, pageSize, null, null);
+            Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true; 
+            return FindMembers(userId, topCriteria, page, pageSize, null, criteriaUsed);
         }
-        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize, string order)
+        public ListMemberData FindMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
         {
-            return GetLiteGroupAll(userId, topCriteria, page, pageSize, order, null);
+            Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true;
+            return FindMembers(userId, topCriteria, page, pageSize, order, criteriaUsed);
         }
-        public IEnumerable<MemberData> GetLiteGroupAll(long userId, string topCriteria, int page, int pageSize, string order, string criteria)
+        public ListMemberData FindMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order, Expression<Func<MemberData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "Name";
+            Expression<Func<MemberData, string>> ordering = MemberData => "Name";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
 
             // top criteria
             string[] tops = new string[] { };
@@ -207,8 +207,8 @@ namespace DRD.Service
 
             using (var db = new ServiceContext())
             {
-                var result = new List<MemberData>();
-                var contactFromPersonal = (from Contact in db.Contacts
+                var result = new ListMemberData();
+                var contactListAllMatch = (from Contact in db.Contacts
                                            join User in db.Users on Contact.ContactItemId equals User.Id
                                            where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
                                            select new MemberData
@@ -218,39 +218,33 @@ namespace DRD.Service
                                                Phone = User.Phone,
                                                Email = User.Email,
                                                ImageProfile = User.ImageProfile
-                                           }).ToList();
-                foreach(var contact in contactFromPersonal)
+                                           }).Union(from member1 in db.Members
+                                                    join company in db.Companies on member1.CompanyId equals company.Id
+                                                    join member2 in db.Members on company.Id equals member2.CompanyId
+                                                    join user in db.Users on member2.UserId equals user.Id
+                                                    where member1.UserId == userId
+                                                    && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
+                                                    && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
+                                                    && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
+                                                    select new MemberData
+                                                    {
+                                                        Id = user.Id,
+                                                        Name = user.Name,
+                                                        Phone = user.Phone,
+                                                        Email = user.Email,
+                                                        ImageProfile = user.ImageProfile
+                                                    }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+                ListMemberData returnValue = new ListMemberData();
+                if (contactListAllMatch != null)
                 {
-                    result.Add(contact);
-                }
-                var CompanyList = (from member in db.Members
-                                   join company in db.Companies on member.CompanyId equals company.Id
-                                   where member.UserId == userId
-                                   select new
-                                   {
-                                       companyId = company.Id,
-                                       companyName = company.Name
-                                   }).ToList();
-                foreach (var hisCompany in CompanyList)
-                {
-                    var datafromcompanyx = (from Member in db.Members
-                              join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == hisCompany.companyId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
-                                            select new MemberData
-                              {
-                                  Id = User.Id,
-                                  Name = User.Name,
-                                  Phone = User.Phone,
-                                  Email = User.Email,
-                                  ImageProfile = User.ImageProfile,
-                                  CompanyName = hisCompany.companyName
-                              }).ToList();
-                    foreach (var data in datafromcompanyx)
+                    int counterMember = 0;
+                    foreach(MemberData item in contactListAllMatch)
                     {
-                        result.Add(data);
+                        counterMember += 1;
+                        returnValue.Items.Add(item);
                     }
+                    returnValue.Count = counterMember;
                 }
-                result = result.Skip(skip).Take(pageSize).ToList();
                 return result;
             }
         }

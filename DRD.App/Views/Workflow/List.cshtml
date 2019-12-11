@@ -39,9 +39,9 @@
                                         <div class="col-lg-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getWorkflowList(kriteria, page, row)">
+                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && findWorkflows(kriteria, page, row)">
                                                 <span class="input-group-btn">
-                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getWorkflowList(kriteria, page, row)" style="width:120px">
+                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findWorkflows(kriteria, page, row)" style="width:120px">
                                                         <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
@@ -71,7 +71,7 @@
                                 <div class="col-lg-6">
                                     <div class="pull-right">
 
-                                        <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                        <select ng-model="page" class="form-control" ng-change="changePageWorkflows(kriteria, page, row)">
                                             <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                         </select>
                                     </div>
@@ -80,7 +80,7 @@
                             </div>
                             <div style="height:10px"></div>
                             <!-- LIST -->
-                            <div calss="row" ng-init="getWorkflowList(kriteria, page, row)">
+                            <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
                                 <div class="panel panel-flat">
                                     <div class="table-responsive" ng-show="isView">
                                         <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
@@ -161,20 +161,22 @@
             /*--------------------------------------------------------------
             GET ASSET ITEM
             --------------------------------------------------------------*/
-            $scope.getWorkflowList = function (kriteria, page, row) {
+            $scope.findWorkflows = function (kriteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
                 $scope.products = [];
-                $http.post('@Url.Action("GetListMatch", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {
-                        $scope.products = response.data;
-
+                        $scope.products = response.data.Items;
                         $scope.index = row * (page - 1);
-
                         $scope.paging = [];
-                        $scope.getWorkflowCount(kriteria);
-
+                        var jumlahData = response.data.Count;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -184,9 +186,9 @@
                 });
             }
 
-            $scope.changePage = function (kriteria, page, row) {
+            $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetListMatch", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
@@ -196,31 +198,9 @@
                     var x = 0;
                 });
             }
-
-            $scope.getWorkflowCount = function (kriteria) {
-                $http.post('@Url.Action("GetListMatchCount", "Workflow")', { topCriteria: kriteria }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
             /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
-
-
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/

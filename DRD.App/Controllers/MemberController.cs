@@ -16,18 +16,18 @@ namespace DRD.App.Controllers
     {
 
         /// <summary>
-        /// POST: Member / Getlitegroupall
+        /// POST: Member / FindMembers
         /// </summary>
         /// <param name="topCriteria"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult GetLiteGroupAll(string topCriteria, int page, int pageSize)
+        public ActionResult FindMembers(string topCriteria, int page, int pageSize)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var service = new MemberService();
-            var data = service.GetLiteGroupAll(user.Id, topCriteria, page, pageSize, null);
+            var data = service.FindMembers(user.Id, topCriteria, page, pageSize, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
