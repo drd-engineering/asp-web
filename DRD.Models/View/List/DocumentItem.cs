@@ -22,8 +22,9 @@ namespace DRD.Models.API.List
         public string Version { get; set; } // Version (length: 20)
         public long? CreatorId { get; set; } // CreatorId
         public long CompanyId { get; set; } // CompanyId
-        public string Descr { get; set; } // Descr
-        public System.DateTime DateCreated { get; set; } // DateCreated
+        public string Description { get; set; } // Descr
+        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime UpdatedAt { get; set; } // DateCreated
 
         public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } // DocumentUser.FK_DocumentUser_Document
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentElement.FK_DocumentElement_Document

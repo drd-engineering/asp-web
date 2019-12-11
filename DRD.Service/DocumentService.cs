@@ -54,12 +54,13 @@ namespace DRD.Service
                      {
                          Id = c.Id,
                          Title = c.Title,
-                         Descr = c.Descr,
+                         Description = c.Description,
                          FileName = c.FileName,
                          FileSize = c.FileSize,
-                         DateCreated = c.DateCreated,
+                         CreatedAt = c.CreatedAt,
+                         UpdatedAt = c.UpdatedAt,
                          CreatorId = c.CreatorId,
-                         UserId = c.UserId,
+                         UserEmail = c.UserEmail,
                          DocumentElements = (
                             from x in c.DocumentElements
                             select new DocumentElement
@@ -89,8 +90,8 @@ namespace DRD.Service
                                 CreatorId = x.CreatorId,
                                 ElementId = x.ElementId,
                                 UserId = x.UserId,
-                                DateCreated = x.DateCreated,
-                                DateUpdated = x.DateUpdated,
+                                CreatedAt = x.CreatedAt,
+                                UpdatedAt = x.UpdatedAt,
                                 ElementType = new ElementType
                                 {
                                     Id = x.ElementType.Id,
@@ -164,16 +165,16 @@ namespace DRD.Service
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.CreatorId,
-                     DateCreated = c.DateCreated,
-                     DocumentUsers =
-                         (from x in c.DocumentUsers
-                          select new DocumentUser
-                          {
-                              Id = x.Id,
-                              DocumentId = x.DocumentId,
-                              UserId = x.UserId,
-                              FlagAction = x.FlagAction,
-                          }).ToList(),
+                     CreatedAt = c.CreatedAt,
+                     //DocumentUsers =
+                     //    (from x in c.DocumentUsers
+                     //     select new DocumentUser
+                     //     {
+                     //         Id = x.Id,
+                     //         DocumentId = x.DocumentId,
+                     //        UserId = x.UserId,
+                     //         FlagAction = x.FlagAction,
+                     //     }).ToList(),
                  }).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
@@ -255,18 +256,10 @@ namespace DRD.Service
                      select new DocumentItem
                      {
                          Id = c.Id,
-                         Descr = c.Descr,
+                         Description = c.Description,
                          Title = c.Title,
                          FileName = c.FileName,
-                         DocumentUsers =
-                         (from x in c.DocumentUsers
-                          select new DocumentUser
-                          {
-                              Id = x.Id,
-                              DocumentId = x.DocumentId,
-                              UserId = x.UserId,
-                              FlagAction = x.FlagAction,
-                          }).ToList(),
+                         
                      }).Skip(skip).Take(pageSize).ToList();
 
                 return result;
@@ -313,16 +306,7 @@ namespace DRD.Service
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.CreatorId,
-                     DateCreated = c.DateCreated,
-                     DocumentUsers =
-                         (from x in c.DocumentUsers
-                          select new DocumentUser
-                          {
-                              Id = x.Id,
-                              DocumentId = x.DocumentId,
-                              UserId = x.UserId,
-                              FlagAction = x.FlagAction,
-                          }).ToList(),
+                     CreatedAt = c.CreatedAt,
 
                  }).Skip(skip).Take(pageSize).ToList();
 
@@ -530,23 +514,23 @@ namespace DRD.Service
                     product = new Document();
 
                 product.Title = prod.Title;
-                product.Descr = prod.Descr;
+                product.Description = prod.Description;
                 product.FileName = prod.FileName;
                 product.FileSize = prod.FileSize;
                 product.CreatorId = prod.CreatorId;
-                product.UserId = prod.UserId;
+                product.UserEmail = prod.UserEmail;
                 if (prod.Id == 0)
                 {
-                    product.DateCreated = DateTime.Now;
+                    product.CreatedAt = DateTime.Now;
                     db.Documents.Add(product);
                 }
                 else
-                    product.DateCreated= DateTime.Now;
+                    product.UpdatedAt= DateTime.Now;
 
                 result = db.SaveChanges();
 
 
-                SaveAnnos(product.Id, (long)prod.CreatorId, prod.UserId, prod.DocumentElements);
+                SaveAnnos(product.Id, (long)prod.CreatorId, prod.UserEmail, prod.DocumentElements);
                 return result;
             }
 
@@ -590,7 +574,7 @@ namespace DRD.Service
             }
         }
 
-        public int SaveAnnos(long documentId, long creatorId, string userId, IEnumerable<DocumentElement> annos)
+        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElement> annos)
         {
             using (var db = new ServiceContext())
             {
@@ -608,8 +592,8 @@ namespace DRD.Service
                         da.Document.Id = documentId;
                         da.Page = ep.Page;
                         da.ElementType.Id = ep.ElementType.Id;
-                        da.UserId = userId;
-                        da.DateCreated = DateTime.Now;
+                        //da.UserId = userEmail;
+                        da.CreatedAt = DateTime.Now;
                         db.DocumentElements.Add(da);
                     }
                     db.SaveChanges();
@@ -652,8 +636,8 @@ namespace DRD.Service
                     da.FlagImage = epos.FlagImage;
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
-                    da.UserId = userId;
-                    da.DateCreated = DateTime.Now;
+                    //da.UserId = userEmail;
+                    da.CreatedAt = DateTime.Now;
                     v++;
                 }
                 return db.SaveChanges();

@@ -276,8 +276,8 @@ namespace DRD.Service
                                   CreatorId = documentElement.CreatorId,
                                   ElementId = documentElement.ElementId,
                                   UserId = documentElement.UserId,
-                                  DateCreated = documentElement.DateCreated,
-                                  DateUpdated = documentElement.DateUpdated,
+                                  CreatedAt = documentElement.CreatedAt,
+                                  UpdatedAt = documentElement.UpdatedAt,
                                   ElementType = new ElementType
                                   {
                                       Id = documentElement.ElementType.Id,
