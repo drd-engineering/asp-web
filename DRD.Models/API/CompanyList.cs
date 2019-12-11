@@ -33,6 +33,8 @@ namespace DRD.Models.API.Register
         public string Address { get; set; } // Address (length: 1000)
         public string PointLocation { get; set; } // PointLocation (length: 1000)
         public string PostalCode { get; set; } // PostalCode (length: 5)
+        public long SubscriptionId { get; set; } // PostalCode (length: 5)
+        public string SubscriptionName { get; set; } // PostalCode (length: 5)
         public string Image1 { get; set; } // Image1 (length: 100)
         public string Image2 { get; set; } // Image2 (length: 100)
         public string ImageCard { get; set; } // ImageCard (length: 100)

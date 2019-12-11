@@ -29,12 +29,11 @@ namespace DRD.Service.Context
         public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
         public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserAdmin> UserAdmins { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         public DbSet<Stamp> Stamps { get; set; }
-        public DbSet<RotationActivity> RotationActivities { get; set; }
+        //public DbSet<RotationActivity> RotationActivities { get; set; }
         public DbSet<Inbox> Inboxes { get; set; }
 
         public DbSet<PlanBusiness> PlanBusinesses { get; internal set; }

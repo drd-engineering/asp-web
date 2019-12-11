@@ -263,7 +263,7 @@
             <div class="col-md-12">
 
                 <div class="alert alert-success alert-styled-left">
-                    Data successfully saved. Click <a href='' ng-click="startProduct()">here</a> to start with the rotation process.
+                    Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
                 </div>
             </div>
         </div>
@@ -284,6 +284,7 @@
         <!-- View member modal -->
         <ng-include src="'/Include/PopupWorkflow'"></ng-include>
         <ng-include src="'/Include/PopupMember'"></ng-include>
+        <ng-include src="'/Include/PopupSubscription'"></ng-include>
         <!-- View member modal -->
     </section>
     <script type="text/javascript">
@@ -316,6 +317,7 @@
 
 
             $scope.model = {};
+            $scope.subscriptions = [];
             $scope.wizarno = 'product';
             $scope.master = {};
             $scope.model.IsActive=true;
@@ -432,10 +434,6 @@
                 },
                 function () {
                     setTimeout(function () {
-                        //swal({
-                        //    title: "Ajax request finished!",
-                        //    confirmButtonColor: "#2196F3"
-                        //});
                         $scope.startProcess();
                     }, 500);
 
@@ -451,7 +449,7 @@
                             if (response.data == -1)
                                 showError("Invalid rotation.");
                             else if (response.data == -2)
-                                showError("Invalid member plan.");
+                                showError("You are not Administrator");
                             else if (response.data == -3)
                                 showInfo("Your package plan has expired, please check on my plan.");
                             else if (response.data == -4)
@@ -673,7 +671,23 @@
                 END POPUP MEMBER
             --------------------------------------------------------------*/
 
-
+            $scope.showSubscription = function () {
+                $http.post('/User/GetAllSubscription'
+                ).then(function (response) {
+                    if (response.data) {
+                        if (response.data.count() == 0) {
+                            $("#modal_dont_have_subscription").modal("show");
+                        }
+                        else {
+                            $scope.subscriptions = response.data.items;
+                            $("#modal_select_subscriptions").modal("show");
+                        }
+                    }
+                }, function (response) {
+                    //error handle\
+                    $("#modal_dont_have_subscription").modal("show");
+                });
+            }
         });
 
 

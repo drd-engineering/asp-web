@@ -29,11 +29,11 @@ namespace DRD.Service
                     item.Id = i.Id;
                     item.IsUnread = i.IsUnread;
 
-                    var activity = db.RotationActivities.Where(a => a.Id == i.ActivityId).FirstOrDefault();
+                    //var activity = db.RotationActivities.Where(a => a.Id == i.ActivityId).FirstOrDefault();
 
-                    item.CurrentActivity = activity.Name;
-                    item.RotationName = activity.Workflow.Subject;
-                    item.WorkflowName = activity.Workflow.Workflow.Name;
+                    //item.CurrentActivity = activity.Name;
+                    //item.RotationName = activity.Workflow.Subject;
+                    //item.WorkflowName = activity.Workflow.Workflow.Name;
 
                     result.Add(item);
                 }
@@ -52,12 +52,12 @@ namespace DRD.Service
                 InboxItem result = new InboxItem();
                 
                 result.Id = inbox.Id;
-                result.CurrentActivity = inbox.Activity.Name;
+                //result.CurrentActivity = inbox.Activity.Name;
 
                 rotationLog = (
                     from r in db.Rotations
-                    join ra in db.RotationActivities on r.Id equals ra.WorkflowId
-                    where ra.WorkflowId == r.Id
+                    //join ra in db.RotationActivities on r.Id equals ra.WorkflowId
+                    //where ra.WorkflowId == r.Id
                     select new RotationItem { 
                     
                         // lanjutin

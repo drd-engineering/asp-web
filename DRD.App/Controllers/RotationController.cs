@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using DRD.Models;
-using DRD.Models.API;
+using DRD.Models.View;
 using DRD.Models.Custom;
 using DRD.Service;
 
@@ -70,16 +70,14 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        //public ActionResult Start(long id)
-        //{
-            //UserSession user = getUserLogin();
-            //prod.AppZone = user.AppZone.Code;
-            //prod.UserId = user.UserId;
+        public ActionResult Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
+        {
+            UserSession user = getUserLogin();
 
-           // var srv = new RotationService();// user.AppZone.Code);
-            //var data = srv.Start(id);
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
+            var srv = new RotationService();// user.AppZone.Code);
+            var data = srv.Start(rotationId, subscriptionId, isSubscriptionCompany);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 
