@@ -116,3 +116,7 @@ div.transfer-double{
     box-shadow: none;
     -webkit-box-shadow: none;
 }
+
+.btn-sm{
+    width: 40px;
+}

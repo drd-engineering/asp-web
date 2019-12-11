@@ -18,18 +18,26 @@ namespace DRD.App.Controllers
 {
     public class CompanyController : Controller
     {
-        // GET: Company
-        public ActionResult Index()
+        LoginController login = new LoginController();
+        UserSession user;
+        Layout layout = new Layout();
+
+        public void Initialize()
         {
-            LoginController login = new LoginController();
+            user = login.GetUser(this);
             login.CheckLogin(this);
-
-            UserSession user = login.GetUser(this);
-
-            Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
+        }
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+        }
 
+        public ActionResult Index()
+        {
+            Initialize();
             CompanyService companyService = new CompanyService();
             CompanyList companyList = companyService.GetAllCompanyDetails(user.Id);
 
@@ -39,16 +47,10 @@ namespace DRD.App.Controllers
         }
         public ActionResult Member(long id)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
+            Initialize();
 
-            UserSession user = login.GetUser(this);
             CompanyService companyService = new CompanyService();
             MemberService memberService = new MemberService();
-
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
 
             var company = companyService.GetCompany(id);
             
@@ -68,9 +70,7 @@ namespace DRD.App.Controllers
         // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
         public ActionResult GetCompanyList()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
+            InitializeAPI();
 
             CompanyService companyService = new CompanyService();
             CompanyList data = companyService.GetAllCompanyDetails(user.Id);
@@ -80,9 +80,7 @@ namespace DRD.App.Controllers
 
         public ActionResult GetSubscriptionList()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
+            InitializeAPI();
 
             SubscriptionService subscriptionService = new SubscriptionService();
             List<BusinessSubscription> data = subscriptionService.getSubscription();
