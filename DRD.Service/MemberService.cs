@@ -92,7 +92,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-               var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId = userId).FirstOrDefault;
+               var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId).FirstOrDefault();
                 return admin == null ? false : true;
             }
         }

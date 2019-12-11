@@ -52,7 +52,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var owner = db.Companies.Where(memberItem => memberItem.CompanyId == companyId && memberItem.OwnerId = userId).FirstOrDefault;
+                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
                 return owner == null ? false : true;
             }
         }

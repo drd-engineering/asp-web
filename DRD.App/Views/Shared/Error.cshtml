@@ -1,9 +1,31 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
-
+﻿@model DRD.Models.View.ErrorInfo
 @{
-    ViewBag.Title = "Error";
+    ViewBag.Title = "Problem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="middle-container">
 
+
+    <link rel="stylesheet" href="/Content/css/thankyou.css">
+    <!--- middle Container ---->
+
+    <div class="middle-container">
+        <div class="paddings thankyou-section" data-moduleid="2050" id="ContactUsPane">
+            @if (Model != null)
+            {
+                <h1>@Model.Message</h1>
+                <p>@Model.Description</p>
+            }
+            else
+            {
+                <h1>An Error Has Occured</h1>
+                <p>An unexpected error occured on our website. The website administrator has been notified.</p>
+            }
+
+            <p><a href="/" class="btn-read-more">Go To Home Page</a></p>
+        </div>
+    </div>
+    <!--- middle Container ---->
+
+</div>
