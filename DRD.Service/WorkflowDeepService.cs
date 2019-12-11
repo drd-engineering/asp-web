@@ -466,6 +466,8 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
+                var companyIdStarted = db.PlanBusinesses.FirstOrDefault(c => c.Id == subscriptionId).CompanyId;
+                rt.CompanyId = companyIdStarted;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
                 var result = db.SaveChanges();

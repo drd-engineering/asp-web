@@ -780,19 +780,20 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-        //public int Start(long id)
-        //{
-            //WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-            //var ret = workflowDeepService.Start(id, new MemberDepositTrxService());
-
+        public int Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
+        {
+            WorkflowDeepService workflowDeepService = new WorkflowDeepService();
+            var status = workflowDeepService.Start(rotationId, subscriptionId, isSubscriptionCompany);
+            MemberService memberService = new MemberService();
+            
             //MemberService userService = new MemberService();
             //foreach (JsonActivityResult act in ret)
             //{
             //    userService.sendEmailInbox(act);
             //}
-
             //return ret.FirstOrDefault().ExitCode;
-        //}
+            return 0;
+        }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
         //{

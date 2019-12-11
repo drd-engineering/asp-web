@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DRD.Models;
+using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Service.Context;
 using DRD.Models.API.Register;
@@ -223,7 +224,6 @@ namespace DRD.Service
                 return result.Name;
             }
         }
-
         public User GetById(long id, long loginId)
         {
             using (var db = new ServiceContext())
@@ -247,6 +247,41 @@ namespace DRD.Service
                          CreatedAt = c.CreatedAt,
                      }).FirstOrDefault();
                 return result;
+            }
+        }
+        /// <summary>
+        /// this function will return all the list Subscription if the user is admin and company have subscription, or the user have subscription.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public ListSubscription getAllSubscription(long userId)
+        {
+            using(var db = new ServiceContext())
+            {
+                var returnValue = new ListSubscription();
+                //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
+                var userBusinessPlan = (from member in db.Members
+                                        join company in db.Companies on member.CompanyId equals company.Id
+                                        join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
+                                        where member.UserId == userId
+                                        && member.IsAdministrator
+                                        && plan.IsActive
+                                        select new SubscriptionData
+                                        {
+                                            id = plan.Id,
+                                            type = "company",
+                                            name = plan.SubscriptionName,
+                                            companyId = company.Id,
+                                            companyName = company.Name
+                                        }).ToList();
+                if (userBusinessPlan.Count != 0)
+                {
+                    foreach (var item in userBusinessPlan)
+                    {
+                        returnValue.items.Add(item);
+                    }
+                }
+                return returnValue;
             }
         }
     }

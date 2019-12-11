@@ -11,6 +11,7 @@ namespace DRD.Models
         public int Status { get; set; } // Status (length: 2)
         public string Remark { get; set; } // Remark
         public long? CreatorId { get; set; } // CreatorId
+        public long? CompanyId { get; set; } // filled only if rotation started
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
         public System.DateTime? DateStarted { get; set; } // DateStarted
