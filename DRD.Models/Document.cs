@@ -24,17 +24,18 @@ namespace DRD.Models
 
         public System.DateTime CreatedAt { get; set; }
         public System.DateTime UpdatedAt { get; set; }
-        
 
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
 
         // FK
         [ForeignKey("CompanyId")]
-        public Company Companies { get; set; } //FK to Company
+        public Company Company { get; set; } //FK to Company
 
         [ForeignKey("CreatorId")]
         public User User { get; set; } //FK to User
+
+        public Rotation Rotation { get; set; } //FK to Rotation
 
 
         public Document()
