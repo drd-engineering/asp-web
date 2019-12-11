@@ -8,6 +8,7 @@ using DRD.Models.Custom;
 using DRD.Models.API;
 using DRD.Models.API.List;
 using DRD.Service.Context;
+using System.Linq.Expressions;
 
 namespace DRD.Service
 {
@@ -189,14 +190,14 @@ namespace DRD.Service
         public IEnumerable<RotationItem> GetNodeByMemberId(long userId, string status, string topCriteria, int page, int pageSize)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "Status, DateCreated desc";
+            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             using (var db = new ServiceContext())
             {
@@ -219,9 +220,7 @@ namespace DRD.Service
                          DateCreated = rotationNode.DateCreated,
                          DateUpdated = rotationNode.DateUpdated,
                          DateStarted = rotationNode.Rotation.DateUpdated,
-                     }).Skip(skip)
-                       .Take(pageSize)
-                       .ToList();
+                     }).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
                 {
@@ -362,35 +361,36 @@ namespace DRD.Service
         /// <returns></returns>
         public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize)
         {
-            return GetList(creatorId, topCriteria, page, pageSize, null, null);
+            Expression<Func<RotationItem, bool>> criteriaUsed = WorkflowData => true;
+            return GetList(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
         }
-        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, string order)
+        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
         {
-            return GetList(creatorId, topCriteria, page, pageSize, order, null);
+            Expression<Func<RotationItem, bool>> criteriaUsed = WorkflowData => true;
+            return GetList(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
-        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "Status, DateCreated desc";
+            Expression<Func<RotationItem, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
+            
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             using (var db = new ServiceContext())
             {
-                var result =
+                if(db.Rotations != null)
+                {
+                    var result =
                     (from rotation in db.Rotations
-                     where rotation.CreatorId == creatorId && (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
+                     where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new RotationItem
                      {
                          Id = rotation.Id,
@@ -400,23 +400,23 @@ namespace DRD.Service
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.UserId,
                          MemberId = rotation.MemberId,
-                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
-                     }).Skip(skip).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
-                if (result != null)
-                {
-                    MenuService menuService = new MenuService();
-                    foreach (RotationItem rotationItem in result)
+                    if (result != null)
                     {
-                        rotationItem.Key = menuService.EncryptData(rotationItem.Id);
+                        MenuService menuService = new MenuService();
+                        foreach (RotationItem rotationItem in result)
+                        {
+                            rotationItem.Key = menuService.EncryptData(rotationItem.Id);
+                        }
                     }
+
+                    return result;
                 }
-
-                return result;
-
+                return null;
             }
         }
 
@@ -439,7 +439,9 @@ namespace DRD.Service
 
             using (var db = new ServiceContext())
             {
-                var result =
+                if (db.Rotations != null)
+                {
+                    var result =
                     (from rotation in db.Rotations
                      where rotation.CreatorId == creatorId && (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
                      select new Rotation
@@ -447,8 +449,9 @@ namespace DRD.Service
                          Id = rotation.Id,
                      }).Count();
 
-                return result;
-
+                    return result;
+                }
+                return 0;
             }
         }
 
@@ -464,27 +467,24 @@ namespace DRD.Service
         {
             return GetLiteAll(userId, topCriteria, page, pageSize, null, null);
         }
-        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, string order)
+        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
         {
             return GetLiteAll(userId, topCriteria, page, pageSize, order, null);
         }
-        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "Status, DateCreated desc";
+            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
 
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             using (var db = new ServiceContext())
             {
@@ -507,7 +507,7 @@ namespace DRD.Service
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
-                     }).Skip(skip).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 return result;
 
@@ -566,27 +566,24 @@ namespace DRD.Service
         {
             return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, null, null);
         }
-        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, string order)
+        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
         {
             return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, order, null);
         }
-        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "Status, DateCreated desc";
+            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
 
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
             var statuses = status.Split(',').Select(Int32.Parse).ToList();
 
@@ -610,7 +607,7 @@ namespace DRD.Service
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateStarted,
-                     }).Skip(skip).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
                 {
@@ -674,25 +671,22 @@ namespace DRD.Service
         /// <parameter name="order"></parameter>
         /// <parameter name="criteria"></parameter>
         /// <returns></returns>
-        public IEnumerable<RotationItem> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize, string order, string criteria)
+        public IEnumerable<RotationItem> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "DateCreated desc";
+            Expression<Func<RotationItem, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
-            if (!string.IsNullOrEmpty(order))
+            if (order != null)
                 ordering = order;
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
 
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
                 tops = topCriteria.Split(' ');
             else
-                topCriteria = null;
+                topCriteria = "";
 
-             var statuses = status.Split(',').Select(Int32.Parse).ToList();
+            var statuses = status.Split(',').Select(Int32.Parse).ToList();
 
             using (var db = new ServiceContext())
             {
@@ -714,7 +708,7 @@ namespace DRD.Service
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateRead,
-                     }).Skip(skip).Take(pageSize).ToList();
+                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 if (result != null)
                 {

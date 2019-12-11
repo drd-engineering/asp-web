@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -76,12 +77,12 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
+        public ActionResult GetListMatch(string topCriteria, int page, int pageSize)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.GetLiteAll(user.Id, topCriteria, page, pageSize);
+            var data = srv.GetListMatch(user.Id, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetLiteAllCount(string topCriteria)
@@ -89,7 +90,7 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.GetLiteAllCount(user.Id, topCriteria);
+            var data = srv.GetListMatchCount(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -106,7 +107,7 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.GetLiteAll(user.Id, topCriteria, page, pageSize, null, null);
+            var data = srv.GetListMatch(user.Id, topCriteria, page, pageSize, null, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetLiteAllCount2(string topCriteria, string criteria)
@@ -114,7 +115,7 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.GetLiteAllCount(user.Id, topCriteria, null);
+            var data = srv.GetListMatchCount(user.Id, topCriteria, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -131,10 +132,13 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.GetPopupAll(user.Id, topCriteria, page, pageSize, null, criteria);
+            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            if (!criteria.Equals(""))
+                criteriaUsed = WorkflowData => criteria == "";
+            var data = srv.GetPopupAll(user.Id, topCriteria, page, pageSize, null, criteriaUsed);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult GetPopupAllCount(string topCriteria, string criteria)
+        public ActionResult GetPopupAllCount(string topCriteria, Expression<Func<WorkflowData, bool>> criteria)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
