@@ -47,6 +47,16 @@ namespace DRD.Service
                 return result;
             }
         }
+
+        public bool checkIsOwner(long userId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var owner = db.Companies.Where(memberItem => memberItem.CompanyId == companyId && memberItem.OwnerId = userId).FirstOrDefault;
+                return owner == null ? false : true;
+            }
+        }
+
         public PlanBusiness getCompanySubscription(long companyId)
         {
             using (var db = new ServiceContext())

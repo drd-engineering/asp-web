@@ -88,6 +88,14 @@ namespace DRD.Service
                 //return db.Members.Where(memberItem =>  memberItem.CompanyId == companyId).ToList();
             }
         }
+        public bool checkIsAdmin(long userId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+               var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId = userId).FirstOrDefault;
+                return admin == null ? false : true;
+            }
+        }
 
         public List<Member> getAdministrators(long CompanyId)
         {

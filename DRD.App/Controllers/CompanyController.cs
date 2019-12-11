@@ -42,6 +42,7 @@ namespace DRD.App.Controllers
 
             UserSession user = login.GetUser(this);
             CompanyService companyService = new CompanyService();
+            MemberService memberService = new MemberService();
 
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
@@ -51,7 +52,10 @@ namespace DRD.App.Controllers
             
             if(company == null)
             {
-                throw new HttpException(404, "Not found");
+                return HttpNotFound();
+            }
+            if(companyService.checkIsOwner(user.Id, id) && memberService.checkIsAdmin(user.Id, id))
+            {
                 return HttpNotFound();
             }
 

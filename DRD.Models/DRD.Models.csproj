@@ -192,13 +192,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\BusinessSubscription.cs" />
     <Compile Include="API\InboxList.cs" />
+    <Compile Include="API\ListSubscription.cs" />
     <Compile Include="API\MemberData.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
     <Compile Include="PlanBusiness.cs" />
     <Compile Include="PlanPersonal.cs" />
     <Compile Include="Inbox.cs" />
+    <Compile Include="View\BusinessSubscription.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
     <Compile Include="CompanyQuota.cs" />
@@ -235,7 +236,6 @@
     <Compile Include="RotationNodeUpDoc.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="UserAdmin.cs" />
     <Compile Include="Versioning.cs" />
     <Compile Include="View\Contact\ContactData.cs" />
     <Compile Include="View\Contact\ContactItem.cs" />
