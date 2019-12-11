@@ -103,23 +103,6 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        //public ActionResult GetLiteAll2(string topCriteria, int page, int pageSize, string criteria)
-        //{
-        //    LoginController login = new LoginController();
-        //    UserSession user = login.GetUser(this);
-        //    var srv = new DocumentService();
-        //    var data = srv.GetLiteSelectedAll(user.Id, topCriteria, page, pageSize, null, criteria);
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
-        //public ActionResult GetLiteAllCount2(string topCriteria, string criteria)
-        //{
-        //    LoginController login = new LoginController();
-        //    UserSession user = login.GetUser(this);
-        //    var srv = new DocumentService();
-        //    var data = srv.GetLiteSellectedAllCount(user.Id, topCriteria, criteria);
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
-
         public ActionResult GetLiteAll3(string topCriteria, int page, int pageSize, string criteria)
         {
             LoginController login = new LoginController();
@@ -144,7 +127,7 @@ namespace DRD.App.Controllers
             var srv = new DocumentService();
             var data = srv.GetById(documentId);
 
-            data.DocumentUser.FlagPermission = srv.GetPermission(user.Id, rotationNodeId, documentId);
+            //data.DocumentUser.FlagPermission = srv.GetPermission(user.Id, rotationNodeId, documentId);
 
             var fname = OpenFile(data.FileName);
             data.FileName = fname;
@@ -222,7 +205,7 @@ namespace DRD.App.Controllers
         {
             UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
-            prod.UserId = user.Email;
+            prod.UserEmail = user.Email;
             //prod.CompanyId = (long)user.CompanyId;
             var srv = new DocumentService();
             var data = srv.Save(prod);

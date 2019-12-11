@@ -2,11 +2,17 @@
 
 using DRD.Models;
 using DRD.Models.API.List;
+using DRD.Models.Custom;
 
 namespace DRD.Service
 {
     public interface IDocumentService
     {
+        Document Create(Document document);
+        Document Update(Document document);
+        //void DoRevision(Document document);
+
+
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
         ICollection<DocumentElement> FillAnnos(Document doc);
@@ -31,7 +37,7 @@ namespace DRD.Service
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);
         int Save(Document prod);
-        int SaveAnnos(long documentId, long creatorId, string userId, IEnumerable<DocumentElement> annos);
+        int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElement> annos);
         int SaveCxDownload(string docName, long memberId);
         int SaveCxPrint(string docName, long memberId);
         void sendEmailSignature(Member member, string rotName, string docName, string numbers);

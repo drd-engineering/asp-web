@@ -31,8 +31,8 @@ namespace DRD.Models
         public System.DateTime? FlagDate { get; set; } // FlagDate
         public string FlagImage { get; set; } // FlagImage (length: 100)
         public string UserId { get; set; } // UserId (length: 50)
-        public System.DateTime DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
+        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public long DocumentId {set; get;}
 
         // Foreign keys
