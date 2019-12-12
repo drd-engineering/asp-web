@@ -12,6 +12,10 @@ namespace DRD.Service
 {
     public class CompanyService
     {
+        private MemberService memberService;
+        private UserService userService;
+        private SubscriptionService subscriptionService;
+
         public CompanyList GetAllCompany()
         {
             using (var db = new ServiceContext())
@@ -69,13 +73,33 @@ namespace DRD.Service
                 return null;
             }
         }
-        public CompanyList GetAllCompanyDetails(long userId)
+        public CompanyList getCompanyListByAdminId(long adminId)
         {
+            memberService = new MemberService();
             using (var db = new ServiceContext())
             {
-                MemberService memberService = new MemberService();
-                UserService userService = new UserService();
-                SubscriptionService subscriptionService = new SubscriptionService();
+                var companies = new CompanyList();
+                var companyAdmins = memberService.getMemberByCompanyAdmin(adminId);
+                foreach (Member x in companyAdmins)
+                {
+                    var company = GetCompanyDetail(x.CompanyId);
+                    if (company != null)
+                    {
+                        companies.addCompany(company);
+                    }
+                }
+                return companies;
+            }
+        }
+
+        public CompanyList GetAllCompanyDetails(long userId)
+        {
+            memberService = new MemberService();
+            subscriptionService = new SubscriptionService();
+            userService = new UserService();
+
+            using (var db = new ServiceContext())
+            {
 
                 var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId==userId && companyItem.IsActive).ToList();
                 var listReturn = new CompanyList();
@@ -102,21 +126,48 @@ namespace DRD.Service
 
                     listReturn.addCompany(company);
                 }
-
+                CompanyList companyAsAdmins = getCompanyListByAdminId(userId);
+                listReturn.mergeCompanyList(companyAsAdmins);
                 System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST :: " + listReturn.companies.Count);
-
-
-                //var adminCompanies = (from Company in db.Companies
-                //              join Member in db.Members on Company.Id equals Member.CompanyId
-                //              where Member.Id == userId && Member.IsAdministrator 
-                //              select new CompanyDetail
-                //              {
-
-                //              }
-                //              ).ToList();
                 return listReturn;
             }
         }
+        public CompanyItem GetCompanyDetail(long id)
+        {
+            memberService = new MemberService();
+
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    var company = new CompanyItem();
+                    foreach (Company x in result)
+                    {
+                        var subscription = getCompanySubscription(x.Id);
+                        company.Id = x.Id;
+                        company.Code = x.Code;
+                        company.Name = x.Name;
+                        company.Phone = x.Phone;
+                        company.Address = x.Address;
+                        company.PointLocation = x.PointLocation;
+                        company.OwnerId = x.OwnerId;
+                        company.OwnerName = userService.GetName(company.OwnerId);
+                        if (subscription != null) { company.SubscriptionId = subscription.Id; }
+                        if (subscription != null) { company.SubscriptionName = subscriptionService.getSubscriptionName(subscription.Id); }
+                        company.IsActive = x.IsActive;
+                        company.IsVerified = x.IsVerified;
+                        company.Administrators = memberService.getAdministrators(company.Id);
+                    }
+                    return company;
+                }
+            }
+        }
+
         public CompanyItem GetCompany(int id)
         {
             using (var db = new ServiceContext())
@@ -128,13 +179,13 @@ namespace DRD.Service
                 }
                 else
                 {
-                    var returnCompany = new CompanyItem();
+                    var company = new CompanyItem();
                     foreach(Company x in result){
-                        returnCompany.Id = x.Id;
-                        returnCompany.Name = x.Name;
-                        returnCompany.Code = x.Code;
+                        company.Id = x.Id;
+                        company.Name = x.Name;
+                        company.Code = x.Code;
                     }
-                    return returnCompany;
+                    return company;
                 }
             }
         }

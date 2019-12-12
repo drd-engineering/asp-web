@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using DRD.Models;
 using DRD.Models.API;
+using DRD.Models.API.Contact;
 using DRD.Models.Custom;
 using DRD.Models.View.Member;
 
@@ -17,8 +18,8 @@ namespace DRD.Service
 {
     public class MemberService
     {
-        CompanyService companyService = new CompanyService();
-        ContactService contactService = new ContactService();
+        private CompanyService companyService;
+        private ContactService contactService;
 
         public Member getMember(long memberId)
         {
@@ -37,6 +38,9 @@ namespace DRD.Service
         }
         public void mappingMember(List<Member> membersFromDb, MemberList listReturn)
         {
+            companyService = new CompanyService();
+            contactService = new ContactService();
+
             foreach (Member x in membersFromDb)
             {
 
@@ -95,11 +99,33 @@ namespace DRD.Service
             }
         }
 
-        public List<Member> getAdministrators(long CompanyId)
+        public List<MemberItem> getAdministrators(long CompanyId)
         {
             using (var db = new ServiceContext())
             {
-                return db.Members.Where(memberItem => memberItem.CompanyId == CompanyId && memberItem.IsAdministrator).ToList();
+                var admins = (from Member in db.Members
+                              join User in db.Users on Member.UserId equals User.Id
+                              where Member.CompanyId == CompanyId
+                              select new MemberItem
+                              {
+                                  Id = Member.Id,
+                                  User = new ContactItem
+                                  {
+                                      Id = User.Id,
+                                      Name = User.Name
+                                  }
+                              }).ToList(); ;
+                return admins;
+                //return db.Members.Where(memberItem => memberItem.CompanyId == CompanyId && memberItem.IsAdministrator).ToList();
+            }
+        }
+
+        public List<Member> getMemberByCompanyAdmin(long adminId)
+        {
+            using (var db = new ServiceContext())
+            {
+
+                return db.Members.Where(companyItem => companyItem.UserId == adminId && companyItem.IsActive & companyItem.IsAdministrator).ToList();
             }
         }
 

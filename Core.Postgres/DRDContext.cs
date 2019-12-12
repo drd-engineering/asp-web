@@ -101,15 +101,30 @@ namespace Core.Postgres
                     OwnerId = listOfUserCreated[4].Id, CreatedAt = DateTime.Now });
 
             Member member1 = new Member { Id = 111111, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true,
-                isMemberAccept = true, UserId = listOfUserCreated[2].Id };
+                isMemberAccept = true, UserId = listOfUserCreated[2].Id, IsAdministrator = true  };
             Member member2 = new Member { Id = 111112, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true,
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id };
+                isMemberAccept = true, UserId = listOfUserCreated[3].Id, IsAdministrator = false  };
             Member member3 = new Member { Id = 111113, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[1].Id, IsAdministrator = true };
+                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true };
             Member member4 = new Member { Id = 111114, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id };
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
             Member member5 = new Member { Id = 111115, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[5].Id };
+                isMemberAccept = true, UserId = listOfUserCreated[5].Id,IsAdministrator = false };
+            Member member6 = new Member { Id = 111116, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[0].Id,IsAdministrator = false };
+            Member member7 = new Member { Id = 111117, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
+            Member member8 = new Member { Id = 111118, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
+            Member member9 = new Member { Id = 111119, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[5].Id, IsAdministrator = true  };
+            Member member10 = new Member { Id = 1111151, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true  };
+            Member member11 = new Member { Id = 1111152, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[2].Id,IsAdministrator = false };
+            Member member12 = new Member { Id = 1111153, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false
+            };
 
             PlanBusiness planBusiness1 = new PlanBusiness { Id=1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
             PlanBusiness planBusiness2 = new PlanBusiness { Id=2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageUsedinByte= 1000, totalAdministrators=1, SubscriptionName= "Business"};
@@ -123,7 +138,7 @@ namespace Core.Postgres
             Contact contact6 = new Contact { ContactOwnerId = listOfUserCreated[5].Id, ContactItemId = listOfUserCreated[6].Id };
 
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2]);
-            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10, member11, member12);
             modelBuilder.Entity<PlanBusiness>().HasData(planBusiness1, planBusiness2, planBusiness3);
 
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });

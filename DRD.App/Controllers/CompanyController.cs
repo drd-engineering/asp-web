@@ -18,9 +18,9 @@ namespace DRD.App.Controllers
 {
     public class CompanyController : Controller
     {
-        LoginController login = new LoginController();
-        UserSession user;
-        Layout layout = new Layout();
+        private LoginController login = new LoginController();
+        private UserSession user;
+        private Layout layout = new Layout();
 
         public void Initialize()
         {
@@ -39,9 +39,6 @@ namespace DRD.App.Controllers
         {
             Initialize();
             CompanyService companyService = new CompanyService();
-            CompanyList companyList = companyService.GetAllCompanyDetails(user.Id);
-
-            ViewBag.companies = companyList;
 
             return View(layout);
         }

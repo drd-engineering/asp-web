@@ -48,8 +48,8 @@
 
 <body ng-app="drdApp" ng-controller="drdController">
 
-    <div ng-repeat="x in CompanyList" ng-init="topIdx = $index">
         <h2>Company</h2>
+    <div ng-repeat="x in CompanyList" ng-init="topIdx = $index">
         <h3><strong>{{x.Name}} </strong><span ng-if="x.IsVerified == true"><img src="~/Images/verified.png" /></span><span ng-if="x.IsVerified == false"><img src="~/Images/unverified.png" /></span></h3>
         <div class="panel panel-flat">
             <div class="panel-heading">
@@ -100,7 +100,7 @@
                                                 <label class="control-label">Administrator</label>
                                                 <p>administrator can manage members and edit company profile</p>
                                                 <div class="input-group" ng-click="showAdmins($index)" style="cursor:pointer">
-                                                    <input type="text" class="form-control" ng-model="x.Administrators" readonly />
+                                                    <input type="text" class="form-control" readonly ng-model="adminsString[$index]"/>
                                                     <span class="input-group-addon" data-toggle="modal" data-target="#modal_manage_admin"><i class="icon-users"></i></span>
                                                 </div>
                                             </div>
@@ -288,6 +288,7 @@
             $scope.membersList = [];
             $scope.selectedMembers = [];
             $scope.administratorsList = [];
+            $scope.adminsString = [];
             $scope.selectedAdmins = [];
             $scope.totalAdminQuota = 0;
 
@@ -368,7 +369,19 @@
                         if (response.data) {
                             $scope.CompanyList = response.data.companies;
 
-                            console.log("Company List :: ", $scope.CompanyList);
+                            $scope.CompanyList.forEach(
+                                function (value, index, array) {
+                                        $scope.adminsString[index] = [];
+                                        var tempString = "";
+                                    value.Administrators.forEach(
+                                        function (val, idx, arr) {
+                                            tempString += idx==0? val.User.Name: (", " + val.User.Name);
+                                            console.log("Admins String :: ", val.User.Name);
+                                        });
+                                    $scope.adminsString[index].push(tempString);
+                                            console.log("Admins String :: ", $scope.adminsString);
+                            });
+                            
                         }
                 });
             }

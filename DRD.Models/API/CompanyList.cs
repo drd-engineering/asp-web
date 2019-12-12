@@ -1,3 +1,4 @@
+using DRD.Models.View.Member;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,14 @@ namespace DRD.Models.API.Register
             companies.Add(companyItem);
             return companyItem.Id;
         }
-
+        public bool mergeCompanyList(CompanyList companyList)
+        {
+            List<CompanyItem> list = new List<CompanyItem>();
+            list.AddRange(companies);
+            list.AddRange(companyList.companies);
+            companies = list.ToArray();
+            return companies != null;
+        }
         public CompanyList()
             {
             companies = new List<CompanyItem>();
@@ -42,7 +50,7 @@ namespace DRD.Models.API.Register
         public bool IsVerified { get; set; } // IsVerified
         public long TotalMember { get; set; }
 
-        public List<Member> Administrators { get; set; }
+        public List<MemberItem> Administrators { get; set; }
         public List<Member> Members { get; set; }
 
     }
