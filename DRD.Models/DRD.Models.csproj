@@ -192,9 +192,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\ListRotationData.cs" />
+    <Compile Include="API\ListMemberData.cs" />
+    <Compile Include="API\ListWorkflowData.cs" />
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
-    <Compile Include="API\MemberData.cs" />
+    <Compile Include="Custom\MemberData.cs" />
+    <Compile Include="View\Rotation\RotationIndex.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
     <Compile Include="PlanBusiness.cs" />
     <Compile Include="PlanPersonal.cs" />
@@ -245,7 +249,7 @@
     <Compile Include="View\Layout.cs" />
     <Compile Include="View\List\ActivityItem.cs" />
     <Compile Include="View\List\DocumentItem.cs" />
-    <Compile Include="View\List\RotationItem.cs" />
+    <Compile Include="Custom\RotationData.cs" />
     <Compile Include="View\Menu.cs" />
     <Compile Include="View\Menus\UserMenu.cs" />
     <Compile Include="Workflow.cs" />

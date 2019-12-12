@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using DRD.Models.Custom;
+
 namespace DRD.Models.API.List
 {
     // inbox/{id}
@@ -11,7 +13,7 @@ namespace DRD.Models.API.List
     {
         public long Id { get; set; }
         public String CurrentActivity { get; set; } // rotationActivity name
-        public List<RotationItem> RotationLog { get; set; }
+        public List<RotationData> RotationLog { get; set; }
         public List<DocumentItem> Documents { get; set; }
         // public List<?> Attachments { get; set; }
     }

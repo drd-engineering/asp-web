@@ -12,11 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20191211081654_ReviseDocument.cs" />
-    <Compile Remove="Migrations\20191211081654_ReviseDocument.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove=".json-template" />
     <None Remove="appsettings.json.template" />
   </ItemGroup>

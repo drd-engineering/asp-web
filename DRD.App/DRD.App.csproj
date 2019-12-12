@@ -2977,6 +2977,8 @@
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
     <Content Include="Views\Contact\index.cshtml" />
+    <Content Include="Views\Rotation\index.cshtml" />
+    <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />

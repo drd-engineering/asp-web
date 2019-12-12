@@ -32,13 +32,11 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-
-        public ActionResult GetLiteGroupAll(string topCriteria, int page, int pageSize)
+        
+        public ActionResult FindMembers(string topCriteria, int page, int pageSize)
         {
             InitializeAPI();
-
-            var data = memberService.GetLiteGroupAll(user.Id, topCriteria, page, pageSize, null);
-
+            var data = memberService.FindMembers(user.Id, topCriteria, page, pageSize, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

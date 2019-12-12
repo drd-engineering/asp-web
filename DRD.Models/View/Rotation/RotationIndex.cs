@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API.List
+namespace DRD.Models.Custom
 {
-    public class RotationItem
+    public class RotationIndex
     {
         
         public string Key { get; set; }
@@ -27,8 +27,9 @@ namespace DRD.Models.API.List
         public string StatusDescription { get; set; }
 
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
+        public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationNode.FK_RotationNode_Rotation
 
-        public RotationItem()
+        public RotationIndex()
         {
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
             

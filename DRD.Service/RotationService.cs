@@ -35,40 +35,21 @@ namespace DRD.Service
         //
         // for edit
         //
-        public Rotation GetHeaderById(long id)
+        public RotationIndex GetRotationById(long id)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.Rotations
                      where rotation.Id == id
-                     select new Rotation
+                     select new RotationIndex
                      {
                          Id = rotation.Id,
                          Subject = rotation.Subject,
-                         Remark = rotation.Remark,
                          Status = rotation.Status,
                          UserId = rotation.UserId, // filled when using personal plan
                          MemberId = rotation.MemberId, // filled when using business plan
-                         DateUpdated = rotation.DateUpdated,
-                         Workflow = new Workflow
-                         {
-                             Id = rotation.Workflow.Id,
-                             Name = rotation.Workflow.Name,
-                         },
-                         RotationUsers =
-                            (from RotationUser in rotation.RotationUsers
-                             select new RotationUser
-                             {
-                                 Id = RotationUser.Id,
-                                 WorkflowNodeId = RotationUser.WorkflowNodeId,
-                                 ActivityName = RotationUser.WorkflowNode.Caption,
-                                 MemberId = (RotationUser.User.Id),
-                                 Name = (RotationUser.User.Name),
-                                 Email = (RotationUser.User.Email),
-                                 Picture = RotationUser.User.ImageProfile,
-                                 FlagPermission = RotationUser.FlagPermission
-                             }).ToList(),
+                         
                      }).FirstOrDefault();
 
                 return result;
@@ -187,10 +168,10 @@ namespace DRD.Service
             }
         }
 
-        public IEnumerable<RotationItem> GetNodeByMemberId(long userId, string status, string topCriteria, int page, int pageSize)
+        public IEnumerable<RotationData> GetNodeByMemberId(long userId, string status, string topCriteria, int page, int pageSize)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
             // top criteria
             string[] tops = new string[] { };
@@ -206,7 +187,7 @@ namespace DRD.Service
                      where rotationNode.Rotation.Status.Equals("01") &&
                             rotationNode.UserId == userId && rotationNode.Status.Equals(status) &&
                             (topCriteria == null || tops.All(RotationUser => (rotationNode.Rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotationNode.Rotation.Id,
                          RotationNodeId = rotationNode.Id,
@@ -225,7 +206,7 @@ namespace DRD.Service
                 if (result != null)
                 {
                     MenuService menuService = new MenuService();
-                    foreach (RotationItem rotationItem in result)
+                    foreach (RotationData rotationItem in result)
                     {
                         rotationItem.Key = menuService.EncryptData(rotationItem.Id);
                     }
@@ -359,20 +340,20 @@ namespace DRD.Service
         /// <parameter name="page"></parameter>
         /// <parameter name="pageSize"></parameter>
         /// <returns></returns>
-        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize)
+        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize)
         {
-            Expression<Func<RotationItem, bool>> criteriaUsed = WorkflowData => true;
-            return GetList(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
+            Expression<Func<RotationData, bool>> criteriaUsed = WorkflowData => true;
+            return FindRotations(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
         }
-        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
+        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
         {
-            Expression<Func<RotationItem, bool>> criteriaUsed = WorkflowData => true;
-            return GetList(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
+            Expression<Func<RotationData, bool>> criteriaUsed = WorkflowData => true;
+            return FindRotations(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
-        public IEnumerable<RotationItem> GetList(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
+        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationItem, string>> ordering = WorkflowData => "IsTemplate desc, Name";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
             if (order != null)
                 ordering = order;
@@ -391,7 +372,7 @@ namespace DRD.Service
                     var result =
                     (from rotation in db.Rotations
                      where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotation.Id,
                          Subject = rotation.Subject,
@@ -404,54 +385,22 @@ namespace DRD.Service
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
+                    ListRotationData returnValue = new ListRotationData();
                     if (result != null)
                     {
+                        int counterRotation = 0;
                         MenuService menuService = new MenuService();
-                        foreach (RotationItem rotationItem in result)
+                        foreach (RotationData rotationItem in result)
                         {
+                            counterRotation += 1;
                             rotationItem.Key = menuService.EncryptData(rotationItem.Id);
+                            returnValue.Items.Add(rotationItem);
                         }
+                        returnValue.Count = counterRotation;
                     }
-
-                    return result;
+                    return returnValue;
                 }
                 return null;
-            }
-        }
-
-        public long GetListCount(long creatorId, string topCriteria)
-        {
-            return GetListCount(creatorId, topCriteria, null);
-        }
-        public long GetListCount(long creatorId, string topCriteria, string criteria)
-        {
-
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = null;
-
-            using (var db = new ServiceContext())
-            {
-                if (db.Rotations != null)
-                {
-                    var result =
-                    (from rotation in db.Rotations
-                     where rotation.CreatorId == creatorId && (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new Rotation
-                     {
-                         Id = rotation.Id,
-                     }).Count();
-
-                    return result;
-                }
-                return 0;
             }
         }
 
@@ -463,18 +412,18 @@ namespace DRD.Service
         /// <parameter name="page"></parameter>
         /// <parameter name="pageSize"></parameter>
         /// <returns></returns>
-        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize)
+        public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize)
         {
             return GetLiteAll(userId, topCriteria, page, pageSize, null, null);
         }
-        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
+        public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
         {
             return GetLiteAll(userId, topCriteria, page, pageSize, order, null);
         }
-        public IEnumerable<RotationItem> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
+        public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
             if (order != null)
                 ordering = order;
@@ -494,7 +443,7 @@ namespace DRD.Service
                     (from rotation in db.Rotations
                      where (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotation.Id,
                          Subject = rotation.Subject,
@@ -562,18 +511,18 @@ namespace DRD.Service
         /// <parameter name="order"></parameter>
         /// <parameter name="criteria"></parameter>
         /// <returns></returns>
-        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize)
+        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize)
         {
             return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, null, null);
         }
-        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order)
+        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
         {
             return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, order, null);
         }
-        public IEnumerable<RotationItem> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
+        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationItem, string>> ordering = WorkflowData => "Status, DateCreated desc";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
 
             if (order != null)
                 ordering = order;
@@ -594,7 +543,7 @@ namespace DRD.Service
                      where statuses.Contains(rotation.Status) &&
                             (rotation.UserId == userId || rotation.RotationNodes.Any(RotationUser => RotationUser.User.Id == userId)) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotation.Id,
                          Subject = rotation.Subject,
@@ -612,7 +561,7 @@ namespace DRD.Service
                 if (result != null)
                 {
                     MenuService menuService = new MenuService();
-                    foreach (RotationItem rotationItem in result)
+                    foreach (RotationData rotationItem in result)
                     {
                         rotationItem.Key = menuService.EncryptData(rotationItem.Id);
                     }
@@ -671,10 +620,10 @@ namespace DRD.Service
         /// <parameter name="order"></parameter>
         /// <parameter name="criteria"></parameter>
         /// <returns></returns>
-        public IEnumerable<RotationItem> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationItem, string>> order, Expression<Func<RotationItem, bool>> criteria)
+        public IEnumerable<RotationData> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationItem, string>> ordering = WorkflowData => "IsTemplate desc, Name";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
 
             if (order != null)
                 ordering = order;
@@ -695,7 +644,7 @@ namespace DRD.Service
                     (from rotation in db.RotationNodes
                      where rotation.User.Id == userId && statuses.Contains(rotation.Status) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotation.Id,
                          Subject = rotation.Rotation.Subject,
@@ -713,7 +662,7 @@ namespace DRD.Service
                 if (result != null)
                 {
                     MenuService menuService = new MenuService();
-                    foreach (RotationItem rotationItem in result)
+                    foreach (RotationData rotationItem in result)
                     {
                         rotationItem.Key = menuService.EncryptData(rotationItem.Id);
                     }
@@ -723,7 +672,7 @@ namespace DRD.Service
 
             }
         }
-        public IEnumerable<RotationItem> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize)
+        public IEnumerable<RotationData> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize)
         {
             return GetNodeLiteAll(userId, status, topCriteria, page, pageSize, null, null);
         }
@@ -749,7 +698,7 @@ namespace DRD.Service
                     (from rotation in db.RotationNodes
                      where rotation.User.Id == userId && statuses.Contains(rotation.Status) &&
                             (topCriteria == null || tops.All(RotationUser => (rotation.Rotation.Subject).Contains(RotationUser)))
-                     select new RotationItem
+                     select new RotationData
                      {
                          Id = rotation.Id,
                      }).Count();

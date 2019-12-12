@@ -33,7 +33,37 @@ namespace DRD.Service
             return businessSubscriptions[(int)subscriptionId - 1].Name;
         }
 
-        public bool isSubscriptionValid(int subscriptionId, bool isCompanySubscription)
+        public bool deactivatePlanBusiness(long companyId)
+        {
+            PlanBusiness planBusiness = editPlanBusiness(companyId,null,null,null, IsActive: false);
+            return planBusiness != null;
+        }
+
+        public PlanBusiness editPlanBusiness(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
+        {
+            using (var db = new ServiceContext())
+            {
+                var planBusiness = (from c in db.PlanBusinesses
+                 where c.CompanyId == companyId && c.IsActive && c.StorageUsedinByte > 0
+                 select new PlanBusiness
+                 {
+                     Id = c.Id,
+                     totalAdministrators = TotalAdministrators == null? c.totalAdministrators : (int)TotalAdministrators,
+                     CompanyId = c.CompanyId,
+                     ExpiredAt = ExpiredAt == null? c.ExpiredAt : ExpiredAt,
+                     Price = Price==null? c.Price : (long)Price,
+                     StartedAt= c.StartedAt,
+                     StorageUsedinByte = c.StorageUsedinByte,
+                     SubscriptionName = c.SubscriptionName,
+                     IsActive = IsActive==null? c.IsActive: (bool)IsActive,
+                 }).FirstOrDefault();
+                db.PlanBusinesses.Add(planBusiness);
+                db.SaveChanges();
+                return planBusiness;
+            }
+        }
+
+        public bool isSubscriptionValid(long subscriptionId, bool isCompanySubscription)
         {
             using (var db = new ServiceContext())
             {
@@ -58,14 +88,18 @@ namespace DRD.Service
 
                 var company =
                     (from c in db.PlanBusinesses
-                     where c.CompanyId == subscriptionId && c.IsActive && c.ExpiredAt >= DateTime.Now && c.StorageUsedinByte > 0
+                     where c.CompanyId == subscriptionId && c.IsActive && c.StorageUsedinByte > 0
                      select new PlanBusiness
                      {
                          Id = c.Id,
                          IsActive = c.IsActive,
                      }).FirstOrDefault();
-
-                return company != null;
+                if(company != null && company.ExpiredAt >= DateTime.Now)
+                {
+                    deactivatePlanBusiness(subscriptionId);
+                    return false;
+                }
+                    return company != null;
                 
             }
         }

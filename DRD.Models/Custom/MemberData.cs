@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API
+namespace DRD.Models.Custom
 {
     public class MemberData
     {

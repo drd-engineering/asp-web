@@ -272,7 +272,7 @@ namespace DRD.Service
                                             type = "company",
                                             name = plan.SubscriptionName,
                                             companyId = company.Id,
-                                            companyName = company.Name
+                                            companyName = company == null? null : company.Name
                                         }).ToList();
                 if (userBusinessPlan.Count != 0)
                 {

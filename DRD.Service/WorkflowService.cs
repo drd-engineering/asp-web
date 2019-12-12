@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.IO;
+
 using DRD.Models;
 using DRD.Models.View;
 using DRD.Models.Custom;
+using DRD.Models.API;
 using DRD.Service.Context;
-using System.IO;
 
 namespace DRD.Service
 {
@@ -130,19 +132,19 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize)
+        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize)
         {
             Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
-            return GetListMatch(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
+            return FindWorkflows(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
         }
 
-        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
+        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
         {
             Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
-            return GetListMatch(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
+            return FindWorkflows(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public IEnumerable<WorkflowData> GetListMatch(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData ,bool>> criteria)
+        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData ,bool>> criteria)
         {
             int skip = pageSize * (page - 1);
             Expression<Func<WorkflowData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
@@ -174,143 +176,22 @@ namespace DRD.Service
                          DateCreated = workflow.DateCreated,
                          DateUpdated = workflow.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
+                ListWorkflowData returnValue = new ListWorkflowData();
                 if (result != null)
                 {
+                    int CounterItem = 0;
                     MenuService menuService = new MenuService();
                     foreach (WorkflowData workflow in result)
                     {
+                        CounterItem+=1;
                         workflow.Key = menuService.EncryptData(workflow.Id);
+                        returnValue.Items.Add(workflow);
                     }
+                    returnValue.Count = CounterItem;
                 }
-                return result;
-
+                return returnValue;
             }
         }
-
-        public long GetListMatchCount(long creatorId, string topCriteria)
-        {
-            return GetListMatchCount(creatorId, topCriteria, null);
-        }
-
-        public long GetListMatchCount(long creatorId, string topCriteria, Expression<Func<WorkflowData, bool>> criteria)
-        {
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
-            using (var db = new ServicesContext())
-            {
-                var result =
-                    (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria == "" || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
-                     select new WorkflowData
-                     {
-                         Id = workflow.Id,
-                         Type = workflow.Type,
-                     }).Where(criteria).Count();
-
-                return result;
-
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="creatorId"></param>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize)
-        {
-            return GetPopupAll(creatorId, topCriteria, page, pageSize, null, null);
-        }
-
-        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
-        {
-            return GetPopupAll(creatorId, topCriteria, page, pageSize, order, null);
-        }
-
-        public IEnumerable<WorkflowData> GetPopupAll(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData, bool>> criteria)
-        {
-            int skip = pageSize * (page - 1);
-            Expression<Func<WorkflowData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
-
-            if (order != null)
-                ordering = order;
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
-            using (var db = new ServicesContext())
-            {
-                var result =
-                    (from workflow in db.Workflows
-                     where (workflow.CreatorId == creatorId || (workflow.IsTemplate && workflow.IsActive)) && (topCriteria == null || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
-                     select new WorkflowData
-                     {
-                         Id = workflow.Id,
-                         Name = workflow.Name,
-                         Description = workflow.Description,
-                         IsActive = workflow.IsActive,
-                         IsTemplate = workflow.IsTemplate,
-                         Type = workflow.Type,
-                         UserId = workflow.UserId,
-                         DateCreated = workflow.DateCreated,
-                         DateUpdated = workflow.DateUpdated,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
-                if (result != null)
-                {
-                    MenuService menuService = new MenuService();
-                    foreach (WorkflowData workflowData in result)
-                    {
-                        workflowData.Key = menuService.EncryptData(workflowData.Id);
-                    }
-                }
-                return result;
-
-            }
-        }
-
-        public long GetPopupAllCount(long creatorId, string topCriteria)
-        {
-            return GetPopupAllCount(creatorId, topCriteria, null);
-        }
-
-        public long GetPopupAllCount(long creatorId, string topCriteria, Expression<Func<WorkflowData, bool>> criteria)
-        {
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = null;
-
-            using (var db = new ServicesContext())
-            {
-                var result =
-                    (from workflow in db.Workflows
-                     where (workflow.CreatorId == creatorId || (workflow.IsTemplate && workflow.IsActive)) && (topCriteria == null || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
-                     select new Workflow
-                     {
-                         Id = workflow.Id,
-                     }).Count();
-
-                return result;
-
-            }
-        }
-
 
         /// <summary>
         /// 
