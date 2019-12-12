@@ -241,7 +241,7 @@ namespace DRD.Service
                     }
                     returnValue.Count = counterMember;
                 }
-                return result;
+                return returnValue;
             }
         }
     }

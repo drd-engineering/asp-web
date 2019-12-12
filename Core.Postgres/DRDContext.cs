@@ -84,7 +84,7 @@ namespace Core.Postgres
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3]);
+            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3], listOfUserCreated[4], listOfUserCreated[5], listOfUserCreated[6]);
 
             List<Company> listOfCompanyCreated = new List<Company>();
             listOfCompanyCreated.Add(
@@ -100,17 +100,21 @@ namespace Core.Postgres
                     Descr = "a company dummy", Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu", PostalCode = "221211", IsActive = true,
                     OwnerId = listOfUserCreated[4].Id, CreatedAt = DateTime.Now });
 
-            Member member1 = new Member { Id = 11212, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true,
+            Member member1 = new Member { Id = 111111, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true,
                 isMemberAccept = true, UserId = listOfUserCreated[2].Id };
-            Member member2 = new Member { Id = 12212, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true,
+            Member member2 = new Member { Id = 111112, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true,
                 isMemberAccept = true, UserId = listOfUserCreated[3].Id };
-            Member member3 = new Member { Id = 13212, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+            Member member3 = new Member { Id = 111113, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[1].Id, IsAdministrator = true };
-            Member member4 = new Member { Id = 13312, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+            Member member4 = new Member { Id = 111114, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[4].Id };
-            Member member5 = new Member { Id = 13312, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+            Member member5 = new Member { Id = 111115, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[5].Id };
-            
+
+            PlanBusiness planBusiness1 = new PlanBusiness { Id=1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
+            PlanBusiness planBusiness2 = new PlanBusiness { Id=2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageUsedinByte= 1000, totalAdministrators=1, SubscriptionName= "Business"};
+            PlanBusiness planBusiness3 = new PlanBusiness { Id=3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageUsedinByte= 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
+
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
             Contact contact3 = new Contact { ContactOwnerId = listOfUserCreated[1].Id, ContactItemId = listOfUserCreated[3].Id };
@@ -118,11 +122,12 @@ namespace Core.Postgres
             Contact contact5 = new Contact { ContactOwnerId = listOfUserCreated[1].Id, ContactItemId = listOfUserCreated[5].Id };
             Contact contact6 = new Contact { ContactOwnerId = listOfUserCreated[5].Id, ContactItemId = listOfUserCreated[6].Id };
 
-            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5);
-            modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);
-
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2]);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5);
+            modelBuilder.Entity<PlanBusiness>().HasData(planBusiness1, planBusiness2, planBusiness3);
+
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
+            modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);
 
         }
     }

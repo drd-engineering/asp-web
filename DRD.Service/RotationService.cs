@@ -35,40 +35,21 @@ namespace DRD.Service
         //
         // for edit
         //
-        public Rotation GetHeaderById(long id)
+        public RotationIndex GetRotationById(long id)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.Rotations
                      where rotation.Id == id
-                     select new Rotation
+                     select new RotationIndex
                      {
                          Id = rotation.Id,
                          Subject = rotation.Subject,
-                         Remark = rotation.Remark,
                          Status = rotation.Status,
                          UserId = rotation.UserId, // filled when using personal plan
                          MemberId = rotation.MemberId, // filled when using business plan
-                         DateUpdated = rotation.DateUpdated,
-                         Workflow = new Workflow
-                         {
-                             Id = rotation.Workflow.Id,
-                             Name = rotation.Workflow.Name,
-                         },
-                         RotationUsers =
-                            (from RotationUser in rotation.RotationUsers
-                             select new RotationUser
-                             {
-                                 Id = RotationUser.Id,
-                                 WorkflowNodeId = RotationUser.WorkflowNodeId,
-                                 ActivityName = RotationUser.WorkflowNode.Caption,
-                                 MemberId = (RotationUser.User.Id),
-                                 Name = (RotationUser.User.Name),
-                                 Email = (RotationUser.User.Email),
-                                 Picture = RotationUser.User.ImageProfile,
-                                 FlagPermission = RotationUser.FlagPermission
-                             }).ToList(),
+                         
                      }).FirstOrDefault();
 
                 return result;

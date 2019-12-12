@@ -32,18 +32,12 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-
-        /// <summary>
-        /// POST: Member / FindMembers
-        /// </summary>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
+        
         public ActionResult FindMembers(string topCriteria, int page, int pageSize)
         {
             InitializeAPI();
-            var data = service.FindMembers(user.Id, topCriteria, page, pageSize, null);return Json(data, JsonRequestBehavior.AllowGet);
+            var data = memberService.FindMembers(user.Id, topCriteria, page, pageSize, null);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetAcceptedMember(long companyId)

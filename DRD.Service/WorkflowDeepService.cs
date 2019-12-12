@@ -17,6 +17,7 @@ namespace DRD.Service
     {
         private readonly string _connString;
         private string _appZoneAccess;
+        private SubscriptionService subscriptionService = new SubscriptionService();
 
         public WorkflowDeepService(string appZoneAccess, string connString)
         {
@@ -438,17 +439,10 @@ namespace DRD.Service
             return ret;
         }
 
-        //ini bakal dibuat di service terpisah
-        public bool isSubscriptionValid(long subscriptionId, bool isCompanySubscription)
-        {
-            
-            return true;
-        }
-
         // subscription Id is either userId or companyId
         public List<ActivityItem> Start(long rotationId, long subscriptionId, bool isCompanySubscription)
         {
-            if (!isSubscriptionValid(subscriptionId,isCompanySubscription))
+            if (!subscriptionService.isSubscriptionValid(subscriptionId, isCompanySubscription))
             {
                 return null;
             }
