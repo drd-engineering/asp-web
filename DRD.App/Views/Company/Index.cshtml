@@ -211,15 +211,19 @@
                             <div class="row">
                                 <div class="col-sm-5">
                                     <b>Members:</b><br />
-                                    <select ng-repeat="x in membersList" ng-model="selectedMembers" multiple="multiple" id='lstBox1'>
-                                        <div class='btn btn-sm' id='btnRight'></div><option value="{{x.Id}}">{{x.User.Name}}</option>
+                                    <select ng-model="selectedMembers" multiple="multiple" id='lstBox2'>
+                                        <option ng-selected="{{x.Id == selectedMembers}}"
+                                                ng-repeat="x in membersList"
+                                                value="{{x}}">
+                                            {{x.User.Name}}
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="row">
                                         <div class="col-md-12">
                                             @*<input  class='btn btn-sm' id='btnRight' value='  >  ' />*@
-                                            <input ng-click="makeAdmin()" class='btn btn-sm' id='btnRight' value='  >  ' />
+                                            <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='  >  ' />
                                         </div>
                                         <div class="col-md-12">
                                             @*<input class='btn btn-sm' id='btnLeft' value='  <  ' />*@
@@ -232,10 +236,11 @@
                                     <select ng-model="selectedAdmins" multiple="multiple" id='lstBox2'>
                                         <option ng-selected="{{x.Id == selectedAdmins}}"
                                                 ng-repeat="x in administratorsList"
-                                                value ="{{x.Id}}">{{x.User.Name}}</option>
+                                                value="{{x}}">
+                                            {{x.User.Name}}
+                                        </option>
                                     </select>
                                 </div>
-                                <tt>multipleSelect = {{selectedAdmins | json}}</tt><br />
                             </div>
                             <div class="modal-footer" style="margin-top:15px">
                                 <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
@@ -408,28 +413,33 @@
                         }
                 });
             }
-            $scope.makeAdmin = function () {
-
-
-            }
-            $scope.addAdminSelected = function (id) {
-                $scope.selectedAdmins.push(id);
-                console.log($scope.selectedAdmins);
-            }
-            $scope.makeMember = function (idx) {
-                
-                console.log(idx + "Selected Admins :: " + $scope.selectedAdmins);
-                for (x in $scope.administratorsList) {
-                    console.log(idx + "Selected Id :: " + x.Id + $scope.administratorsList[0].Id);
-                    if (x.Id == idx) {
-                        alert(x.User.Name);
-                    }
+            $scope.makeAdmin = function (members) {
+                var tempMember = JSON.parse(members);
+                var i = $scope.findMember(tempMember, $scope.membersList);
+                if ( i != -1) {
+                    $scope.administratorsList.push(tempMember);
+                    $scope.membersList.splice(i, 1); 
                 }
+                $scope.selectedMembers = [];
+            }
 
-                //$scope.membersList.splice($index, 1);
+            $scope.findMember = function (members, list) {
+                for (var i = 0; i < list.length; i++){
+                    if (list[i].Id === members.Id) {
+                        return i;
+                   }
+                }
+                return -1;
+            }
 
-                console.log("Members List :: " + $scope.membersList);
-                console.log("Admins List :: " + $scope.administratorsList);
+            $scope.makeMember = function (admins) {
+                var tempAdmins = JSON.parse(admins);
+                var i = $scope.findMember(tempAdmins, $scope.administratorsList);
+                if (i != -1) {
+                    $scope.membersList.push(tempAdmins);
+                    $scope.administratorsList.splice(i, 1); 
+                }
+                $scope.selectedAdmins = [];
             }
 
             $scope.getSubscriptionList = function () {

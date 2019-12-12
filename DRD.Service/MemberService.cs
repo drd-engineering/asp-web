@@ -105,7 +105,7 @@ namespace DRD.Service
             {
                 var admins = (from Member in db.Members
                               join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == CompanyId
+                              where Member.CompanyId == CompanyId && Member.isCompanyAccept && Member.isMemberAccept && Member.IsActive && Member.IsAdministrator
                               select new MemberItem
                               {
                                   Id = Member.Id,
@@ -195,14 +195,6 @@ namespace DRD.Service
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
         public ListMemberData FindMembers(long userId, string topCriteria, int page, int pageSize){
             Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true; 
             return FindMembers(userId, topCriteria, page, pageSize, null, criteriaUsed);
