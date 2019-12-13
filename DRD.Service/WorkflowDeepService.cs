@@ -376,11 +376,14 @@ namespace DRD.Service
                 if (cxold < cxnew)
                 {
                     var ep = prod.RotationUsers.ElementAt(0); // get 1 data for sample
+                    var WflNd = db.WorkflowNodes.FirstOrDefault(wflnod => wflnod.WorkflowId == ep.WorkflowNodeId);
+                    // ERror disiini nih
                     for (var x = cxold; x < cxnew; x++)
                     {
                         RotationUser aii = new RotationUser();
-                        aii.Rotation.Id = product.Id;
-                        aii.WorkflowNodeId = ep.WorkflowNodeId;
+                        aii.Rotation = product;
+                        aii.WorkflowNodeId = WflNd.Id;
+                        aii.WorkflowNode = WflNd;
                         aii.User.Id = ep.User.Id;
                         aii.FlagPermission = ep.FlagPermission;
 
