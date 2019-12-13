@@ -9,8 +9,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.API.Register;
-using DRD.Service;
+using DRD.Models.API;
 using DRD.Service.Context;
 
 namespace DRD.Service
@@ -119,8 +118,8 @@ namespace DRD.Service
 
                 returnList = (from member in db.Members
                                             join company in db.Companies on member.CompanyId equals company.Id
-                                            //join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
-                                            //where member.UserId == userId && plan.IsActive
+                                            join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
+                                            where member.UserId == userId && plan.IsActive
                                             select new BusinessSubscriptionItem
                                             { 
                                                 //Id = plan == null ? 0 : plan.Id,

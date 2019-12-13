@@ -39,7 +39,7 @@ namespace DRD.Service
         //
         public WorkflowData GetById(long id)
         {
-            using (var db = new ServicesContext())
+            using (var db = new ServiceContext())
             {
                 var result =
                     (from workflow in db.Workflows
@@ -159,7 +159,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
                 
-            using (var db = new ServicesContext())
+            using (var db = new ServiceContext())
             {
                 var result =
                     (from workflow in db.Workflows
@@ -202,7 +202,7 @@ namespace DRD.Service
         public int Save(WorkflowData workflowData)
         {
             Workflow product;
-            using (var db = new ServicesContext())
+            using (var db = new ServiceContext())
             {
                 // validity subscription type
                 var member = db.Members.FirstOrDefault(workflow => workflow.Id == workflowData.CreatorId);                
