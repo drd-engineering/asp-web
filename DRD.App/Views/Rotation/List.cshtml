@@ -185,26 +185,13 @@
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:code})[0].UrlPage.replace('list?','?')+','+id;
                 location.href = url;
             }
-            $scope.do_start = function (id) {
-                
-                //function () {
-                //    setTimeout(function () {
-                //        //swal({
-                //        //    title: "Ajax request finished!",
-                //        //    confirmButtonColor: "#2196F3"
-                //        //});
-                //        $scope.startProduct(id);
-                //    }, 500);
 
-                //});
 
+            $scope.showSubscription = function (idx) {
+                    $scope.rotationIndex = idx;
+                    console.log("idx : "+idx);
+                    $("#modal_select_subscription").modal("show");
             }
-
-        $scope.showSubscription = function (idx) {
-                $scope.rotationIndex = idx;
-                console.log("idx : "+idx);
-                $("#modal_select_subscription").modal("show");
-        }
 
             $scope.getSubscriptionList = function () {
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
@@ -215,6 +202,37 @@
                             console.log(" SUBS :: " + $scope.SubscriptionList[0].SubscriptionName);
                         }
                     });
+            }
+
+             $scope.setSubscription = function (idx) {
+                $scope.CompanyList[$scope.companyIndex].SubscriptionId = $scope.SubscriptionList[idx].Id;
+                $scope.CompanyList[$scope.companyIndex].SubscriptionName = $scope.SubscriptionList[idx].Name;
+
+                console.log("company index : " + $scope.companyIndex + ", subs Id : " + $scope.CompanyList[$scope.companyIndex].SubscriptionId + ", get : " + $scope.SubscriptionList[idx].Id + "  " + idx);
+                console.log("Company List :: ", $scope.CompanyList);
+            }
+
+              $scope.do_start = function (id) {
+                swal({
+                    title: "Confirmation",
+                    text: "Are you sure to start this rotation with \n" + $scope.SubscriptionList[id].SubscriptionName + " - " + $scope.SubscriptionList[id].CompanyName + " subscription?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    confirmButtonColor: "#2196F3",
+                    showLoaderOnConfirm: true
+                },
+                function () {
+                    setTimeout(function () {
+                        //swal({
+                        //    title: "Ajax request finished!",
+                        //    confirmButtonColor: "#2196F3"
+                        //});
+                        $scope.startProduct(id);
+                    }, 500);
+
+                });
+
             }
 
             $scope.startProduct = function (id) {

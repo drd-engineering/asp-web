@@ -558,6 +558,7 @@
                 });
             }
 
+
             $scope.getMemberCount = function (kriteria) {
                 $http.post('/Member/GetLiteGroupAllCount', { topCriteria: kriteria }).then(function (response) {
                     if (response.data) {

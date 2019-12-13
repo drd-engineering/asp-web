@@ -11,20 +11,15 @@
                 <h6 class="modal-title">Select Subscription</h6>
             </div>
 
-            <div style="height:450px" class="row radio-group">
-
-                <div class="col-sm-12 radio" ng-repeat="x in SubscriptionList">
-                    <h4>{{x.SubscriptionName}}</h4>
-
-                    <div style="height:50px" class="row">
-                        <div class="col-sm-6">
-                            <p>{{}}</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p>{{x.CompanyName}}</p>
-                        </div>
-                    </div>
-                </div>
+            <div style="height:450px" class="table-responsive">
+                @*class="modal-body"*@
+                <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                    <tbody>
+                        <tr data-dismiss="modal" ng-click="do_start($index);" style="cursor:pointer" ng-repeat="x in SubscriptionList" style="vertical-align:top">
+                            <td width="25px">{{x.SubscriptionName}} Subscription - {{x.CompanyName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
