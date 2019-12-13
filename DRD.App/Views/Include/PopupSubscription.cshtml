@@ -11,18 +11,22 @@
                 <h6 class="modal-title">Select Subscription</h6>
             </div>
 
-            <div style="height:450px" class="row">
-                <div class="col-sm-12" ng-repeat="x in SubscriptionList">
-                    <h4>{{x.Name}}</h4>
-                    <div style="height:450px" class="row">
+            <div style="height:450px" class="row radio-group">
+
+                <div class="col-sm-12 radio" ng-repeat="x in SubscriptionList">
+                    <h4>{{x.SubscriptionName}}</h4>
+
+                    <div style="height:50px" class="row">
                         <div class="col-sm-6">
-                            <p></p>
+                            <p>{{}}</p>
                         </div>
                         <div class="col-sm-6">
-                            <p>{{x.Stora}}</p>
+                            <p>{{x.CompanyName}}</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 </div>
 

@@ -9,7 +9,6 @@
     }
 }
 
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -119,6 +118,7 @@
                                 </div>
                             </div>
                             <!-- /LIST -->
+        <ng-include src="'/Include/PopupSubscription'"></ng-include>
                         </div>
                         <!-- /content area -->
                     </div>
@@ -128,7 +128,6 @@
             </div>
             <!-- /page container -->
         </div>
-        <ng-include src="'/Include/PopupSubscription'"></ng-include>
     </div>
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
@@ -143,6 +142,8 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
+            $scope.rotationIndex = -1;
+            $scope.SubscriptionList = [];
             initValues() ;
 
             /*--------------------------------------------------------------
@@ -152,11 +153,11 @@
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
             }
             angular.element(document).ready(function () {
-                //$scope.GetPartners();
                 $scope.findRotations();
-                $scope.rotationIndex = -1;
-                $scope.SubscriptionList = [];
-                $(".content").show();
+                //$scope.GetPartners();
+                $scope.getSubscriptionList();
+                
+                $(".content").show();   
             });
 
             /*--------------------------------------------------------------
@@ -201,7 +202,6 @@
 
         $scope.showSubscription = function (idx) {
                 $scope.rotationIndex = idx;
-                $scope.getSubscriptionList();
                 console.log("idx : "+idx);
                 $("#modal_select_subscription").modal("show");
         }
@@ -211,8 +211,8 @@
                     .then(function (response) {
 
                         if (response.data) {
-                            $scope.SubscriptionList = response.data;
-                            console.log(" SUBS :: " + $scope.SubscriptionList);
+                            $scope.SubscriptionList = response.data.subscriptions;
+                            console.log(" SUBS :: " + $scope.SubscriptionList[0].SubscriptionName);
                         }
                     });
             }
@@ -299,6 +299,15 @@
         $(function () {
         });
         $(document).ready(function () {
+
+            $('.radio-group .radio').click(function () {
+                alert("HAAAI");
+                $(this).parent().find('.radio').removeClass('selected');
+                $(this).addClass('selected');
+                var val = $(this).attr('data-value');
+                //alert(val);
+                $(this).parent().find('input').val(val);
+            });
 
         });
     </script>

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Contexts;
-using System.Web;
+﻿
 using System.Web.Mvc;
 
-using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.API.Register;
 using DRD.Models.Custom;
 using DRD.Models.View;
 
@@ -40,7 +33,7 @@ namespace DRD.App.Controllers
             Initialize();
 
             SubscriptionService subscriptionService = new SubscriptionService();
-            List<BusinessSubscriptionItem> data = subscriptionService.getBusinessSubscriptionByUser(user.Id);
+            BusinessSubscriptionList data = subscriptionService.getBusinessSubscriptionByUser(user.Id);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

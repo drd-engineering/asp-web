@@ -68,10 +68,10 @@ namespace DRD.Service
                                 Id = x.Id,
                                 Document = x.Document,
                                 Page = x.Page,
-                                LeftPos = x.LeftPos,
-                                TopPos = x.TopPos,
-                                WidthPos = x.WidthPos,
-                                HeightPos = x.HeightPos,
+                                LeftPosition = x.LeftPosition,
+                                TopPosition = x.TopPosition,
+                                WidthPosition = x.WidthPosition,
+                                HeightPosition = x.HeightPosition,
                                 Color = x.Color,
                                 BackColor = x.BackColor,
                                 Data = x.Data,
@@ -79,8 +79,8 @@ namespace DRD.Service
                                 Rotation = x.Rotation,
                                 ScaleX = x.ScaleX,
                                 ScaleY = x.ScaleY,
-                                TransX = x.TransX,
-                                TransY = x.TransY,
+                                TransitionX = x.TransitionX,
+                                TransitionY = x.TransitionY,
                                 StrokeWidth = x.StrokeWidth,
                                 Opacity = x.Opacity,
                                 Flag = x.Flag,
@@ -138,7 +138,7 @@ namespace DRD.Service
         public IEnumerable<DocumentItem> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize, string order, string criteria)
         {
             int skip = pageSize * (page - 1);
-            string ordering = "DateCreated desc";
+            string ordering = "CreatedAt desc";
 
             if (!string.IsNullOrEmpty(order))
                 ordering = order;
@@ -192,7 +192,82 @@ namespace DRD.Service
             }
         }
 
-        public long GetLiteAllCount(long memberId, string topCriteria)
+        // Author: Rani
+        /*
+         Changes: 
+            Sorting criteria and order is fixed.
+        */
+        public IEnumerable<DocumentItem> GetAll(long creatorId, string searchKeyword, int page, int pageSize)
+        {
+            int skip = pageSize * (page - 1);
+
+            // Search keywords
+            string[] keywords = new string[] { };
+            if (!string.IsNullOrEmpty(searchKeyword))
+                keywords = searchKeyword.Split(' ');
+            else
+                searchKeyword = null;
+
+            using (var db = new ServiceContext())
+            {
+                var result =
+                (from doc in db.Documents
+                 where doc.CreatorId == creatorId && (searchKeyword == null || keywords.All(x => (doc.Title).Contains(x)))
+                 orderby doc.CreatedAt descending
+                 select new DocumentItem
+                 {
+                     Id = doc.Id,
+                     Title = doc.Title,
+                     FileName = doc.FileName,
+                     FileSize = doc.FileSize,
+                     CreatorId = doc.CreatorId,
+                     CreatedAt = doc.CreatedAt,
+                     Description = doc.Description,
+                     MaxDownload = doc.MaxDownloadPerActivity,
+                     MaxPrint = doc.MaxPrintPerActivity,
+                     ExpiryDay = doc.ExpiryDay
+                 }).Skip(skip).Take(pageSize).ToList();
+
+                // ini ngapain?
+                if (result != null)
+                {
+                    MenuService musvr = new MenuService();
+                    foreach (DocumentItem dl in result)
+                    {
+                        dl.Key = musvr.EncryptData(dl.Id);
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public long GetAllCount(long memberId, string searchKeyword)
+        {
+            string[] keywords = new string[] { };
+            if (!string.IsNullOrEmpty(searchKeyword))
+                keywords = searchKeyword.Split(' ');
+            else
+                searchKeyword = null;
+
+            using (var db = new ServiceContext())
+            {
+                var result =
+                    (from c in db.Documents
+                     where c.CreatorId == memberId && (searchKeyword == null || keywords.All(x => (c.Title).Contains(x)))
+                     select new DocumentItem
+                     {
+                         Id = c.Id,
+                     }).Count();
+
+                return result;
+
+            }
+        }
+
+
+
+            public long GetLiteAllCount(long memberId, string topCriteria)
         {
             return GetLiteAllCount(memberId, topCriteria, null);
         }
@@ -652,10 +727,10 @@ namespace DRD.Service
                      select new DocumentElement
                      {
                          Page = x.Page,
-                         LeftPos = x.LeftPos,
-                         TopPos = x.TopPos,
-                         WidthPos = x.WidthPos,
-                         HeightPos = x.HeightPos,
+                         LeftPosition = x.LeftPosition,
+                         TopPosition = x.TopPosition,
+                         WidthPosition = x.WidthPosition,
+                         HeightPosition = x.HeightPosition,
                          Color = x.Color,
                          BackColor = x.BackColor,
                          Data = x.Data,
@@ -663,8 +738,8 @@ namespace DRD.Service
                          Rotation = x.Rotation,
                          ScaleX = x.ScaleX,
                          ScaleY = x.ScaleY,
-                         TransX = x.TransX,
-                         TransY = x.TransY,
+                         TransitionX = x.TransitionX,
+                         TransitionY = x.TransitionY,
                          StrokeWidth = x.StrokeWidth,
                          Opacity = x.Opacity,
                          Flag = x.Flag,
@@ -689,6 +764,7 @@ namespace DRD.Service
                 //
                 var cxold = db.DocumentElements.Count(c => c.Document.Id == documentId);
                 var cxnew = annos.Count();
+                //nambah old document
                 if (cxold < cxnew)
                 {
                     var ep = annos.ElementAt(0); // get 1 data for sample
@@ -698,7 +774,7 @@ namespace DRD.Service
                         da.Document.Id = documentId;
                         da.Page = ep.Page;
                         da.ElementType.Id = ep.ElementType.Id;
-                        //da.UserId = userEmail;
+                        da.UserId = userEmail;
                         da.CreatedAt = DateTime.Now;
                         db.DocumentElements.Add(da);
                     }
@@ -721,10 +797,10 @@ namespace DRD.Service
                     da.Document.Id = documentId;
                     da.Page = epos.Page;
                     da.ElementType.Id = epos.ElementType.Id;
-                    da.LeftPos = epos.LeftPos;
-                    da.TopPos = epos.TopPos;
-                    da.WidthPos = epos.WidthPos;
-                    da.HeightPos = epos.HeightPos;
+                    da.LeftPosition = epos.LeftPosition;
+                    da.TopPosition = epos.TopPosition;
+                    da.WidthPosition = epos.WidthPosition;
+                    da.HeightPosition = epos.HeightPosition;
                     da.Color = epos.Color;
                     da.BackColor = epos.BackColor;
                     da.Data = epos.Data;
@@ -732,8 +808,8 @@ namespace DRD.Service
                     da.Rotation = epos.Rotation;
                     da.ScaleX = epos.ScaleX;
                     da.ScaleY = epos.ScaleY;
-                    da.TransX = epos.TransX;
-                    da.TransY = epos.TransY;
+                    da.TransitionX = epos.TransitionX;
+                    da.TransitionY = epos.TransitionY;
                     da.StrokeWidth = epos.StrokeWidth;
                     da.Opacity = epos.Opacity;
                     da.Flag = epos.Flag;
