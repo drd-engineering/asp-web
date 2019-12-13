@@ -1,1 +1,28 @@
 ﻿
+@{
+    Layout = null;
+}
+
+<div id="modal_select_subscription" class="modal fade" z-index="10000">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title">Select Subscription</h6>
+            </div>
+
+            <div style="height:450px" class="row">
+                <div class="col-sm-12" ng-repeat="x in SubscriptionList">
+                    <h4>{{x.Name}}</h4>
+                    <div style="height:450px" class="row">
+                        <div class="col-sm-6">
+                            <p></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>{{x.Stora}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+

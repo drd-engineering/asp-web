@@ -39,9 +39,9 @@
                     <div class="content-wrapper">
                         <!-- Page header -->
                         <div class="page-header page-header-default">
+                            <h4>Rotation</h4>
                             <div class="page-header-content">
                                 <div class="page-title">
-                                    <h4>Rotation</h4>
                                     <br />
                                     <div class="row">
                                         <div class="col-lg-10">
@@ -101,14 +101,16 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr style="cursor:pointer;"  ng-click="do_edit(x.Id);" ng-repeat="x in products">
-                                                    <td>{{$index+1 + index}}</td>
-                                                    <td>{{x.Subject}}</td>
-                                                    <td>{{x.WorkflowName}}</td>
-                                                    <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                                <tr style="cursor:pointer;" ng-repeat="x in products">
+
+                                                    <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
+                                                    <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
+                                                    <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
+                                                    <td ng-click="do_edit(x.Id);" width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+
                                                     <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
                                                     <td width="100px">
-                                                        <a class="btn btn-default" ng-click="do_start(x.Id);" ng-show="x.Status=='00'">Start</a>
+                                                        <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -125,8 +127,9 @@
                 <!-- /page content -->
             </div>
             <!-- /page container -->
-            </div>
         </div>
+        <ng-include src="'/Include/PopupSubscription'"></ng-include>
+    </div>
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
@@ -151,6 +154,8 @@
             angular.element(document).ready(function () {
                 //$scope.GetPartners();
                 $scope.findRotations();
+                $scope.rotationIndex = -1;
+                $scope.SubscriptionList = [];
                 $(".content").show();
             });
 
@@ -180,26 +185,36 @@
                 location.href = url;
             }
             $scope.do_start = function (id) {
-                swal({
-                    title: "Confirmation",
-                    text: "Data will be processed, continue with data processing?",
-                    type: "warning",
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonColor: "#2196F3",
-                    showLoaderOnConfirm: true
-                },
-                function () {
-                    setTimeout(function () {
-                        //swal({
-                        //    title: "Ajax request finished!",
-                        //    confirmButtonColor: "#2196F3"
-                        //});
-                        $scope.startProduct(id);
-                    }, 500);
+                
+                //function () {
+                //    setTimeout(function () {
+                //        //swal({
+                //        //    title: "Ajax request finished!",
+                //        //    confirmButtonColor: "#2196F3"
+                //        //});
+                //        $scope.startProduct(id);
+                //    }, 500);
 
-                });
+                //});
 
+            }
+
+        $scope.showSubscription = function (idx) {
+                $scope.rotationIndex = idx;
+                $scope.getSubscriptionList();
+                console.log("idx : "+idx);
+                $("#modal_select_subscription").modal("show");
+        }
+
+            $scope.getSubscriptionList = function () {
+                $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.SubscriptionList = response.data;
+                            console.log(" SUBS :: " + $scope.SubscriptionList);
+                        }
+                    });
             }
 
             $scope.startProduct = function (id) {

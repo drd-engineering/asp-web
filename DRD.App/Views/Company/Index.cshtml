@@ -381,15 +381,14 @@
                                     value.Administrators.forEach(
                                         function (val, idx, arr) {
                                             tempString += idx==0? val.User.Name: (", " + val.User.Name);
-                                            console.log("Admins String :: ", val.User.Name);
                                         });
                                     $scope.adminsString[index].push(tempString);
-                                            console.log("Admins String :: ", $scope.adminsString);
                             });
                             
                         }
                 });
             }
+
             $scope.getAdministratorList = function () {
                 console.log("CompanyIndex List :: ", $scope.companyIndex);
                 $http.post('@Url.Action("GetAcceptedMemberorAdmin", "member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, isAdmin: true })

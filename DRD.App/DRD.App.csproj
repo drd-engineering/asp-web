@@ -273,6 +273,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\SubscriptionController .cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\IncludeController.cs" />
@@ -2979,6 +2980,7 @@
     <Content Include="Views\Contact\index.cshtml" />
     <Content Include="Views\Rotation\index.cshtml" />
     <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
+    <Content Include="Views\Include\PopupSubscription.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />

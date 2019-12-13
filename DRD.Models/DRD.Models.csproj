@@ -192,6 +192,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\BusinessSubscriptionList.cs" />
     <Compile Include="API\ListRotationData.cs" />
     <Compile Include="API\ListMemberData.cs" />
     <Compile Include="API\ListWorkflowData.cs" />
