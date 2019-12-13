@@ -9,10 +9,10 @@ namespace DRD.Models
     {
         public long Id { get; set; } // Id (Primary key)
         public int Page { get; set; } // Page
-        public double? LeftPos { get; set; } // LeftPos
-        public double? TopPos { get; set; } // TopPos
-        public double? WidthPos { get; set; } // WidthPos
-        public double? HeightPos { get; set; } // HeightPos
+        public double? LeftPosition { get; set; } // LeftPos
+        public double? TopPosition { get; set; } // TopPos
+        public double? WidthPosition { get; set; } // WidthPos
+        public double? HeightPosition { get; set; } // HeightPos
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
         public string Data { get; set; } // Data
@@ -20,8 +20,8 @@ namespace DRD.Models
         public int Rotation { get; set; } // Rotation
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
-        public double TransX { get; set; } // TransX
-        public double TransY { get; set; } // TransY
+        public double TransitionX { get; set; } // TransX
+        public double TransitionY { get; set; } // TransY
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
@@ -47,8 +47,8 @@ namespace DRD.Models
             Rotation = 0;
             ScaleX = 1;
             ScaleY = 1;
-            TransX = 0;
-            TransY = 0;
+            TransitionX = 0;
+            TransitionY = 0;
             StrokeWidth = 4;
             Opacity = 1;
             Flag = 0;
