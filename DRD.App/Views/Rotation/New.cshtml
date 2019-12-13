@@ -246,11 +246,11 @@
                                 </table>
                             </div>
                         </div>
-</fieldset>
+                </fieldset>
                 <!-- SUBMIT BUTTON -->
                 <div class="input-group-btn text-right">
                     <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" ng-click="updateProduct()">
-                        <span class="ladda-label">manage members</span><span class="ladda-spinner"></span>
+                        <span class="ladda-label">Submit</span><span class="ladda-spinner"></span>
                         <div class="ladda-progress"></div>
                     </button>
                 </div>
@@ -281,11 +281,11 @@
         </div>
 
         <!--/CONFIRMATION THANK YOU-->
-        <!-- View member modal -->
+        <!-- View modal -->
         <ng-include src="'/Include/PopupWorkflow'"></ng-include>
         <ng-include src="'/Include/PopupMember'"></ng-include>
         <ng-include src="'/Include/PopupSubscription'"></ng-include>
-        <!-- View member modal -->
+        <!-- View modal -->
     </section>
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp'])
@@ -354,12 +354,12 @@
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
                 if (product.Id!=0 ){
 
-                    $scope.model.Id=product.Id;
-                    $scope.model.Subject=product.Subject;
-                    $scope.model.Status=product.Status;
-                    $scope.model.Remark= product.Remark;
-                    $scope.workflow=product.Workflow;
-                    $scope.users=product.RotationMembers;
+                    $scope.model.Id = product.Id;
+                    $scope.model.Subject = product.Subject;
+                    $scope.model.Status = product.Status;
+                    $scope.model.Remark = product.Remark;
+                    $scope.workflow = product.Workflow;
+                    $scope.users = product.RotationUsers;
                 }else{
 
                 }
@@ -406,7 +406,7 @@
                             Remark: $scope.model.Remark,
                             WorkflowId:$scope.workflow.Id,
                             Status: "00",
-                            RotationMembers:$scope.users,
+                            RotationUsers:$scope.users,
                             //IsActive: $('#checkbox1')[0].checked,
                         }
                     }).then(function (response) {
@@ -416,7 +416,8 @@
                             $scope.model.Id=response.data;
                         }
                     }, function (response) {
-                        //error handle\
+                        //error handle
+                        console.log("Good")
                         btn.stop();
                         var x = 0;
                     });
@@ -483,8 +484,8 @@
                 }
 
                 var isvalid=true;
-                for(i=0;i<$scope.users.length;i++){
-                    if ($scope.users[i].MemberId==null){
+                for (i = 0; i < $scope.users.length; i++){
+                    if ($scope.users[i].UserId == null) {
                         isvalid=false;
                         break;
                     }
@@ -593,7 +594,7 @@
             }
 
             $scope.setMember = function (idx) {
-                $scope.users[$scope.memberIdx].MemberId=$scope.members[idx].Id;
+                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
                 $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
                 $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
                 $scope.users[$scope.memberIdx].Picture=$scope.members[idx].ImageProfile;

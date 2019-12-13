@@ -11,15 +11,12 @@ namespace DRD.Models
         public long WorkflowNodeId { get; set; } // WorkflowNodeId
         public string ActivityName { get; set; }
         public string Picture { get; set; }
-        public long? MemberId { get; set; }
         public long? UserId { get; set; }
         public long RotationId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
 
         // Foreign keys
-        [ForeignKey("MemberId")]
-        public virtual Member Member { get; set; } // FK_RotationMember_Member
         [ForeignKey("UserId")]
         public virtual User User { get; set; } // FK_RotationMember_Member
         [ForeignKey("RotationId")]
@@ -30,7 +27,6 @@ namespace DRD.Models
         public RotationUser()
         {
             FlagPermission = 0;
-            Member = new Member();
             User = new User();
             Rotation = new Rotation();
             WorkflowNode = new WorkflowNode();

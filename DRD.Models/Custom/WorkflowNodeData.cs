@@ -11,7 +11,7 @@ namespace DRD.Models.Custom
         public long Id { get; set; }    //dummy id
         public string element { get; set; }
         public string symbolCode { get; set; }
-        public long? memberId { get; set; }
+        public long? userId { get; set; }
         public string caption { get; set; }
         public string info { get; set; } // Info (length: 1000)
         public string Operator { get; set; } // Operator (length: 10)

@@ -376,7 +376,7 @@ namespace DRD.Service
                 if (cxold < cxnew)
                 {
                     var ep = prod.RotationUsers.ElementAt(0); // get 1 data for sample
-                    var WflNd = db.WorkflowNodes.FirstOrDefault(wflnod => wflnod.WorkflowId == ep.WorkflowNodeId);
+                    var WflNd = db.WorkflowNodes.FirstOrDefault(wflnod => wflnod.Id == ep.WorkflowNodeId);
                     // ERror disiini nih
                     for (var x = cxold; x < cxnew; x++)
                     {
@@ -384,7 +384,6 @@ namespace DRD.Service
                         aii.Rotation = product;
                         aii.WorkflowNodeId = WflNd.Id;
                         aii.WorkflowNode = WflNd;
-                        aii.User.Id = ep.User.Id;
                         aii.FlagPermission = ep.FlagPermission;
 
                         db.RotationUsers.Add(aii);
@@ -405,7 +404,9 @@ namespace DRD.Service
                 {
                     var epos = prod.RotationUsers.ElementAt(v);
                     d.WorkflowNodeId = epos.WorkflowNodeId;
-                    d.User.Id = epos.User.Id;
+                    User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
+                    d.User = gotUser;
+                    d.User.Id = gotUser.Id;
                     d.FlagPermission = epos.FlagPermission;
                     //d.FlagAction = epos.FlagAction;
                     //d.CxDownload = epos.CxDownload;

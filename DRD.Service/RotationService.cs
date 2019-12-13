@@ -304,27 +304,24 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var result =
-                    (from rotation in db.WorkflowNodes
-                     where rotation.WorkflowId == workflowId && rotation.SymbolCode == 5
+                    (from workflowNode in db.WorkflowNodes
+                     where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
                      select new RotationUserData
                      {
-                         ActivityName = rotation.Caption,
-                         WorkflowNodeId = rotation.Id,
-                         MemberId = rotation.MemberId.Value
+                         ActivityName = workflowNode.Caption,
+                         WorkflowNodeId = workflowNode.Id,
+                         UserId = workflowNode.UserId.Value
                      }).ToList();
                 foreach (RotationUserData item in result)
                 {
-                    if(item.MemberId != 0)
+                    if(item.UserId != 0)
                     {
-                        User userAsMemberCompany = (from user in db.Users
-                                                    join member in db.Members on user.Id equals member.UserId
-                                                    where member.Id == item.MemberId
-                                                    select user).FirstOrDefault();
-                        if (userAsMemberCompany != null)
+                        User user = (from Userdb in db.Users where Userdb.Id == item.UserId select Userdb).FirstOrDefault();
+                        if (user != null)
                         {
-                            item.Email = userAsMemberCompany.Email;
-                            item.Name = userAsMemberCompany.Name;
-                            item.Picture = userAsMemberCompany.ImageProfile;
+                            item.Email = user.Email;
+                            item.Name = user.Name;
+                            item.Picture = user.ImageProfile;
                         }
                     }
                 }

@@ -69,7 +69,7 @@ namespace DRD.Service
                             workflowNodeData.Id = workflowNode.Id;
                             workflowNodeData.element = getSymbolsFromCsvById(workflowNode.SymbolCode).Name + "-" + dmid;
                             workflowNodeData.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
-                            workflowNodeData.memberId = workflowNode.MemberId;
+                            workflowNodeData.userId = workflowNode.UserId;
                             workflowNodeData.caption = workflowNode.Caption;
                             workflowNodeData.info = workflowNode.Info;
                             workflowNodeData.Operator = workflowNode.Operator;
@@ -80,7 +80,7 @@ namespace DRD.Service
                             workflowNodeData.posTop = workflowNode.PosTop;
                             workflowNodeData.width = workflowNode.Width;
                             workflowNodeData.height = workflowNode.Height;
-                            User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.MemberId).FirstOrDefault();
+                            User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.UserId).FirstOrDefault();
                             if (user != null) {
                                 workflowNodeData.user = new WorkflowNodeUser
                                 {
@@ -205,9 +205,8 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 // validity subscription type
-                var member = db.Members.FirstOrDefault(workflow => workflow.Id == workflowData.CreatorId);                
+                var creator = db.Users.FirstOrDefault(user => user.Id == workflowData.CreatorId);                
                 var actCount = workflowData.WorkflowNodes.Count(workflow => workflow.symbolCode.Equals("ACTIVITY"));
-
 
                 if (workflowData.Id != 0)
                     product = db.Workflows.FirstOrDefault(workflow => workflow.Id == workflowData.Id);
@@ -256,7 +255,7 @@ namespace DRD.Service
                         {
                             var node = new WorkflowNode();
                             node.WorkflowId = product.Id;
-                            node.MemberId = (jnode.memberId == 0 ? null : jnode.memberId);
+                            node.UserId = (jnode.userId == 0 ? null : jnode.userId);
                             node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
                             //node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
 
