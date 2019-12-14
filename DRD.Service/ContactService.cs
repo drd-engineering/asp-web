@@ -167,9 +167,9 @@ namespace DRD.Service
         }
         // list all company that relate to the user (a member)
         public CompanyList GetListOfCompany(UserSession user) {
-            using (var db = new ServiceContext()) { 
-                var MemberOfCompany = db.Members.Where(member => member.UserId == user.Id).ToList();
-                long[] CompanyIds = (from c in MemberOfCompany select c.CompanyId).ToArray();
+            using (var db = new ServiceContext()) {
+                long[] CompanyIds = db.Members.Where(member => member.UserId == user.Id).Select(c => c.CompanyId).ToArray();
+                
                 
                 var Companies = db.Companies.Where(company => CompanyIds.Contains(company.Id)).ToList();
 
@@ -187,6 +187,10 @@ namespace DRD.Service
                     item.TotalMember = CountMemberOfCompany(c.Id) - 1;
 
                     companyItems.Add(item);
+
+                    System.Diagnostics.Debug.WriteLine("LIST COMPANY: ");
+                    System.Diagnostics.Debug.WriteLine(item.Name);
+
                 }
                 companyList.companies = companyItems;
                 

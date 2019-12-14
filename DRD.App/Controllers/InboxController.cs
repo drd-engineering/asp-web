@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using DRD.Models;
 using DRD.Models.Custom;
 using DRD.Models.View;
+using DRD.Service;
 
 namespace DRD.App.Controllers
 {
@@ -39,7 +40,7 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult Inbox()
+        public ActionResult Inbox(long id)
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -59,9 +60,10 @@ namespace DRD.App.Controllers
 
             Layout layout = new Layout();
             //layout.activeId = int.Parse(ids[0]);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
-            layout.obj = product;
+            //layout.menus = login.GetMenus(this, layout.activeId);
+            // layout.user = login.GetUser(this);
+            InboxService service = new InboxService();
+            layout.obj = service.GetInboxItem(user, id);
 
             //layout.dbmenus = login.GetDashbordMenus(this, layout.activeId);
             return View(layout);

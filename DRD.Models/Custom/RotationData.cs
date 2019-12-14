@@ -11,13 +11,13 @@ namespace DRD.Models.Custom
         
         public string Key { get; set; }
         public long Id { get; set; } // Id (Primary key)
-        public string Subject { get; set; } // Subject (length: 2)
+        public string Subject { get; set; } // Subject (length: 2) --> current Activity
         public long WorkflowId { get; set; } // WorkflowId
         public int Status { get; set; } // Status (length: 2)
         public long? UserId { get; set; } // userid
         public long? MemberId { get; set; } //memberid
-        public System.DateTime DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
+        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public System.DateTime? DateStatus { get; set; } // DateUpdated
         public System.DateTime? DateStarted { get; set; } // DateStarted
 

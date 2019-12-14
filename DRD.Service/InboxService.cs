@@ -41,9 +41,10 @@ namespace DRD.Service
         
         }
 
-        public void GetInboxItem(UserSession user, long inboxId)
+        public InboxItem GetInboxItem(UserSession user, long inboxId)
         {
             List<RotationData> rotationLog = new List<RotationData>();
+            List<DocumentItem> documentList = new List<DocumentItem>();
             // should update isUnread
             using (var db = new ServiceContext())
             {
@@ -54,10 +55,12 @@ namespace DRD.Service
                 result.Id = inbox.Id;
                 //result.CurrentActivity = inbox.Activity.Name;
 
+                // Rotation Log
                 rotationLog = (
                     from r in db.Rotations
-                    //join ra in db.RotationActivities on r.Id equals ra.WorkflowId
-                    //where ra.WorkflowId == r.Id
+                    join rn in db.RotationNodes on r.Id equals rn.RotationId
+                    where rn.Id == inbox.ActivityId
+                    orderby r.DateUpdated descending
                     select new RotationData { 
                     
                         // lanjutin
@@ -65,6 +68,22 @@ namespace DRD.Service
                     }
                     
                 ).ToList();
+                result.RotationLog = rotationLog;
+
+                // Document
+                documentList = (
+                    from doc in db.Documents
+                    where doc.Rotation.Id == inbox.Activity.RotationId
+                    select new DocumentItem
+                    {
+                        Id = doc.Id,
+                        Title = doc.Title,
+                        FileNameOri = doc.FileName
+                    }
+                ).ToList();
+                result.Documents = documentList;
+
+                return result;
 
             }
 
