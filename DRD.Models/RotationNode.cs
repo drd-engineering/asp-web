@@ -16,8 +16,8 @@ namespace DRD.Models
         public string Value { get; set; } // Value (length: 20)
         public int Status { get; set; } // string
         public System.DateTime? DateRead { get; set; } // DateRead
-        public System.DateTime DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
+        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
 
         //public StatusCode StatusCode { get; set; }
         public string Note { get; set; }

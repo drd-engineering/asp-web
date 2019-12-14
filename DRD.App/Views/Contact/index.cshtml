@@ -59,6 +59,10 @@
         padding: 10px;
     }
 
+    .highlight-card:hover {
+        box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3);
+    }
+
         .highlight-card .card-image img {
             height: 40px;
             width: 40px;
@@ -120,7 +124,7 @@
 
         <div class="row">
             <!-- CARD 1 -->
-            <div class="col-md-3">
+            <div class="col-md-3" ng-click="getPersonalContact()">
                 <div class="highlight-card">
                     <div class="container">
                         <div class="row">
@@ -133,7 +137,7 @@
                                    
                                 </div>
                                 <div class="card-content">
-                                    <p>{{personalContact.Count}} Contacts</p>
+                                    <p>{{totalPersonalContact}} Contacts</p>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +148,7 @@
             <!-- end of CARD 1 -->
             
             <!-- CARD 2 -->
-            <div class="col-md-3" ng-repeat="x in companies" ng-if="isMemberOfACompany()">
+            <div class="col-md-3" ng-repeat="x in companies" ng-if="isMemberOfACompany()" ng-click="getContactList(x.Id)">
                 <div class="highlight-card">
                     <div class="container">
                         <div class="row">
@@ -183,7 +187,7 @@
                     <div class="page-header page-header-default">
                         <div class="page-header-content">
                             <div class="page-title">
-                                <h4><i class="icon-users2 position-left"></i>Personal</h4>
+                                <h4><i class="icon-users2 position-left"></i>{{contactList.CompanyName}}</h4>
                                 <br />
                                 <div class="row">
                                     <div class="col-lg-10">
@@ -219,7 +223,7 @@
 
                                     <table class="table-xs">
                                         <tbody>
-                                            <tr ng-repeat="x in personalContact.Items">
+                                            <tr ng-repeat="x in contactList.Items">
                                                 <td>
                                                     <img ng-src="/Images/Member/{{x.ImageProfile}}" />
                                                     &ensp;&ensp;{{x.Name}}
@@ -281,7 +285,8 @@
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             
             $scope.companies = [];
-            $scope.personalContact = { Count: 0, CompanyName: "", Items: [], Type: "" }
+            $scope.totalPersonalContact = 0;
+            $scope.contactList = { Count: 0, CompanyName: "", Items: [], Type: "" }
             $scope.hasPersonalContactAccessed = false;
             $scope.isView = false;
             
@@ -298,8 +303,9 @@
             angular.element(document).ready(function () {
                 $(".content").show();
                 $scope.getCompaniesData();
-                $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
-                $scope.totalPage = $scope.countTotalPage($scope.personalContact.Count, $scope.size);
+                if ($scope.contactList.Count == 0)
+                    $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
+                $scope.totalPage = $scope.countTotalPage($scope.contactList.Count, $scope.size);
             });
 
 
@@ -312,7 +318,7 @@
                     .then(function (response) {
 
                         if (response.data) {
-                            $scope.companies = response.data;
+                            $scope.companies = response.data.companies;
                             console.log("COMPANIES", $scope.companies);
                         }
         
@@ -320,20 +326,25 @@
             }
 
             $scope.getPersonalContact = function (searchKey, page, pageSize) {
-                //$http.post('@Url.Action("GetInvitedLiteAll", "invitation")', { topCriteria: searchKey, page: page, pageSize: row }).then( ...
                 
                 $http.get('@Url.Action("GetPersonalContact", "Contact")')
                     .then(function (response) {
 
                         if (response.data) {
-                            $scope.personalContact.Items = response.data.Items;
+                            console.log("[GET] PERSONAL CONTACT", response.data);
 
                             // init total of personal data when first calling
+                            $scope.contactList.Count = response.data.Count;
+                            $scope.contactList.Items = response.data.Items;
+                            $scope.contactList.CompanyName = "Personal";
+                            $scope.totalPersonalContact = response.data.Count;
+
+                            console.log("[GET] PERSONAL CONTACT", $scope.contactList);
                             if (!$scope.hasPersonalContactAccessed) {
-                                $scope.personalContact.Count = response.data.Count;
+                                $scope.contactList.Count = response.data.Count;
                             }
 
-                            console.log("PERSONAL CONTACT", $scope.personalContact);
+                            console.log("PERSONAL CONTACT", $scope.contactList);
                             $scope.isView = true;
                             $scope.hasPersonalContactBeenAccessed = true;
                         }
@@ -382,12 +393,41 @@
             }
 
             $scope.hasContact = function () {
-                return $scope.personalContact.Count > 0;
+                return $scope.contactList.Count > 0;
             }
 
             $scope.addMember = function (mid) {
                 location.href = "/invitation/invitation?mid=" + mid;
             }
+
+            $scope.getContactList = function (companyId) {
+
+                $scope.contactList = { Count: 0, CompanyName: "", Items: [], Type: "" }
+                $scope.currentCompanyId = companyId;
+                console.log("COMPANY ID", companyId);
+                $http.get('@Url.Action("GetContactFromCompany", "Contact")'+"?companyId=" + companyId)
+                    .then(function (response) {
+
+                        if (response.data) {
+                            $scope.contactList.Items = response.data.Items;
+                            $scope.contactList.count = response.data.Count;
+                            $scope.contactList.CompanyName = response.data.CompanyName;
+
+                            // init total of personal data when first calling
+                            if (!$scope.hasPersonalContactAccessed) {
+                                $scope.contactList.Count = response.data.Count;
+                                $scope.hasPersonalContactAccessed = true;
+                            }
+
+                            console.log("COMPANY CONTACT RESPONSE", response);
+                            $scope.isView = true;
+                            $scope.hasPersonalContactBeenAccessed = true;
+                        }
+
+
+                    });
+            }
+            
 
             /*--------------------------------------------------------------
             CONVERT JSON DATE

@@ -106,7 +106,7 @@
                                                     <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
                                                     <td ng-click="do_edit(x.Id);" width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
 
-                                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescr}} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
+                                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
                                                     <td width="100px">
                                                         <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
                                                     </td>
@@ -197,7 +197,7 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.subscriptions;
-                            console.log(" SUBS :: " + $scope.SubscriptionList[0].Id);
+                            console.log(" SUBS :: " + $scope.products[0].Status);
                         }
                     });
             }
