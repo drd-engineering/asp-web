@@ -50,11 +50,11 @@ namespace DRD.Service
             rotation.RotationNodes =
                 (from rotationNode in db.RotationNodes
                  where rotationNode.Rotation.Id == rotation.Id
-                 orderby rotationNode.DateCreated
+                 orderby rotationNode.CreatedAt
                  select new RotationNode
                  {
                      Id = rotationNode.Id,
-                     DateCreated = rotationNode.DateCreated,
+                     CreatedAt = rotationNode.CreatedAt,
                      Status = rotationNode.Status,
                      Value = rotationNode.Value,
                      PrevWorkflowNodeId = rotationNode.PrevWorkflowNodeId,
@@ -115,7 +115,7 @@ namespace DRD.Service
                     {
                         if (node.Operator != null)
                         {
-                            var start = rotationNode.DateCreated;
+                            var start = rotationNode.CreatedAt;
                             double val = 0;
                             if (Double.TryParse(node.Value, out val))
                             {
@@ -485,7 +485,7 @@ namespace DRD.Service
                     rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User.Id;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
                     rtnode.Value = "";
-                    rtnode.DateCreated = DateTime.Now;
+                    rtnode.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
 
                     retvalues.Add(createActivityResult(rtnode.UserId));
@@ -536,7 +536,7 @@ namespace DRD.Service
                 //set last node to in progress
                 rtnode.Status = (int)Constant.RotationStatus.In_Progress; // currrent is submit
                 rtnode.Value = param.Value;
-                rtnode.DateUpdated = DateTime.Now;
+                rtnode.UpdatedAt = DateTime.Now;
                 rtnode.Rotation.DateStarted = DateTime.Now;
                 insertDoc(param.RotationNodeDocs, db, ref rtnode, docSvr);
                 insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
@@ -575,7 +575,7 @@ namespace DRD.Service
                         rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
-                        rtnode2.DateCreated = DateTime.Now;
+                        rtnode2.CreatedAt = DateTime.Now;
                         db.RotationNodes.Add(rtnode2);
                         retvalues.Add(createActivityResult(rtnode2.UserId));
                     }
@@ -638,7 +638,7 @@ namespace DRD.Service
                                 rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId; // tested OK
                                 rtnode2.Status = (int)Constant.RotationStatus.Open;
                                 rtnode2.Value = rtnode.Value;
-                                rtnode2.DateCreated = DateTime.Now;
+                                rtnode2.CreatedAt = DateTime.Now;
                                 db.RotationNodes.Add(rtnode2);
                                 retvalues.Add(createActivityResult(rtnode2.UserId));
                             }
@@ -662,7 +662,7 @@ namespace DRD.Service
                         rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;//tested OK
                         rtnode2.Status = (int) Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
-                        rtnode2.DateCreated = DateTime.Now;
+                        rtnode2.CreatedAt = DateTime.Now;
                         db.RotationNodes.Add(rtnode2);
                         retvalues.Add(createActivityResult(rtnode2.UserId));
                     }
@@ -681,7 +681,7 @@ namespace DRD.Service
                         rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;// "TRF:" + nodeto.Value + ",ID:" + rtnode.Id + ",MEMBER:" + rtnode.UserId;
-                        rtnode2.DateCreated = DateTime.Now;
+                        rtnode2.CreatedAt = DateTime.Now;
 
                         // check for double rotation node
                         if (!isExistNode(rtnode2))
@@ -722,7 +722,7 @@ namespace DRD.Service
                             rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
                             rtnode2.Status = (int) Constant.RotationStatus.Open;
                             rtnode2.Value = rtnode.Value;
-                            rtnode2.DateCreated = DateTime.Now;
+                            rtnode2.CreatedAt = DateTime.Now;
                             db.RotationNodes.Add(rtnode2);
                             retvalues.Add(createActivityResult(rtnode2.UserId));
                         }

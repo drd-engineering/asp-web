@@ -198,8 +198,8 @@ namespace DRD.Service
                          ActivityName = rotationNode.WorkflowNode.Caption,
                          UserId = rotationNode.UserId,
                          StatusDescription = Constant.getRotationStatusName(rotationNode.Status),
-                         DateCreated = rotationNode.DateCreated,
-                         DateUpdated = rotationNode.DateUpdated,
+                         CreatedAt = rotationNode.CreatedAt,
+                         UpdatedAt = rotationNode.UpdatedAt,
                          DateStarted = rotationNode.Rotation.DateUpdated,
                      }).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
@@ -255,8 +255,8 @@ namespace DRD.Service
                          Status = rotationNode.Status,
                          UserId = rotationNode.User.Id,
                          MemberId = rotationNode.Member.Id,
-                         DateCreated = rotationNode.DateCreated,
-                         DateUpdated = rotationNode.DateUpdated,
+                         DateCreated = rotationNode.CreatedAt,
+                         DateUpdated = rotationNode.UpdatedAt,
                          DateStarted = rotationNode.Rotation.DateUpdated,
                          RotationNodeId = id,
                          DefWorkflowNodeId = rotationNode.WorkflowNode.Id,
@@ -381,8 +381,8 @@ namespace DRD.Service
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.UserId,
                          MemberId = rotation.MemberId,
-                         DateCreated = rotation.DateCreated,
-                         DateUpdated = rotation.DateUpdated,
+                         CreatedAt = rotation.DateCreated,
+                         UpdatedAt = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
                     ListRotationData returnValue = new ListRotationData();
@@ -453,8 +453,8 @@ namespace DRD.Service
                          UserId = rotation.UserId,
                          MemberId = rotation.MemberId,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
-                         DateCreated = rotation.DateCreated,
-                         DateUpdated = rotation.DateUpdated,
+                         CreatedAt = rotation.DateCreated,
+                         UpdatedAt = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
@@ -553,8 +553,8 @@ namespace DRD.Service
                          UserId = rotation.UserId,
                          MemberId = rotation.MemberId,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
-                         DateCreated = rotation.DateCreated,
-                         DateUpdated = rotation.DateUpdated,
+                         CreatedAt = rotation.DateCreated,
+                         UpdatedAt = rotation.DateUpdated,
                          DateStarted = rotation.DateStarted,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
@@ -654,8 +654,8 @@ namespace DRD.Service
                          ActivityName = rotation.WorkflowNode.Caption,
                          StatusDescription = Constant.getRotationStatusName(rotation.Status),
                          UserId = rotation.User.Id,
-                         DateCreated = rotation.DateCreated,
-                         DateUpdated = rotation.DateUpdated,
+                         CreatedAt = rotation.CreatedAt,
+                         UpdatedAt = rotation.UpdatedAt,
                          DateStarted = rotation.DateRead,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
