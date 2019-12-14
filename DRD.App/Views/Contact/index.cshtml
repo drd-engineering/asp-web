@@ -312,7 +312,7 @@
                     .then(function (response) {
 
                         if (response.data) {
-                            $scope.companies = response.data;
+                            $scope.companies = response.data.companies;
                             console.log("COMPANIES", $scope.companies);
                         }
         
