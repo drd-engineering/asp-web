@@ -265,7 +265,9 @@
                     $scope.model.Status=product.Status;
                     $scope.model.Remark= product.Remark;
                     $scope.workflow=product.Workflow;
-                    $scope.users=product.RotationMembers;
+                    $scope.users = product.RotationUsers;
+                    console.log("THIS IS PRODUCT :: " + product);
+                    console.log("THIS IS Users :: " + $scope.users);
                 }else{
 
                 }

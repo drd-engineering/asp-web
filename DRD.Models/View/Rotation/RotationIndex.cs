@@ -9,11 +9,11 @@ namespace DRD.Models.Custom
     public class RotationIndex
     {
         
-        public string Key { get; set; }
         public long Id { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 2)
         public long WorkflowId { get; set; } // WorkflowId
         public int Status { get; set; } // Status (length: 2)
+        public string Remark { get; set; } // Remark
         public long? UserId { get; set; } // userid
         public long? MemberId { get; set; } //memberid
         public System.DateTime DateCreated { get; set; } // DateCreated
@@ -27,12 +27,41 @@ namespace DRD.Models.Custom
         public string StatusDescription { get; set; }
 
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
-        public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationNode.FK_RotationNode_Rotation
+        public virtual System.Collections.Generic.ICollection<RotationUserItem> RotationUsers { get; set; } // RotationNode.FK_RotationNode_Rotation
+        public virtual Member Member { get; set; } // FK_Rotation_Member
+        public virtual WorkflowItem Workflow { get; set; } // FK_Rotation_Workflow
+
 
         public RotationIndex()
         {
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
+            RotationUsers = new System.Collections.Generic.List<RotationUserItem>();
             
+        }
+    }
+    public class WorkflowItem
+    {
+        public long Id { get; set; } // Id (Primary key)
+        public string Name { get; set; } // Subject (length: 2)
+
+    }
+        public class RotationUserItem
+    {
+        public long Id { get; set; } // Id (Primary key)
+        public long RotationId { get; set; } // RotationId
+        public long WorkflowNodeId { get; set; } // WorkflowNodeId
+        public long? UserId { get; set; } // MemberId
+        public int FlagPermission { get; set; } // FlagPermission
+
+        public string ActivityName { get; set; }
+        public string MemberPicture { get; set; }
+        public long? MemberNumber { get; set; }
+        public string MemberName { get; set; }
+        public string MemberEmail { get; set; }
+
+        public RotationUserItem()
+        {
+            FlagPermission = 0;
         }
     }
 }
