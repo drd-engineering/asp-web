@@ -28,9 +28,7 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark.FK_RotationNodeRemark_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
-
         // Foreign keys
-        public virtual Member Member { get; set; } // FK_RotationNode_Member
         public virtual User User { get; set; } // FK_RotationNode_Member
 
         public virtual Rotation Rotation { get; set; } // FK_RotationNode_Rotation
