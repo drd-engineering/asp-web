@@ -68,7 +68,7 @@ namespace DRD.Service
                          ExpiredAt = plandb.ExpiredAt,
                          companyId = plandb.CompanyId
                      }).FirstOrDefault();
-                if(plan != null && plan.ExpiredAt >= DateTime.Now)
+                if(plan != null && plan.ExpiredAt < DateTime.Now)
                 {
                     deactivatePlanBusiness(subscriptionId);
                     return false;

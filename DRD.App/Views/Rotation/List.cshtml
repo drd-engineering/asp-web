@@ -222,7 +222,7 @@
                 },
                 function () {
                     setTimeout(function () {
-                        $scope.startProduct(id);
+                        $scope.startProduct($scope.SubscriptionList[id].Id);
                     }, 500);
 
                 });
@@ -234,6 +234,7 @@
                 $http.post("/Rotation/start?rotationId=" + $scope.rotationSelected + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
+                        
                         if (response.data) {
                             if (response.data == -1)
                                 showError("Invalid rotation.");
@@ -247,9 +248,10 @@
                                 showSuccess("Successful data process.");
                                 $scope.changePage($scope.kriteria, $scope.page, $scope.row);
                             }
-                        }else
+                        } else
                             showInfo("process data error.");
                     }, function (response) {
+                            console.log(response);
                         //error handle\
                         var x = 0;
                         showInfo("process data error.");

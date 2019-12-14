@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
+using DRD.Models.View.Rotation;
 using DRD.Models.Custom;
 using DRD.Models.API;
 using DRD.Models.API.List;
@@ -96,7 +97,7 @@ namespace DRD.Service
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.CreatorId == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
                 foreach (Rotation rt in rots)
@@ -127,7 +128,7 @@ namespace DRD.Service
 
 
                 //var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && rotation.Status.Equals(status)).ToList();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && statuses.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.CreatorId == userId) && statuses.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
 
@@ -254,7 +255,7 @@ namespace DRD.Service
                          Subject = rotationNode.Rotation.Subject,
                          Status = rotationNode.Status,
                          UserId = rotationNode.User.Id,
-                         MemberId = rotationNode.Member.Id,
+                         MemberId = rotationNode.MemberId,
                          DateCreated = rotationNode.DateCreated,
                          DateUpdated = rotationNode.DateUpdated,
                          DateStarted = rotationNode.Rotation.DateUpdated,
@@ -714,7 +715,7 @@ namespace DRD.Service
         /// </summary>
         /// <parameter name="prod"></parameter>
         /// <returns></returns>
-        public long Save(Rotation prod)
+        public long Save(RotationItem prod)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             return workflowDeepService.Save(prod);

@@ -27,7 +27,6 @@ namespace DRD.Models
         public RotationUser()
         {
             FlagPermission = 0;
-            User = new User();
             Rotation = new Rotation();
             WorkflowNode = new WorkflowNode();
 
