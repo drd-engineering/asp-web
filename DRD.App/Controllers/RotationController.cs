@@ -85,11 +85,11 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
+        public ActionResult Start(long rotationId, long subscriptionId)
         {
             InitializeAPI();
             
-            var data = rotationService.Start(rotationId, subscriptionId, isSubscriptionCompany);
+            var data = rotationService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

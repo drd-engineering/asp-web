@@ -736,10 +736,10 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-        public int Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
+        public int Start(long userId, long rotationId, long subscriptionId)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-            var status = workflowDeepService.Start(rotationId, subscriptionId, isSubscriptionCompany);
+            var returnItem = workflowDeepService.Start(userId, rotationId, subscriptionId);
             MemberService memberService = new MemberService();
             
             //MemberService userService = new MemberService();
@@ -747,8 +747,7 @@ namespace DRD.Service
             //{
             //    userService.sendEmailInbox(act);
             //}
-            //return ret.FirstOrDefault().ExitCode;
-            return 0;
+            return returnItem.FirstOrDefault().ExitCode;
         }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)

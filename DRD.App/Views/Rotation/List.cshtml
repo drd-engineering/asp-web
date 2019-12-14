@@ -101,7 +101,6 @@
                                             </thead>
                                             <tbody>
                                                 <tr style="cursor:pointer;" ng-repeat="x in products">
-
                                                     <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
@@ -118,7 +117,7 @@
                                 </div>
                             </div>
                             <!-- /LIST -->
-        <ng-include src="'/Include/PopupSubscription'"></ng-include>
+                            <ng-include src="'/Include/PopupSubscription'"></ng-include>
                         </div>
                         <!-- /content area -->
                     </div>
@@ -142,7 +141,7 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
-            $scope.rotationIndex = -1;
+            $scope.rotationSelected = -1
             $scope.SubscriptionList = [];
             initValues() ;
 
@@ -187,19 +186,18 @@
             }
 
 
-            $scope.showSubscription = function (idx) {
-                    $scope.rotationIndex = idx;
-                    console.log("idx : "+idx);
-                    $("#modal_select_subscription").modal("show");
+            $scope.showSubscription = function (rotationSelected) {
+                $scope.rotationSelected = rotationSelected;
+                console.log("idx : " + rotationSelected);
+                $("#modal_select_subscription").modal("show");
             }
 
             $scope.getSubscriptionList = function () {
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
                     .then(function (response) {
-
                         if (response.data) {
                             $scope.SubscriptionList = response.data.subscriptions;
-                            console.log(" SUBS :: " + $scope.SubscriptionList[0].SubscriptionName);
+                            console.log(" SUBS :: " + $scope.SubscriptionList[0].Id);
                         }
                     });
             }
@@ -212,7 +210,7 @@
                 console.log("Company List :: ", $scope.CompanyList);
             }
 
-              $scope.do_start = function (id) {
+            $scope.do_start = function (id) {
                 swal({
                     title: "Confirmation",
                     text: "Are you sure to start this rotation with \n" + $scope.SubscriptionList[id].SubscriptionName + " - " + $scope.SubscriptionList[id].CompanyName + " subscription?",
@@ -224,10 +222,6 @@
                 },
                 function () {
                     setTimeout(function () {
-                        //swal({
-                        //    title: "Ajax request finished!",
-                        //    confirmButtonColor: "#2196F3"
-                        //});
                         $scope.startProduct(id);
                     }, 500);
 
@@ -236,7 +230,8 @@
             }
 
             $scope.startProduct = function (id) {
-                $http.post("/Rotation/start?id=" + id,
+                console.log($scope.rotationSelected , id)
+                $http.post("/Rotation/start?rotationId=" + $scope.rotationSelected + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
                         if (response.data) {
