@@ -2937,7 +2937,6 @@
     <Content Include="Views\Invitation\InvitationList.cshtml" />
     <Content Include="Views\Invitation\Invitation.cshtml" />
     <Content Include="Views\Invitation\Agreement.cshtml" />
-    <Content Include="Views\Member\MyProfile.cshtml" />
     <Content Include="Views\Error\InvalidPage.cshtml" />
     <Content Include="Views\Member\MyPlan.cshtml" />
     <Content Include="Views\NewsVideo\NewsVideo.cshtml" />
@@ -2981,6 +2980,7 @@
     <Content Include="Views\Rotation\index.cshtml" />
     <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
     <Content Include="Views\Include\PopupSubscription.cshtml" />
+    <Content Include="Views\Profile\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />
@@ -3010,7 +3010,6 @@
     <Folder Include="Scripts\pdfjs\" />
     <Folder Include="svg.js-master\" />
     <Folder Include="Uploaded\" />
-    <Folder Include="Views\Profile\" />
     <Folder Include="Views\Subscription\" />
     <Folder Include="Views\User\" />
   </ItemGroup>

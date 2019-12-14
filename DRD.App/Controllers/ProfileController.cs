@@ -19,7 +19,13 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             login.CheckLogin(this);
 
-            return View();
+            Layout layout = new Layout();
+            layout.menus = login.GetMenus(this, 0);
+            layout.user = login.GetUser(this);
+            layout.obj = login.GetUser(this);
+            layout.activeId = 0;
+
+            return View(layout);
         }
 
         // GET: Profile/MemberList/

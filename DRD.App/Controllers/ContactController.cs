@@ -40,6 +40,7 @@ namespace DRD.App.Controllers
         // GET: Contact/GetContactFromCompany/Id
         public ActionResult GetContactFromCompany(long CompanyId)
         {
+            System.Diagnostics.Debug.WriteLine("GET CONTACT FROM COMPANY: "+ CompanyId);
             LoginController login = new LoginController();
             login.CheckLogin(this);
 

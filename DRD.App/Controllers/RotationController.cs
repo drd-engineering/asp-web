@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.View;
+using DRD.Models.View.Rotation;
 using DRD.Models.Custom;
 using DRD.Service;
 
@@ -73,12 +74,12 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(Rotation prod)
+        public ActionResult Save(RotationItem prod)
         {
             InitializeAPI();
             prod.CreatorId = user.Id;
+            prod.UserId = user.Id;
 
-            
             var data = rotationService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }

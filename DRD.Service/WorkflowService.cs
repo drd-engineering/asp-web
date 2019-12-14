@@ -282,7 +282,11 @@ namespace DRD.Service
                         {
                             var nodelink = new WorkflowNodeLink();
                             nodelink.WorkflowNodeId = workflowData.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
+                            var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeId);
+                            nodelink.WorkflowNodes = wfnod;
                             nodelink.WorkflowNodeToId = workflowData.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
+                            var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeToId);
+                            nodelink.WorkflowNodeTos = to;
                             nodelink.Caption = jnodelink.caption;
                            // nodelink.SymbolCode = db.Symbols.FirstOrDefault(workflow => workflow.Code.Equals(jnodelink.symbolCode)).Id;
                             nodelink.Operator = jnodelink.Operator;
