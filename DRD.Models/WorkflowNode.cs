@@ -9,7 +9,7 @@ namespace DRD.Models
     {
         public long Id { get; set; } // Id (Primary key)
         public long WorkflowId { get; set; } // WorkflowId
-        public long? MemberId { get; set; } // MemberId
+        public long? UserId { get; set; } // FK to User
         public int SymbolCode { get; set; } // SymbolId
         public string Caption { get; set; } // Caption (length: 100)
         public string Info { get; set; } // Info (length: 1000)

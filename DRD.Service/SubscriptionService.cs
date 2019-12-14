@@ -42,112 +42,88 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var planBusiness = (from c in db.PlanBusinesses
+                PlanBusiness planBusiness = (from c in db.PlanBusinesses
                  where c.CompanyId == companyId && c.IsActive && c.StorageUsedinByte > 0
-                 select new PlanBusiness
-                 {
-                     Id = c.Id,
-                     totalAdministrators = TotalAdministrators == null? c.totalAdministrators : (int)TotalAdministrators,
-                     CompanyId = c.CompanyId,
-                     ExpiredAt = ExpiredAt == null? c.ExpiredAt : ExpiredAt,
-                     Price = Price==null? c.Price : (long)Price,
-                     StartedAt= c.StartedAt,
-                     StorageUsedinByte = c.StorageUsedinByte,
-                     SubscriptionName = c.SubscriptionName,
-                     IsActive = IsActive==null? c.IsActive: (bool)IsActive,
-                 }).FirstOrDefault();
-                db.PlanBusinesses.Add(planBusiness);
+                 select c).FirstOrDefault();
+                planBusiness.totalAdministrators = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.totalAdministrators);
+                planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
+                planBusiness.Price = (Price.HasValue ? Price.Value : planBusiness.Price);
+                planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
                 db.SaveChanges();
                 return planBusiness;
             }
         }
 
-        public bool isSubscriptionValid(long subscriptionId, bool isCompanySubscription)
+        public bool isSubscriptionValid(long userId, long subscriptionId)
         {
             using (var db = new ServiceContext())
             {
-                if (!isCompanySubscription)
-                {
-                    var user =
-                    (from c in db.Users
-                     where c.Id == subscriptionId
-                     select new User
+                var plan =
+                    (from plandb in db.PlanBusinesses
+                     where plandb.Id == subscriptionId && plandb.IsActive && plandb.StorageUsedinByte > 0
+                     select new
                      {
-                         Id = c.Id,
-                         Name = c.Name,
-                         Phone = c.Phone,
-                         Email = c.Email,
-                         ImageProfile = c.ImageProfile,
-                         IsActive = c.IsActive,
-                         
+                         Id = plandb.Id,
+                         IsActive = plandb.IsActive,
+                         ExpiredAt = plandb.ExpiredAt,
+                         companyId = plandb.CompanyId
                      }).FirstOrDefault();
-                    return true;
-                    
-                }
-
-                var company =
-                    (from c in db.PlanBusinesses
-                     where c.CompanyId == subscriptionId && c.IsActive && c.StorageUsedinByte > 0
-                     select new PlanBusiness
-                     {
-                         Id = c.Id,
-                         IsActive = c.IsActive,
-                     }).FirstOrDefault();
-                if(company != null && company.ExpiredAt >= DateTime.Now)
+                if(plan != null && plan.ExpiredAt >= DateTime.Now)
                 {
                     deactivatePlanBusiness(subscriptionId);
                     return false;
                 }
-                    return company != null;
-                
+                var member =
+                    (from memberdb in db.Members
+                     join company in db.Companies on memberdb.CompanyId equals company.Id
+                     where memberdb.UserId == userId
+                     select new
+                     {
+                         Id = memberdb.Id
+                     }).FirstOrDefault();
+                return (plan != null)&&(member != null);
             }
         }
 
-        public List<BusinessSubscriptionItem> getBusinessSubscriptionByUser(long userId)
+        public BusinessSubscriptionList getBusinessSubscriptionByUser(long userId)
         {
             using (var db = new ServiceContext())
             {
-                var returnList = new List<BusinessSubscriptionItem>();
+                var returnList = new BusinessSubscriptionList();
                 var OwnerSubscriptions = new BusinessSubscriptionList();
-                                            //{returnList.subscriptions = (from member in db.Members
-                                            //join company in db.Companies on member.CompanyId equals company.Id
-                                            //join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
-                                            //where member.UserId == userId && plan.IsActive
-                                            //select new BusinessSubscriptionItem
-                                            //{
 
-                returnList = (from member in db.Members
+
+                var adminSubscription = (from member in db.Members
                                             join company in db.Companies on member.CompanyId equals company.Id
                                             join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
-                                            where member.UserId == userId && plan.IsActive
+                                            where member.UserId == userId && plan.IsActive && member.IsAdministrator
                                             select new BusinessSubscriptionItem
                                             { 
-                                                //Id = plan == null ? 0 : plan.Id,
+                                                Id = plan == null ? 0 : plan.Id,
                                                 CompanyId = company == null ? 0 : company.Id,
                                                 CompanyName = company == null ? null : company.Name,
-                                                //StorageUsedinByte = plan == null ? 0 : plan.StorageUsedinByte,
-                                                //SubscriptionName = plan == null ? null : plan.SubscriptionName,
-                                                //totalAdministrators = plan == null ? 0 : plan.totalAdministrators
+                                                StorageUsedinByte = plan == null ? 0 : plan.StorageUsedinByte,
+                                                SubscriptionName = plan == null ? null : plan.SubscriptionName,
+                                                totalAdministrators = plan == null ? 0 : plan.totalAdministrators
                                             }).ToList();
+                returnList.subscriptions = adminSubscription;
+                System.Diagnostics.Debug.WriteLine("COUNT :: ADMIN :: " + returnList.subscriptions.Count);
+                var ownerSubscriptions = (from  company in db.Companies
+                                          join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
+                                          where company.OwnerId == userId && plan.IsActive
+                                         select new BusinessSubscriptionItem
+                                         {
+                                             Id = plan == null ? 0 : plan.Id,
+                                             CompanyId = company == null ? 0 : company.Id,
+                                             CompanyName = company == null ? null : company.Name,
+                                             StorageUsedinByte = plan == null ? 0 : plan.StorageUsedinByte,
+                                             SubscriptionName = plan == null ? null : plan.SubscriptionName,
+                                             totalAdministrators = plan == null ? 0 : plan.totalAdministrators
+                                         }).ToList();
+                OwnerSubscriptions.subscriptions = ownerSubscriptions;
+                System.Diagnostics.Debug.WriteLine("COUNT :: TOTAL :: " + returnList.subscriptions.Count);
+                returnList.mergeBusinessSubscriptionList(OwnerSubscriptions);
                 return returnList;
-                //System.Diagnostics.Debug.WriteLine("COUNT :: owner" + returnList.subscriptions.Count);
-
-                //var ownerSubscriptions = (from plan in db.PlanBusinesses
-                //                         join company in db.Companies on plan.CompanyId equals company.Id
-                //                         where company.OwnerId == userId && plan.IsActive
-                //                         select new BusinessSubscriptionItem
-                //                         {
-                //                             Id = plan.Id,
-                //                             CompanyId = company.Id,
-                //                             CompanyName = company.Name,
-                //                             StorageUsedinByte = plan.StorageUsedinByte,
-                //                             SubscriptionName = plan.SubscriptionName,
-                //                             totalAdministrators = plan.totalAdministrators
-                //                         }).ToList();
-                //OwnerSubscriptions.subscriptions = ownerSubscriptions;
-                //System.Diagnostics.Debug.WriteLine("COUNT :: TOTAL :: " + returnList.subscriptions.Count);
-                //returnList.mergeBusinessSubscriptionList(OwnerSubscriptions);
-                //return returnList;
             }
         }
     }

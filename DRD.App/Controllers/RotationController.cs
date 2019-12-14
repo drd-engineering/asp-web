@@ -32,7 +32,10 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-
+        /// <summary>
+        /// New Rotation item Page
+        /// </summary>
+        /// <returns></returns>
         public ActionResult New()
         {
             Rotation product = new Rotation();
@@ -42,18 +45,28 @@ namespace DRD.App.Controllers
             
             return View(layout);
         }
-
+        /// <summary>
+        /// Rotation List Page
+        /// </summary>
+        /// <returns></returns>
         public ActionResult List()
         {
             Initialize();
             return View(layout);
         }
+        /// <summary>
+        /// Rotation Details Page by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Index(long id)
         {
             Initialize();
             layout.obj = rotationService.GetRotationById(id);
             return View(layout);
         }
+
+
 
         public ActionResult GetById(long id)
         {
@@ -72,11 +85,11 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Start(long rotationId, long subscriptionId, bool isSubscriptionCompany)
+        public ActionResult Start(long rotationId, long subscriptionId)
         {
             InitializeAPI();
             
-            var data = rotationService.Start(rotationId, subscriptionId, isSubscriptionCompany);
+            var data = rotationService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

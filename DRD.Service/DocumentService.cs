@@ -1034,7 +1034,7 @@ namespace DRD.Service
                     rotationNodeId = rnx.RotationNode.Id;
                 }
                 var rn = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNodeId);
-                var rm = db.RotationUsers.FirstOrDefault(c => c.MemberId == memberId && c.Rotation.Id == rn.Rotation.Id && c.WorkflowNodeId == rn.WorkflowNode.Id);
+                var rm = db.RotationUsers.FirstOrDefault(c => c.UserId == memberId && c.Rotation.Id == rn.Rotation.Id && c.WorkflowNodeId == rn.WorkflowNode.Id);
                 if (rm != null)
                 {
                     ret = rm.FlagPermission;

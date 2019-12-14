@@ -38,6 +38,8 @@ namespace DRD.Models
         // Foreign keys
         [ForeignKey("WorkflowId")]
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
+        //[ForeignKey("UserId")]
+        //public virtual User User { get; set; } // FK_Rotation_Member
 
         public Rotation()
         {

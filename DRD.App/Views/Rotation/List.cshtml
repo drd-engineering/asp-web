@@ -9,7 +9,6 @@
     }
 }
 
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -102,7 +101,6 @@
                                             </thead>
                                             <tbody>
                                                 <tr style="cursor:pointer;" ng-repeat="x in products">
-
                                                     <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
@@ -119,6 +117,7 @@
                                 </div>
                             </div>
                             <!-- /LIST -->
+                            <ng-include src="'/Include/PopupSubscription'"></ng-include>
                         </div>
                         <!-- /content area -->
                     </div>
@@ -128,7 +127,6 @@
             </div>
             <!-- /page container -->
         </div>
-        <ng-include src="'/Include/PopupSubscription'"></ng-include>
     </div>
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
@@ -143,6 +141,8 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
+            $scope.rotationSelected = -1
+            $scope.SubscriptionList = [];
             initValues() ;
 
             /*--------------------------------------------------------------
@@ -152,11 +152,11 @@
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
             }
             angular.element(document).ready(function () {
-                //$scope.GetPartners();
                 $scope.findRotations();
-                $scope.rotationIndex = -1;
-                $scope.SubscriptionList = [];
-                $(".content").show();
+                //$scope.GetPartners();
+                $scope.getSubscriptionList();
+                
+                $(".content").show();   
             });
 
             /*--------------------------------------------------------------
@@ -184,41 +184,54 @@
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:code})[0].UrlPage.replace('list?','?')+','+id;
                 location.href = url;
             }
-            $scope.do_start = function (id) {
-                
-                //function () {
-                //    setTimeout(function () {
-                //        //swal({
-                //        //    title: "Ajax request finished!",
-                //        //    confirmButtonColor: "#2196F3"
-                //        //});
-                //        $scope.startProduct(id);
-                //    }, 500);
 
-                //});
 
-            }
-
-        $scope.showSubscription = function (idx) {
-                $scope.rotationIndex = idx;
-                $scope.getSubscriptionList();
-                console.log("idx : "+idx);
+            $scope.showSubscription = function (rotationSelected) {
+                $scope.rotationSelected = rotationSelected;
+                console.log("idx : " + rotationSelected);
                 $("#modal_select_subscription").modal("show");
-        }
+            }
 
             $scope.getSubscriptionList = function () {
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
                     .then(function (response) {
-
                         if (response.data) {
-                            $scope.SubscriptionList = response.data;
-                            console.log(" SUBS :: " + $scope.SubscriptionList);
+                            $scope.SubscriptionList = response.data.subscriptions;
+                            console.log(" SUBS :: " + $scope.SubscriptionList[0].Id);
                         }
                     });
             }
 
+             $scope.setSubscription = function (idx) {
+                $scope.CompanyList[$scope.companyIndex].SubscriptionId = $scope.SubscriptionList[idx].Id;
+                $scope.CompanyList[$scope.companyIndex].SubscriptionName = $scope.SubscriptionList[idx].Name;
+
+                console.log("company index : " + $scope.companyIndex + ", subs Id : " + $scope.CompanyList[$scope.companyIndex].SubscriptionId + ", get : " + $scope.SubscriptionList[idx].Id + "  " + idx);
+                console.log("Company List :: ", $scope.CompanyList);
+            }
+
+            $scope.do_start = function (id) {
+                swal({
+                    title: "Confirmation",
+                    text: "Are you sure to start this rotation with \n" + $scope.SubscriptionList[id].SubscriptionName + " - " + $scope.SubscriptionList[id].CompanyName + " subscription?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    confirmButtonColor: "#2196F3",
+                    showLoaderOnConfirm: true
+                },
+                function () {
+                    setTimeout(function () {
+                        $scope.startProduct(id);
+                    }, 500);
+
+                });
+
+            }
+
             $scope.startProduct = function (id) {
-                $http.post("/Rotation/start?id=" + id,
+                console.log($scope.rotationSelected , id)
+                $http.post("/Rotation/start?rotationId=" + $scope.rotationSelected + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
                         if (response.data) {
@@ -299,6 +312,15 @@
         $(function () {
         });
         $(document).ready(function () {
+
+            $('.radio-group .radio').click(function () {
+                alert("HAAAI");
+                $(this).parent().find('.radio').removeClass('selected');
+                $(this).addClass('selected');
+                var val = $(this).attr('data-value');
+                //alert(val);
+                $(this).parent().find('input').val(val);
+            });
 
         });
     </script>

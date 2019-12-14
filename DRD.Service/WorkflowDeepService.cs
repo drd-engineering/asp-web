@@ -376,12 +376,14 @@ namespace DRD.Service
                 if (cxold < cxnew)
                 {
                     var ep = prod.RotationUsers.ElementAt(0); // get 1 data for sample
+                    var WflNd = db.WorkflowNodes.FirstOrDefault(wflnod => wflnod.Id == ep.WorkflowNodeId);
+                    // ERror disiini nih
                     for (var x = cxold; x < cxnew; x++)
                     {
                         RotationUser aii = new RotationUser();
-                        aii.Rotation.Id = product.Id;
-                        aii.WorkflowNodeId = ep.WorkflowNodeId;
-                        aii.User.Id = ep.User.Id;
+                        aii.Rotation = product;
+                        aii.WorkflowNodeId = WflNd.Id;
+                        aii.WorkflowNode = WflNd;
                         aii.FlagPermission = ep.FlagPermission;
 
                         db.RotationUsers.Add(aii);
@@ -402,7 +404,9 @@ namespace DRD.Service
                 {
                     var epos = prod.RotationUsers.ElementAt(v);
                     d.WorkflowNodeId = epos.WorkflowNodeId;
-                    d.User.Id = epos.User.Id;
+                    User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
+                    d.User = gotUser;
+                    d.User.Id = gotUser.Id;
                     d.FlagPermission = epos.FlagPermission;
                     //d.FlagAction = epos.FlagAction;
                     //d.CxDownload = epos.CxDownload;
@@ -417,17 +421,17 @@ namespace DRD.Service
 
         }
 
-        private ActivityItem createActivityResult(long memberId, int exitCode = 1)
+        private ActivityItem createActivityResult(long userId, int exitCode = 1)
         {
             using (var db = new ServiceContext())
             {
                 ActivityItem ret = new ActivityItem();
-                var mem = db.Users.FirstOrDefault(c => c.Id == memberId);
+                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
 
                 ret = new ActivityItem();
                 ret.ExitCode = exitCode;
                 ret.Email = mem.Email;
-                ret.UserId = memberId;
+                ret.UserId = userId;
                 ret.UserName = mem.Name;
                 return ret;
             }
@@ -441,13 +445,12 @@ namespace DRD.Service
         }
 
         // subscription Id is either userId or companyId
-        public List<ActivityItem> Start(long rotationId, long subscriptionId, bool isCompanySubscription)
+        public List<ActivityItem> Start(long userId, long rotationId, long subscriptionId)
         {
-            if (!subscriptionService.isSubscriptionValid(subscriptionId, isCompanySubscription))
+            if (!subscriptionService.isSubscriptionValid(userId, subscriptionId))
             {
                 return null;
             }
-
             List<ActivityItem> retvalues = new List<ActivityItem>();
 
             using (var db = new ServiceContext())
@@ -461,7 +464,7 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyIdStarted = db.PlanBusinesses.FirstOrDefault(c => c.Id == subscriptionId).CompanyId;
+                var companyIdStarted = db.PlanBusinesses.FirstOrDefault(c => c.Id == subscriptionId && c.IsActive).CompanyId;
                 rt.CompanyId = companyIdStarted;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
@@ -480,18 +483,21 @@ namespace DRD.Service
                 {
                     RotationNode rtnode = new RotationNode();
                     rtnode.Rotation.Id = rotationId;
+                    rtnode.Rotation = rt;
                     rtnode.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
+                    rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTos;
                     rtnode.SenderRotationNodeId = null;
-                    rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User.Id;
+                    User user = workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User;
+                    rtnode.UserId = (long)user.Id;
+                    rtnode.User = user;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
                     rtnode.Value = "";
                     rtnode.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
 
-                    retvalues.Add(createActivityResult(rtnode.UserId));
+                    retvalues.Add(createActivityResult(rtnode.UserId, 1));
                 }
                 db.SaveChanges();
-
                 return retvalues;
 
             }
