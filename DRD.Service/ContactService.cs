@@ -169,8 +169,7 @@ namespace DRD.Service
         public CompanyList GetListOfCompany(UserSession user) {
             using (var db = new ServiceContext()) {
                 long[] CompanyIds = db.Members.Where(member => member.UserId == user.Id).Select(c => c.CompanyId).ToArray();
-                
-                
+
                 var Companies = db.Companies.Where(company => CompanyIds.Contains(company.Id)).ToList();
 
                 CompanyList companyList = new CompanyList();

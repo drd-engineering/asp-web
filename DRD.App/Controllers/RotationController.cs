@@ -66,8 +66,6 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-
-
         public ActionResult GetById(long id)
         {
             var rotationService = new RotationService();// getUserLogin().AppZone.Code);

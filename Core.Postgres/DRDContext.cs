@@ -137,6 +137,19 @@ namespace Core.Postgres
             Contact contact5 = new Contact { ContactOwnerId = listOfUserCreated[1].Id, ContactItemId = listOfUserCreated[5].Id };
             Contact contact6 = new Contact { ContactOwnerId = listOfUserCreated[5].Id, ContactItemId = listOfUserCreated[6].Id };
 
+            Workflow wf1 = new Workflow { Id = 1, CreatorId = listOfUserCreated[0].Id, DateCreated = DateTime.Now, IsActive = true, Name = "myone", Description = "cuy", IsTemplate = false, UserId = listOfUserCreated[0].Email };
+            
+            WorkflowNode wfn1 = new WorkflowNode { Id = 1, WorkflowId = wf1.Id, SymbolCode = 0, Caption = "Start", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
+            WorkflowNode wfn2 = new WorkflowNode { Id = 2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
+            WorkflowNode wfn3 = new WorkflowNode { Id = 3, WorkflowId = wf1.Id, SymbolCode = 5, Caption = "Activity", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
+
+            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = 1, WorkflowNodeId = wfn1.Id , WorkflowNodeToId = wfn3.Id};
+            WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = 2, WorkflowNodeId = wfn3.Id, WorkflowNodeToId = wfn2.Id };
+
+            modelBuilder.Entity<Workflow>().HasData(wf1);
+            modelBuilder.Entity<WorkflowNode>().HasData(wfn1, wfn2, wfn3);
+            modelBuilder.Entity<WorkflowNodeLink>().HasData(wflnl1, wflnl2);
+
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2]);
             modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10, member11, member12);
             modelBuilder.Entity<PlanBusiness>().HasData(planBusiness1, planBusiness2, planBusiness3);
@@ -144,6 +157,21 @@ namespace Core.Postgres
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
             modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);
 
+            Rotation rt1 = new Rotation { Id = 1, CreatorId = listOfUserCreated[0].Id, Remark = "fe", Status = 0, WorkflowId = wf1.Id,
+                Subject = "Goodddd", DateCreated = DateTime.Now, UserId = listOfUserCreated[0].Id};
+
+            RotationNode rtn1 = new RotationNode { Id = 1, UserId = listOfUserCreated[2].Id, RotationId=rt1.Id,
+                WorkflowNodeId = wfn3.Id, CreatedAt = DateTime.Now};
+
+            RotationUser rtnusr1 = new RotationUser { Id = 1, FlagPermission = 6, WorkflowNodeId = wfn3.Id, UserId = listOfUserCreated[1].Id, RotationId = rt1.Id };
+
+            rt1.DateUpdated = DateTime.Now;
+            rt1.CompanyId = listOfCompanyCreated[2].Id;
+            rt1.DateStarted = DateTime.Now;
+
+            modelBuilder.Entity<Rotation>().HasData(rt1);
+            modelBuilder.Entity<RotationNode>().HasData(rtn1);
+            modelBuilder.Entity<RotationUser>().HasData(rtnusr1);
         }
     }
 }

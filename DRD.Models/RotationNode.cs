@@ -30,7 +30,6 @@ namespace DRD.Models
 
 
         // Foreign keys
-        public virtual Member Member { get; set; } // FK_RotationNode_Member
         public virtual User User { get; set; } // FK_RotationNode_Member
 
         public virtual Rotation Rotation { get; set; } // FK_RotationNode_Rotation

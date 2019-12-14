@@ -357,7 +357,6 @@ namespace DRD.Service
                 product.Status = prod.Status;
                 product.CreatorId = prod.CreatorId;
                 product.UserId = prod.UserId;
-                product.MemberId = prod.MemberId;
                 if (prod.Id == 0)
                 {
                     product.DateCreated = DateTime.Now;

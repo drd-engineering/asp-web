@@ -20,7 +20,6 @@ namespace DRD.Models
         public long RotationNodeId { get; set; }
         public long DefWorkflowNodeId { get; set; }
         public long WorkflowId { get; set; }
-        public long? MemberId { get; set; }
         public long? UserId { get; set; }
         public int FlagAction { get; set; }
         public byte SubscriptionType { get; set; }
