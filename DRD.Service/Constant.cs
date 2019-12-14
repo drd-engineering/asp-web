@@ -23,12 +23,12 @@ namespace DRD.Service
         
         public enum RotationStatus
         {
-            Open = 00,
-            In_Progress = 01,
-            Pending= 02,
-            Signed = 03,
-            Revision = 05,
-            Altered = 06,
+            Open = 0,
+            In_Progress = 1,
+            Pending= 2,
+            Signed = 3,
+            Revision = 5,
+            Altered = 6,
             Completed = 90,
             Declined = 98,
             Canceled = 99,
@@ -37,7 +37,11 @@ namespace DRD.Service
             Expired = 97
         }
 
-        public static string getRotationStatusName(int statusCode)
+        public static string getRotationStatusNameByCode(int statusCode)
+        {
+            return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
+        }
+        public string getRotationStatusName(int statusCode)
         {
             return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
         }
