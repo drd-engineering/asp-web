@@ -16,6 +16,7 @@ namespace DRD.Service
     {
         private readonly string _connString;
         private string _appZoneAccess;
+        private Constant constant = new Constant();
 
         public RotationService(string appZoneAccess, string connString)
         {
@@ -217,7 +218,7 @@ namespace DRD.Service
                          WorkflowName = rotationNode.Rotation.Workflow.Name,
                          ActivityName = rotationNode.WorkflowNode.Caption,
                          UserId = rotationNode.UserId,
-                         StatusDescription = Constant.getRotationStatusName(rotationNode.Status),
+                         StatusDescription = constant.getRotationStatusName(rotationNode.Status),
                          DateCreated = rotationNode.DateCreated,
                          DateUpdated = rotationNode.DateUpdated,
                          DateStarted = rotationNode.Rotation.DateUpdated,
@@ -281,7 +282,7 @@ namespace DRD.Service
                          DefWorkflowNodeId = rotationNode.WorkflowNode.Id,
                          FlagAction = 0,
                          DecissionInfo = "",
-                         StatusDescription = Constant.getRotationStatusName(rotationNode.Status),
+                         StatusDescription = constant.getRotationStatusName(rotationNode.Status),
                          Workflow = new Workflow
                          {
                              Id = rotationNode.Rotation.Workflow.Id,
@@ -385,6 +386,7 @@ namespace DRD.Service
             {
                 if(db.Rotations != null)
                 {
+                    
                     var result =
                     (from rotation in db.Rotations
                      where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
@@ -400,6 +402,11 @@ namespace DRD.Service
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+
+                    foreach (RotationData resultItem in result){
+                        resultItem.StatusDescription = constant.getRotationStatusName(resultItem.Status);
+                    }
+
                     ListRotationData returnValue = new ListRotationData();
                     if (result != null)
                     {
@@ -466,7 +473,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.UserId,
-                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
+                         StatusDescription = constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
@@ -565,7 +572,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Workflow.Id,
                          WorkflowName = rotation.Workflow.Name,
                          UserId = rotation.UserId,
-                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
+                         StatusDescription = constant.getRotationStatusName(rotation.Status),
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
                          DateStarted = rotation.DateStarted,
@@ -665,7 +672,7 @@ namespace DRD.Service
                          WorkflowId = rotation.Rotation.Workflow.Id,
                          WorkflowName = rotation.Rotation.Workflow.Name,
                          ActivityName = rotation.WorkflowNode.Caption,
-                         StatusDescription = Constant.getRotationStatusName(rotation.Status),
+                         StatusDescription = constant.getRotationStatusName(rotation.Status),
                          UserId = rotation.User.Id,
                          DateCreated = rotation.DateCreated,
                          DateUpdated = rotation.DateUpdated,
