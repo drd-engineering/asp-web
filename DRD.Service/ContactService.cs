@@ -114,6 +114,9 @@ namespace DRD.Service
                 if (hisSelfAsMember.Count == 0) { return null; }
                 long[] companyIds = (from m in hisSelfAsMember where CompanyIdOfUser == m.CompanyId select m.CompanyId).ToArray();
                 if (companyIds.Length == 0) { return null; }
+
+                string companyName = db.Companies.Where(c => c.Id == CompanyIdOfUser).Select(c => c.Name).FirstOrDefault();
+
                 var result = (from Member in db.Members
                               join User in db.Users on Member.UserId equals User.Id
                               where Member.CompanyId == CompanyIdOfUser && User.Id != user.Id
@@ -126,7 +129,8 @@ namespace DRD.Service
                                   ImageProfile = User.ImageProfile
                               }
                               ).ToList();
-                ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
+                
+                ContactList listReturned = new ContactList { Type = "Company", Items = new List<ContactItem>(), CompanyName = companyName};
                 int counter = 0;
                 foreach (ContactItem x in result)
                 {
