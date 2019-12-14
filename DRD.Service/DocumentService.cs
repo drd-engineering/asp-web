@@ -205,14 +205,14 @@ namespace DRD.Service
             string[] keywords = new string[] { };
             if (!string.IsNullOrEmpty(searchKeyword))
                 keywords = searchKeyword.Split(' ');
-            else
-                searchKeyword = null;
+            //else
+            //    keywords = null;
 
             using (var db = new ServiceContext())
             {
                 var result =
                 (from doc in db.Documents
-                 where doc.CreatorId == creatorId && (searchKeyword == null || keywords.All(x => (doc.Title).Contains(x)))
+                 where doc.CreatorId == creatorId && (keywords.All(x => (doc.Title).Contains(x)))
                  orderby doc.CreatedAt descending
                  select new DocumentItem
                  {
@@ -247,14 +247,12 @@ namespace DRD.Service
             string[] keywords = new string[] { };
             if (!string.IsNullOrEmpty(searchKeyword))
                 keywords = searchKeyword.Split(' ');
-            else
-                searchKeyword = null;
 
             using (var db = new ServiceContext())
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId && (searchKeyword == null || keywords.All(x => (c.Title).Contains(x)))
+                     where c.CreatorId == memberId && (keywords.All(x => (c.Title).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,

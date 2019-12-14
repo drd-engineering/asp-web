@@ -15,6 +15,22 @@ namespace DRD.App.Controllers
 {
     public class DocumentController : Controller
     {
+        private LoginController login = new LoginController();
+        private UserSession user;
+        private Layout layout = new Layout();
+
+        public void Initialize()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.user = login.GetUser(this);
+        }
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+        }
 
         private UserSession getUserLogin()
         {
@@ -22,29 +38,13 @@ namespace DRD.App.Controllers
             return login.GetUser(this);
         }
 
-        public ActionResult Document(string mid)
+        public ActionResult Document(long documentId)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            // begin decription menu
-            UserSession user = login.GetUser(this);
-
-            // end decription menu
-
+            
             Document doc = new Document();
-            string[] ids = mid.Split(',');
-            if (ids.Length > 1 && !ids[1].Equals("0"))
-            {
-                DocumentService psvr = new DocumentService();
-                doc = psvr.GetById(int.Parse(ids[1]));
-            }
-
-            Layout layout = new Layout();
-            layout.activeId = int.Parse(ids[0]);
-            layout.key = mid.Split(',')[0];
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            
+            DocumentService psvr = new DocumentService();
+            doc = psvr.GetById(documentId);
             layout.obj = doc;
 
             return View(layout);
@@ -86,22 +86,42 @@ namespace DRD.App.Controllers
         }
 
 
-        public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
+        //public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
+        //{
+        //    LoginController login = new LoginController();
+        //    UserSession user = login.GetUser(this);
+        //    var srv = new DocumentService();
+        //    var data = srv.GetLiteAll(user.Id, topCriteria, page, pageSize);
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
+
+        //public ActionResult GetLiteAllCount(string topCriteria)
+        //{
+        //    LoginController login = new LoginController();
+        //    UserSession user = login.GetUser(this);
+        //    var srv = new DocumentService();
+        //    var data = srv.GetLiteAllCount(user.Id, topCriteria);
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
+
+        public ActionResult GetLiteAll(string searchKeyword, int page, int pageSize)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new DocumentService();
-            var data = srv.GetLiteAll(user.Id, topCriteria, page, pageSize);
+            var data = srv.GetAll(user.Id, searchKeyword, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetLiteAllCount(string topCriteria)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new DocumentService();
-            var data = srv.GetLiteAllCount(user.Id, topCriteria);
+            var data = srv.GetAllCount(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
 
         public ActionResult GetLiteAll3(string topCriteria, int page, int pageSize, string criteria)
         {
