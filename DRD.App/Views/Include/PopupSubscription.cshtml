@@ -15,8 +15,8 @@
                 @*class="modal-body"*@
                 <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                     <tbody>
-                        <tr data-dismiss="modal" ng-click="do_start($index);" style="cursor:pointer" ng-repeat="x in SubscriptionList" style="vertical-align:top">
-                            <td width="25px">{{x.SubscriptionName}} Subscription - {{x.CompanyName}}</td>
+                        <tr data-dismiss="modal" style="cursor:pointer" ng-repeat="x in SubscriptionList" style="vertical-align:top">
+                            <td width="25px" ng-click="do_start($index);">{{x.SubscriptionName}} Subscription - {{x.CompanyName}}</td>
                         </tr>
                     </tbody>
                 </table>

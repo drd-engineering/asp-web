@@ -421,17 +421,17 @@ namespace DRD.Service
 
         }
 
-        private ActivityItem createActivityResult(long memberId, int exitCode = 1)
+        private ActivityItem createActivityResult(long userId, int exitCode = 1)
         {
             using (var db = new ServiceContext())
             {
                 ActivityItem ret = new ActivityItem();
-                var mem = db.Users.FirstOrDefault(c => c.Id == memberId);
+                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
 
                 ret = new ActivityItem();
                 ret.ExitCode = exitCode;
                 ret.Email = mem.Email;
-                ret.UserId = memberId;
+                ret.UserId = userId;
                 ret.UserName = mem.Name;
                 return ret;
             }
@@ -445,13 +445,12 @@ namespace DRD.Service
         }
 
         // subscription Id is either userId or companyId
-        public List<ActivityItem> Start(long rotationId, long subscriptionId, bool isCompanySubscription)
+        public List<ActivityItem> Start(long userId, long rotationId, long subscriptionId)
         {
-            if (!subscriptionService.isSubscriptionValid(subscriptionId, isCompanySubscription))
+            if (!subscriptionService.isSubscriptionValid(userId, subscriptionId))
             {
                 return null;
             }
-
             List<ActivityItem> retvalues = new List<ActivityItem>();
 
             using (var db = new ServiceContext())
@@ -465,7 +464,7 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyIdStarted = db.PlanBusinesses.FirstOrDefault(c => c.Id == subscriptionId).CompanyId;
+                var companyIdStarted = db.PlanBusinesses.FirstOrDefault(c => c.Id == subscriptionId && c.IsActive).CompanyId;
                 rt.CompanyId = companyIdStarted;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
@@ -484,18 +483,21 @@ namespace DRD.Service
                 {
                     RotationNode rtnode = new RotationNode();
                     rtnode.Rotation.Id = rotationId;
+                    rtnode.Rotation = rt;
                     rtnode.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
+                    rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTos;
                     rtnode.SenderRotationNodeId = null;
-                    rtnode.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User.Id;
+                    User user = workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rotationId).User;
+                    rtnode.UserId = (long)user.Id;
+                    rtnode.User = user;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
                     rtnode.Value = "";
                     rtnode.DateCreated = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
 
-                    retvalues.Add(createActivityResult(rtnode.UserId));
+                    retvalues.Add(createActivityResult(rtnode.UserId, 1));
                 }
                 db.SaveChanges();
-
                 return retvalues;
 
             }

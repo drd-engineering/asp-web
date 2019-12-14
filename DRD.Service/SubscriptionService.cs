@@ -42,64 +42,46 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var planBusiness = (from c in db.PlanBusinesses
+                PlanBusiness planBusiness = (from c in db.PlanBusinesses
                  where c.CompanyId == companyId && c.IsActive && c.StorageUsedinByte > 0
-                 select new PlanBusiness
-                 {
-                     Id = c.Id,
-                     totalAdministrators = TotalAdministrators == null? c.totalAdministrators : (int)TotalAdministrators,
-                     CompanyId = c.CompanyId,
-                     ExpiredAt = ExpiredAt == null? c.ExpiredAt : ExpiredAt,
-                     Price = Price==null? c.Price : (long)Price,
-                     StartedAt= c.StartedAt,
-                     StorageUsedinByte = c.StorageUsedinByte,
-                     SubscriptionName = c.SubscriptionName,
-                     IsActive = IsActive==null? c.IsActive: (bool)IsActive,
-                 }).FirstOrDefault();
-                db.PlanBusinesses.Add(planBusiness);
+                 select c).FirstOrDefault();
+                planBusiness.totalAdministrators = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.totalAdministrators);
+                planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
+                planBusiness.Price = (Price.HasValue ? Price.Value : planBusiness.Price);
+                planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
                 db.SaveChanges();
                 return planBusiness;
             }
         }
 
-        public bool isSubscriptionValid(long subscriptionId, bool isCompanySubscription)
+        public bool isSubscriptionValid(long userId, long subscriptionId)
         {
             using (var db = new ServiceContext())
             {
-                if (!isCompanySubscription)
-                {
-                    var user =
-                    (from c in db.Users
-                     where c.Id == subscriptionId
-                     select new User
+                var plan =
+                    (from plandb in db.PlanBusinesses
+                     where plandb.Id == subscriptionId && plandb.IsActive && plandb.StorageUsedinByte > 0
+                     select new
                      {
-                         Id = c.Id,
-                         Name = c.Name,
-                         Phone = c.Phone,
-                         Email = c.Email,
-                         ImageProfile = c.ImageProfile,
-                         IsActive = c.IsActive,
-                         
+                         Id = plandb.Id,
+                         IsActive = plandb.IsActive,
+                         ExpiredAt = plandb.ExpiredAt,
+                         companyId = plandb.CompanyId
                      }).FirstOrDefault();
-                    return true;
-                    
-                }
-
-                var company =
-                    (from c in db.PlanBusinesses
-                     where c.CompanyId == subscriptionId && c.IsActive && c.StorageUsedinByte > 0
-                     select new PlanBusiness
-                     {
-                         Id = c.Id,
-                         IsActive = c.IsActive,
-                     }).FirstOrDefault();
-                if(company != null && company.ExpiredAt >= DateTime.Now)
+                if(plan != null && plan.ExpiredAt >= DateTime.Now)
                 {
                     deactivatePlanBusiness(subscriptionId);
                     return false;
                 }
-                    return company != null;
-                
+                var member =
+                    (from memberdb in db.Members
+                     join company in db.Companies on memberdb.CompanyId equals company.Id
+                     where memberdb.UserId == userId
+                     select new
+                     {
+                         Id = memberdb.Id
+                     }).FirstOrDefault();
+                return (plan != null)&&(member != null);
             }
         }
 
