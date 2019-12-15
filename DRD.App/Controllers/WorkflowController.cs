@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 
-using DRD.Models;
-using DRD.Models.Custom;
 using DRD.Models.View;
+using DRD.Models.Custom;
+using DRD.Models.View.Workflow;
 using DRD.Models.API;
 using DRD.Service;
 
@@ -16,39 +16,44 @@ namespace DRD.App.Controllers
 {
     public class WorkflowController : Controller
     {
-        private UserSession getUserLogin()
+        LoginController login = new LoginController();
+        WorkflowService workflowService = new WorkflowService();
+        UserSession user;
+        Layout layout = new Layout();
+
+        public void Initialize()
         {
-            LoginController login = new LoginController();
-            return login.GetUser(this);
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.user = login.GetUser(this);
+        }
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
         }
 
         // GET : Workflow/new
         public ActionResult New()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
-            ListWorkflowData product = new ListWorkflowData();
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.objItems = login.GetMenuObjectItems(layout.menus, layout.activeId);
-            layout.user = login.GetUser(this);
-            layout.obj = product;
-
+            Initialize();
             return View(layout);
         }
 
         //GET : Workflow/list
         public ActionResult List()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-            UserSession user = login.GetUser(this);
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            Initialize();
             return View(layout);
         }
+
+        public ActionResult Index(int id)
+        {
+            Initialize();
+            return View(layout);
+        }
+
         public ActionResult GetById(long id)
         {
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
@@ -58,32 +63,28 @@ namespace DRD.App.Controllers
 
         public ActionResult Save(WorkflowData prod)
         {
-            UserSession user = getUserLogin();
+            Initialize();
             prod.CreatorId = user.Id;
-            prod.UserId = user.Email;
-            prod.Type = 0;
-            var srv = new WorkflowService();// user.AppZone.Code);
-            var data = srv.Save(prod);
+            prod.UserEmail = user.Email;
+            prod.WfType = 0;
+            var data = workflowService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SaveDraft(WorkflowData prod)
         {
-            UserSession user = getUserLogin();
+            Initialize();
             prod.CreatorId = user.Id;
-            prod.UserId = user.Email;
-            prod.Type = 1;
-            var srv = new WorkflowService();// user.AppZone.Code);
-            var data = srv.Save(prod);
+            prod.UserEmail = user.Email;
+            prod.WfType = 1;
+            var data = workflowService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FindWorkflows(string topCriteria, int page, int pageSize)
         {
-            LoginController login = new LoginController();
-            UserSession user = login.GetUser(this);
-            var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.FindWorkflows(user.Id, topCriteria, page, pageSize);
+            Initialize();
+            var data = workflowService.FindWorkflows(user.Id, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 /*

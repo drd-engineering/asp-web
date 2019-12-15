@@ -14,7 +14,7 @@ namespace DRD.Models
         public bool IsTemplate { get; set; } // IsTemplate
         public int Type { get; set; } // WfType
         public int TotalUsed { get; set; } // WfType
-        public string UserId { get; set; } // UserEmail (length: 50)
+        public string UserEmail { get; set; } // UserEmail (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 

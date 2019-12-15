@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DRD.Models.Custom
 {
-    public class WorkflowNodeData
+    public class WorkflowNodeItem
     {
         public long Id { get; set; }    //dummy id
         public string element { get; set; }
