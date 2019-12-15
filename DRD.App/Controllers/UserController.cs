@@ -6,7 +6,6 @@ using System.Web.Mvc;
 
 using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Models.API.Register;
 using DRD.Service;
  
 namespace DRD.App.Controllers

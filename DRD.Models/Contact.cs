@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DRD.Models.API.Contact;
+using DRD.Models.View;
 
 namespace DRD.Models
 {

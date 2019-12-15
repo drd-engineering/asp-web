@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DRD.Models;
 using DRD.Models.API;
 using DRD.Service.Context;
+using DRD.Models.View;
 
 namespace DRD.Service
 {

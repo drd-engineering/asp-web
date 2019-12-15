@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.API.List;
+using DRD.Models.View;
 
 namespace DRD.Service
 {   

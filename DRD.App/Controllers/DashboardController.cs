@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using DRD.Service;
 using DRD.Models.View;
-using DRD.Models.API.Dashboard;
+using DRD.Models.API;
 
 namespace DRD.App.Controllers
 {
