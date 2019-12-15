@@ -249,7 +249,7 @@
     <Compile Include="View\Contact\ContactList.cs" />
     <Compile Include="View\Dashboard\CounterItem.cs" />
     <Compile Include="View\Layout.cs" />
-    <Compile Include="View\List\ActivityItem.cs" />
+    <Compile Include="View\Rotation\ActivityItem.cs" />
     <Compile Include="View\List\DocumentItem.cs" />
     <Compile Include="Custom\RotationData.cs" />
     <Compile Include="View\Menu.cs" />

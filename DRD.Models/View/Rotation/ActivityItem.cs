@@ -12,6 +12,8 @@ namespace DRD.Models.View
         public long UserId { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
+        public string RotationName { get; set; }
+        public long RotationNodeId { get; set; }
         public ActivityItem() { }
     }
 }

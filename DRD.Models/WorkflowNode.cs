@@ -7,6 +7,7 @@ namespace DRD.Models
     [Table("WorkflowNodes", Schema = "public")]
     public class WorkflowNode
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long WorkflowId { get; set; } // WorkflowId
         public long? UserId { get; set; } // FK to User

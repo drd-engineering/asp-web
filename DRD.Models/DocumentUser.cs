@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace DRD.Models
 {
     public class DocumentUser
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long DocumentId { get; set; }
         public long UserId { get; set; } // MemberId
