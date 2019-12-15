@@ -228,6 +228,7 @@ namespace DRD.Service
                 {
                     product.DateCreated = DateTime.Now;
                     db.Workflows.Add(product);
+                    System.Diagnostics.Debug.WriteLine("PRODUCT WORKFLOW CREATED :: " + product.Id);
                 }
                 else
                     product.DateUpdated = DateTime.Now;

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 
+using DRD.Models;
 using DRD.Models.View;
 using DRD.Models.Custom;
 using DRD.Models.API;
@@ -37,6 +38,8 @@ namespace DRD.App.Controllers
         public ActionResult New()
         {
             Initialize();
+            Workflow product = new Workflow();
+            layout.obj = product;
             return View(layout);
         }
 

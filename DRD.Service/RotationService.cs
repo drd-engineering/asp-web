@@ -743,18 +743,19 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-        public int Start(long userId, long rotationId, long subscriptionId)
+        public List<int> Start(long userId, long rotationId, long subscriptionId)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             var returnItem = workflowDeepService.Start(userId, rotationId, subscriptionId);
-            MemberService memberService = new MemberService();
-            
-            //MemberService userService = new MemberService();
-            //foreach (JsonActivityResult act in ret)
-            //{
-            //    userService.sendEmailInbox(act);
-            //}
-            return returnItem.FirstOrDefault().ExitCode;
+            InboxService inboxService = new InboxService();
+            /*MemberService memberService = new MemberService();*/
+            List<int> returnValue = new List<int>();
+            foreach (ActivityItem act in returnItem)
+            {
+                returnValue.Add(inboxService.CreateInbox(act));
+                /*MemberService.sendEmailInbox(act);*/
+            }
+            return returnValue;
         }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
