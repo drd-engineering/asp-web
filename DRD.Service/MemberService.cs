@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.API.Contact;
 using DRD.Models.Custom;
-using DRD.Models.View.Member;
+using DRD.Models.View;
 
 using DRD.Service;
 using DRD.Service.Context;

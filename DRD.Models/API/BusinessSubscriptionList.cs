@@ -1,4 +1,4 @@
-using DRD.Models.View.Member;
+using DRD.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;

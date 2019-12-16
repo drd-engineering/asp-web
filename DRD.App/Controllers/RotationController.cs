@@ -7,7 +7,6 @@ using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.View;
-using DRD.Models.View.Rotation;
 using DRD.Models.Custom;
 using DRD.Service;
 
@@ -36,11 +35,9 @@ namespace DRD.App.Controllers
 
         public ActionResult New()
         {
-            Rotation product = new Rotation();
-            
             Initialize();
+            Rotation product = new Rotation();
             layout.obj = product;
-            
             return View(layout);
         }
         /// <summary>
@@ -96,6 +93,8 @@ namespace DRD.App.Controllers
             var data = rotationService.FindRotations(user.Id, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+
         public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
         {
             var rotationService = new RotationService();// getUserLogin().AppZone.Code);

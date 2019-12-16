@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DRD.Models.API;
 
@@ -7,6 +8,7 @@ namespace DRD.Models
     [Table("DocumentElements", Schema = "public")]
     public class DocumentElement
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public int Page { get; set; } // Page
         public double? LeftPosition { get; set; } // LeftPos

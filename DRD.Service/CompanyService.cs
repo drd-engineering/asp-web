@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.View.Company;
-using DRD.Models.API.Register;
+using DRD.Models.View;
+using DRD.Models.API;
 using DRD.Service.Context;
 namespace DRD.Service
 {

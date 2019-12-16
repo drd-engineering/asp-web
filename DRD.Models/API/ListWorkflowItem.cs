@@ -7,14 +7,14 @@ using DRD.Models.Custom;
 
 namespace DRD.Models.API
 {
-    public class ListWorkflowData
+    public class ListWorkflowItem
     {
         public int Count { get; set; } // totalItems
-        public List<WorkflowData> Items { get; set; }
-        public ListWorkflowData()
+        public List<WorkflowItem> Items { get; set; }
+        public ListWorkflowItem()
         {
             Count = 0;
-            Items = new List<WorkflowData>();
+            Items = new List<WorkflowItem>();
         }
     }
 

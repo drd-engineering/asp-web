@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.Custom
+namespace DRD.Models.View
 {
     public class WorkflowNodeLinkData
     {
@@ -15,6 +15,6 @@ namespace DRD.Models.Custom
         public string symbolCode { get; set; }
         public string caption { get; set; }
         public string Operator { get; set; } // Operator (length: 10)
-        public string value { get; set; } // Value (length: 20)
+        public string value { get; set; } // Value (length: 20)} 
     }
 }
