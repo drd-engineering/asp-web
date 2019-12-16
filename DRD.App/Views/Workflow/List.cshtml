@@ -88,15 +88,17 @@
                                                 <tr>
                                                     <th width="25px">#</th>
                                                     <th>Name</th>
-                                                    <th width="80px">Type</th>
-                                                    <th width="80px">Active</th>
+                                                    <th>Project Name</th>
+                                                    <th width="70px">Type</th>
+                                                    <th width="70px">Active</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr ng-repeat="x in products">
                                                     <td width="25px">{{$index+1 + index}}</td>
                                                     <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Name}}</a></td>
-                                                    <td>{{(x.Type==1?'Draft':'')}}</td>
+                                                    <td>{{x.ProjectName}}</td>
+                                                    <td>{{(x.WfType==1?'Draft':'')}}</td>
                                                     <td style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
                                                 </tr>
                                             </tbody>

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.View;
 using DRD.Models.Custom;
 using DRD.Models.API;
+using DRD.Models.API.List;
 using DRD.Service.Context;
 using System.Linq.Expressions;
 
@@ -737,25 +737,24 @@ namespace DRD.Service
         /// </summary>
         /// <parameter name="prod"></parameter>
         /// <returns></returns>
-        public long Save(RotationItem prod)
+        public long Save(Rotation prod)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             return workflowDeepService.Save(prod);
         }
 
-        public List<int> Start(long userId, long rotationId, long subscriptionId)
+        public int Start(long userId, long rotationId, long subscriptionId)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             var returnItem = workflowDeepService.Start(userId, rotationId, subscriptionId);
-            InboxService inboxService = new InboxService();
-            /*MemberService memberService = new MemberService();*/
-            List<int> returnValue = new List<int>();
-            foreach (ActivityItem act in returnItem)
-            {
-                returnValue.Add(inboxService.CreateInbox(act));
-                /*MemberService.sendEmailInbox(act);*/
-            }
-            return returnValue;
+            MemberService memberService = new MemberService();
+            
+            //MemberService userService = new MemberService();
+            //foreach (JsonActivityResult act in ret)
+            //{
+            //    userService.sendEmailInbox(act);
+            //}
+            return returnItem.FirstOrDefault().ExitCode;
         }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
