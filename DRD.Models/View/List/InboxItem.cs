@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using DRD.Models.Custom;
 
-namespace DRD.Models.API.List
+namespace DRD.Models.View
 {
     // inbox/{id}
     public class InboxItem

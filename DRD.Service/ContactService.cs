@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DRD.Models.API.Contact;
 using DRD.Service.Context;
 using DRD.Models.Custom;
-using DRD.Models.API.Register;
+using DRD.Models.API;
 using DRD.Models;
+using DRD.Models.View;
 
 namespace DRD.Service
 {

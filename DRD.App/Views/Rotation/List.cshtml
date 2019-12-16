@@ -243,6 +243,8 @@
                                 showInfo("Your package plan has expired, please check on my plan.");
                             else if (response.data == -4)
                                 showInfo("Rotation quota is not enough, please check on my plan.");
+                            else if (response.data == -5)
+                                showInfo("Workflow doesnt has start node");
                             else {
                                 showSuccess("Successful data process.");
                                 $scope.changePage($scope.kriteria, $scope.page, $scope.row);

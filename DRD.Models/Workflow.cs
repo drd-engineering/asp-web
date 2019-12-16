@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("Workflows", Schema = "public")]
     public class Workflow
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 100)
         public string Description { get; set; } // Description
@@ -14,7 +16,7 @@ namespace DRD.Models
         public bool IsTemplate { get; set; } // IsTemplate
         public int Type { get; set; } // WfType
         public int TotalUsed { get; set; } // WfType
-        public string UserId { get; set; } // UserEmail (length: 50)
+        public string UserEmail { get; set; } // UserEmail (length: 50)
         public System.DateTime DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 

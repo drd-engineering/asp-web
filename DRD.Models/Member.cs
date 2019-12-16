@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("Members", Schema = "public")]
     public class Member
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // CompanyId
         public long UserId { get; set; } // UserId (length: 50)

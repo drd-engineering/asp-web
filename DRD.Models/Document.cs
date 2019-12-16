@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -7,6 +8,7 @@ namespace DRD.Models
     [Table("Documents", Schema = "public")]
     public class Document
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Title { get; set; } // Title (length: 500)
         public string Description { get; set; } // Descr

@@ -137,8 +137,8 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission :&ensp;</span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                                    <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                                / <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPemission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
@@ -217,7 +217,7 @@
             $scope.index = 0;
             // modal workflow
 
-
+            $scope.SubscriptionList = [];
             $scope.model = {};
             $scope.subscriptions = [];
             $scope.wizarno = 'product';
@@ -315,59 +315,14 @@
                         btn.stop();
                         if (response.data) {
                             $scope.wizarno = 'success';
-                            $scope.model.Id=response.data;
+                            $scope.model.Id = response.data;
+                            $scope.getSubscriptionList();
                         }
                     }, function (response) {
                         //error handle
                         console.log("Good")
                         btn.stop();
                         var x = 0;
-                    });
-            }
-
-            $scope.startProduct = function () {
-                swal({
-                    title: "Confirmation",
-                    text: "Data will be processed, continue with data processing?",
-                    type: "warning",
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonColor: "#2196F3",
-                    showLoaderOnConfirm: true
-                },
-                function () {
-                    setTimeout(function () {
-                        $scope.startProcess();
-                    }, 500);
-
-                });
-            }
-
-            $scope.startProcess = function () {
-                var id=$scope.model.Id;
-                $http.post("/Rotation/start?id="+id,
-                    {
-                    }).then(function (response) {
-                        if (response.data) {
-                            if (response.data == -1)
-                                showError("Invalid rotation.");
-                            else if (response.data == -2)
-                                showError("You are not Administrator");
-                            else if (response.data == -3)
-                                showInfo("Your package plan has expired, please check on my plan.");
-                            else if (response.data == -4)
-                                showInfo("Rotation quota is not enough, please check on my plan.");
-
-                            else {
-                                $scope.wizarno = 'started';
-                                showSuccess("Successful data process.");
-                            }
-                        }else
-                            showError("process data error.");
-                    }, function (response) {
-                        //error handle\
-                        var x = 0;
-                        showError("process data error.");
                     });
             }
 
@@ -545,21 +500,65 @@
             --------------------------------------------------------------*/
 
             $scope.showSubscription = function () {
-                $http.post('/User/GetAllSubscription'
-                ).then(function (response) {
-                    if (response.data) {
-                        if (response.data.count() == 0) {
-                            $("#modal_dont_have_subscription").modal("show");
-                        }
-                        else {
-                            $scope.subscriptions = response.data.items;
-                            $("#modal_select_subscriptions").modal("show");
-                        }
-                    }
-                }, function (response) {
-                    //error handle\
-                    $("#modal_dont_have_subscription").modal("show");
+                console.log("idx : " + $scope.model.Id);
+                $("#modal_select_subscription").modal("show");
+            }
+            $scope.do_start = function (id) {
+                swal({
+                    title: "Confirmation",
+                    text: "Are you sure to start this rotation with \n" + $scope.SubscriptionList[id].SubscriptionName + " - " + $scope.SubscriptionList[id].CompanyName + " subscription?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    confirmButtonColor: "#2196F3",
+                    showLoaderOnConfirm: true
+                },
+                function () {
+                    setTimeout(function () {
+                        $scope.startProduct($scope.SubscriptionList[id].Id);
+                    }, 500);
+
                 });
+            }
+            $scope.startProduct = function (id) {
+                var rotationId = $scope.model.Id;
+                console.log(rotationId, id);
+                $http.post("/Rotation/start?rotationId=" + rotationId + "&subscriptionId=" + id,
+                    {
+                    }).then(function (response) {
+                        
+                        if (response.data) {
+                            if (response.data == -1)
+                                showError("Invalid rotation.");
+                            else if (response.data == -2)
+                                showError("Invalid member plan.");
+                            else if (response.data == -3)
+                                showInfo("Your package plan has expired, please check on my plan.");
+                            else if (response.data == -4)
+                                showInfo("Rotation quota is not enough, please check on my plan.");
+                            else if (response.data == -5)
+                                showInfo("Workflow doesnt has start node");
+                            else {
+                                $scope.wizarno = 'started';
+                                showSuccess("Successful data process.");
+                            }
+                        } else
+                            showInfo("process data error.");
+                    }, function (response) {
+                        console.log(response);
+                        //error handle\
+                        var x = 0;
+                        showInfo("process data error.");
+                    });
+            }
+
+            $scope.getSubscriptionList = function () {
+                $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
+                    .then(function (response) {
+                        if (response.data) {
+                            $scope.SubscriptionList = response.data.subscriptions;
+                        }
+                    });
             }
         });
 

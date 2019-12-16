@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API.Dashboard
+namespace DRD.Models.View
 {
     public class CounterItem
     {

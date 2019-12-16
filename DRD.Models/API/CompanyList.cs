@@ -1,11 +1,11 @@
-using DRD.Models.View.Member;
+using DRD.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API.Register
+namespace DRD.Models.API
 {
     public class CompanyList
     {

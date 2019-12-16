@@ -423,13 +423,10 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            if (response.data==-1){
-                                showInfo("The amount of activity created exceeds the number of your package. Please see your default plan type at My account -> My Plan Type");
-                                return;
-                            }else if (response.data==-2){
-                                showInfo("You do not have a plan payment.");
-                                return;
-                            }
+                            if (response.data == -1) { showInfo("The amount of activity created exceeds the number of your package. Please see your default plan type at My account -> My Plan Type"); return; }
+                            else if (response.data == -2) { showInfo("You do not have a plan payment."); return; }
+                            else if (response.data == -3) { showInfo("This workflow can not be edit because it already in use"); return; }
+
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
@@ -459,7 +456,8 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            
+                            if (response.data == -3) { showInfo("This workflow can not be edit because it already in use"); return; }
+
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();

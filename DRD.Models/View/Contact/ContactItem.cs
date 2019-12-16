@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API.Contact
+namespace DRD.Models.View
 {
     public class ContactItem
     {

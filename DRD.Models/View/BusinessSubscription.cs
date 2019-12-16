@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DRD.Models
+namespace DRD.Models.View
 {
     public class BusinessSubscription
     {

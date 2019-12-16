@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DRD.Models.View.Member
+namespace DRD.Models.View
 {
     public class MemberList
     {

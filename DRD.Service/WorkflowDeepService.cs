@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DRD.Models;
-using DRD.Models.View.Rotation;
+using DRD.Models.View;
 using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Models.API.List;
 
 using DRD.Service.Context;
 
@@ -432,6 +431,21 @@ namespace DRD.Service
 
         }
 
+        private ActivityItem createActivityResult(long userId, int exitCode, string rotationName, long rotationNodeId)
+        {
+            using (var db = new ServiceContext())
+            {
+                ActivityItem ret = new ActivityItem();
+                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
+                ret.ExitCode = exitCode;
+                ret.Email = mem.Email;
+                ret.UserId = userId;
+                ret.UserName = mem.Name;
+                ret.RotationName = rotationName;
+                ret.RotationNodeId = rotationNodeId;
+                return ret;
+            }
+        }
         private ActivityItem createActivityResult(long userId, int exitCode)
         {
             using (var db = new ServiceContext())
@@ -482,7 +496,7 @@ namespace DRD.Service
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.WorkflowId && c.WorkflowNodes.SymbolCode == 0).ToList();
                 if (workflowNodeLinks == null)
                 {
-                    retvalues.Add(createActivityResult(-1));
+                    retvalues.Add(createActivityResult(-5));
                     System.Diagnostics.Debug.WriteLine("REACHED ERROR WORKFLOWNODE:: ");
                     return retvalues; //Invalid rotation
                 }
@@ -509,9 +523,10 @@ namespace DRD.Service
                     rtnode.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: "+rt.WorkflowId);
-                    retvalues.Add(createActivityResult(rtnode.UserId, 1));
-                }
                     db.SaveChanges();
+                    retvalues.Add(createActivityResult(rtnode.UserId, 1, rt.Subject, rtnode.Id));
+                }
+                db.SaveChanges();
                 return retvalues;
             }
 

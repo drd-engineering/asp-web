@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -7,6 +8,7 @@ namespace DRD.Models
     [Table("WorkflowNodeLinks", Schema = "public")]
     public class WorkflowNodeLink
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long WorkflowNodeId { get; set; } // WorkflowNodeId
         public long WorkflowNodeToId { get; set; } // WorkflowNodeToId

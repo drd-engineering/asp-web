@@ -8,7 +8,6 @@ using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.API.Register;
 using DRD.Models.Custom;
 using DRD.Models.View;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("PlanBusinesses", Schema = "public")]
     public class PlanBusiness
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // Id (Primary key)
         public string SubscriptionName { get; set; } // MemberId
