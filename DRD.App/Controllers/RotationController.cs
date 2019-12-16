@@ -32,7 +32,10 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-
+        /// <summary>
+        /// New Rotation item Page
+        /// </summary>
+        /// <returns></returns>
         public ActionResult New()
         {
             Initialize();

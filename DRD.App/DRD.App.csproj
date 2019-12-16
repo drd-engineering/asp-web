@@ -2981,7 +2981,6 @@
     <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
     <Content Include="Views\Include\PopupSubscription.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
-    <Content Include="Views\Workflow\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />

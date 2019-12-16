@@ -208,9 +208,6 @@ namespace DRD.Service
                 var creator = db.Users.FirstOrDefault(user => user.Id == workflowData.CreatorId);                
                 var actCount = workflowData.WorkflowNodes.Count(workflow => workflow.symbolCode.Equals("ACTIVITY"));
 
-                System.Diagnostics.Debug.WriteLine("WF ID :: " + workflowData.Id);
-
-
                 if (workflowData.Id != 0)
                     product = db.Workflows.FirstOrDefault(workflow => workflow.Id == workflowData.Id);
                 else
@@ -261,7 +258,6 @@ namespace DRD.Service
                             node.UserId = (jnode.userId == 0 ? null : jnode.userId);
                             node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
                             //node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
-                            System.Diagnostics.Debug.WriteLine("WF NODE ID :: " + node.Id);
 
                             node.Caption = jnode.caption;
                             node.Info = jnode.info;
@@ -285,7 +281,6 @@ namespace DRD.Service
                         foreach (WorkflowNodeLinkData jnodelink in workflowData.WorkflowNodeLinks)
                         {
                             var nodelink = new WorkflowNodeLink();
-                            System.Diagnostics.Debug.WriteLine("WF NODE ID :: " + jnodelink.NodeId);
                             nodelink.WorkflowNodeId = workflowData.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
                             var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeId);
                             nodelink.WorkflowNodes = wfnod;

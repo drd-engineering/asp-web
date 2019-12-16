@@ -157,7 +157,7 @@ namespace Core.Postgres
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
             modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);
 
-            Rotation rt1 = new Rotation { Id = 1, CreatorId = listOfUserCreated[0].Id, Remark = "fe", Status = 1, WorkflowId = wf1.Id,
+            Rotation rt1 = new Rotation { Id = 1, CreatorId = listOfUserCreated[0].Id, Remark = "fe", Status = 0, WorkflowId = wf1.Id,
                 Subject = "Goodddd", DateCreated = DateTime.Now, UserId = listOfUserCreated[0].Id};
 
             RotationNode rtn1 = new RotationNode { Id = 1, UserId = listOfUserCreated[2].Id, RotationId=rt1.Id,

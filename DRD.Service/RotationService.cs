@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DRD.Models;
 using DRD.Models.Custom;
 using DRD.Models.API;
-using DRD.Models.View.Rotation;
 using DRD.Models.API.List;
 using DRD.Service.Context;
 using System.Linq.Expressions;
@@ -738,7 +737,7 @@ namespace DRD.Service
         /// </summary>
         /// <parameter name="prod"></parameter>
         /// <returns></returns>
-        public long Save(RotationItem prod)
+        public long Save(Rotation prod)
         {
             WorkflowDeepService workflowDeepService = new WorkflowDeepService();
             return workflowDeepService.Save(prod);

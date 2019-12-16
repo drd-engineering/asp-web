@@ -16,39 +16,23 @@ namespace DRD.App.Controllers
 {
     public class WorkflowController : Controller
     {
-        LoginController login = new LoginController();
-        WorkflowService workflowService = new WorkflowService();
-        UserSession user;
-        Layout layout = new Layout();
-
-        public void Initialize()
+        private UserSession getUserLogin()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
-        }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
+            LoginController login = new LoginController();
+            return login.GetUser(this);
         }
 
         // GET : Workflow/new
         public ActionResult New()
         {
-            Initialize();
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+            UserSession user = login.GetUser(this);
             ListWorkflowData product = new ListWorkflowData();
-            layout.obj = product;
-
-            return View(layout);
-        }        
-        
-        public ActionResult Index(long id)
-        {
-            Initialize();
-            ListWorkflowData product = new ListWorkflowData();
-            product.Items.Add(workflowService.GetById(id));
+            Layout layout = new Layout();
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.objItems = login.GetMenuObjectItems(layout.menus, layout.activeId);
+            layout.user = login.GetUser(this);
             layout.obj = product;
 
             return View(layout);
@@ -74,7 +58,7 @@ namespace DRD.App.Controllers
 
         public ActionResult Save(WorkflowData prod)
         {
-            Initialize();
+            UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
             prod.UserId = user.Email;
             prod.Type = 0;
@@ -85,7 +69,7 @@ namespace DRD.App.Controllers
 
         public ActionResult SaveDraft(WorkflowData prod)
         {
-            Initialize();
+            UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
             prod.UserId = user.Email;
             prod.Type = 1;
