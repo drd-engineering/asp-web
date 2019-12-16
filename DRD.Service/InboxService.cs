@@ -14,38 +14,8 @@ namespace DRD.Service
 {   
     public class InboxService
     {
-        public int CreateInbox(ActivityItem activity)
-        {
-            int returnItem = -1;
-            System.Diagnostics.Debug.WriteLine("EXIT CODE :: " + activity.ExitCode+" "+activity.UserId+" "+activity.RotationNodeId);
-            if (activity.ExitCode > 0)
-            {
-                using (var db = new ServiceContext())
-                {
-                    Inbox inboxItem = new Inbox();
-                    inboxItem.IsUnread = true;
-                    inboxItem.Message = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
-                    var activityItem = db.RotationNodes.FirstOrDefault(rtNode => rtNode.Id == activity.RotationNodeId);
-                    if ( activityItem != null )
-                    {
-                        inboxItem.ActivityId = activity.RotationNodeId;
-                    } else { return -1; }
-                    var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
-                    if ( userResponsible != null)
-                    {
-                        inboxItem.UserId = activity.UserId;
-                    } else { return -1; }
-                    inboxItem.CreatedAt = DateTime.Now;
-                    inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
-                    db.Inboxes.Add(inboxItem);
-                    System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + inboxItem.Message);
-                    return db.SaveChanges();
-                }
-            }
-            return returnItem;
-        }
 
-    public List<InboxList> GetInboxList(UserSession user) {
+        public List<InboxList> GetInboxList(UserSession user) {
             using (var db = new ServiceContext()) 
             {
                 if (db.Inboxes != null)
