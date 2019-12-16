@@ -18,7 +18,7 @@ namespace Core.Postgres
 
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
-        public DbSet<BusinessSubscription> BusinessSubscriptions { get; set; }
+        //public DbSet<BusinessSubscription> BusinessSubscriptions { get; set; }
 
         public DbSet<Member> Members { get; set; }
         public DbSet<PlanBusiness> PlanBusinesses { get; set; }
@@ -137,7 +137,7 @@ namespace Core.Postgres
             Contact contact5 = new Contact { ContactOwnerId = listOfUserCreated[1].Id, ContactItemId = listOfUserCreated[5].Id };
             Contact contact6 = new Contact { ContactOwnerId = listOfUserCreated[5].Id, ContactItemId = listOfUserCreated[6].Id };
 
-            Workflow wf1 = new Workflow { Id = 1, CreatorId = listOfUserCreated[0].Id, DateCreated = DateTime.Now, IsActive = true, Name = "myone", Description = "cuy", IsTemplate = false, UserId = listOfUserCreated[0].Email };
+            Workflow wf1 = new Workflow { Id = 1, CreatorId = listOfUserCreated[0].Id, DateCreated = DateTime.Now, IsActive = true, Name = "myone", Description = "cuy", IsTemplate = false, UserEmail = listOfUserCreated[0].Email };
             
             WorkflowNode wfn1 = new WorkflowNode { Id = 1, WorkflowId = wf1.Id, SymbolCode = 0, Caption = "Start", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
             WorkflowNode wfn2 = new WorkflowNode { Id = 2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
