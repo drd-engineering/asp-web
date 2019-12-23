@@ -374,15 +374,37 @@ namespace DRD.Service
                 var cxnew = prod.RotationUsers.Count();
                 if (cxold < cxnew)
                 {
+                    bool startPersonAded = false;
                     // save detail
                     for (var x = 0; x < cxnew; x++)
                     {
-                        var ep = prod.RotationUsers.ElementAt(x); // get 1 data for sample
+                        var ep = prod.RotationUsers.ElementAt(x); // get the data
                         System.Diagnostics.Debug.WriteLine(ep);
                         var newItem = new RotationUser();
                         newItem.Rotation = product;
                         newItem.WorkflowNodeId = ep.Id;
                         var wfl = db.WorkflowNodes.FirstOrDefault(c => c.Id == ep.WorkflowNodeId);
+                        
+                        if (!startPersonAded)
+                        {
+                            var checkIsStartNode = (from  workflowNode in db.WorkflowNodes
+                                                    join wfndLink in db.WorkflowNodeLinks on workflowNode.Id equals wfndLink.WorkflowNodeId
+                                                    where workflowNode.WorkflowId == wfl.WorkflowId
+                                                    && workflowNode.SymbolCode == 0
+                                                    && wfndLink.WorkflowNodeToId == ep.WorkflowNodeId //this node is a target node from start Node
+                                                    select new
+                                                    {
+                                                        isFound = true
+                                                    }).ToList();
+                            System.Diagnostics.Debug.WriteLine("CHECK START NODE :: " + checkIsStartNode.Count);
+                            // if this RotationUser is startNode.
+                            if (checkIsStartNode.Count == 1)
+                            {
+                                newItem.isStartPerson = true;
+                                // only one person can be startNode
+                                startPersonAded = true;
+                            }
+                        }
                         newItem.WorkflowNode = wfl;
                         newItem.FlagPermission = ep.FlagPermission;
                         User gotUser = db.Users.FirstOrDefault(usr => usr.Id == ep.UserId);
