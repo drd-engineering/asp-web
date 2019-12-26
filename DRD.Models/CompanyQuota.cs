@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -8,6 +9,7 @@ namespace DRD.Models
     [Table("CompanyQuotas", Schema = "public")]
     public class CompanyQuota
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // Id (Primary key)
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("Rotations", Schema = "public")]
     public class Rotation
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
@@ -20,7 +22,6 @@ namespace DRD.Models
         public long RotationNodeId { get; set; }
         public long DefWorkflowNodeId { get; set; }
         public long WorkflowId { get; set; }
-        public long? MemberId { get; set; }
         public long? UserId { get; set; }
         public int FlagAction { get; set; }
         public byte SubscriptionType { get; set; }

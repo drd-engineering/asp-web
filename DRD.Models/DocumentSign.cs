@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("DocumentSigns", Schema = "public")]
     public class DocumentSign
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Title { get; set; } // Title (length: 500)
         public string FileName { get; set; } // FileName (length: 100)

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.View.Rotation;
 using DRD.Models.Custom;
 using DRD.Models.API;
-using DRD.Models.API.List;
+
 using DRD.Service.Context;
 using System.Linq.Expressions;
+using DRD.Models.View;
 
 namespace DRD.Service
 {
@@ -118,7 +118,7 @@ namespace DRD.Service
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.CreatorId == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && !finishedStatus.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
                 foreach (Rotation rt in rots)
@@ -149,7 +149,7 @@ namespace DRD.Service
 
 
                 //var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && rotation.Status.Equals(status)).ToList();
-                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.CreatorId == userId) && statuses.Contains(rotation.Status)).ToList();
+                var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && statuses.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
 
@@ -276,7 +276,6 @@ namespace DRD.Service
                          Subject = rotationNode.Rotation.Subject,
                          Status = rotationNode.Status,
                          UserId = rotationNode.User.Id,
-                         MemberId = rotationNode.MemberId,
                          DateCreated = rotationNode.CreatedAt,
                          DateUpdated = rotationNode.UpdatedAt,
                          DateStarted = rotationNode.Rotation.DateUpdated,
@@ -576,7 +575,7 @@ namespace DRD.Service
                          UserId = rotation.UserId,
                          StatusDescription = constant.getRotationStatusName(rotation.Status),
                          CreatedAt = rotation.DateCreated,
-                         UpdatedAt = rotation.DateUpdated,
+                         UpdatedAt = rotation.DateCreated,
                          DateStarted = rotation.DateStarted,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
@@ -677,7 +676,7 @@ namespace DRD.Service
                          StatusDescription = constant.getRotationStatusName(rotation.Status),
                          UserId = rotation.User.Id,
                          CreatedAt = rotation.CreatedAt,
-                         UpdatedAt = rotation.CreatedAt,
+                         UpdatedAt = rotation.UpdatedAt,
                          DateStarted = rotation.DateRead,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 

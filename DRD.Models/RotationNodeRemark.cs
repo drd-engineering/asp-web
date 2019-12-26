@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("RotationNodeRemarks", Schema = "public")]
     public class RotationNodeRemark
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Remark { get; set; } // Remark
         public System.DateTime DateStamp { get; set; } // DateStamp

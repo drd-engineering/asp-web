@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using DRD.Models;
 using DRD.Models.Custom;
 using DRD.Models.View;
-using DRD.Models.View.Member;
 
 using DRD.Service;
 

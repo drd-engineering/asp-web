@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,7 +7,9 @@ namespace DRD.Models
     [Table("RotationMembers", Schema = "public")]
     public class RotationUser
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
+        public bool isStartPerson { get; set; } // flag is he starting node person
         public int FlagPermission { get; set; } // FlagPermission
         public long WorkflowNodeId { get; set; } // WorkflowNodeId
         public string ActivityName { get; set; }
@@ -27,8 +30,6 @@ namespace DRD.Models
         public RotationUser()
         {
             FlagPermission = 0;
-            Rotation = new Rotation();
-            WorkflowNode = new WorkflowNode();
 
         }
     }

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using DRD.Models;
 using DRD.Service.Context;
 using DRD.Service;
-using DRD.Models.API.Register;
+using DRD.Models.API;
 
 namespace DRD.App.Controllers
 {

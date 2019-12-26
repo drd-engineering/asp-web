@@ -28,7 +28,7 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             login.CheckLogin(this);
             UserSession user = login.GetUser(this);
-            ListWorkflowData product = new ListWorkflowData();
+            ListWorkflowItem product = new ListWorkflowItem();
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.objItems = login.GetMenuObjectItems(layout.menus, layout.activeId);
@@ -56,22 +56,22 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(WorkflowData prod)
+        public ActionResult Save(WorkflowItem prod)
         {
             UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
-            prod.UserId = user.Email;
+            prod.UserEmail = user.Email;
             prod.Type = 0;
             var srv = new WorkflowService();// user.AppZone.Code);
             var data = srv.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SaveDraft(WorkflowData prod)
+        public ActionResult SaveDraft(WorkflowItem prod)
         {
             UserSession user = getUserLogin();
             prod.CreatorId = user.Id;
-            prod.UserId = user.Email;
+            prod.UserEmail = user.Email;
             prod.Type = 1;
             var srv = new WorkflowService();// user.AppZone.Code);
             var data = srv.Save(prod);
@@ -100,9 +100,9 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
             if (!criteria.Equals(""))
-                criteriaUsed = WorkflowData => criteria == "";
+                criteriaUsed = WorkflowItem => criteria == "";
             var data = srv.GetPopupAll(user.Id, topCriteria, page, pageSize, null, criteriaUsed);
             return Json(data, JsonRequestBehavior.AllowGet);
         }*/

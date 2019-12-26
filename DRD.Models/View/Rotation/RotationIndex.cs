@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.Custom
+using DRD.Models;
+using DRD.Models.Custom;
+
+namespace DRD.Models.View
 {
     public class RotationIndex
     {
-        
         public long Id { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 2)
         public long WorkflowId { get; set; } // WorkflowId
@@ -39,13 +41,7 @@ namespace DRD.Models.Custom
             
         }
     }
-    public class WorkflowItem
-    {
-        public long Id { get; set; } // Id (Primary key)
-        public string Name { get; set; } // Subject (length: 2)
-
-    }
-        public class RotationUserItem
+    public class RotationUserItem
     {
         public long Id { get; set; } // Id (Primary key)
         public long RotationId { get; set; } // RotationId

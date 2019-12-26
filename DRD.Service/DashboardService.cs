@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 
 using DRD.Service.Context;
-using DRD.Models.API.Dashboard;
+using DRD.Models.View;
 using DRD.Service;
 
 namespace DRD.Service
@@ -71,7 +71,7 @@ namespace DRD.Service
                 if (rotationNodes != null)
                 { 
                     long[] Ids = (from c in rotationNodes select c.Rotation.Id).ToArray();
-                    var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.MemberId == memberId).ToList();
+                    var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.UserId == memberId).ToList();
                     
                     counter.New.InProgress = rot.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
                     counter.New.Completed = rot.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));

@@ -11,62 +11,56 @@ using DRD.Service;
 
 namespace DRD.App.Controllers
 {
-    /// <summary>
-    ///  TODO UNFINISHED INBOX!! some commented lines are all important
-    /// </summary>
     public class InboxController : Controller
     {
-        private UserSession getUserLogin()
-        {
-            LoginController login = new LoginController();
-            return login.GetUser(this);
-        }
+        LoginController login = new LoginController();
+        InboxService inboxService = new InboxService();
+        UserSession user;
+        Layout layout = new Layout();
 
-
-        public ActionResult List()
+        public void Initialize()
         {
-            LoginController login = new LoginController();
+            user = login.GetUser(this);
             login.CheckLogin(this);
-
-            // begin decription menu
-            UserSession user = login.GetUser(this);
-            //var strmenu = login.ManipulateMenu(this, user, mid);
-            // end decription menu
-
-            Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
-
-            return View(layout);
         }
-
-        public ActionResult Inbox(long id)
+        public void InitializeAPI()
         {
-            LoginController login = new LoginController();
+            user = login.GetUser(this);
             login.CheckLogin(this);
+        }
+        public ActionResult Index(long id)
+        {
+            Initialize();
 
-            // begin decription menu
-            UserSession user = login.GetUser(this);
-           // var strmenu = login.ManipulateSubMenu(this, user, mid);
+            // var strmenu = login.ManipulateSubMenu(this, user, mid);
             // end decription menu
 
             Rotation product = new Rotation();
             //string[] ids = strmenu.Split(',');
             //if (ids.Length > 1 && !ids[1].Equals("0"))
             //{
-               // RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
-                //product = psvr.GetNodeById(int.Parse(ids[1]));
+            // RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
+            //product = psvr.GetNodeById(int.Parse(ids[1]));
             //}
 
-            Layout layout = new Layout();
-            //layout.activeId = int.Parse(ids[0]);
-            //layout.menus = login.GetMenus(this, layout.activeId);
-            // layout.user = login.GetUser(this);
-            InboxService service = new InboxService();
-            layout.obj = service.GetInboxItem(user, id);
-
-            //layout.dbmenus = login.GetDashbordMenus(this, layout.activeId);
             return View(layout);
+        }
+        public ActionResult List()
+        {
+            Initialize();
+            var data = inboxService.GetInboxList(user);
+            layout.obj = data;
+            return View(layout);
+        }
+
+
+        public ActionResult GetInboxList()
+        {
+            Initialize();
+            var data = inboxService.GetInboxList(user);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

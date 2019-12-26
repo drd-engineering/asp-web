@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.API.Menus
+namespace DRD.Models.View
 {
     public class UserMenu
     {

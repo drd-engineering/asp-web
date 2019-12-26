@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -6,6 +7,7 @@ namespace DRD.Models
     [Table("RotationNodeUpDocs", Schema = "public")]
     public class RotationNodeUpDoc
     {
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long? DocumentId { get; set; } // DocumentUploadId
         public Document Document { get; set; } // DocumentUploadId

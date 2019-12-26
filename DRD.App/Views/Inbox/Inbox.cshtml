@@ -31,7 +31,9 @@
 
 
 <script src="~/Scripts/xpublic.js"></script>
-
+@section Styles{
+    <link href="/assets/css/pages/inbox.css" rel="stylesheet" type="text/css">
+}
 <style type="text/css">
     .auto-style3 {
         width: 64px;
@@ -109,7 +111,6 @@
     .action-processed {
         background-color: brown;
     }
-
     }
 </style>
 
@@ -460,7 +461,7 @@
 
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
-            
+
             $scope.gotoAddDoc = function () {
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'DOCUMENT'})[0].UrlPage.replace('list?','?');
                 location.href = url;
@@ -491,7 +492,7 @@
                             confirmButtonText: "Yes, sign it!",
                             cancelButtonText: "No, cancel please!",
                         },
-                        function (isConfirm) 
+                        function (isConfirm)
                             if (isConfirm){
                                 $scope.signDocumentValidation(idx);
                             }
@@ -1229,7 +1230,7 @@
                             $scope.progressValueUploadFile="";
                         }
                         //});
-                        
+
                     }, function (response) {
                         if (response.status > 0){
                             showError("Error upload file : "+response.statusText);

@@ -8,35 +8,39 @@ using System.Threading.Tasks;
 
 using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.API.List;
+using DRD.Models.View;
 
 namespace DRD.Service
 {   
     public class InboxService
     {
 
-        public void GetInboxList(UserSession user) {
+        public List<InboxList> GetInboxList(UserSession user) {
             using (var db = new ServiceContext()) 
-            { 
-
-                var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id).ToList();
-
-                List<InboxList> result = new List<InboxList>();
-
-                foreach (Inbox i in inboxes)
+            {
+                if (db.Inboxes != null)
                 {
-                    InboxList item = new InboxList();
-                    item.Id = i.Id;
-                    item.IsUnread = i.IsUnread;
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList();
 
-                    //var activity = db.RotationActivities.Where(a => a.Id == i.ActivityId).FirstOrDefault();
+                    List<InboxList> result = new List<InboxList>();
 
-                    //item.CurrentActivity = activity.Name;
-                    //item.RotationName = activity.Workflow.Subject;
-                    //item.WorkflowName = activity.Workflow.Workflow.Name;
+                    foreach (Inbox i in inboxes)
+                    {
+                        InboxList item = new InboxList();
+                        item.Id = i.Id;
+                        item.IsUnread = i.IsUnread;
 
-                    result.Add(item);
+                        //var activity = db.RotationActivities.Where(a => a.Id == i.ActivityId).FirstOrDefault();
+
+                        //item.CurrentActivity = activity.Name;
+                        //item.RotationName = activity.Workflow.Subject;
+                        //item.WorkflowName = activity.Workflow.Workflow.Name;
+
+                        result.Add(item);
+                    }
+                    return result;
                 }
+                return null;
             }
         
         }

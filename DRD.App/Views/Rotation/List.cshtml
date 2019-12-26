@@ -46,7 +46,7 @@
                                         <div class="col-lg-10">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && findRotations(kriteria, page, row)">
+                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode ==  13 && findRotations(kriteria, page, row)">
                                                 <span class="input-group-btn">
                                                     <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findRotations(kriteria, page, row)" style="width:120px">
                                                         <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
@@ -104,7 +104,7 @@
                                                     <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
-                                                    <td ng-click="do_edit(x.Id);" width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                                    <td ng-click="do_edit(x.Id);" width="175px">{{x.CreatedAt}}</td>
 
                                                     <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
                                                     <td width="100px">
@@ -197,7 +197,6 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.subscriptions;
-                            console.log(" SUBS :: " + $scope.products[0].Status);
                         }
                     });
             }
@@ -244,6 +243,8 @@
                                 showInfo("Your package plan has expired, please check on my plan.");
                             else if (response.data == -4)
                                 showInfo("Rotation quota is not enough, please check on my plan.");
+                            else if (response.data == -5)
+                                showInfo("Workflow doesnt has start node");
                             else {
                                 showSuccess("Successful data process.");
                                 $scope.changePage($scope.kriteria, $scope.page, $scope.row);
@@ -278,6 +279,11 @@
                         }
                         $scope.page = "1";
                         $scope.isView = true;
+                        $scope.products.forEach(function(item){
+                            console.log("THIS IS CREATED :: "+item.CreatedAt);
+                            item.CreatedAt = moment(item.CreatedAt).fromNow();
+                            console.log("THIS IS CREATED :: "+item.CreatedAt);
+                        });
                     }
                 }, function (response) {
                     //error handle\
@@ -292,6 +298,8 @@
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
+                        
+
                     }
                 }, function (response) {
                     //error handle\

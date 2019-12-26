@@ -37,19 +37,19 @@ namespace DRD.Service
         //
         // for edit data
         //
-        public WorkflowData GetById(long id)
+        public WorkflowItem GetById(long id)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from workflow in db.Workflows
                      where workflow.Id == id
-                     select new WorkflowData
+                     select new WorkflowItem
                      {
                          Id = workflow.Id,
                          Name = workflow.Name,
                          Description = workflow.Description,
-                         UserId = workflow.UserId,
+                         UserEmail = workflow.UserEmail,
                          IsActive = workflow.IsActive,
                          IsTemplate = workflow.IsTemplate,
                          Type = workflow.Type,
@@ -62,27 +62,27 @@ namespace DRD.Service
                     if (nodes.Count() > 0)
                     {
                         int dmid = 0;
-                        result.WorkflowNodes = new List<WorkflowNodeData>();
+                        result.WorkflowNodes = new List<WorkflowNodeItem>();
                         foreach (WorkflowNode workflowNode in nodes)
                         {
-                            WorkflowNodeData workflowNodeData = new WorkflowNodeData();
-                            workflowNodeData.Id = workflowNode.Id;
-                            workflowNodeData.element = getSymbolsFromCsvById(workflowNode.SymbolCode).Name + "-" + dmid;
-                            workflowNodeData.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
-                            workflowNodeData.userId = workflowNode.UserId;
-                            workflowNodeData.caption = workflowNode.Caption;
-                            workflowNodeData.info = workflowNode.Info;
-                            workflowNodeData.Operator = workflowNode.Operator;
-                            workflowNodeData.value = workflowNode.Value;
-                            workflowNodeData.textColor = workflowNode.TextColor;
-                            workflowNodeData.backColor = workflowNode.BackColor;
-                            workflowNodeData.posLeft = workflowNode.PosLeft;
-                            workflowNodeData.posTop = workflowNode.PosTop;
-                            workflowNodeData.width = workflowNode.Width;
-                            workflowNodeData.height = workflowNode.Height;
+                            WorkflowNodeItem WorkflowNodeItem = new WorkflowNodeItem();
+                            WorkflowNodeItem.Id = workflowNode.Id;
+                            WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).Name + "-" + dmid;
+                            WorkflowNodeItem.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
+                            WorkflowNodeItem.userId = workflowNode.UserId;
+                            WorkflowNodeItem.caption = workflowNode.Caption;
+                            WorkflowNodeItem.info = workflowNode.Info;
+                            WorkflowNodeItem.Operator = workflowNode.Operator;
+                            WorkflowNodeItem.value = workflowNode.Value;
+                            WorkflowNodeItem.textColor = workflowNode.TextColor;
+                            WorkflowNodeItem.backColor = workflowNode.BackColor;
+                            WorkflowNodeItem.posLeft = workflowNode.PosLeft;
+                            WorkflowNodeItem.posTop = workflowNode.PosTop;
+                            WorkflowNodeItem.width = workflowNode.Width;
+                            WorkflowNodeItem.height = workflowNode.Height;
                             User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.UserId).FirstOrDefault();
                             if (user != null) {
-                                workflowNodeData.user = new WorkflowNodeUser
+                                WorkflowNodeItem.user = new WorkflowNodeUser
                                 {
                                     id = user.Id,
                                     name = user.Name,
@@ -92,9 +92,9 @@ namespace DRD.Service
                             }
                             else
                             {
-                                workflowNodeData.user = null;
+                                WorkflowNodeItem.user = null;
                             }
-                            result.WorkflowNodes.Add(workflowNodeData);
+                            result.WorkflowNodes.Add(WorkflowNodeItem);
                             dmid++;
                         }
                     }
@@ -102,11 +102,11 @@ namespace DRD.Service
                     var links = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNodes.WorkflowId == result.Id).ToList();
                     if (links.Count() > 0)
                     {
-                        result.WorkflowNodeLinks = new List<WorkflowNodeLinkData>();
+                        result.WorkflowNodeLinks = new List<WorkflowNodeLinkItem>();
 
                         foreach (WorkflowNodeLink wfnl in links)
                         {
-                            WorkflowNodeLinkData jwfnl = new WorkflowNodeLinkData();
+                            WorkflowNodeLinkItem jwfnl = new WorkflowNodeLinkItem();
                             jwfnl.NodeId = wfnl.WorkflowNodeId;
                             jwfnl.NodeToId = wfnl.WorkflowNodeToId;
                             jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(workflow => workflow.Id == wfnl.WorkflowNodeId).element;
@@ -132,22 +132,22 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize)
+        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize)
         {
-            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
             return FindWorkflows(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
         }
 
-        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order)
+        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order)
         {
-            Expression<Func<WorkflowData, bool>> criteriaUsed = WorkflowData => true;
+            Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
             return FindWorkflows(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public ListWorkflowData FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowData, string>> order, Expression<Func<WorkflowData ,bool>> criteria)
+        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem ,bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<WorkflowData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
+            Expression<Func<WorkflowItem, string>> ordering = WorkflowItem => "IsTemplate desc, Name";
 
             if (order != null)
                 ordering = order;
@@ -164,7 +164,7 @@ namespace DRD.Service
                 var result =
                     (from workflow in db.Workflows
                      where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
-                     select new WorkflowData
+                     select new WorkflowItem
                      {
                          Id = workflow.Id,
                          Name = workflow.Name,
@@ -172,16 +172,16 @@ namespace DRD.Service
                          IsActive = workflow.IsActive,
                          IsTemplate = workflow.IsTemplate,
                          Type = workflow.Type,
-                         UserId = workflow.UserId,
+                         UserEmail = workflow.UserEmail,
                          DateCreated = workflow.DateCreated,
                          DateUpdated = workflow.DateUpdated,
                      }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-                ListWorkflowData returnValue = new ListWorkflowData();
+                ListWorkflowItem returnValue = new ListWorkflowItem();
                 if (result != null)
                 {
                     int CounterItem = 0;
                     MenuService menuService = new MenuService();
-                    foreach (WorkflowData workflow in result)
+                    foreach (WorkflowItem workflow in result)
                     {
                         CounterItem+=1;
                         workflow.Key = menuService.EncryptData(workflow.Id);
@@ -196,31 +196,31 @@ namespace DRD.Service
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="workflowData"></param>
+        /// <param name="WorkflowItem"></param>
         /// <returns></returns>
         /// 
-        public int Save(WorkflowData workflowData)
+        public int Save(WorkflowItem WorkflowItem)
         {
             Workflow product;
             using (var db = new ServiceContext())
             {
                 // validity subscription type
-                var creator = db.Users.FirstOrDefault(user => user.Id == workflowData.CreatorId);                
-                var actCount = workflowData.WorkflowNodes.Count(workflow => workflow.symbolCode.Equals("ACTIVITY"));
+                var creator = db.Users.FirstOrDefault(user => user.Id == WorkflowItem.CreatorId);                
+                var actCount = WorkflowItem.WorkflowNodes.Count(workflow => workflow.symbolCode.Equals("ACTIVITY"));
 
-                if (workflowData.Id != 0)
-                    product = db.Workflows.FirstOrDefault(workflow => workflow.Id == workflowData.Id);
+                if (WorkflowItem.Id != 0)
+                    product = db.Workflows.FirstOrDefault(workflow => workflow.Id == WorkflowItem.Id);
                 else
                     product = new Workflow();
 
-                product.Name = workflowData.Name;
-                product.Description = workflowData.Description;
-                product.IsActive = workflowData.IsActive;
-                product.IsTemplate = workflowData.IsTemplate;
-                product.Type = workflowData.Type;
-                product.CreatorId = workflowData.CreatorId;
-                product.UserId = workflowData.UserId;
-                if (workflowData.Id == 0)
+                product.Name = WorkflowItem.Name;
+                product.Description = WorkflowItem.Description;
+                product.IsActive = WorkflowItem.IsActive;
+                product.IsTemplate = WorkflowItem.IsTemplate;
+                product.Type = WorkflowItem.Type;
+                product.CreatorId = WorkflowItem.CreatorId;
+                product.UserEmail = WorkflowItem.UserEmail;
+                if (WorkflowItem.Id == 0)
                 {
                     product.DateCreated = DateTime.Now;
                     db.Workflows.Add(product);
@@ -231,27 +231,27 @@ namespace DRD.Service
                 var result = db.SaveChanges();
 
                 var isused = false;
-                if (workflowData.Id != 0 && product.TotalUsed > 0)
+                if (WorkflowItem.Id != 0 && product.TotalUsed > 0)
                     isused = true;
 
                 if (!isused) // skip when workflow is used by transaction
                 {
                     // delete existing node
-                    if (workflowData.Id != 0)
+                    if (WorkflowItem.Id != 0)
                     {
-                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNodes.WorkflowId == workflowData.Id || workflow.WorkflowNodeTos.WorkflowId == workflowData.Id).ToList();
+                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNodes.WorkflowId == WorkflowItem.Id || workflow.WorkflowNodeTos.WorkflowId == WorkflowItem.Id).ToList();
                         db.WorkflowNodeLinks.RemoveRange(oldNodeLinks);
                         db.SaveChanges();
 
-                        var oldNodes = db.WorkflowNodes.Where(workflow => workflow.WorkflowId == workflowData.Id).ToList();
+                        var oldNodes = db.WorkflowNodes.Where(workflow => workflow.WorkflowId == WorkflowItem.Id).ToList();
                         db.WorkflowNodes.RemoveRange(oldNodes);
                         db.SaveChanges();
                     }
 
                     // save node
-                    if (workflowData.WorkflowNodes != null)
+                    if (WorkflowItem.WorkflowNodes != null)
                     {
-                        foreach (WorkflowNodeData jnode in workflowData.WorkflowNodes)
+                        foreach (WorkflowNodeItem jnode in WorkflowItem.WorkflowNodes)
                         {
                             var node = new WorkflowNode();
                             node.WorkflowId = product.Id;
@@ -276,15 +276,15 @@ namespace DRD.Service
                         }
                     }
                     // save node link
-                    if (workflowData.WorkflowNodeLinks != null)
+                    if (WorkflowItem.WorkflowNodeLinks != null)
                     {
-                        foreach (WorkflowNodeLinkData jnodelink in workflowData.WorkflowNodeLinks)
+                        foreach (WorkflowNodeLinkItem jnodelink in WorkflowItem.WorkflowNodeLinks)
                         {
                             var nodelink = new WorkflowNodeLink();
-                            nodelink.WorkflowNodeId = workflowData.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
+                            nodelink.WorkflowNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
                             var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeId);
                             nodelink.WorkflowNodes = wfnod;
-                            nodelink.WorkflowNodeToId = workflowData.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
+                            nodelink.WorkflowNodeToId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
                             var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeToId);
                             nodelink.WorkflowNodeTos = to;
                             nodelink.Caption = jnodelink.caption;

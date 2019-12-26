@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace DRD.Models
 {
     public class Stamp
     {
         public string Key { get; set; }
+        [Key]
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // CompanyId
         public string Descr { get; set; } // Descr (length: 1000)

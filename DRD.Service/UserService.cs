@@ -4,7 +4,6 @@ using DRD.Models;
 using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Service.Context;
-using DRD.Models.API.Register;
 using System.Data.Entity.Infrastructure;
 using System.Linq.Expressions;
 

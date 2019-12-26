@@ -1,12 +1,11 @@
-﻿using DRD.Models.API.Contact;
-using DRD.Models.API.Register;
+﻿using DRD.Models.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.View.Member
+namespace DRD.Models.View
 {
     public class MemberItem
     {
