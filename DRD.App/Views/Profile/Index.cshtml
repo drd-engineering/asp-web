@@ -43,24 +43,25 @@
         width: 64px;
     }
 
-    .image-wraper {
+    .image-wrapper {
         float: left;
-        margin-right: 10px;
-        width: 200px;
+        width: 100%;
         height: 200px;
         overflow: hidden;
         border: 1px solid #ddd;
         border-radius: 4px;
+        position: relative;
     }
 
     .image-content {
         width: 200px;
         cursor: pointer;
         margin: auto;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        position: absolute;
+        
     }
 
     .container {
@@ -106,11 +107,44 @@
         height: 220px;
         width: 568px;
     }
+
+    .btn-submit {
+        width: 120px;
+    }
+
+    .input-group {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .input-group label {
+        font-weight: 300;
+    }
+
+    .content #content {
+        padding: 0
+    }
+
+    .page-header-default {
+        margin-bottom: 0;
+    }
+
+    .page-title {
+        padding-bottom: 0;
+    }
+
+    .flexible-row {
+        display: flex !important;
+    }
+
+        .flexible-row > .vertically-center {
+            margin: auto;
+        }
 </style>
 
 
 
-<body @*ng-app="drdApp"*@>
+<body>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -134,171 +168,145 @@
                 <!-- Content area -->
                 <div class="content" id="content" style="display:none;">
 
-
                     <!-- Basic layout-->
-
-
-                    <div class="panel panel-flat">
+                    <div class="panel panel-flat no-border">
                         <div class="panel-body">
 
-                            <!--MEMBER DATA-->
+                            <!--USER DATA-->
 
-                            <form name="myForm" class="form-horizontal" autocomplete="off" id="myForm">
+                            <form name="userProfileForm" class="form-horizontal" autocomplete="off" id="userProfileForm">
 
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <div>
-                                                        <div class="image-wraper">
+                                        <div class="row flexible-row">
+                                            <div class="col-md-3 vertically-center">
+                                                <div class="image-wrapper">
 
-                                                            <img ng-src="/Images/member/{{model.ImageProfile}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(0,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(0,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
-                                                        </div>
+                                                    <img ng-src="/Images/member/{{model.ImageProfile}}" class="image-content"
+                                                            ngf-drop="uploadFiles(0,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(0,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row input-group">
+                                                    <div class="col-md-3">
+                                                        <label class="control-label">Number</label>
+                                                        <input type="text" class="form-control" ng-model="model.Number" readonly placeholder="Auto" />
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <label class="control-label">Name</label>
+                                                        <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-9">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <label class="control-label">Number</label>
-                                                            <input type="text" class="form-control" ng-model="model.Number" readonly placeholder="Auto" />
-                                                        </div>
-                                                        <div class="col-md-7">
-                                                            <label class="control-label">Name</label>
-                                                            <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
-                                                        </div>
+
+                                                <div class="row input-group">
+                                                    <div class="col-md-3">
+                                                        <label class="control-label">Phone</label>
+                                                        <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number ng-readonly="model.Id!=0" />
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <label class="control-label">Email</label>
+                                                        <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
                                                     </div>
 
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <label class="control-label">Phone</label>
-                                                            <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number ng-readonly="model.Id!=0" />
-                                                        </div>
-                                                        <div class="col-md-7">
-                                                            <label class="control-label">Email</label>
-                                                            <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
-                                                        </div>
-
+                                                </div>
+                                                <div class="row input-group">
+                                                    <div class="col-md-10">
+                                                        <label class="control-label">ID No (KTP)</label>
+                                                        <input type="text" class="form-control" ng-model="model.OfficialIdNo" ng-required="wizarno=='product'" maxlength="50" ng-only-number />
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-10">
-                                                            <label class="control-label">Ktp No</label>
-                                                            <input type="text" class="form-control" ng-model="model.OfficialIdNo" ng-required="wizarno=='product'" maxlength="50" ng-only-number />
-                                                        </div>
 
-                                                    </div>
+                                                </div>
                                                     
-                                                </div>
-
                                             </div>
-
-                                            <hr />
-                                            <h4>Identity</h4>
-                                            <div class="row" ng-show="isUserProfile()">
-
-
-                                                <div class="col-md-3">
-                                                    <div style="width:200px">
-                                                        <label class="control-label">KTP</label>
-                                                    </div>
-                                                    <div>
-                                                        <div class="image-wraper">
-                                                            <img ng-src="/Images/member/{{model.ImageKtp1}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(4,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(4,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div style="width:200px">
-                                                        <label class="control-label">KTP Pose</label>
-                                                    </div>
-                                                    <div>
-                                                        <div class="image-wraper">
-
-                                                            <img ng-src="/Images/member/{{model.ImageKtp2}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(5,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(5,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-                                            <br />
-                                            <div class="row" ng-show="isUserProfile()">
-
-
-                                                <div class="col-md-3">
-                                                    <div style="width:200px">
-                                                        <label class="control-label">Signature</label>
-                                                        <span class="pull-right"><a ng-click="signaturePad(0)"><i class="icon-pencil7"></i></a></span>
-                                                    </div>
-                                                    <div>
-                                                        <div class="image-wraper">
-                                                            <img ng-src="/Images/member/{{model.ImageSignature}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(1,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(1,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
-                                                                 id="signaturepad" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div style="width:200px">
-                                                        <label class="control-label">Initial</label>
-                                                        <span class="pull-right"><a ng-click="signaturePad(1)"><i class="icon-pencil7"></i></a></span>
-                                                    </div>
-                                                    <div>
-                                                        <div class="image-wraper">
-
-                                                            <img ng-src="/Images/member/{{model.ImageInitials}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(2,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(2,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
-                                                                 id="initialpad" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label class="control-label">Private Stamp</label>
-                                                    <div>
-                                                        <div class="image-wraper">
-
-                                                            <img ng-src="/Images/member/{{model.ImageStamp}}" class="image-content"
-                                                                 ngf-drop="uploadFiles(3,$file, $invalidFiles)"
-                                                                 ngf-select="uploadFiles(3,$file, $invalidFiles)"
-                                                                 ngf-pattern="'image/*'"
-                                                                 accept="image/*"
-                                                                 ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            
 
                                         </div>
+                                        <hr />
+
+                                        <h4>Identity</h4>
+                                        <div class="row input-group" ng-show="isUserProfile()">
+
+                                            <div class="col-md-3">
+                                                <label class="control-label">KTP</label>
+                                                <div class="image-wrapper">
+                                                    <img ng-src="/Images/member/{{model.ImageKtp1}}" class="image-content"
+                                                            ngf-drop="uploadFiles(4,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(4,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <label class="control-label">KTP Pose</label>
+                                                <div class="image-wrapper">
+
+                                                    <img ng-src="/Images/member/{{model.ImageKtp2}}" class="image-content"
+                                                            ngf-drop="uploadFiles(5,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(5,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                        
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <br />
+                                        <div class="row input-group" ng-show="isUserProfile()">
+
+
+                                            <div class="col-md-3">
+                                                <!-- Input Header -->
+                                                <label class="control-label">Signature</label>
+                                                <span class="pull-right"><a ng-click="signaturePad(0)"><i class="icon-pencil7"></i></a></span>
+
+                                                <div class="image-wrapper">
+                                                    <img ng-src="/Images/member/{{model.ImageSignature}}" class="image-content"
+                                                            ngf-drop="uploadFiles(1,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(1,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
+                                                            id="signaturepad" />
+                                                </div>
+                                                    
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <!-- Input Header -->
+                                                <label class="control-label">Initial</label>
+                                                <span class="pull-right"><a ng-click="signaturePad(1)"><i class="icon-pencil7"></i></a></span>
+                                                <div class="image-wrapper">
+                                                    <img ng-src="/Images/member/{{model.ImageInitials}}" class="image-content"
+                                                            ngf-drop="uploadFiles(2,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(2,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
+                                                            id="initialpad" />
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3">
+                                                <!-- Input Header -->
+                                                <label class="control-label">Private Stamp</label>
+                                                <div class="image-wrapper">
+
+                                                    <img ng-src="/Images/member/{{model.ImageStamp}}" class="image-content"
+                                                            ngf-drop="uploadFiles(3,$file, $invalidFiles)"
+                                                            ngf-select="uploadFiles(3,$file, $invalidFiles)"
+                                                            ngf-pattern="'image/*'"
+                                                            accept="image/*"
+                                                            ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                            
                                     </fieldset>
 
                                     <hr />
@@ -307,9 +315,8 @@
                                         <div class="col-md-12">
                                             <div class="text-right">
                                                 <span class="input-group-btn">
-                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateUserProfile()" style="width:120px">
-                                                        <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
+                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateUserProfile()">
+                                                        <span class="ladda-label">Submit</span><span class="ladda-spinner"></span>
                                                     </button>
                                                 </span>
                                             </div>
@@ -320,7 +327,7 @@
                             </form>
                             <!--/MEMBER DATA-->
                             <!--CONFIRMATION THANK YOU-->
-                            <div ng-show="wizarno=='success'">
+                            <div ng-show="wizarno =='success'">
                                 <div class="col-md-12">
                                     <div class="alert alert-success alert-styled-left">
                                         <p ng-bind-html="infoSuccess" compile-template></p>
@@ -386,11 +393,11 @@
             $scope.model.OfficialIdNo = null;
             $scope.master={};
             $scope.model.IsActive=true;
-            $scope.isUploadImage0=0;
+            $scope.isUploadImage0=false;
             $scope.infoSuccess="Data saved successfully.";
             $scope.creatorLevels=[{Id:0},{Id:1},{Id:2},{Id:3},{Id:4},{Id:5}];
             $scope.model.CreatorLevel="0";
-            var signatureNo=0;
+            var signatureNo=0; // ?
 
 
             $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
@@ -425,7 +432,7 @@
 
 
                 // Get the form
-                var form = document.getElementById("myForm");
+                var form = document.getElementById("userProfileForm");
 
                 var ImageURL = data.dataUrl;
                 // Split the base64 string in data and contentType
@@ -455,8 +462,6 @@
                         showInfo("Error upload data signature/initial.");
                     },
                     success:function(data){
-                        //console.log(data);
-                        //alert('success');
                         if (signatureNo==0){
                             $scope.model.ImageSignature=data.filename;
                         }else if (signatureNo==1){
@@ -510,30 +515,19 @@
                             $scope.model.Phone=result.Phone;
                             $scope.model.Email=result.Email;
                             $scope.model.KtpNo=result.KtpNo;
-                            $scope.model.ImageProfile=result.ImageProfile;
-                            $scope.model.CreatorLevel=result.CreatorLevel+"";
-                            $scope.model.ImageSignature=result.ImageSignature;
-                            $scope.model.ImageInitials=result.ImageInitials;
-                            $scope.model.ImageStamp=result.ImageStamp;
-                            $scope.model.ImageKtp1=result.ImageKtp1;
-                            $scope.model.ImageKtp2 = result.ImageKtp2;
+                            $scope.model.CreatorLevel=result.CreatorLevel+""; // ?
                             $scope.model.OfficialIdNo = result.OfficialIdNo;
 
-                            $scope.isUploadImage0 = 1;
+                            // handle empty image
+                            $scope.isUploadImage0 = (result.ImageProfile == null) ? false : true;
+                            $scope.model.ImageProfile = (result.ImageProfile == null) ? $scope.noImage : result.ImageProfile;
+                            $scope.model.ImageSignature = (result.ImageSignature == null) ? $scope.noImage : result.ImageSignature;
+                            $scope.model.ImageInitials = (result.ImageInitials == null) ? $scope.noImage : result.ImageInitials;
+                            $scope.model.ImageStamp = (result.ImageStamp == null) ? $scope.noImage : result.ImageStamp;
+                            $scope.model.ImageKtp1 = (result.ImageKtp1 == null) ? $scope.noImage : result.ImageKtp1;
+                            $scope.model.ImageKtp2 = (result.ImageKtp2 == null) ? $scope.noImage : result.ImageKtp2;
 
-                            // handling empty image
-                            if ($scope.model.ImageProfile==null)
-                                $scope.model.ImageProfile=$scope.noImage;
-                            if ($scope.model.ImageSignature==null)
-                                $scope.model.ImageSignature=$scope.noImage;
-                            if ($scope.model.ImageInitials==null)
-                                $scope.model.ImageInitials=$scope.noImage;
-                            if ($scope.model.ImageStamp==null)
-                                $scope.model.ImageStamp=$scope.noImage;
-                            if ($scope.model.ImageKtp1==null)
-                                $scope.model.ImageKtp1=$scope.noImage;
-                            if ($scope.model.ImageKtp2==null)
-                                $scope.model.ImageKtp2=$scope.noImage;
+                            
                         }
 
                         $('#checkbox1').bootstrapSwitch.defaults.size='mini';
@@ -611,10 +605,10 @@
                             Phone: $scope.model.Phone,
                             Email: $scope.model.Email,
                             ImageProfile: $scope.model.ImageProfile,
-                            ImageSignature: ($scope.noImage == $scope.model.ImageSignature?null:$scope.model.ImageSignature),
-                            ImageInitials: ($scope.noImage == $scope.model.ImageInitials?null:$scope.model.ImageInitials),
-                            ImageStamp: ($scope.noImage == $scope.model.ImageStamp?null:$scope.model.ImageStamp),
-                            ImageKtp1: ($scope.noImage == $scope.model.ImageKtp1?null:$scope.model.ImageKtp1),
+                            ImageSignature: ($scope.noImage == $scope.model.ImageSignature ? null:$scope.model.ImageSignature),
+                            ImageInitials: ($scope.noImage == $scope.model.ImageInitials ? null:$scope.model.ImageInitials),
+                            ImageStamp: ($scope.noImage == $scope.model.ImageStamp ? null:$scope.model.ImageStamp),
+                            ImageKtp1: ($scope.noImage == $scope.model.ImageKtp1 ? null:$scope.model.ImageKtp1),
                             ImageKtp2: ($scope.noImage == $scope.model.ImageKtp2 ? null : $scope.model.ImageKtp2),
                             LoginId: $scope.model.Id,
                             MemberType: memberType,
@@ -661,10 +655,10 @@
             UPDATE USER PROFILE
             --------------------------------------------------------------*/
             $scope.updateUserProfile = function () {
-                if (!$scope.isValidForm($scope.myForm))
+                if (!$scope.isValidForm($scope.userProfileForm))
                     return;
 
-                if ($scope.isUploadImage0==0) {
+                if ($scope.isUploadImage0 == false) {
                     showInfo("Pas photo must be uploaded");
                     return;
                 }
