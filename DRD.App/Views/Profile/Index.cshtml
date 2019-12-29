@@ -188,7 +188,7 @@
                                                     <div class="row">
                                                         <div class="col-md-10">
                                                             <label class="control-label">Ktp No</label>
-                                                            <input type="text" class="form-control" ng-model="model.KtpNo" ng-required="wizarno=='product'" maxlength="50" ng-only-number />
+                                                            <input type="text" class="form-control" ng-model="model.OfficialIdNo" ng-required="wizarno=='product'" maxlength="50" ng-only-number />
                                                         </div>
 
                                                     </div>
@@ -307,7 +307,7 @@
                                         <div class="col-md-12">
                                             <div class="text-right">
                                                 <span class="input-group-btn">
-                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateUserProfile()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Submit&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
@@ -375,14 +375,15 @@
             $scope.model = {};
             $scope.wizarno = 'product';
             $scope.model.Id = 0;
-            $scope.model.LoginId = -1;
+            $scope.model.LoginId = null;
             $scope.noImage="no_picture.png";
             $scope.model.ImageProfile=$scope.noImage;
             $scope.model.ImageSignature=$scope.noImage;
             $scope.model.ImageInitials=$scope.noImage;
             $scope.model.ImageStamp=$scope.noImage;
             $scope.model.ImageKtp1=$scope.noImage;
-            $scope.model.ImageKtp2=$scope.noImage;
+            $scope.model.ImageKtp2 = $scope.noImage;
+            $scope.model.OfficialIdNo = null;
             $scope.master={};
             $scope.model.IsActive=true;
             $scope.isUploadImage0=0;
@@ -390,7 +391,7 @@
             $scope.creatorLevels=[{Id:0},{Id:1},{Id:2},{Id:3},{Id:4},{Id:5}];
             $scope.model.CreatorLevel="0";
             var signatureNo=0;
-            initValues();
+
 
             $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
                 $(".control-primary").uniform({
@@ -404,9 +405,10 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                if ($scope.model.Id==0 )
-                    $scope.getMaster();
+                if ($scope.model.LoginId == null)
+                    $scope.getUserSession();
 
+                getUserProfile();
                 $('#content').show();
                 
             });
@@ -442,7 +444,7 @@
 
                 // Submit Form and upload file
                 $.ajax({
-                    url:"/updownfile/upload?idx=0&fileType=1",
+                    url:"/profile/upload?idx=0&fileType=1",
                     data: fd, // the formData function is available in almost all new browsers.
                     type:"POST",
                     contentType:false,
@@ -492,48 +494,54 @@
                 var blob = new Blob(byteArrays, {type: contentType});
                 return blob;
             }
-            function initValues() {
-                var product = @Html.Raw(Json.Encode(Model.obj));
-                if (product.Id!=0 ){
-                    $scope.model.Id=product.Id;
-                    $scope.model.Number=product.Number;
-                    $scope.model.Name=product.Name;
-                    $scope.model.Phone=product.Phone;
-                    $scope.model.Email=product.Email;
-                    $scope.model.KtpNo=product.KtpNo;
-                    $scope.model.ImageProfile=product.ImageProfile;
-                    $scope.model.CreatorLevel=product.CreatorLevel+"";
-                    $scope.model.ImageSignature=product.ImageSignature;
-                    $scope.model.ImageInitials=product.ImageInitials;
-                    $scope.model.ImageStamp=product.ImageStamp;
-                    $scope.model.ImageKtp1=product.ImageKtp1;
-                    $scope.model.ImageKtp2=product.ImageKtp2;
-                    $scope.model.LoginId=product.LoginId;
-                    $scope.model.UserId = product.UserId;
 
-                    console.log("LOGIN ID", $scope.model.LoginId);
-                    console.log("User ID", $scope.model.Id);
+            function getUserProfile() {
+                $http.get('@Url.Action("GetData", "Profile")')
+                    .then(function (response) {
 
-                    if ($scope.model.ImageProfile==null)
-                        $scope.model.ImageProfile=$scope.noImage;
-                    if ($scope.model.ImageSignature==null)
-                        $scope.model.ImageSignature=$scope.noImage;
-                    if ($scope.model.ImageInitials==null)
-                        $scope.model.ImageInitials=$scope.noImage;
-                    if ($scope.model.ImageStamp==null)
-                        $scope.model.ImageStamp=$scope.noImage;
-                    if ($scope.model.ImageKtp1==null)
-                        $scope.model.ImageKtp1=$scope.noImage;
-                    if ($scope.model.ImageKtp2==null)
-                        $scope.model.ImageKtp2=$scope.noImage;
+                        if (response.data) {
+                            var result = response.data;
+                            console.log("[GET] PROFILE DATA", result);
 
-                    //$scope.master.UserGroups=product.Master.UserGroups;
+                            // do mapping values
+                            $scope.model.Id=result.Id;
+                            $scope.model.Number=result.Number;
+                            $scope.model.Name=result.Name;
+                            $scope.model.Phone=result.Phone;
+                            $scope.model.Email=result.Email;
+                            $scope.model.KtpNo=result.KtpNo;
+                            $scope.model.ImageProfile=result.ImageProfile;
+                            $scope.model.CreatorLevel=result.CreatorLevel+"";
+                            $scope.model.ImageSignature=result.ImageSignature;
+                            $scope.model.ImageInitials=result.ImageInitials;
+                            $scope.model.ImageStamp=result.ImageStamp;
+                            $scope.model.ImageKtp1=result.ImageKtp1;
+                            $scope.model.ImageKtp2 = result.ImageKtp2;
+                            $scope.model.OfficialIdNo = result.OfficialIdNo;
 
-                    $scope.isUploadImage0=1;
+                            $scope.isUploadImage0 = 1;
 
-                }
-                $('#checkbox1').bootstrapSwitch.defaults.size='mini';
+                            // handling empty image
+                            if ($scope.model.ImageProfile==null)
+                                $scope.model.ImageProfile=$scope.noImage;
+                            if ($scope.model.ImageSignature==null)
+                                $scope.model.ImageSignature=$scope.noImage;
+                            if ($scope.model.ImageInitials==null)
+                                $scope.model.ImageInitials=$scope.noImage;
+                            if ($scope.model.ImageStamp==null)
+                                $scope.model.ImageStamp=$scope.noImage;
+                            if ($scope.model.ImageKtp1==null)
+                                $scope.model.ImageKtp1=$scope.noImage;
+                            if ($scope.model.ImageKtp2==null)
+                                $scope.model.ImageKtp2=$scope.noImage;
+                        }
+
+                        $('#checkbox1').bootstrapSwitch.defaults.size='mini';
+
+                    }
+                )
             }
+
 
             $scope.initData = function () {
             }
@@ -561,18 +569,18 @@
                     file.upload.then(function (response) {
                         file.result = response.data;
                         if (idx==0){
-                            $scope.model.ImageProfile = file.result.filename;
+                            $scope.model.ImageProfile = file.result.Filename;
                             $scope.isUploadImage0 = true;
                         } else if (idx==1){
-                            $scope.model.ImageSignature = file.result.filename;
+                            $scope.model.ImageSignature = file.result.Filename;
                         } else if (idx==2){
-                            $scope.model.ImageInitials = file.result.filename;
+                            $scope.model.ImageInitials = file.result.Filename;
                         } else if (idx==3){
-                            $scope.model.ImageStamp = file.result.fileName;
+                            $scope.model.ImageStamp = file.result.Filename;
                         } else if (idx==4){
-                            $scope.model.ImageKtp1 = file.result.fileName;
+                            $scope.model.ImageKtp1 = file.result.Filename;
                         } else if (idx==5){
-                            $scope.model.ImageKtp2 = file.result.fileName;
+                            $scope.model.ImageKtp2 = file.result.Filename;
                         }
 
                     }, function (response) {
@@ -589,9 +597,9 @@
 
 
             /*--------------------------------------------------------------
-            SAVE PRODUCT
+            SAVE (submit) USER DATA
             --------------------------------------------------------------*/
-            $scope.saveProduct = function () {
+            $scope.saveUserProfile = function () {
                 var memberType=0;
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
@@ -603,18 +611,19 @@
                             Phone: $scope.model.Phone,
                             Email: $scope.model.Email,
                             ImageProfile: $scope.model.ImageProfile,
-                            ImageSignature: ($scope.noImage==$scope.model.ImageSignature?null:$scope.model.ImageSignature),
-                            ImageInitials: ($scope.noImage==$scope.model.ImageInitials?null:$scope.model.ImageInitials),
-                            ImageStamp: ($scope.noImage==$scope.model.ImageStamp?null:$scope.model.ImageStamp),
-                            ImageKtp1: ($scope.noImage==$scope.model.ImageKtp1?null:$scope.model.ImageKtp1),
+                            ImageSignature: ($scope.noImage == $scope.model.ImageSignature?null:$scope.model.ImageSignature),
+                            ImageInitials: ($scope.noImage == $scope.model.ImageInitials?null:$scope.model.ImageInitials),
+                            ImageStamp: ($scope.noImage == $scope.model.ImageStamp?null:$scope.model.ImageStamp),
+                            ImageKtp1: ($scope.noImage == $scope.model.ImageKtp1?null:$scope.model.ImageKtp1),
                             ImageKtp2: ($scope.noImage == $scope.model.ImageKtp2 ? null : $scope.model.ImageKtp2),
-                            //LoginId: $scope.user.Id,
+                            LoginId: $scope.model.Id,
                             MemberType: memberType,
-                            OfficialIdNo: $scope.model.KtpNo,
+                            OfficialIdNo: $scope.model.OfficialIdNo,
                             UserId: 'SYST'
                         }
                     }).then(function (response) {
                         btn.stop();
+                        console.log("UPDATE USER PROFILE", response.data);
                         if (response.data) {
                             if (response.data=="DBLEMAIL"){
                                 showError("Email "+$scope.model.Email+" has been used by other users. Please use another email.");
@@ -628,16 +637,19 @@
                         btn.stop();
                         //error handle\
                         var x = 0;
+                        
+
                     });
             }
 
             /*--------------------------------------------------------------
-            GET MASTER
+            GET SESSION
             --------------------------------------------------------------*/
-            $scope.getMaster = function () {
-                $http.post('@Url.Action("GetMaster", "Member")', {}).then(function (response) {
+            $scope.getUserSession = function () {
+                $http.get('@Url.Action("GetUserLogin", "Profile")', {}).then(function (response) {
                     if (response.data) {
-                        $scope.master = response.data;
+                        console.log("GET USER SESSION", response.data);
+                        $scope.model.LoginId = response.data.Id;
                     }
                 }, function (response) {
                     //error handle\
@@ -646,9 +658,9 @@
             }
 
             /*--------------------------------------------------------------
-            UPDATE PRODUCT
+            UPDATE USER PROFILE
             --------------------------------------------------------------*/
-            $scope.updateProduct = function () {
+            $scope.updateUserProfile = function () {
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
@@ -657,7 +669,7 @@
                     return;
                 }
 
-                $scope.saveProduct();
+                $scope.saveUserProfile();
             }
 
             $scope.isValidForm = function (theForm) {
@@ -675,7 +687,7 @@
             }
 
             $scope.isUserProfile = function () {
-                return $scope.LoginId == $scope.Id;
+                return $scope.model.LoginId == $scope.model.Id;
                 //return true;
             }
             /*--------------------------------------------------------------

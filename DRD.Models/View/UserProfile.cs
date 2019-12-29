@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DRD.Models.View
 {
     // Union of Member and User Request and Response?
-    public class Profile
+    public class UserProfile
     {
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 50)

@@ -199,7 +199,7 @@
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
     <Compile Include="Custom\MemberData.cs" />
-    <Compile Include="View\Profile.cs" />
+    <Compile Include="View\UserProfile.cs" />
     <Compile Include="View\UploadResponse.cs" />
     <Compile Include="View\Rotation\RotationItem.cs" />
     <Compile Include="View\Rotation\RotationIndex.cs" />

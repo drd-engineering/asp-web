@@ -49,6 +49,22 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
+        // GET Profile/GetData
+        public ActionResult GetData()
+        {
+            LoginController login = new LoginController();
+            login.CheckLogin(this);
+
+            UserSession userSession = login.GetUser(this);
+
+            UserService userService = new UserService();
+
+            UserProfile user = userService.GetById(userSession.Id, userSession.Id);
+            var data = user;
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult User()
         {
             LoginController login = new LoginController();
@@ -59,7 +75,7 @@ namespace DRD.App.Controllers
             var strmenu = login.ManipulateSubMenu(this, userSession);
             // end decription menu
 
-            User user = new User();
+            UserProfile user = new UserProfile();
             string[] ids = strmenu.Split(',');
             if (ids.Length > 1 && !ids[1].Equals("0"))
             {
@@ -75,10 +91,15 @@ namespace DRD.App.Controllers
 
             return View(layout);
         }
-        public UserSession GetUserLogin()
+
+        // redundant with the login method
+        public ActionResult GetUserLogin()
         {
             LoginController login = new LoginController();
-            return login.GetUser(this);
+            UserService userService = new UserService();
+            long id = login.GetUser(this).Id;
+            var data = userService.GetById(id, id);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         
@@ -123,7 +144,7 @@ namespace DRD.App.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Update(Profile user)
+        public ActionResult Update(UserProfile user)
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -137,7 +158,7 @@ namespace DRD.App.Controllers
             //user.CompanyId = userSession.CompanyId;
 
             UserService userService = new UserService();
-            User oldUser = userService.GetById(user.Id, userSession.Id);
+            UserProfile oldUser = userService.GetById(user.Id, userSession.Id);
 
 
             //user.IsActive = oldUser.IsActive;
@@ -150,7 +171,9 @@ namespace DRD.App.Controllers
             oldUser.ImageStamp = user.ImageStamp;
             oldUser.OfficialIdNo = user.OfficialIdNo;
 
-            var data = userService.Save(oldUser);
+            var data = userService.Update(oldUser);
+
+            System.Diagnostics.Debug.WriteLine("PROFILE CONTROLLER, UPDATE RESULT" + data);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
