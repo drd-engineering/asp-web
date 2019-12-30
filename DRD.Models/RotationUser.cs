@@ -9,6 +9,7 @@ namespace DRD.Models
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
+        public bool isStartPerson { get; set; } // flag is he starting node person
         public int FlagPermission { get; set; } // FlagPermission
         public long WorkflowNodeId { get; set; } // WorkflowNodeId
         public string ActivityName { get; set; }
