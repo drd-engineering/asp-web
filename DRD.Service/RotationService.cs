@@ -756,7 +756,7 @@ namespace DRD.Service
                 returnValue.Add(inboxService.CreateInbox(act));
                 /*MemberService.sendEmailInbox(act);*/
             }
-            return returnValue;
+            return returnValue[0];
         }
 
         //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
