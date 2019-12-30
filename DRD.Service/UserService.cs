@@ -6,6 +6,7 @@ using DRD.Models.Custom;
 using DRD.Service.Context;
 using System.Data.Entity.Infrastructure;
 using System.Linq.Expressions;
+using DRD.Models.View;
 
 namespace DRD.Service
 {
@@ -150,6 +151,26 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
         }
 
+        public long Update(UserProfile userProfile)
+        {
+            User user;
+            using (var db = new ServiceContext())
+            {
+                user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
+                user.ImageInitials = userProfile.ImageInitials;
+                user.ImageKtp1 = userProfile.ImageKtp1;
+                user.ImageKtp2 = userProfile.ImageKtp2;
+                user.ImageProfile = userProfile.ImageProfile;
+                user.ImageSignature = userProfile.ImageSignature;
+                user.ImageStamp = userProfile.ImageStamp;
+                user.OfficialIdNo = userProfile.OfficialIdNo;
+                db.SaveChanges();
+            }
+
+            System.Diagnostics.Debug.WriteLine("USER SERVICE, UPDATE RESULT" + user);
+            return user.Id;
+        }
+
         public long Save(User user)
         {
 
@@ -223,14 +244,14 @@ namespace DRD.Service
                 return result.Name;
             }
         }
-        public User GetById(long id, long loginId)
+        public UserProfile GetById(long id, long loginId)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from c in db.Users
                      where c.Id == id
-                     select new User
+                     select new UserProfile
                      {
                          Id = c.Id,
                          Name = c.Name,
@@ -243,8 +264,9 @@ namespace DRD.Service
                          ImageStamp = (id == loginId ? c.ImageStamp : ""),
                          ImageKtp1 = (id == loginId ? c.ImageKtp1 : ""),
                          ImageKtp2 = (id == loginId ? c.ImageKtp2 : ""),
-                         CreatedAt = c.CreatedAt,
-                     }).FirstOrDefault();
+                         OfficialIdNo = c.OfficialIdNo,
+                         CreatedAt = c.CreatedAt
+                     }).ToList().FirstOrDefault();
                 return result;
             }
         }
