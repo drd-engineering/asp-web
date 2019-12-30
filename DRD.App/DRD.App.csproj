@@ -286,6 +286,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\RotationController.cs" />
+    <Compile Include="Controllers\UpDownFileController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="drduserDataSet.Designer.cs">

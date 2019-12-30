@@ -15,6 +15,7 @@ namespace DRD.Models
         public System.DateTime? StartedAt { get; set; } // ValidPackage
         public System.DateTime? ExpiredAt { get; set; } // ValidDrDrive
         public bool IsActive { get; set; } // IsDefault
+        public long StorageSize { get; set; } // StorageSize
         public long StorageUsedinByte { get; set; } // Id (Primary key)
         public int totalAdministrators { get; set; } // Id (Primary key)
 

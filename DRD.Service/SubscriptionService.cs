@@ -39,6 +39,15 @@ namespace DRD.Service
             return planBusiness != null;
         }
 
+        public PlanBusiness getPlanOfCompany(long companyId)
+        {
+            using(var db = new ServiceContext())
+            {
+                PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
+                return plan;
+            }
+        }
+
         public PlanBusiness editPlanBusiness(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
         {
             using (var db = new ServiceContext())

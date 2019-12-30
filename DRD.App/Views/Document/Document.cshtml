@@ -165,7 +165,7 @@
                                                                  ngf-max-size="1000MB" style="object-fit:fill" />
                                                         </div>
                                                         <label class="control-label" ng-show="model.Id!=0 || isUpload">Original File Name:<br /> 
-                                                        <b><a ng-click="annoDocument()">{{model.FileNameOri}}</a></b></label><br />
+                                                        <b><a ng-click="annoDocument()">{{model.FileName}}</a></b></label><br />
                                                         <span style="font-size:xx-small">File Size (Bytes) : {{model.FileSize | number}}</span>
                                                     </div>
                                                 </div>
@@ -325,7 +325,7 @@
             $scope.currPage = 0;
             $scope.index = 0;
             // modal member
-
+            $scope.companyId;
             $scope.MAX_IMAGE = 3;
 
             $scope.model = {};
@@ -379,7 +379,7 @@
                     $scope.model.Title=product.Title;
                     $scope.model.Descr=product.Descr;
                     $scope.model.FileName=product.FileName;
-                    $scope.model.FileNameOri=product.FileNameOri;
+                    $scope.model.FileUrl=product.FileUrl;
                     $scope.model.ExtFile=product.ExtFile;
                     $scope.model.FileSize=product.FileSize;
                     $scope.model.MaxPrint=product.MaxPrint;
@@ -461,13 +461,13 @@
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
                     $scope.docFileName=file.name
-                    $scope.model.FileNameOri=file.name;
+                    $scope.model.FileUrl=file.name;
                     $scope.model.FileSize=file.size;
                     //var obUrl = URL.createObjectURL(file);
                     //document.getElementById('audio').setAttribute('src', obUrl);
 
                     file.upload = Upload.upload({
-                        url: '/updownfile/xupload?idx='+idx+'&fileType=0',
+                        url: '/updownfile/xuploadastemporary?idx='+idx+'&fileType=0&companyId='+companyId,
                         data: { MyImages: file }
                     });
 
@@ -475,7 +475,7 @@
                         //$timeout(function () {
                         file.result = response.data;
                         if (file.result.idx==-2){
-                            showInfo("Invalid member plan.");
+                            showInfo("Invalid plan Used.");
                             $scope.progressValueUploadFile="Failed";
                         }else if (file.result.idx==-4){
                             showInfo("Document quota is insufficient.");
@@ -534,7 +534,7 @@
                             Title: $scope.model.Title,
                             Descr: $scope.model.Descr,
                             FileName: $scope.model.FileName,
-                            FileNameOri: $scope.model.FileNameOri,
+                            FileUrl: $scope.model.FileUrl,
                             ExtFile: $scope.model.ExtFile,
                             FileSize: $scope.model.FileSize,
                             MaxPrint: $scope.model.MaxPrint,
@@ -544,11 +544,16 @@
                             UserId: 'SYST',
                             //DocumentMembers:$scope.users,
                             DocumentAnnotates:$scope.annos,
-                        }
+                        },
+                        companyId: $scope.companyId
                     }).then(function (response) {
                         btn.stop();
-                        if (response.data) {
+                        if (response.data == 1) {
                             $scope.wizarno = 'success';
+                        }
+                        else {
+                            console.log(response.data);
+                            console.log("failed to save document")
                         }
                     }, function (response) {
                         //error handle\
@@ -689,7 +694,7 @@
                     iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//$scope.model.FileName);
                     iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
                     iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileName);
                     isdefineiframe=true;
                 //}
                 $("#modal_pdf_viewer").modal("show");
