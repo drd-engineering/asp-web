@@ -1,7 +1,8 @@
-﻿@model DRD.Models.View.Layout
+﻿@using DRD.Models.View;
+@model Layout
+
 @{
-    ViewBag.Title = "Inbox";
-    ViewBag.Submenu = "INBOX";
+    ViewBag.Title = "";
 }
 
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
@@ -30,9 +31,7 @@
 
 
 <script src="~/Scripts/xpublic.js"></script>
-@section Styles{
-    <link href="/assets/css/pages/inbox.css" rel="stylesheet" type="text/css">
-}
+
 <style type="text/css">
     .auto-style3 {
         width: 64px;
@@ -51,6 +50,8 @@
     .image-content {
         width: 120px;
         cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -115,7 +116,7 @@
 
 
 
-<body @*ng-app="drdApp"*@>
+<body>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -193,9 +194,8 @@
                                                     <span style="font-size:medium"><b>Document</b></span>
                                                 </div>
                                                 <div class="col-md-5">
-                                                    <button class="btn btn-info btn-xs pull-right" type="button" ng-click="popupDocument()" style="margin-left:5px">Add from Library</button>
-                                                    @* <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="gotoAddDoc()"> Add New</button> *@
-                                                    <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="popupAddDocument()">Add New</button>
+                                                    <button class="btn btn-info btn-xs pull-right" type="button" ng-click="popupDocument()" style="margin-left:5px">@*<i class="icon-user-plus position-left"></i>*@ Add from Library</button>
+                                                    <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="gotoAddDoc()">@*<i class="icon-user-plus position-left"></i>*@ Add New</button>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -217,9 +217,7 @@
                                                                     <a ng-click="editDocument($index);">{{x.Document.Title}}</a><br />
                                                                     <div style="height:5px"></div>
                                                                     <span style="font-size:xx-small;">
-                                                                        @*
-                                                                           <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span> 
-                                                                        *@
+                                                                        <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,32)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,32)" ng-click="stampDocument($index);">{{(validAction(x.FlagAction,32)?'Stamped':'Stamp')}}</span>
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
@@ -292,8 +290,7 @@
 
 
                                 <!-- View member modal -->
-                                <!-- <ng-include src="'/Include/PopupDocument'"></ng-include> -->
-                                <ng-include src="'/Include/PopupAddDocument'"></ng-include>
+                                <ng-include src="'/Include/PopupDocument'"></ng-include>
                                 <ng-include src="'/Include/PopupPassword'"></ng-include>
                                 <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
                                 <!-- View member modal -->
@@ -348,8 +345,6 @@
             }
         });
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
-            $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
-
             // modal document
             $scope.document = {};
             $scope.documents = [];
@@ -397,16 +392,16 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                console.log("INBOX ID", $scope.inboxId);
-
                 $scope.thePassword="";
                 $(".content-wrapper").show();
             });
 
             function initValues() {
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
+                $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                var product = @Html.Raw(Json.Encode(Model.obj));
+                $scope.data
+                
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.MemberId=product.MemberId;
@@ -423,9 +418,7 @@
                     $scope.sumDocuments=product.SumRotationNodeDocs;
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
 
-                    if ($scope.model.Status == '00') {
-                        // bukan yg pertama?
-
+                    if ($scope.model.Status=='00'){
                         if ($scope.currentRotationNode.SenderRotationNodeId!=null){
                             //var sender=angular.copy($scope.currentRotationNode);
                             // copy doc and updoc from sender
@@ -441,6 +434,27 @@
                         }
                     }
 
+                    //if ($scope.model.Status=='00'){
+                    //    if ($scope.currentRotationNode.SenderRotationNodeId!=null){
+                    //        var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
+                    //        if (sender.RotationNodeDocs.length>0){
+                    //            $scope.docs=sender.RotationNodeDocs;
+                    //            for(i=0;i<$scope.docs.length;i++){
+                    //                $scope.docs[i].FlagAction=0;
+                    //            }
+                    //        }
+                    //        if (sender.RotationNodeUpDocs.length>0)
+                    //            $scope.updocs=sender.RotationNodeUpDocs;
+                    //    }
+                    //}else{
+                    //    var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.model.RotationNodeId)[0]);
+                    //    if (sender.RotationNodeDocs.length>0){
+                    //        $scope.docs=sender.RotationNodeDocs;
+
+                    //    }
+                    //    if (sender.RotationNodeUpDocs.length>0)
+                    //        $scope.updocs=sender.RotationNodeUpDocs;
+                    //}
                 }else{
 
                 }
@@ -449,8 +463,8 @@
             }
 
             $scope.gotoAddDoc = function () {
-                //var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'DOCUMENT'})[0].UrlPage.replace('list?','?');
-                //location.href = url;
+                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'DOCUMENT'})[0].UrlPage.replace('list?','?');
+                location.href = url;
             }
             $scope.initData = function () {
 
@@ -478,11 +492,15 @@
                             confirmButtonText: "Yes, sign it!",
                             cancelButtonText: "No, cancel please!",
                         },
-                        function (isConfirm)
+                        function (isConfirm) {
+                            //setTimeout(function () {
                             if (isConfirm){
+                                //var doc=$scope.docs[idx];
+                                //doc.FlagAction|=1;
                                 $scope.signDocumentValidation(idx);
                             }
                             swal.close();
+                            //}, 500);
 
                         });
 
@@ -540,10 +558,14 @@
                             cancelButtonText: "No, cancel please!",
                         },
                         function (isConfirm) {
+                            //setTimeout(function () {
                             if (isConfirm){
+                                //var doc=$scope.docs[idx];
+                                //doc.FlagAction|=32;
                                 $scope.stampDocumentValidation(idx);
                             }
                             swal.close();
+                            //}, 500);
 
                         });
 
@@ -1030,18 +1052,11 @@
                 $("#modal_select_document").modal("show");
             }
 
-            // OLD VERSION
             $scope.popupDocument = function () {
                 $('#kriteria').val("");
                 $scope.documentIdx=-1;
                 $scope.documents = [];
                 $("#modal_select_document").modal("show");
-            }
-            // LATEST VERSION
-            $scope.popupAddDocument = function () {
-                $scope.documentIdx=-1;
-                $scope.documents = [];
-                $("#modal_add_document").modal("show");
             }
             $scope.setDocument = function (idx) {
                 if ($scope.docs.length>0){
