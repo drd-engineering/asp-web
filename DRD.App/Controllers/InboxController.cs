@@ -69,7 +69,7 @@ namespace DRD.App.Controllers
 
             System.Diagnostics.Debug.WriteLine("INBOX ID " + id);
             
-            var data = inboxService.GetInboxItem(user, id);
+            var data = inboxService.GetInboxItemById(id, user);
             layout.dataId = id;
             layout.obj = data;
 
@@ -78,7 +78,7 @@ namespace DRD.App.Controllers
 
         public ActionResult AddDocument(int id) 
         {
-            var data = inboxService.GetInboxItem(user, id);
+            var data = inboxService.GetInboxItemById(id, user);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

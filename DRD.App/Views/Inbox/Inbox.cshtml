@@ -129,7 +129,7 @@
                 <div class="page-header page-header-default">
                     <div class="page-header-content">
                         <div class="page-title">
-                            <h4><i class="icon-envelope position-left"></i>Inbox: {{currentRotationNode.WorkflowNode.Caption}}</h4>
+                            <h4><i class="icon-envelope position-left"></i>Inbox: {{model.CurrentActivity}}</h4>
                             Rotation: {{model.Subject}}
                         </div>
                     </div>
@@ -403,10 +403,15 @@
                 inbox = @Html.Raw(Json.Encode(Model.obj));
                 
                 if (inbox) {
+                    console.log("INBOX", inbox);
                     $scope.model.Id = $scope.inboxId;
-                    $scope.model.MemberId=product.MemberId;
-                    $scope.model.RotationNodeId=product.RotationNodeId;
-                    $scope.model.Subject=product.Subject;
+                    //$scope.model.RotationNodeId=product.RotationNodeId;
+
+                    $scope.model.Subject = (inbox.RotationLog[0] ? inbox.RotationLog[0].Subject : "-");
+
+                    $scope.model.CurrentActivity = inbox.CurrentActivity;
+
+
                     $scope.model.Status=product.Status;
                     $scope.model.Remark= product.Remark;
                     $scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
