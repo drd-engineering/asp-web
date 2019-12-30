@@ -54,6 +54,11 @@ namespace DRD.Web.Controllers
         {
             return View();
         }
+        public ActionResult PopupAddDocument()
+        {
+            // PopupDocument
+            return View();
+        }
         public ActionResult PopupDocument()
         {
             return View();

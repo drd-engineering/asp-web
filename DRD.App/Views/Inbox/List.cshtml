@@ -67,10 +67,10 @@
                                     <tbody>
                                         <tr ng-repeat="x in products">
                                             <td>{{$index+1 + index}}</td>
-                                            <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
-                                            <td>{{x.ActivityName}}</td>
-                                            <td>{{x.WorkflowName}}</td>
-                                            <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                            <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.RotationName}} Rot</a></td>
+                                            <td>{{x.CurrentActivity}} Act</td>
+                                            <td>{{x.WorkflowName}} Work</td>
+                                            <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -140,7 +140,7 @@
                         $scope.isView = true;
 
                         //Ladda.stopAll();
-
+                        console.log("LIST", response.data);
                     }
                 }, function (response) {
                     //error handle\

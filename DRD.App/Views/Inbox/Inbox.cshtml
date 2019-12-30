@@ -195,7 +195,8 @@
                                                 </div>
                                                 <div class="col-md-5">
                                                     <button class="btn btn-info btn-xs pull-right" type="button" ng-click="popupDocument()" style="margin-left:5px">@*<i class="icon-user-plus position-left"></i>*@ Add from Library</button>
-                                                    <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="gotoAddDoc()">@*<i class="icon-user-plus position-left"></i>*@ Add New</button>
+                                                    @* <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="gotoAddDoc()"> Add New</button> *@
+                                                    <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-click="popupAddDocument()">Add New</button>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -222,7 +223,7 @@
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
                                                                         @*<span class="btn-permission{{(validAction(x.FlagAction,8)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,8)" ng-click="printDocument($index);">{{(validAction(x.FlagAction,8)?'Printed':'Print')}}</span>
-                                                                            <span class="btn-permission{{(validAction(x.FlagAction,16)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,16)" ng-click="downloadDocument($index);">{{(validAction(x.FlagAction,16)?'Downloaded':'Download')}}</span>*@
+                                                <span class="btn-permission{{(validAction(x.FlagAction,16)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,16)" ng-click="downloadDocument($index);">{{(validAction(x.FlagAction,16)?'Downloaded':'Download')}}</span>*@
                                                                     </span>
                                                                 </td>
                                                                 <td class="text-top">
@@ -290,7 +291,8 @@
 
 
                                 <!-- View member modal -->
-                                <ng-include src="'/Include/PopupDocument'"></ng-include>
+                                <!-- <ng-include src="'/Include/PopupDocument'"></ng-include> -->
+                                <ng-include src="'/Include/PopupAddDocument'"></ng-include>
                                 <ng-include src="'/Include/PopupPassword'"></ng-include>
                                 <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
                                 <!-- View member modal -->
@@ -463,8 +465,8 @@
             }
 
             $scope.gotoAddDoc = function () {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'DOCUMENT'})[0].UrlPage.replace('list?','?');
-                location.href = url;
+                //var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'DOCUMENT'})[0].UrlPage.replace('list?','?');
+                //location.href = url;
             }
             $scope.initData = function () {
 
@@ -1044,11 +1046,18 @@
                 $("#modal_select_document").modal("show");
             }
 
+            // OLD VERSION
             $scope.popupDocument = function () {
                 $('#kriteria').val("");
                 $scope.documentIdx=-1;
                 $scope.documents = [];
                 $("#modal_select_document").modal("show");
+            }
+            // LATEST VERSION
+            $scope.popupAddDocument = function () {
+                $scope.documentIdx=-1;
+                $scope.documents = [];
+                $("#modal_add_document").modal("show");
             }
             $scope.setDocument = function (idx) {
                 if ($scope.docs.length>0){
