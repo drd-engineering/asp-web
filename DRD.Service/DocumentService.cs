@@ -55,6 +55,7 @@ namespace DRD.Service
                          Title = c.Title,
                          Description = c.Description,
                          FileName = c.FileName,
+                         FileUrl = c.FileUrl,
                          FileSize = c.FileSize,
                          CreatedAt = c.CreatedAt,
                          UpdatedAt = c.UpdatedAt,
@@ -573,15 +574,15 @@ namespace DRD.Service
         {
             return GetAnnotateDocs(memberId, topCriteria, page, pageSize, null, null);
         }
-        public int Save(Document prod)
+        public int Save(Document prod, long companyId, long rotationId)
         {
             int result;
             Document document;
             using (var db = new ServiceContext())
             {
                 if (prod.Id == 0)
-                    document = Create(prod);
-                else document = Update(prod);
+                    document = Create(prod, companyId, rotationId);
+                else document = Update(prod, companyId, rotationId);
                 result = db.SaveChanges();
             }
 
@@ -590,20 +591,20 @@ namespace DRD.Service
 
         }
 
-        public Document Create(Document newDocument)
+        public Document Create(Document newDocument, long companyId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
                 Document document = new Document();
 
                 // validate first
-                long companyId = db.Members.Where(m => m.UserId == newDocument.CreatorId).FirstOrDefault().CompanyId;
-                PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
+                PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 ValidateWithPlan(document, newDocument, plan);
 
                 // mapping value
                 document.Title = newDocument.Title;
                 document.Description = newDocument.Description;
+                document.Description = newDocument.FileUrl;
                 document.FileName = newDocument.FileName;
                 document.FileSize = newDocument.FileSize;
 
@@ -633,7 +634,7 @@ namespace DRD.Service
             
         }
 
-        public Document Update(Document newDocument) {
+        public Document Update(Document newDocument, long companyId, long rotationId) {
             
 
             using (var db = new ServiceContext())
@@ -641,7 +642,6 @@ namespace DRD.Service
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
                 
                 // GET Plan
-                long companyId = db.Members.Where(m => m.UserId == document.CreatorId).FirstOrDefault().CompanyId;
                 PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
                 
                 // validation
@@ -1060,7 +1060,5 @@ namespace DRD.Service
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

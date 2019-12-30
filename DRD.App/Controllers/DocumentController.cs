@@ -221,15 +221,24 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(Document prod)
+        public ActionResult Save(Document prod, long companyId, long rotationId)
         {
-            UserSession user = getUserLogin();
+            Initialize();
             prod.CreatorId = user.Id;
             prod.UserEmail = user.Email;
             //prod.CompanyId = (long)user.CompanyId;
-            var srv = new DocumentService();
-            var data = srv.Save(prod);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var fileController = new UpDownFileController();
+            if (fileController.MoveFromTemporaryToActual(prod, companyId) == 1) {
+                var srv = new DocumentService();
+                var data = srv.Save(prod, companyId, rotationId);
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var data = 0;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            
         }
 
         //public ActionResult Signature(long documentId)

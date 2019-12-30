@@ -46,50 +46,66 @@ namespace DRD.Service
         
         }
 
-        public InboxItem GetInboxItem(UserSession user, long inboxId)
+        public Rotation GetInboxItem(long rotationNodeId, long inboxId, long UserId=0)
         {
-            List<RotationData> rotationLog = new List<RotationData>();
-            List<DocumentItem> documentList = new List<DocumentItem>();
-            // should update isUnread
+
             using (var db = new ServiceContext())
             {
-                var inbox = db.Inboxes.Where(i => i.UserId == user.Id && i.Id == inboxId).FirstOrDefault();
-
-                InboxItem result = new InboxItem();
-                
-                result.Id = inbox.Id;
-                //result.CurrentActivity = inbox.Activity.Name;
-
-                // Rotation Log
-                rotationLog = (
-                    from r in db.Rotations
-                    join rn in db.RotationNodes on r.Id equals rn.RotationId
-                    where rn.Id == inbox.ActivityId
-                    orderby r.DateUpdated descending
-                    select new RotationData { 
-                    
-                        // lanjutin
-                        // ambil dari rotation
-                    }
-                    
-                ).ToList();
-                result.RotationLog = rotationLog;
-
-                // Document
-                documentList = (
-                    from doc in db.Documents
-                    where doc.Rotation.Id == inbox.Activity.RotationId
-                    select new DocumentItem
+                var result =
+                   (from c in db.RotationNodes
+                    where c.Id == rotationNodeId
+                    select new Rotation
                     {
-                        Id = doc.Id,
-                        Title = doc.Title,
-                        FileNameOri = doc.FileName
+                        Id = c.Rotation.Id,
+                        Subject = c.Rotation.Subject,
+                        Status = c.Status,
+                        WorkflowId = c.Rotation.WorkflowId,
+                        UserId = c.MemberId,
+                        DateCreated = c.CreatedAt,
+                        DateUpdated = c.UpdatedAt,
+                        DateStarted = c.DateRead,
+                        RotationNodeId = c.Id,
+                        StatusDescription = Constant.getRotationStatusNameByCode(c.Status),
+
+                    }).FirstOrDefault();
+
+                RotationService rotationService = new RotationService();
+                result = rotationService.assignNodes(db, result, UserId, new DocumentService());
+
+                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
+                foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
+                {
+                    if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
+                    {
+                        result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
+                        if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("DECISION"))
+                            result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTos.Operator + " " + workflowNodeLink.WorkflowNodeTos.Value;
+                        else if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("CASE"))
+                            result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTos.Value;
                     }
-                ).ToList();
-                result.Documents = documentList;
+                    else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
+                        result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
+                    else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
+                        result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
+                    else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
+                        result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
+
+                }
+
+                changeUnreadtoReadInbox(inboxId: inboxId);
 
                 return result;
+            }
+        }
 
+        public bool changeUnreadtoReadInbox(long inboxId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
+                inbox.IsUnread = !inbox.IsUnread;
+                db.SaveChanges();
+                return inbox.IsUnread;
             }
 
         }
