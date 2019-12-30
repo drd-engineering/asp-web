@@ -73,6 +73,7 @@
     <Compile Include="Context\ServiceContext.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RotationProcessService.cs" />
     <Compile Include="RotationService.cs" />
     <Compile Include="SubscriptionDictionary.cs" />
     <Compile Include="SubscriptionService.cs" />

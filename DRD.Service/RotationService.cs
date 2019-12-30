@@ -744,31 +744,7 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-        public int Start(long userId, long rotationId, long subscriptionId)
-        {
-            WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-            var returnItem = workflowDeepService.Start(userId, rotationId, subscriptionId);
-            MemberService memberService = new MemberService();
-            
-            //MemberService userService = new MemberService();
-            //foreach (JsonActivityResult act in ret)
-            //{
-            //    userService.sendEmailInbox(act);
-            //}
-            return returnItem.FirstOrDefault().ExitCode;
-        }
-
-        //public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
-        //{
-        //    WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-        //    var ret = workflowDeepService.ProcessActivity(parameter, enumActivityAction, new DocumentService(), new MemberDepositTrxService());
-        //    UserService userService = new UserService();
-        //    foreach (ActivityItem act in ret)
-        //    {
-        //        userService.sendEmailInbox(act);
-        //    }
-        //    return ret.FirstOrDefault().ExitCode;
-        //}
+       
         public Rotation assignNodes(ServiceContext db, Rotation rot, long memberId, IDocumentService docSvr)
         {
             Rotation rotation = rot;

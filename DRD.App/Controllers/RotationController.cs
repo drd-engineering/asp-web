@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 using DRD.Models;
 using DRD.Models.View;
@@ -15,8 +10,8 @@ namespace DRD.App.Controllers
     public class RotationController : Controller
     {
         LoginController login = new LoginController();
-        MemberService memberService = new MemberService();
         RotationService rotationService = new RotationService();
+        RotationProcessService rotationProcessService = new RotationProcessService();
         UserSession user;
         Layout layout = new Layout();
 
@@ -85,7 +80,7 @@ namespace DRD.App.Controllers
         {
             InitializeAPI();
             
-            var data = rotationService.Start(user.Id, rotationId, subscriptionId);
+            var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
