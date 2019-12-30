@@ -30,11 +30,11 @@ namespace DRD.Service
                         item.Id = i.Id;
                         item.IsUnread = i.IsUnread;
 
-                        //var activity = db.RotationActivities.Where(a => a.Id == i.ActivityId).FirstOrDefault();
+                        var activity = db.RotationNodes.Where(a => a.Id == i.ActivityId).FirstOrDefault();
 
-                        //item.CurrentActivity = activity.Name;
-                        //item.RotationName = activity.Workflow.Subject;
-                        //item.WorkflowName = activity.Workflow.Workflow.Name;
+                        item.CurrentActivity = activity.WorkflowNode.Caption;
+                        item.RotationName = activity.Rotation.Subject;
+                        item.WorkflowName = activity.WorkflowNode.Workflow.Name;
                         item.CreatedAt = i.CreatedAt;
 
                         result.Add(item);

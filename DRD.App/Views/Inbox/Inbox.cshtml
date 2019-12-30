@@ -400,10 +400,10 @@
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                $scope.data
+                inbox = @Html.Raw(Json.Encode(Model.obj));
                 
-                if (product.Id!=0 ){
-                    $scope.model.Id=product.Id;
+                if (inbox) {
+                    $scope.model.Id = $scope.inboxId;
                     $scope.model.MemberId=product.MemberId;
                     $scope.model.RotationNodeId=product.RotationNodeId;
                     $scope.model.Subject=product.Subject;
@@ -434,29 +434,9 @@
                         }
                     }
 
-                    //if ($scope.model.Status=='00'){
-                    //    if ($scope.currentRotationNode.SenderRotationNodeId!=null){
-                    //        var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
-                    //        if (sender.RotationNodeDocs.length>0){
-                    //            $scope.docs=sender.RotationNodeDocs;
-                    //            for(i=0;i<$scope.docs.length;i++){
-                    //                $scope.docs[i].FlagAction=0;
-                    //            }
-                    //        }
-                    //        if (sender.RotationNodeUpDocs.length>0)
-                    //            $scope.updocs=sender.RotationNodeUpDocs;
-                    //    }
-                    //}else{
-                    //    var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.model.RotationNodeId)[0]);
-                    //    if (sender.RotationNodeDocs.length>0){
-                    //        $scope.docs=sender.RotationNodeDocs;
-
-                    //    }
-                    //    if (sender.RotationNodeUpDocs.length>0)
-                    //        $scope.updocs=sender.RotationNodeUpDocs;
-                    //}
+                    
                 }else{
-
+                    // error response, 404 inbox
                 }
 
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';

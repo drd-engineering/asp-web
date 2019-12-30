@@ -67,7 +67,7 @@
                                     <tbody>
                                         <tr ng-repeat="x in products">
                                             <td>{{$index+1 + index}}</td>
-                                            <td><a ng-click="do_edit(x.Id);">{{if (x.RotationName) ? x.RotationName : "Rotation"}}</a></td>
+                                            <td><a ng-click="do_edit(x.Id);">{{x.RotationName}}</a></td>
                                             <td>{{x.CurrentActivity}}</td>
                                             <td>{{x.WorkflowName}}</td>
                                             <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
