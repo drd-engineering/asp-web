@@ -35,6 +35,7 @@ namespace DRD.Service
                         //item.CurrentActivity = activity.Name;
                         //item.RotationName = activity.Workflow.Subject;
                         //item.WorkflowName = activity.Workflow.Workflow.Name;
+                        item.CreatedAt = i.CreatedAt;
 
                         result.Add(item);
                     }
