@@ -79,6 +79,40 @@ namespace DRD.Service
                 return counter;
             }
         }
+        
+        // public int SendEmail(String message)
+        // {
+        //     System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
+        //     var configGenerator = new AppConfigGenerator();
+        //     var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+        //     var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+        //     EmailService emailService = new EmailService();
+
+        //     string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/testemail.html"));
+        //     String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+        //     String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+        //     //TODO: remove these lines when production
+        //     System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration");
+        //     System.Diagnostics.Debug.WriteLine(strPathAndQuery);
+
+        //     var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+        //     //TODO: remove these lines when production
+        //     System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration");
+        //     System.Diagnostics.Debug.WriteLine(senderEmail);
+
+        //     try
+        //     {
+        //         var task = emailService.Send(senderEmail, senderName + "Administrator", "franna.jaya@gmail.com", senderName + " User Registration", body, false, new string[] { });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Exception caught in RetryIfBusy(): {0}",
+        //                 ex.ToString());
+        //     }
+        //     return 1;
+        // }
     }
 
     public static class Ext
