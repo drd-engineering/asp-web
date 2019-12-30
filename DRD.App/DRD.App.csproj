@@ -2804,6 +2804,7 @@
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <None Include="Views\Company\Member.cshtml" />
+    <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="WebForm1.aspx" />
     <Content Include="doc\json.json" />
     <Content Include="Testing\shared\cv.pdf" />

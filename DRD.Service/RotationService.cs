@@ -10,6 +10,7 @@ using DRD.Models.API;
 using DRD.Service.Context;
 using System.Linq.Expressions;
 using DRD.Models.View;
+using Newtonsoft.Json;
 
 namespace DRD.Service
 {
@@ -79,6 +80,7 @@ namespace DRD.Service
             }
         }
 
+
         public Rotation GetById(long id, long userId = 0)
         {
             using (var db = new ServiceContext())
@@ -102,8 +104,7 @@ namespace DRD.Service
                              Name = rotation.Workflow.Name,
                          }
                      }).FirstOrDefault();
-                WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-                result = workflowDeepService.assignNodes(db, result, userId, new DocumentService());
+                result = assignNodes(db, result, userId, new DocumentService());
                 return result;
             }
         }
@@ -292,8 +293,7 @@ namespace DRD.Service
 
                      }).FirstOrDefault();
 
-                WorkflowDeepService workflowDeepService = new WorkflowDeepService();
-                result = workflowDeepService.assignNodes(db, result, result.UserId.Value, new DocumentService());
+                result = assignNodes(db, result, result.UserId.Value, new DocumentService());
 
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(rotation => rotation.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
@@ -769,7 +769,302 @@ namespace DRD.Service
         //    }
         //    return ret.FirstOrDefault().ExitCode;
         //}
+        public Rotation assignNodes(ServiceContext db, Rotation rot, long memberId, IDocumentService docSvr)
+        {
+            Rotation rotation = rot;
 
+            rotation.RotationNodes =
+                (from rotationNode in db.RotationNodes
+                 where rotationNode.Rotation.Id == rotation.Id
+                 orderby rotationNode.CreatedAt
+                 select new RotationNode
+                 {
+                     Id = rotationNode.Id,
+                     CreatedAt = rotationNode.CreatedAt,
+                     Status = rotationNode.Status,
+                     Value = rotationNode.Value,
+                     PrevWorkflowNodeId = rotationNode.PrevWorkflowNodeId,
+                     SenderRotationNodeId = rotationNode.SenderRotationNodeId,
+                     User = new User
+                     {
+                         Id = rotationNode.User.Id,
+                         Name = rotationNode.User.Name,
+                         ImageProfile = rotationNode.User.ImageProfile,
+                         ImageInitials = rotationNode.User.ImageInitials,
+                         ImageSignature = rotationNode.User.ImageSignature,
+                         ImageStamp = rotationNode.User.ImageStamp,
+                         ImageKtp1 = rotationNode.User.ImageKtp1,
+                         ImageKtp2 = rotationNode.User.ImageKtp2,
+                     },
+                     WorkflowNode = new WorkflowNode
+                     {
+                         Id = rotationNode.WorkflowNode.Id,
+                         Caption = rotationNode.WorkflowNode.Caption
+                     },
+                     //RotationNodeRemarks =
+                     //(from rotationNodeRemark in rotationNode.RotationNodeRemarks
+                     // select new RotationNodeRemark
+                     // {
+                     //     Id = rotationNodeRemark.Id,
+                     //     Remark = rotationNodeRemark.Remark,
+                     //     DateStamp = rotationNodeRemark.DateStamp,
+                     // }).ToList(),
+                 }).ToList();
+
+
+            foreach (RotationNode rotationNode in rotation.RotationNodes)
+            {
+                // set note for waiting pending member
+                if (rotationNode.Status.Equals("02"))
+                {
+                    rotationNode.Note = "Waiting for action from: ";
+                    var rtpending = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNode.Id);
+                    var wfnto = rtpending.WorkflowNode.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString()));
+
+                    var nodetos = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == wfnto.WorkflowNodeToId && c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString())).ToList();
+                    foreach (WorkflowNodeLink workflowNodeLink in nodetos)
+                    {
+                        int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
+                        if (statuses.Contains(workflowNodeLink.WorkflowNodes.RotationNodes.FirstOrDefault().Status))
+                            rotationNode.Note += workflowNodeLink.WorkflowNodes.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeId).User.Name + " | " + workflowNodeLink.WorkflowNodes.Caption + ", ";
+                    }
+
+                    if (rotationNode.Note.EndsWith(", "))
+                        rotationNode.Note = rotationNode.Note.Substring(0, rotationNode.Note.Length - 2);
+
+                }
+                // set note for alter link
+                else if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
+                {
+                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.SymbolCode.Equals(Constant.EnumActivityAction.ALTER.ToString()));
+                    if (node != null)
+                    {
+                        if (node.Operator != null)
+                        {
+                            var start = rotationNode.CreatedAt;
+                            double val = 0;
+                            if (Double.TryParse(node.Value, out val))
+                            {
+                                if (node.Operator.Equals("HOUR"))
+                                    start = start.AddHours(val);
+                                else
+                                    start = start.AddDays(val);
+                            }
+
+                            rotationNode.Note = "There is a flow alter on " + start.ToString("dd/MM/yyyy HH:mm");
+                        }
+                        else
+                            rotationNode.Note = "There is a flow alter, there has been no determination of the period.";
+                    }
+                }
+
+                if (rotationNode.Id == rotation.RotationNodeId && rotation.UserId == rotationNode.User.Id && rotationNode.Status.Equals((int)Constant.RotationStatus.Open) && (rotationNode.PrevWorkflowNodeId != null || rotationNode.SenderRotationNodeId != null))
+                {
+                    if (rotationNode.PrevWorkflowNodeId != null)
+                    {
+                        var wfn = db.WorkflowNodes.FirstOrDefault(c => c.Id == rotationNode.PrevWorkflowNodeId);
+                        if (wfn.SymbolCode.Equals("PARALLEL"))
+                        {
+                            var wfnIds = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeToId == wfn.Id).Select(c => c.WorkflowNodeId).ToArray();
+                            var rns = db.RotationNodes.Where(c => wfnIds.Contains(c.WorkflowNode.Id)).ToList();
+                            List<RotationNodeDoc> listDoc = new List<RotationNodeDoc>();
+                            List<RotationNodeUpDoc> listUpDoc = new List<RotationNodeUpDoc>();
+                            foreach (RotationNode rnx in rns)
+                            {
+                                var d = assignNodeDocs(db, rnx.Id, memberId/*rotation.UserId*/, rot.RotationNodeId, docSvr);
+                                if (d.Count > 0)
+                                    listDoc.AddRange(d);
+
+                                var ud = assignNodeUpDocs(db, rnx.Id);
+                                if (ud.Count > 0)
+                                    listUpDoc.AddRange(ud);
+
+                            }
+                            if (listDoc.Count > 0)
+                                rotationNode.RotationNodeDocs = listDoc;
+                            if (listUpDoc.Count > 0)
+                                rotationNode.RotationNodeUpDocs = listUpDoc;
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    //rotationNode.RotationNodeDocs = assignNodeDocs(db, rotationNode.Id, rotation.UserId, rot.RotationNodeId);
+                    rotationNode.RotationNodeDocs = assignNodeDocs(db, rotationNode.Id, memberId/*rotationNode.UserId*/, rot.RotationNodeId, docSvr);
+                    rotationNode.RotationNodeUpDocs = assignNodeUpDocs(db, rotationNode.Id);
+
+                }
+
+                //document summaries document
+                foreach (RotationNodeDoc rotationNodeDoc in rotationNode.RotationNodeDocs)
+                {
+                    // get anno
+                    foreach (DocumentElement documentElement in rotationNodeDoc.Document.DocumentElements)
+                    {
+                        if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
+                        if (documentElement.ElementType.Code.Equals("SIGNATURE") || documentElement.ElementType.Code.Equals("INITIAL") || documentElement.ElementType.Code.Equals("PRIVATESTAMP"))
+                        {
+                            var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
+                            documentElement.Element.UserId = user.Id;
+                            documentElement.Element.Name = user.Name;
+                            documentElement.Element.Foto = user.ImageProfile;
+                        }
+                        else if (documentElement.ElementType.Code.Equals("STAMP"))
+                        {
+                            var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
+                            documentElement.Element.Name = stmp.Descr;
+                            documentElement.Element.Foto = stmp.StampFile;
+                        }
+                    }
+
+                    var dx = rotation.SumRotationNodeDocs.FirstOrDefault(c => c.Document.Id == rotationNodeDoc.Document.Id);
+                    if (dx != null)
+                    {
+                        dx.FlagAction |= rotationNodeDoc.FlagAction;
+                    }
+                    else
+                    {
+                        rotation.SumRotationNodeDocs.Add(DeepCopy(rotationNodeDoc));
+                    }
+
+                }
+                //attchment summaries 
+                //foreach (RotationNodeUpDoc rotationNodeDoc in rotationNode.RotationNodeUpDocs)
+                //{
+                //    var dx = rotation.SumRotationNodeUpDocs.FirstOrDefault(c => c.Document.FileName.Equals(rotationNodeDoc.Document.FileName));
+                //    if (dx == null)
+                //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
+                //}
+            }
+
+
+            return rotation;
+        }
+
+        private static RotationNodeDoc DeepCopy(RotationNodeDoc source)
+        {
+
+            var DeserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+
+            return JsonConvert.DeserializeObject<RotationNodeDoc>(JsonConvert.SerializeObject(source), DeserializeSettings);
+
+        }
+        private List<RotationNodeDoc> assignNodeDocs(ServiceContext db, long rnId, long memId, long? curRnId, IDocumentService docSvr)
+        {
+            //rotationNode.RotationNodeDocs =
+            var result =
+                (from d in db.RotationNodeDocs
+                 where d.RotationNode.Id == rnId
+                 select new RotationNodeDoc
+                 {
+                     Id = d.Id,
+                     FlagAction = d.FlagAction,
+                     RotationNode = new RotationNode
+                     {
+                         Rotation = d.RotationNode.Rotation,
+                     },
+                     Document = new Document
+                     {
+                         Title = d.Document.Title,
+                         FileName = d.Document.FileName,
+                         FileSize = d.Document.FileSize,
+                         //DocumentUser =
+                         //    (from dm in d.Document.DocumentUsers
+                         //     where dm.UserId == memId // default inbox member
+                         //     select new DocumentUser
+                         //     {
+                         //         Id = dm.Id,
+                         //         DocumentId = dm.DocumentId,
+                         //         UserId = dm.UserId,
+                         //         FlagAction = dm.FlagAction,
+                         //     }).FirstOrDefault(),
+
+                         DocumentElements =
+                             (from documentElement in d.Document.DocumentElements
+                              select new DocumentElement
+                              {
+                                  Id = documentElement.Id,
+                                  Document = documentElement.Document,
+                                  Page = documentElement.Page,
+                                  LeftPosition = documentElement.LeftPosition,
+                                  TopPosition = documentElement.TopPosition,
+                                  WidthPosition = documentElement.WidthPosition,
+                                  HeightPosition = documentElement.HeightPosition,
+                                  Color = documentElement.Color,
+                                  BackColor = documentElement.BackColor,
+                                  Data = documentElement.Data,
+                                  Data2 = documentElement.Data2,
+                                  Rotation = documentElement.Rotation,
+                                  ScaleX = documentElement.ScaleX,
+                                  ScaleY = documentElement.ScaleY,
+                                  TransitionX = documentElement.TransitionX,
+                                  TransitionY = documentElement.TransitionY,
+                                  StrokeWidth = documentElement.StrokeWidth,
+                                  Opacity = documentElement.Opacity,
+                                  Flag = documentElement.Flag,
+                                  FlagCode = documentElement.FlagCode,
+                                  FlagDate = documentElement.FlagDate,
+                                  FlagImage = documentElement.FlagImage,
+                                  CreatorId = documentElement.CreatorId,
+                                  ElementId = documentElement.ElementId,
+                                  UserId = documentElement.UserId,
+                                  CreatedAt = documentElement.CreatedAt,
+                                  UpdatedAt = documentElement.UpdatedAt,
+                                  ElementType = new ElementType
+                                  {
+                                      Id = documentElement.ElementType.Id,
+                                      Code = documentElement.ElementType.Code,
+                                  }
+                              }).ToList(),
+                     }
+                 }).ToList();
+
+            if (result != null /*&& curRnId != 0*/)
+            {
+                // assign permission
+                //DocumentService docSvr = new DocumentService();
+                foreach (RotationNodeDoc rnd in result)
+                {
+                    //if (rnd.Document.DocumentUser == null)
+                    //{
+                    //    rnd.Document.DocumentUser = new DocumentUser();
+                    //    rnd.Document.DocumentUser.UserId = memId;
+                    //    rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
+                    //}
+                    //if (curRnId == 0)
+                    //    curRnId = -rnd.RotationNode.Rotation.Id;
+                    //rnd.Document.DocumentUser.FlagPermission = docSvr.GetPermission(memId, curRnId, (long)rnd.Document.Id);
+                }
+            }
+
+            return result;// rotationNode.RotationNodeDocs;
+        }
+        private List<RotationNodeUpDoc> assignNodeUpDocs(ServiceContext db, long rnId)
+        {
+            //rotationNode.RotationNodeUpDocs =
+            var result =
+                (from ud in db.RotationNodeUpDocs
+                 where ud.RotationNode.Id == rnId
+                 select new RotationNodeUpDoc
+                 {
+                     Id = ud.Id,
+                     DocumentId = ud.DocumentId,
+                     //Document = new Document
+                     //{
+                     //    FileFlag = ud.Document.FileFlag,
+                     //    FileName = ud.Document.FileName,
+                     //    FileSize = ud.Document.FileSize,
+                     //    CreatorId = ud.Document.CreatorId,
+                     //    DateCreated = ud.Document.DateCreated,
+                     //}
+                 }).ToList();
+
+            return result;
+        }
 
 
     }

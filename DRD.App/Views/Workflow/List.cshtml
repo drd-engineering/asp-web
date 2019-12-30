@@ -83,23 +83,21 @@
                             <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
                                 <div class="panel panel-flat">
                                     <div class="table-responsive" ng-show="isView">
-                                        <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
+                                        <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                             <thead>
                                                 <tr>
-                                                    <th width="25px">#</th>
+                                                    <th width="25px"></th>
                                                     <th>Name</th>
-                                                    <th>Project Name</th>
                                                     <th width="70px">Type</th>
                                                     <th width="70px">Active</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="x in products">
-                                                    <td width="25px">{{$index+1 + index}}</td>
-                                                    <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Name}}</a></td>
-                                                    <td>{{x.ProjectName}}</td>
-                                                    <td>{{(x.WfType==1?'Draft':'')}}</td>
-                                                    <td style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
+                                                <tr style="cursor:pointer;height:50px;min-height:50px;vertical-align:central;" ng-repeat="x in products">
+                                                    <td ng-click="do_edit(x.Id);" width="25px">{{$index+1 + index}}</td>
+                                                    <td ng-click="do_edit(x.Id);">{{x.Name}}</td>
+                                                    <td ng-click="do_edit(x.Id);">{{(x.WfType==1?'Draft':'')}}</td>
+                                                    <td ng-click="do_edit(x.Id);" style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -149,7 +147,7 @@
             DO EDIT
             --------------------------------------------------------------*/
 
-            $scope.do_edit = function (mid, id) {
+            $scope.do_edit = function (id) {
                 location.href = "/Workflow?id="+ id;
             }
             $scope.addProduct = function (mid) {

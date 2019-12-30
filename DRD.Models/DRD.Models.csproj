@@ -199,6 +199,7 @@
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
     <Compile Include="Custom\MemberData.cs" />
+    <Compile Include="Custom\RotationInboxData.cs" />
     <Compile Include="View\Rotation\RotationItem.cs" />
     <Compile Include="View\Rotation\RotationIndex.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
