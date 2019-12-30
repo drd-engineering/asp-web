@@ -118,7 +118,7 @@ namespace DRD.Service
                     company.OwnerId = x.OwnerId;
                     company.OwnerName = userService.GetName(company.OwnerId);
                     if (subscription != null) { company.SubscriptionId = subscription.Id; }
-                    if (subscription != null) { company.SubscriptionName = subscriptionService.getSubscriptionName(subscription.Id); }
+                    if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
                     company.IsActive = x.IsActive;
                     company.IsVerified = x.IsVerified;
                     company.Administrators = memberService.getAdministrators(company.Id);
@@ -158,7 +158,7 @@ namespace DRD.Service
                         company.OwnerId = x.OwnerId;
                         company.OwnerName = userService.GetName(company.OwnerId);
                         if (subscription != null) { company.SubscriptionId = subscription.Id; }
-                        if (subscription != null) { company.SubscriptionName = subscriptionService.getSubscriptionName(subscription.Id); }
+                        if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
                         company.IsActive = x.IsActive;
                         company.IsVerified = x.IsVerified;
                         company.Administrators = memberService.getAdministrators(company.Id);

@@ -27,12 +27,12 @@ namespace DRD.Service
             return values;
         }
 
-        public string getSubscriptionName(long subscriptionId)
+        /*public string getSubscriptionName(long subscriptionId)
         {
             List<BusinessSubscription> businessSubscriptions = getSubscription();
             return businessSubscriptions[(int)subscriptionId - 1].Name;
         }
-
+*/
         public bool deactivatePlanBusiness(long companyId)
         {
             PlanBusiness planBusiness = editPlanBusiness(companyId,null,null,null, IsActive: false);

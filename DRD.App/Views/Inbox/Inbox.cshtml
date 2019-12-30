@@ -1,5 +1,5 @@
-﻿@using DRD.Domain;
-@model JsonLayout
+﻿@using DRD.Models.View;
+@model Layout
 
 @{
     ViewBag.Title = "";
@@ -31,9 +31,7 @@
 
 
 <script src="~/Scripts/xpublic.js"></script>
-@section Styles{
-    <link href="/assets/css/pages/inbox.css" rel="stylesheet" type="text/css">
-}
+
 <style type="text/css">
     .auto-style3 {
         width: 64px;
@@ -52,6 +50,8 @@
     .image-content {
         width: 120px;
         cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
         margin: auto;
         top: 0;
         left: 0;
@@ -116,7 +116,7 @@
 
 
 
-<body @*ng-app="drdApp"*@>
+<body>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -129,7 +129,7 @@
                 <div class="page-header page-header-default">
                     <div class="page-header-content">
                         <div class="page-title">
-                            <h4><i class="icon-envelope position-left"></i>Inbox: {{currentRotationNode.WorkflowNode.Caption}}</h4>
+                            <h4><i class="icon-envelope position-left"></i>Inbox: {{model.CurrentActivity}}</h4>
                             Rotation: {{model.Subject}}
                         </div>
                     </div>
@@ -398,13 +398,20 @@
 
             function initValues() {
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
+                $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                var product = @Html.Raw(Json.Encode(Model.obj));
-                if (product.Id!=0 ){
-                    $scope.model.Id=product.Id;
-                    $scope.model.MemberId=product.MemberId;
-                    $scope.model.RotationNodeId=product.RotationNodeId;
-                    $scope.model.Subject=product.Subject;
+                inbox = @Html.Raw(Json.Encode(Model.obj));
+                
+                if (inbox) {
+                    console.log("INBOX", inbox);
+                    $scope.model.Id = $scope.inboxId;
+                    //$scope.model.RotationNodeId=product.RotationNodeId;
+
+                    $scope.model.Subject = (inbox.RotationLog[0] ? inbox.RotationLog[0].Subject : "-");
+
+                    $scope.model.CurrentActivity = inbox.CurrentActivity;
+
+
                     $scope.model.Status=product.Status;
                     $scope.model.Remark= product.Remark;
                     $scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
@@ -416,9 +423,7 @@
                     $scope.sumDocuments=product.SumRotationNodeDocs;
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
 
-                    if ($scope.model.Status == '00') {
-                        // bukan yg pertama?
-
+                    if ($scope.model.Status=='00'){
                         if ($scope.currentRotationNode.SenderRotationNodeId!=null){
                             //var sender=angular.copy($scope.currentRotationNode);
                             // copy doc and updoc from sender
@@ -434,29 +439,9 @@
                         }
                     }
 
-                    //if ($scope.model.Status=='00'){
-                    //    if ($scope.currentRotationNode.SenderRotationNodeId!=null){
-                    //        var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
-                    //        if (sender.RotationNodeDocs.length>0){
-                    //            $scope.docs=sender.RotationNodeDocs;
-                    //            for(i=0;i<$scope.docs.length;i++){
-                    //                $scope.docs[i].FlagAction=0;
-                    //            }
-                    //        }
-                    //        if (sender.RotationNodeUpDocs.length>0)
-                    //            $scope.updocs=sender.RotationNodeUpDocs;
-                    //    }
-                    //}else{
-                    //    var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.model.RotationNodeId)[0]);
-                    //    if (sender.RotationNodeDocs.length>0){
-                    //        $scope.docs=sender.RotationNodeDocs;
-
-                    //    }
-                    //    if (sender.RotationNodeUpDocs.length>0)
-                    //        $scope.updocs=sender.RotationNodeUpDocs;
-                    //}
+                    
                 }else{
-
+                    // error response, 404 inbox
                 }
 
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
@@ -492,11 +477,15 @@
                             confirmButtonText: "Yes, sign it!",
                             cancelButtonText: "No, cancel please!",
                         },
-                        function (isConfirm)
+                        function (isConfirm) {
+                            //setTimeout(function () {
                             if (isConfirm){
+                                //var doc=$scope.docs[idx];
+                                //doc.FlagAction|=1;
                                 $scope.signDocumentValidation(idx);
                             }
                             swal.close();
+                            //}, 500);
 
                         });
 
@@ -554,10 +543,14 @@
                             cancelButtonText: "No, cancel please!",
                         },
                         function (isConfirm) {
+                            //setTimeout(function () {
                             if (isConfirm){
+                                //var doc=$scope.docs[idx];
+                                //doc.FlagAction|=32;
                                 $scope.stampDocumentValidation(idx);
                             }
                             swal.close();
+                            //}, 500);
 
                         });
 

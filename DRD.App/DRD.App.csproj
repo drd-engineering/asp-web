@@ -2802,6 +2802,7 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Subscription.csv" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <None Include="Views\Company\Member.cshtml" />
@@ -2983,6 +2984,7 @@
     <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
     <Content Include="Views\Include\PopupSubscription.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
+    <Content Include="Views\Include\PopupAddDocument.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />

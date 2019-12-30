@@ -30,14 +30,21 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-        public ActionResult Index(long rotationId,long  inboxId)
+        public ActionResult Index(long id)
         {
             Initialize();
 
-            InboxService inboxService = new InboxService();
-            Rotation product = inboxService.GetInboxItem(rotationId, inboxId);
-            layout.obj = product;
-            
+            // var strmenu = login.ManipulateSubMenu(this, user, mid);
+            // end decription menu
+
+            Rotation product = new Rotation();
+            //string[] ids = strmenu.Split(',');
+            //if (ids.Length > 1 && !ids[1].Equals("0"))
+            //{
+            // RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
+            //product = psvr.GetNodeById(int.Parse(ids[1]));
+            //}
+
             return View(layout);
         }
         public ActionResult List()
@@ -53,6 +60,26 @@ namespace DRD.App.Controllers
         {
             Initialize();
             var data = inboxService.GetInboxList(user);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Inbox(int id)
+        {
+            Initialize();
+
+            System.Diagnostics.Debug.WriteLine("INBOX ID " + id);
+            
+            var data = inboxService.GetInboxItemById(id, user);
+            layout.dataId = id;
+            layout.obj = data;
+
+            return View(layout);
+        }
+
+        public ActionResult AddDocument(int id) 
+        {
+            var data = inboxService.GetInboxItemById(id, user);
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

@@ -57,7 +57,7 @@
                                 <table class="table table-bordered table-striped" style="font-size:small">
                                     <thead>
                                         <tr>
-                                            <th width="25px">#</th>
+                                            <th width="25px">No.</th>
                                             <th>Rotation</th>
                                             <th>Activity</th>
                                             <th>Workflow Name</th>
@@ -67,10 +67,10 @@
                                     <tbody>
                                         <tr ng-repeat="x in products">
                                             <td>{{$index+1 + index}}</td>
-                                            <td><a ng-click="do_edit('@Model.key', x.Key);">{{x.Subject}}</a></td>
-                                            <td>{{x.ActivityName}}</td>
+                                            <td><a ng-click="do_edit(x.Id);">{{x.RotationName}}</a></td>
+                                            <td>{{x.CurrentActivity}}</td>
                                             <td>{{x.WorkflowName}}</td>
-                                            <td width="175px">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                            <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -119,15 +119,15 @@
             DO EDIT
             --------------------------------------------------------------*/
 
-            $scope.do_edit = function (mid, id) {
-                location.href = "/inbox/inbox?mid=" + mid + "," + id;
+            $scope.do_edit = function (id) {
+                console.log("ROTATION ID", id);
+                location.href = "/inbox/inbox/" + id;
             }
 
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
             $scope.GetInboxList = function (kriteria, page, row) {
-                $scope.products = [];
                 $http.post('@Url.Action("GetInboxList", "Inbox")', {}).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
@@ -140,7 +140,7 @@
                         $scope.isView = true;
 
                         //Ladda.stopAll();
-
+                        console.log("LIST", $scope.products);
                     }
                 }, function (response) {
                     //error handle\
@@ -149,7 +149,7 @@
             }
 
             $scope.changePage = function (kriteria, page, row) {
-                $scope.products = [];
+                
                 $http.post('@Url.Action("GetNodeLiteAll", "Rotation")', { status: '00', topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
@@ -162,32 +162,13 @@
                     var x = 0;
                 });
             }
-/*
-            $scope.getProductCount = function (kriteria) {
-                $http.post('*/@Url.Action("GetNodeLiteAllCount", "Rotation")/*', { status: '00', topCriteria: kriteria }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }*/
-
             
 
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
             $scope.convertJsonDate = function (val) {
+                
                 if (val == undefined)
                     return '';
                 return new Date(parseInt(val.substr(6)));
