@@ -30,7 +30,23 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-      
+        public ActionResult Index(long id)
+        {
+            Initialize();
+
+            // var strmenu = login.ManipulateSubMenu(this, user, mid);
+            // end decription menu
+
+            Rotation product = new Rotation();
+            //string[] ids = strmenu.Split(',');
+            //if (ids.Length > 1 && !ids[1].Equals("0"))
+            //{
+            // RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
+            //product = psvr.GetNodeById(int.Parse(ids[1]));
+            //}
+
+            return View(layout);
+        }
         public ActionResult List()
         {
             Initialize();
