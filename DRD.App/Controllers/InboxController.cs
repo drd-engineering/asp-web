@@ -34,17 +34,9 @@ namespace DRD.App.Controllers
         {
             Initialize();
 
-            // var strmenu = login.ManipulateSubMenu(this, user, mid);
-            // end decription menu
-
-            Rotation product = new Rotation();
-            //string[] ids = strmenu.Split(',');
-            //if (ids.Length > 1 && !ids[1].Equals("0"))
-            //{
-            // RotationService psvr = new RotationService();// getUserLogin().AppZone.Code);
-            //product = psvr.GetNodeById(int.Parse(ids[1]));
-            //}
-
+            InboxService inboxService = new InboxService();
+            RotationInboxData product = inboxService.GetInboxItem(id,user.Id);
+            layout.obj = product;
             return View(layout);
         }
         public ActionResult List()
@@ -71,6 +63,7 @@ namespace DRD.App.Controllers
             
             var data = inboxService.GetInboxItemById(id, user);
             layout.dataId = id;
+
             layout.obj = data;
 
             return View(layout);

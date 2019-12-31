@@ -213,7 +213,7 @@ namespace DRD.Service
                             {
                                 //var isready02 = false;
                                 //RotationNode retnode02 = null;
-                                if (rotnode.Status.Equals("05"))
+                                if (rotnode.Status.Equals(Constant.RotationStatus.Revision))
                                 {
                                     // checking apakah 05 sudah menjadi 02 di id lain
                                     var retnode02 = db.RotationNodes.FirstOrDefault(c =>

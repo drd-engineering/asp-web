@@ -46,6 +46,20 @@ namespace DRD.Service
         
         }
 
+        public long GetRotationNodeId(long inboxId)
+        {
+            InboxItem inboxItem = new InboxItem();
+            using (var db = new ServiceContext())
+            {
+                if (db.Inboxes != null)
+                {
+                    var inbox = db.Inboxes.Where(i =>  i.Id == inboxId).FirstOrDefault();
+                    return inbox.ActivityId;
+                }
+                return -1;
+            }
+        }
+
         public InboxItem GetInboxItemById(long inboxId, UserSession user) {
             InboxItem inboxItem = new InboxItem();
             using (var db = new ServiceContext()) 
@@ -92,15 +106,15 @@ namespace DRD.Service
             }
         }
 
-        public Rotation GetInboxItem(long rotationNodeId, long inboxId, long UserId=0)
+        public RotationInboxData GetInboxItem(long inboxId, long UserId=0)
         {
-
+            var rotationNodeId = GetRotationNodeId(inboxId);
             using (var db = new ServiceContext())
             {
                 var result =
                    (from c in db.RotationNodes
                     where c.Id == rotationNodeId
-                    select new Rotation
+                    select new RotationInboxData
                     {
                         Id = c.Rotation.Id,
                         Subject = c.Rotation.Subject,
@@ -111,9 +125,9 @@ namespace DRD.Service
                         DateUpdated = c.UpdatedAt,
                         DateStarted = c.DateRead,
                         RotationNodeId = c.Id,
-                        StatusDescription = Constant.getRotationStatusNameByCode(c.Status),
 
                     }).FirstOrDefault();
+                result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
                 RotationService rotationService = new RotationService();
                 result = rotationService.assignNodes(db, result, UserId, new DocumentService());

@@ -2,7 +2,8 @@
 @model Layout
 
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "Inbox";
+    ViewBag.Submenu = "INBOX";
 }
 
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
@@ -366,7 +367,7 @@
             $scope.master = {};
             $scope.model.IsActive=true;
             $scope.model.Id = 0;
-            $scope.model.Status="00";
+            $scope.model.Status=0;
 
             $scope.currentRotationNode={};
             $scope.docs=[];
@@ -400,34 +401,35 @@
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                inbox = @Html.Raw(Json.Encode(Model.obj));
+                var product = @Html.Raw(Json.Encode(Model.obj));
                 
-                if (inbox) {
-                    console.log("INBOX", inbox);
+                if (product.id!=0) {
+                    console.log("INBOX", product);
+                    console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
                     //$scope.model.RotationNodeId=product.RotationNodeId;
 
-                    $scope.model.Subject = (inbox.RotationLog[0] ? inbox.RotationLog[0].Subject : "-");
+                    $scope.model.Subject = (product.RotationLog[0] ? product.RotationLog[0].Subject : "-");
 
-                    $scope.model.CurrentActivity = inbox.CurrentActivity;
+                    $scope.model.CurrentActivity = product.CurrentActivity;
 
 
                     $scope.model.Status=product.Status;
                     $scope.model.Remark= product.Remark;
-                    $scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
+                    //$scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
                     $scope.model.FlagAction=product.FlagAction;
                     $scope.model.DecissionInfo=product.DecissionInfo;
-                    $scope.rotationNodes=product.RotationNodes;
+                    $scope.rotationNodes=product.RotationLog;
                     $scope.workflow=product.Workflow;
-                    $scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
+                    //$scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.sumDocuments=product.SumRotationNodeDocs;
                     $scope.sumAttachments=product.SumRotationNodeUpDocs;
 
-                    if ($scope.model.Status=='00'){
+                    if ($scope.model.Status==0){
                         if ($scope.currentRotationNode.SenderRotationNodeId!=null){
                             //var sender=angular.copy($scope.currentRotationNode);
                             // copy doc and updoc from sender
-                            var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
+                            //var sender=angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
                             if (sender.RotationNodeDocs.length>0){
                                 $scope.docs=sender.RotationNodeDocs;
                                 for(i=0;i<$scope.docs.length;i++){

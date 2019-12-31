@@ -104,7 +104,7 @@ namespace DRD.Service
                              Name = rotation.Workflow.Name,
                          }
                      }).FirstOrDefault();
-                result = assignNodes(db, result, userId, new DocumentService());
+                //result = assignNodes(db, result, userId, new DocumentService());
                 return result;
             }
         }
@@ -175,7 +175,7 @@ namespace DRD.Service
                 long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals("01")).ToList();
+                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals(Constant.RotationStatus.In_Progress)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
 
@@ -207,7 +207,7 @@ namespace DRD.Service
             {
                 var result =
                     (from rotationNode in db.RotationNodes
-                     where rotationNode.Rotation.Status.Equals("01") &&
+                     where rotationNode.Rotation.Status.Equals(Constant.RotationStatus.In_Progress) &&
                             rotationNode.UserId == userId && rotationNode.Status.Equals(status) &&
                             (topCriteria == null || tops.All(RotationUser => (rotationNode.Rotation.Subject).Contains(RotationUser)))
                      select new RotationData
@@ -265,13 +265,13 @@ namespace DRD.Service
             }
         }
 
-        public Rotation GetNodeById(long id)
+        public RotationInboxData GetNodeById(long id)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotationNode in db.RotationNodes
-                     select new Rotation
+                     select new RotationInboxData
                      {
                          Id = rotationNode.Rotation.Id,
                          Subject = rotationNode.Rotation.Subject,
@@ -745,15 +745,15 @@ namespace DRD.Service
         }
 
        
-        public Rotation assignNodes(ServiceContext db, Rotation rot, long memberId, IDocumentService docSvr)
+        public RotationInboxData assignNodes(ServiceContext db, RotationInboxData rot, long memberId, IDocumentService docSvr)
         {
-            Rotation rotation = rot;
+            RotationInboxData rotation = rot;
 
             rotation.RotationNodes =
                 (from rotationNode in db.RotationNodes
                  where rotationNode.Rotation.Id == rotation.Id
                  orderby rotationNode.CreatedAt
-                 select new RotationNode
+                 select new RotationNodeInboxData
                  {
                      Id = rotationNode.Id,
                      CreatedAt = rotationNode.CreatedAt,
@@ -761,7 +761,7 @@ namespace DRD.Service
                      Value = rotationNode.Value,
                      PrevWorkflowNodeId = rotationNode.PrevWorkflowNodeId,
                      SenderRotationNodeId = rotationNode.SenderRotationNodeId,
-                     User = new User
+                     User = new UserInboxData
                      {
                          Id = rotationNode.User.Id,
                          Name = rotationNode.User.Name,
@@ -772,14 +772,14 @@ namespace DRD.Service
                          ImageKtp1 = rotationNode.User.ImageKtp1,
                          ImageKtp2 = rotationNode.User.ImageKtp2,
                      },
-                     WorkflowNode = new WorkflowNode
+                     WorkflowNode = new WorkflowNodeInboxData
                      {
                          Id = rotationNode.WorkflowNode.Id,
                          Caption = rotationNode.WorkflowNode.Caption
                      },
                      //RotationNodeRemarks =
                      //(from rotationNodeRemark in rotationNode.RotationNodeRemarks
-                     // select new RotationNodeRemark
+                     // select new RotationNodeRemarkInboxData
                      // {
                      //     Id = rotationNodeRemark.Id,
                      //     Remark = rotationNodeRemark.Remark,
@@ -788,10 +788,10 @@ namespace DRD.Service
                  }).ToList();
 
 
-            foreach (RotationNode rotationNode in rotation.RotationNodes)
+            foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
             {
                 // set note for waiting pending member
-                if (rotationNode.Status.Equals("02"))
+                if (rotationNode.Status.Equals(Constant.RotationStatus.Pending))
                 {
                     rotationNode.Note = "Waiting for action from: ";
                     var rtpending = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNode.Id);
@@ -812,7 +812,9 @@ namespace DRD.Service
                 // set note for alter link
                 else if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
                 {
-                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.SymbolCode.Equals(Constant.EnumActivityAction.ALTER.ToString()));
+                    int alter = (int)Constant.EnumActivityAction.ALTER;
+                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.SymbolCode == alter);
+
                     if (node != null)
                     {
                         if (node.Operator != null)
@@ -843,8 +845,8 @@ namespace DRD.Service
                         {
                             var wfnIds = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeToId == wfn.Id).Select(c => c.WorkflowNodeId).ToArray();
                             var rns = db.RotationNodes.Where(c => wfnIds.Contains(c.WorkflowNode.Id)).ToList();
-                            List<RotationNodeDoc> listDoc = new List<RotationNodeDoc>();
-                            List<RotationNodeUpDoc> listUpDoc = new List<RotationNodeUpDoc>();
+                            List<RotationNodeDocInboxData> listDoc = new List<RotationNodeDocInboxData>();
+                            List<RotationNodeUpDocInboxData> listUpDoc = new List<RotationNodeUpDocInboxData>();
                             foreach (RotationNode rnx in rns)
                             {
                                 var d = assignNodeDocs(db, rnx.Id, memberId/*rotation.UserId*/, rot.RotationNodeId, docSvr);
@@ -876,10 +878,10 @@ namespace DRD.Service
                 }
 
                 //document summaries document
-                foreach (RotationNodeDoc rotationNodeDoc in rotationNode.RotationNodeDocs)
+                foreach (RotationNodeDocInboxData rotationNodeDoc in rotationNode.RotationNodeDocs)
                 {
                     // get anno
-                    foreach (DocumentElement documentElement in rotationNodeDoc.Document.DocumentElements)
+                    foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
                     {
                         if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
                         if (documentElement.ElementType.Code.Equals("SIGNATURE") || documentElement.ElementType.Code.Equals("INITIAL") || documentElement.ElementType.Code.Equals("PRIVATESTAMP"))
@@ -921,29 +923,30 @@ namespace DRD.Service
             return rotation;
         }
 
-        private static RotationNodeDoc DeepCopy(RotationNodeDoc source)
+        private static RotationNodeDocInboxData DeepCopy(RotationNodeDocInboxData source)
         {
 
             var DeserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
 
-            return JsonConvert.DeserializeObject<RotationNodeDoc>(JsonConvert.SerializeObject(source), DeserializeSettings);
+            return JsonConvert.DeserializeObject<RotationNodeDocInboxData>(JsonConvert.SerializeObject(source), DeserializeSettings);
 
         }
-        private List<RotationNodeDoc> assignNodeDocs(ServiceContext db, long rnId, long memId, long? curRnId, IDocumentService docSvr)
+        private List<RotationNodeDocInboxData> assignNodeDocs(ServiceContext db, long rnId, long memId, long? curRnId, IDocumentService docSvr)
         {
             //rotationNode.RotationNodeDocs =
+            
             var result =
                 (from d in db.RotationNodeDocs
                  where d.RotationNode.Id == rnId
-                 select new RotationNodeDoc
+                 select new RotationNodeDocInboxData
                  {
                      Id = d.Id,
                      FlagAction = d.FlagAction,
-                     RotationNode = new RotationNode
+                     RotationNode = new RotationNodeInboxData
                      {
                          Rotation = d.RotationNode.Rotation,
                      },
-                     Document = new Document
+                     Document = new DocumentInboxData
                      {
                          Title = d.Document.Title,
                          FileName = d.Document.FileName,
@@ -961,7 +964,7 @@ namespace DRD.Service
 
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
-                              select new DocumentElement
+                              select new DocumentElementInboxData
                               {
                                   Id = documentElement.Id,
                                   Document = documentElement.Document,
@@ -990,7 +993,7 @@ namespace DRD.Service
                                   UserId = documentElement.UserId,
                                   CreatedAt = documentElement.CreatedAt,
                                   UpdatedAt = documentElement.UpdatedAt,
-                                  ElementType = new ElementType
+                                  ElementType = new ElementTypeInboxData
                                   {
                                       Id = documentElement.ElementType.Id,
                                       Code = documentElement.ElementType.Code,
@@ -1003,7 +1006,7 @@ namespace DRD.Service
             {
                 // assign permission
                 //DocumentService docSvr = new DocumentService();
-                foreach (RotationNodeDoc rnd in result)
+                foreach (RotationNodeDocInboxData rnd in result)
                 {
                     //if (rnd.Document.DocumentUser == null)
                     //{
@@ -1019,13 +1022,13 @@ namespace DRD.Service
 
             return result;// rotationNode.RotationNodeDocs;
         }
-        private List<RotationNodeUpDoc> assignNodeUpDocs(ServiceContext db, long rnId)
+        private List<RotationNodeUpDocInboxData> assignNodeUpDocs(ServiceContext db, long rnId)
         {
             //rotationNode.RotationNodeUpDocs =
             var result =
                 (from ud in db.RotationNodeUpDocs
                  where ud.RotationNode.Id == rnId
-                 select new RotationNodeUpDoc
+                 select new RotationNodeUpDocInboxData
                  {
                      Id = ud.Id,
                      DocumentId = ud.DocumentId,

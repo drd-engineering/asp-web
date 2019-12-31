@@ -199,7 +199,16 @@
     <Compile Include="API\ListWorkflowItem.cs" />
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
+    <Compile Include="Custom\DocumentInboxData.cs" />
+    <Compile Include="Custom\DocumentElementInboxData.cs" />
+    <Compile Include="Custom\ElementTypeInboxData.cs" />
     <Compile Include="Custom\MemberData.cs" />
+    <Compile Include="Custom\RotationInboxData.cs" />
+    <Compile Include="Custom\RotationNodeDocInboxData.cs" />
+    <Compile Include="Custom\RotationNodeInboxData.cs" />
+    <Compile Include="Custom\RotationNodeUpDocInboxData.cs" />
+    <Compile Include="Custom\UserInboxData.cs" />
+    <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="View\UserProfile.cs" />
     <Compile Include="View\UploadResponse.cs" />
     <Compile Include="View\Rotation\RotationItem.cs" />
