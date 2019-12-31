@@ -16,7 +16,6 @@ namespace DRD.Service
     public class EmailService
     {
         //private bool mailSent = false;
-
         public async Task Send(string senderEmail, string senderName, string recipientEmail, string subject, string body, bool isBodyUrl, string[] fileNames)
         {
             //create the mail message
@@ -67,13 +66,22 @@ namespace DRD.Service
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtp.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
             await Task.Yield();
-            smtp.Send(mail);//, "Klaxon");
+            //, "Klaxon");
+            try
+            {
 
+                System.Diagnostics.Debug.WriteLine("[[DEBUGING SEND EMAIL]]"+ emailsmtp+emailuser+emailport+emailpassword);
+                smtp.Send(mail);
+            }
+            catch (SmtpException smtpException)
+            {
+                System.Diagnostics.Debug.WriteLine(smtpException.ToString());
+            }
         }
 
         private async void AsyncVoidMethod()
         {
-            await Task.Delay(100);
+            await Task.Delay(10);
         }
 
         public async Task SendNotification(string SendTo, string[] cc, string subject, string body, string path)
