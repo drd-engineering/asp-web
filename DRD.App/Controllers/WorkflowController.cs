@@ -38,7 +38,7 @@ namespace DRD.App.Controllers
         public ActionResult New()
         {
             Initialize();
-            ListWorkflowItem product = new ListWorkflowItem();
+            WorkflowItem product = new WorkflowItem();
             layout.obj = product;
 
             return View(layout);
@@ -47,8 +47,8 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             Initialize();
-            ListWorkflowItem product = new ListWorkflowItem();
-            product.Items.Add(workflowService.GetById(id));
+            WorkflowItem product = new WorkflowItem();
+            product = workflowService.GetById(id);
             layout.obj = product;
 
             return View(layout);
@@ -118,7 +118,7 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }*/
 
-        /// <summary>
+        /*/// <summary>
         /// 
         /// </summary>
         /// <param name="Id"></param>
@@ -128,7 +128,7 @@ namespace DRD.App.Controllers
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
             var data = srv.GetById(Id);
             return Json(data, JsonRequestBehavior.AllowGet);
-        }
+        }*/
 
     }
 }

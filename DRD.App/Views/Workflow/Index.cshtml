@@ -392,8 +392,12 @@
                     $scope.model.IsActive= product.IsActive;
                     $scope.model.IsTemplate= product.IsTemplate;
                     $scope.project=product.Project;
-                    $scope.nodes=product.WorkflowNodes;
-                    $scope.links=product.WorkflowNodeLinks;
+                    $scope.nodes = product.WorkflowNodes;
+                    console.log("DEBUG PRODUCT NODE");
+                    console.log(product.WorkflowNodes);
+                    $scope.links = product.WorkflowNodeLinks;
+                    console.log("DEBUG PRODUCT LINK");
+                    console.log(product.WorkflowNodeLinks);
                     $scope.isUsed=product.IsUsed;
                     if (!product.IsUsed)
                         $("#canvas").css("pointer-events",'');
