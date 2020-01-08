@@ -445,13 +445,15 @@
                 // Convert to blob
                 var blob = b64toBlob(realData, contentType);
 
+                console.log(blob);
+
                 // Create a FormData and append the file
                 var fd = new FormData(form);
-                fd.append("image", blob);
+                fd.append("MyImages", blob);
 
                 // Submit Form and upload file
                 $.ajax({
-                    url:"/profile/upload?idx=0&fileType=1",
+                    url:"/profile/upload?idx=0",
                     data: fd, // the formData function is available in almost all new browsers.
                     type:"POST",
                     contentType:false,
@@ -463,13 +465,13 @@
                     },
                     success:function(data){
                         if (signatureNo==0){
-                            $scope.model.ImageSignature=data.filename;
+                            $scope.model.ImageSignature = data.Filename;
                         }else if (signatureNo==1){
-                            $scope.model.ImageInitials=data.filename;
+                            $scope.model.ImageInitials=data.Filename;
                         }
                     },
-                    complete:function(data){
-                        //console.log("Request finished.");
+                    complete: function (data) {
+                        console.log("Request to upload initial finished.");
                         //alert('complete');
                     }
                 });
@@ -587,7 +589,6 @@
                     showInfo("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
                 }
             }
-
 
 
             /*--------------------------------------------------------------

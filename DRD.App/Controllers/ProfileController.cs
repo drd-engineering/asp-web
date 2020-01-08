@@ -134,7 +134,9 @@ namespace DRD.App.Controllers
                     var path = imagePath;
 
                     // Saving Image in Original Mode
+
                     file.SaveAs(path);
+                    System.Diagnostics.Debug.WriteLine("IMAGE UPLOADED :::" + path);
                 }
             }
             UploadResponse result = new UploadResponse();
