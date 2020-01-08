@@ -114,6 +114,7 @@ namespace DRD.App.Controllers
             {
                 // get file from request body
                 var file = System.Web.HttpContext.Current.Request.Files["MyImages"];
+
                 if (file == null || file.ContentLength <= 0)
                     file = System.Web.HttpContext.Current.Request.Files[0];
 
