@@ -172,6 +172,7 @@ namespace DRD.Service
                 {
                     product.DateCreated = DateTime.Now;
                     db.Rotations.Add(product);
+                    workflowitem.TotalUsed = workflowitem.TotalUsed + 1;
                 }
                 else
                     product.DateUpdated = DateTime.Now;

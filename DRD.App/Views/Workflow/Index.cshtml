@@ -93,7 +93,7 @@
             <!-- Main content -->
             <div class="content-wrapper">
                 <!-- Page header -->
-                <h4>Create a New Workflow</h4>
+                <h4>View and Edit Workflow</h4>
 
                 <!-- /page header -->
                 <!-- Horizontal form options -->
@@ -288,12 +288,12 @@
                                             <div class="text-right">
                                                 @*<span class="input-group-btn">
                                                     *@
-                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-disabled="model.IsUsed" ng-click="updateProduct()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Save&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
 
-                                                    <button class="btn btn-default pull-right btn-ladda btn-submit2" data-style="slide-down" data-spinner-color="#333" ng-click="updateProductDraft()" style="width:120px;margin-right:10px">
+                                                    <button class="btn btn-default pull-right btn-ladda btn-submit2" data-style="slide-down" data-spinner-color="#333" ng-disabled="model.IsUsed" ng-click="updateProductDraft()" style="width:120px;margin-right:10px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Save as Draft&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
@@ -390,7 +390,8 @@
                     $scope.model.Name=product.Name;
                     $scope.model.Description= product.Description;
                     $scope.model.IsActive= product.IsActive;
-                    $scope.model.IsTemplate= product.IsTemplate;
+                    $scope.model.IsTemplate = product.IsTemplate;
+                    $scope.model.IsUsed = product.IsUsed;
                     $scope.project=product.Project;
                     $scope.nodes = product.WorkflowNodes;
                     console.log("DEBUG PRODUCT NODE");

@@ -192,11 +192,7 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="row input-group">
-                                                    <div class="col-md-3">
-                                                        <label class="control-label">Number</label>
-                                                        <input type="text" class="form-control" ng-model="model.Number" readonly placeholder="Auto" />
-                                                    </div>
-                                                    <div class="col-md-7">
+                                                    <div class="col-md-10">
                                                         <label class="control-label">Name</label>
                                                         <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
                                                     </div>
@@ -465,7 +461,7 @@
                     },
                     success:function(data){
                         if (signatureNo==0){
-                            $scope.model.ImageSignature = data.Filename;
+                            $scope.model.ImageSignature = data.Filename;    
                         }else if (signatureNo==1){
                             $scope.model.ImageInitials=data.Filename;
                         }
