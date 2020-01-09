@@ -245,9 +245,9 @@
                          <div class="pagination-container">
                              
                             <div class="pagination">
-                                <a ng-click="back()">&laquo;</a>
+                                <a ng-show = "hasBack" ng-click="back()">&laquo;</a>
                                 <a href ="#" class="active">{{ page }}</a>
-                                <a ng-click="next()">&raquo;</a>
+                                <a ng-show = "hasNext" ng-click="next()">&raquo;</a>
                             </div>
                                 
                                 @*
@@ -295,6 +295,8 @@
             $scope.page = 1;
             $scope.row = 10;
             $scope.totalPage = 0;
+            $scope.hasNext = false;
+            $scope.hasBack = false;
 
             /*--------------------------------------------------------------
             INIT DATA
@@ -349,9 +351,12 @@
                             }
 
                             console.log("PERSONAL CONTACT", $scope.contactList);
+                            if ($scope.contactList.Count < 1) {
+                                $scope.page = 0;
+                            }
                             $scope.isView = true;
                             $scope.hasPersonalContactBeenAccessed = true;
-                            $scope.totalPage = $scope.countTotalPage($scope.contactList.Count, $scope.size);
+                            $scope.totalPage = $scope.countTotalPage($scope.contactList.Count, $scope.row);
                         }
 
                     
@@ -382,7 +387,14 @@
             --------------------------------------------------------------*/
 
             $scope.countTotalPage = function (totalItem, size) {
-                return Math.ceil(totalItem / size);
+                var totalPage = Math.ceil(totalItem / size);
+                if ($scope.page < totalPage) {
+                    $scope.hasNext = true;
+                }
+                if ($scope.page > 1) {
+                    $scope.hasBack = true;
+                }
+                return totalPage;
             }
 
             $scope.updatePage = function (page, size) {
@@ -418,7 +430,7 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.contactList.Items = response.data.Items;
-                            $scope.contactList.count = response.data.Count;
+                            $scope.contactList.Count = response.data.Count;
                             $scope.contactList.CompanyName = response.data.CompanyName;
                             $scope.contactList.Type = "Company";
                             // init total of personal data when first calling
@@ -428,8 +440,12 @@
                             }
 
                             console.log("COMPANY CONTACT RESPONSE", response);
+                            if ($scope.contactList.Count < 1) {
+                                $scope.page = 0;
+                            }
                             $scope.isView = true;
                             $scope.hasPersonalContactBeenAccessed = true;
+                            $scope.totalPage = $scope.countTotalPage($scope.contactList.Count, $scope.row);
                         }
                     });
             }
