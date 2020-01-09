@@ -61,7 +61,7 @@ namespace DRD.Service
                 string encryptedPassword = Utilities.Encrypt(password);
                 /*string encryptedPassword = password;*/
 
-                Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
+                Expression<Func<User, bool>> findUsername = s => s.Email == username;
                 if (!username.Contains('@'))
                 {
                     long userId = Convert.ToInt64(username);
@@ -69,32 +69,33 @@ namespace DRD.Service
                         encryptedPassword = password;
                     findUsername = s => s.Id == userId;
                 }
+                User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
 
-                UserSession loginUser =
-                    (from user in db.Users
-                     where user.Password.Equals(encryptedPassword)
-                     select new UserSession
-                     {
-                         Id = user.Id,
-                         Name = user.Name,
-                         OfficialIdNo = user.OfficialIdNo,
-                         Phone = user.Phone,
-                         Email = user.Email,
-                         ImageProfile = user.ImageProfile,
-                         ImageSignature = user.ImageSignature,
-                         ImageInitials = user.ImageInitials,
-                         ImageStamp = user.ImageStamp,
-                         ImageKtp1 = user.ImageKtp1,
-                         ImageKtp2 = user.ImageKtp2
-                     }).Where(findUsername).FirstOrDefault();
-
-                if (loginUser != null)
+                if (userGet != null)
                 {
+                    if (userGet.IsActive == false)
+                    {
+                        userGet.IsActive = true;
+                        db.SaveChanges();
+                    }
+                    UserSession loginUser = new UserSession();
+                    loginUser.Id = userGet.Id;
+                    loginUser.Name = userGet.Name;
+                    loginUser.OfficialIdNo = userGet.OfficialIdNo;
+                    loginUser.Phone = userGet.Phone;
+                    loginUser.Email = userGet.Email;
+                    loginUser.ImageProfile = userGet.ImageProfile;
+                    loginUser.ImageSignature = userGet.ImageSignature;
+                    loginUser.ImageInitials = userGet.ImageInitials;
+                    loginUser.ImageStamp = userGet.ImageStamp;
+                    loginUser.ImageKtp1 = userGet.ImageKtp1;
+                    loginUser.ImageKtp2 = userGet.ImageKtp2;
+
                     loginUser.Name = loginUser.Name.Split(' ')[0];
+
                     return loginUser;
                 }
             }
-
             return null;
         }
 
@@ -102,7 +103,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-             var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
+                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
                 if (result.Count != 0) { return false; }
                 else { return true; }
             }
@@ -231,7 +232,7 @@ namespace DRD.Service
         }
 
         public String GetName(long id)
-        { 
+        {
             using (var db = new ServiceContext())
             {
                 var result =
@@ -278,7 +279,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ListSubscription getAllSubscription(long userId)
         {
-            using(var db = new ServiceContext())
+            using (var db = new ServiceContext())
             {
                 var returnValue = new ListSubscription();
                 //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
@@ -294,7 +295,7 @@ namespace DRD.Service
                                             type = "company",
                                             name = plan.SubscriptionName,
                                             companyId = company.Id,
-                                            companyName = company == null? null : company.Name
+                                            companyName = company == null ? null : company.Name
                                         }).ToList();
                 if (userBusinessPlan.Count != 0)
                 {
@@ -306,6 +307,26 @@ namespace DRD.Service
                 return returnValue;
             }
         }
+        /// <summary>
+        /// Change password of specify user that loged in to application
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public int UpdatePassword(UserSession user, String oldPassword, String newPassword)
+        {
+            using (var db = new ServiceContext())
+            {
+                var encryptedPassword = Utilities.Encrypt(oldPassword);
+                System.Diagnostics.Debug.WriteLine("[[ DEBBUG USER ]]" + user.Id);
+                User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
+                if (getUser == null)
+                    return -1;
+                getUser.Password = Utilities.Encrypt(newPassword);
+                db.SaveChanges();
+                return 1;
+            }
+        }
     }
-
 }
