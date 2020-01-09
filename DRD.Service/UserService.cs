@@ -328,5 +328,39 @@ namespace DRD.Service
                 return 1;
             }
         }
+
+        public int ResetPassword(string emailUser)
+        {
+            using (var db = new ServiceContext())
+            {
+                System.Diagnostics.Debug.WriteLine("[[ Email Usernya ]] " + emailUser);
+
+                var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
+                if (userGet == null) return 0;
+
+                var xpwd = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
+
+                userGet.Password = Utilities.Encrypt(xpwd);
+
+                System.Diagnostics.Debug.WriteLine("[[ SUCCESS RESETING PASSWORD ]]");
+                var result = db.SaveChanges();
+
+                EmailService emailService = new EmailService();
+                string body =
+                    "Dear " + userGet.Name + ",<br/><br/>" +
+                    "your password is reset, use the following temporary password:<br/><br/>" +
+                    "Temporary password: <b>" + xpwd + "</b><br/><br/>" +
+                    "Make a new password change after you login with this password.<br/><br/>" +
+                    "Thank you<br/><br/>" +
+                    "DRD Administrator<br/>";
+                var configGenerator = new AppConfigGenerator();
+                var emailfrom = configGenerator.GetConstant("EMAIL_USER")["value"];
+                var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+
+                var task = emailService.Send(emailfrom, emailfromdisplay + " Administrator", emailUser, "DRD Member Reset Password", body, false, new string[] { });
+                System.Diagnostics.Debug.WriteLine("[[ DEBUG CHANGE PASSWORD ]] sending email complete");
+                return 1;
+            }
+        }
     }
 }
