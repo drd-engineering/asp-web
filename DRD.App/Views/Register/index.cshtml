@@ -306,19 +306,19 @@
                         btn.stop();
                         if (response.data) {
                             var result = response.data;
-                            if (result.UserNumber == "DBLEMAIL") {
+                            if (result.Id == "DBLEMAIL") {
                                 showInfo("User email already used by other.");
                                 return;
                             }
-                            if (result.SubscriptionId == "DBLEMAIL") {
+                            /*if (result.SubscriptionId == "DBLEMAIL") {
                                 showInfo("Company email already used by other.");
                                 return;
-                            }
+                            }*/
 
                             $scope.wizarno = 'success';
-
+/*
                             $scope.subscriptionId = result.SubscriptionId;
-                            $scope.userNumber = result.UserNumber;
+                            $scope.userNumber = result.UserNumber;*/
                         }
                     }, function (response) {
                         //error handle\

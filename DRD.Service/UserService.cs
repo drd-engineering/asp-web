@@ -25,15 +25,14 @@ namespace DRD.Service
                     return resgistrationResponse;
                 }
 
-                UserService userService = new UserService();
                 User user = new User();
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.IsActive = true;
-                //user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
-                user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
-                long userId = userService.Save(user);
+                user.IsActive = false;
+                user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
+                // user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
+                long userId = Save(user);
                 user.Id = userId;
 
                 if (register.CompanyId != null)
@@ -41,13 +40,13 @@ namespace DRD.Service
                     Member member = new Member();
                     member.UserId = userId;
                     member.CompanyId = register.CompanyId.Value;
-                    long memberId = userService.Save(member);
+                    long memberId = Save(member);
                 }
 
                 //TODO: remove these lines when production
                 System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Will sent email of : " + user.Id + " - " + user.Name);
 
-                userService.sendEmailRegistration(user);
+                sendEmailRegistration(user);
 
                 resgistrationResponse.Id = "" + user.Id;
                 resgistrationResponse.Email = register.Email;
@@ -59,13 +58,15 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                //string encryptedPassword = Utilities.Encrypt(password);
-                string encryptedPassword = password;
+                string encryptedPassword = Utilities.Encrypt(password);
+                /*string encryptedPassword = password;*/
 
                 Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
                 if (!username.Contains('@'))
                 {
                     long userId = Convert.ToInt64(username);
+                    if (userId < 0)
+                        encryptedPassword = password;
                     findUsername = s => s.Id == userId;
                 }
 
@@ -138,7 +139,7 @@ namespace DRD.Service
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_NUMBER_}", "" + user.Id);
-            body = body.Replace("{_PASSWORD_}", user.Password);
+            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
 
             body = body.Replace("//images", "/images");
 
