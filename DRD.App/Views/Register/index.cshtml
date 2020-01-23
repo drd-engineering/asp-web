@@ -52,6 +52,8 @@
 <script src="~/Scripts/angular-google-maps.min.js"></script>
 <!-- /Google map -->
 
+<script src="/assets/js/jquery.autocomplete.js" ></script>
+
 <style>
     .dd-option-image, .dd-selected-image {
         width: 500px;
@@ -138,6 +140,13 @@
     .mg-left-10 {
         margin-left: 10px !important;
     }
+
+    .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+    .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+    .autocomplete-selected { background: #F0F0F0; }
+    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+    .autocomplete-group { padding: 2px 5px; }
+    .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
 </style>
 
 <body class="login-container" ng-app="drdApp" style="margin-top:-50px;">
@@ -157,7 +166,7 @@
                         </div>
                         <div class="panel-body">
                             <!--MEMBER DATA-->
-                            <form name="myForm" class="form-horizontal" autocomplete="off">
+                            <form name="myForm" class="form-horizontal" >
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
@@ -190,7 +199,8 @@
                                                         Company (optional)
                                                         <small class="display-block text-light">select from registered company, to make new company please contact us</small>
                                                     </label>
-                                                    <input type="text" class="form-control input-field-darker" placeholder="not selected" ng-model="model.CompanyId" maxlength="50" />
+                                                    <input type="text" id="autocomplete-company" class="form-control input-field-darker autocomplete-suggestion autocomplete-selected" 
+                                                           placeholder="not selected" ng-model="model.CompanyName" maxlength="50" />
                                                 </div>
                                             </div>
 
@@ -258,6 +268,7 @@
             $scope.model.Image1 = "no_picture.png";
             $scope.model.Image2 = "no_picture.png";
             $scope.model.ImageCard = "no_picture.png";
+            $scope.companyAll = [];
             //$scope.isUploadImage1 = 0;
             //$scope.isUploadImage2 = 0;
             //$scope.isUploadImageCard = 0
@@ -275,12 +286,14 @@
                 $scope.model.Image1 = "no_picture.png";
                 $scope.model.Image2 = "no_picture.png";
                 $scope.model.ImageCard = "no_picture.png";
+                $scope.getAllCompanyAvailable();
                 $(".content").show();
             });
 
             $scope.initData = function () {
 
             }
+
             /*--------------------------------------------------------------
             SAVE USER
             --------------------------------------------------------------*/
@@ -322,6 +335,38 @@
                         var x = 0;
                     });
             }
+            $scope.getAllCompanyAvailable = function () {
+                $http.get('@Url.Action("GetAllCompany", "Register")')
+                .then(function (response) {
+                    if (response.data) {
+                        $scope.companyAll = $.map(response.data.companies, function (dataItem) {
+                            return { value: dataItem.Name, data: dataItem.Id };
+                        });
+                        console.log($scope.companyAll);
+                        $scope.autocompleteCompany(); 
+                    }
+                });
+            }
+
+            $scope.autocompleteCompany = function () {
+                var countries = [
+                   { value: 'Andorra', data: 'AD' },
+                   // ...
+                   { value: 'Zimbabwe', data: 'ZZ' }
+                ];// not used
+                $('#autocomplete-company').autocomplete({
+                    lookup: $scope.companyAll ,
+                    onSelect: function(e, term, item){
+                        /*$scope.model.CompanyId = suggestion.data;
+                        $scope.model.CompanyName = suggestion.value;*/
+                        console.log(e);
+                        console.log(term);
+                        console.log(item);
+                    }
+                });
+            }
+
+
             $scope.setAggreement = function (value) {
                 $scope.aggrement = value;
             }
@@ -416,7 +461,13 @@
         });
         $(function () {
         });
+
         $(document).ready(function () {
+            var countries = [
+               { value: 'Andorra', data: 'AD' },
+               // ...
+               { value: 'Zimbabwe', data: 'ZZ' }
+            ];
 
         })
     </script>

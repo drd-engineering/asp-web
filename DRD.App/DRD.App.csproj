@@ -643,6 +643,11 @@
     <Content Include="assets\images\signature.png" />
     <Content Include="assets\images\ui\datepicker_trigger.png" />
     <Content Include="assets\images\ui\map_marker.png" />
+    <Content Include="assets\js\angucomplete-alt.js" />
+    <Content Include="assets\js\angucomplete-alt.min.js" />
+    <Content Include="assets\js\angucomplete.js" />
+    <Content Include="assets\js\jquery.autocomplete.js" />
+    <Content Include="assets\js\jquery.transfer.js" />
     <Content Include="assets\js\plugins\buttons\hover_dropdown.min.js" />
     <Content Include="assets\js\plugins\buttons\ladda.min.js" />
     <Content Include="assets\js\plugins\buttons\spin.min.js" />

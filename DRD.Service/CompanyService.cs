@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.View;
 using DRD.Models.API;
 using DRD.Service.Context;
 namespace DRD.Service
@@ -20,15 +19,15 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.IsActive == true).ToList();
+                var result = db.Companies.Where(companyItem => companyItem.IsActive).ToList();
                 var listReturn = new CompanyList();
-                foreach (Models.Company x in result)
+                foreach (Company x in result)
                 {
                     var company = new CompanyItem();
                     company.Id = x.Id;
                     company.Code = x.Code;
                     company.Name = x.Name;
-                    listReturn.companies.Append(company);
+                    listReturn.companies.Add(company);
                 }
                 return listReturn;
             }

@@ -153,24 +153,42 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
         }
 
-        public long Update(UserProfile userProfile)
+        public UserProfile Update(UserProfile userProfile)
         {
             User user;
             using (var db = new ServiceContext())
             {
                 user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
-                user.ImageInitials = userProfile.ImageInitials;
-                user.ImageKtp1 = userProfile.ImageKtp1;
-                user.ImageKtp2 = userProfile.ImageKtp2;
-                user.ImageProfile = userProfile.ImageProfile;
-                user.ImageSignature = userProfile.ImageSignature;
-                user.ImageStamp = userProfile.ImageStamp;
+                user.ImageInitials = (userProfile.ImageInitials == null ? null : removePrefixLocation(userProfile.ImageInitials));
+                user.ImageKtp1 = (userProfile.ImageKtp1 == null ? null : removePrefixLocation(userProfile.ImageKtp1));
+                user.ImageKtp2 = (userProfile.ImageKtp2 == null ? null : removePrefixLocation(userProfile.ImageKtp2));
+                user.ImageProfile = (userProfile.ImageProfile == null ? null : removePrefixLocation(userProfile.ImageProfile));
+                user.ImageSignature = (userProfile.ImageSignature == null ? null : removePrefixLocation(userProfile.ImageSignature));
+                user.ImageStamp = (userProfile.ImageStamp == null ? null : removePrefixLocation(userProfile.ImageStamp));
                 user.OfficialIdNo = userProfile.OfficialIdNo;
                 db.SaveChanges();
             }
 
             System.Diagnostics.Debug.WriteLine("USER SERVICE, UPDATE RESULT" + user);
-            return user.Id;
+            userProfile.ImageInitials = user.ImageInitials;
+            userProfile.ImageKtp1 = user.ImageKtp1;
+            userProfile.ImageKtp2 = user.ImageKtp2;
+            userProfile.ImageProfile = user.ImageProfile;
+            userProfile.ImageSignature = user.ImageSignature;
+            userProfile.ImageStamp = user.ImageStamp;
+            userProfile.OfficialIdNo = user.OfficialIdNo;
+
+            return userProfile;
+        }
+        public string removePrefixLocation(string location)
+        {
+            if (location == null)
+                return location;
+            string pattern = @"(^\/.*\/)";
+            location = "/" + location;
+            System.Diagnostics.Debug.WriteLine(location);
+            string removedPrefix = System.Text.RegularExpressions.Regex.Replace(location, pattern, string.Empty);
+            return removedPrefix;
         }
 
         public long Save(User user)

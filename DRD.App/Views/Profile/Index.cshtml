@@ -374,6 +374,7 @@
             $scope.model = {};
             $scope.wizarno = 'product';
             $scope.model.Id = 0;
+            $scope.model.EncryptedId = "";
             $scope.model.LoginId = null;
             $scope.noImage="no_picture.png";
             $scope.model.ImageProfile=$scope.noImage;
@@ -408,6 +409,7 @@
                     $scope.getUserSession();
 
                 getUserProfile();
+                console.log($scope.model.EncryptedId);
                 $('#content').show();
 
             });
@@ -457,9 +459,9 @@
                     },
                     success:function(data){
                         if (signatureNo==0){
-                            $scope.model.ImageSignature = data.Filename;
+                            $scope.model.ImageSignature = "temp/" + data.Filename;
                         }else if (signatureNo==1){
-                            $scope.model.ImageInitials=data.Filename;
+                            $scope.model.ImageInitials = "temp/" + data.Filename;
                         }
                     },
                     complete: function (data) {
@@ -503,7 +505,8 @@
                             console.log("[GET] PROFILE DATA", result);
 
                             // do mapping values
-                            $scope.model.Id=result.Id;
+                            $scope.model.Id = result.Id;
+                            $scope.model.EncryptedId = result.EncryptedId;
                             $scope.model.Number=result.Number;
                             $scope.model.Name=result.Name;
                             $scope.model.Phone=result.Phone;
@@ -514,14 +517,12 @@
 
                             // handle empty image
                             $scope.isUploadImage0 = (result.ImageProfile == null) ? false : true;
-                            $scope.model.ImageProfile = (result.ImageProfile == null) ? $scope.noImage : result.ImageProfile;
-                            $scope.model.ImageSignature = (result.ImageSignature == null) ? $scope.noImage : result.ImageSignature;
-                            $scope.model.ImageInitials = (result.ImageInitials == null) ? $scope.noImage : result.ImageInitials;
-                            $scope.model.ImageStamp = (result.ImageStamp == null) ? $scope.noImage : result.ImageStamp;
-                            $scope.model.ImageKtp1 = (result.ImageKtp1 == null) ? $scope.noImage : result.ImageKtp1;
-                            $scope.model.ImageKtp2 = (result.ImageKtp2 == null) ? $scope.noImage : result.ImageKtp2;
-
-
+                            $scope.model.ImageProfile = (result.ImageProfile == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageProfile;
+                            $scope.model.ImageSignature = (result.ImageSignature == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageSignature;
+                            $scope.model.ImageInitials = (result.ImageInitials == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageInitials;
+                            $scope.model.ImageStamp = (result.ImageStamp == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageStamp;
+                            $scope.model.ImageKtp1 = (result.ImageKtp1 == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageKtp1;
+                            $scope.model.ImageKtp2 = (result.ImageKtp2 == null) ? $scope.noImage : result.EncryptedId + "/" + result.ImageKtp2;
                         }
 
                         $('#checkbox1').bootstrapSwitch.defaults.size='mini';
@@ -557,18 +558,18 @@
                     file.upload.then(function (response) {
                         file.result = response.data;
                         if (idx==0){
-                            $scope.model.ImageProfile = file.result.Filename;
+                            $scope.model.ImageProfile = "temp/" + file.result.Filename;
                             $scope.isUploadImage0 = true;
                         } else if (idx==1){
-                            $scope.model.ImageSignature = file.result.Filename;
+                            $scope.model.ImageSignature = "temp/" + file.result.Filename;
                         } else if (idx==2){
-                            $scope.model.ImageInitials = file.result.Filename;
+                            $scope.model.ImageInitials = "temp/" + file.result.Filename;
                         } else if (idx==3){
-                            $scope.model.ImageStamp = file.result.Filename;
+                            $scope.model.ImageStamp = "temp/" + file.result.Filename;
                         } else if (idx==4){
-                            $scope.model.ImageKtp1 = file.result.Filename;
+                            $scope.model.ImageKtp1 = "temp/" + file.result.Filename;
                         } else if (idx==5){
-                            $scope.model.ImageKtp2 = file.result.Filename;
+                            $scope.model.ImageKtp2 = "temp/" + file.result.Filename;
                         }
 
                     }, function (response) {
@@ -594,14 +595,15 @@
                     {
                         user: {
                             Id: $scope.model.Id,
+                            EncryptedId: $scope.model.EncryptedId,
                             Name: $scope.model.Name,
                             Phone: $scope.model.Phone,
                             Email: $scope.model.Email,
                             ImageProfile: $scope.model.ImageProfile,
-                            ImageSignature: ($scope.noImage == $scope.model.ImageSignature ? null:$scope.model.ImageSignature),
-                            ImageInitials: ($scope.noImage == $scope.model.ImageInitials ? null:$scope.model.ImageInitials),
-                            ImageStamp: ($scope.noImage == $scope.model.ImageStamp ? null:$scope.model.ImageStamp),
-                            ImageKtp1: ($scope.noImage == $scope.model.ImageKtp1 ? null:$scope.model.ImageKtp1),
+                            ImageSignature: ($scope.noImage == $scope.model.ImageSignature ? null : $scope.model.ImageSignature),
+                            ImageInitials: ($scope.noImage == $scope.model.ImageInitials ? null : $scope.model.ImageInitials),
+                            ImageStamp: ($scope.noImage == $scope.model.ImageStamp ? null : $scope.model.ImageStamp),
+                            ImageKtp1: ($scope.noImage == $scope.model.ImageKtp1 ? null : $scope.model.ImageKtp1),
                             ImageKtp2: ($scope.noImage == $scope.model.ImageKtp2 ? null : $scope.model.ImageKtp2),
                             LoginId: $scope.model.Id,
                             MemberType: memberType,
