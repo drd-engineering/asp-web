@@ -69,7 +69,6 @@ namespace DRD.Service
             //, "Klaxon");
             try
             {
-
                 System.Diagnostics.Debug.WriteLine("[[DEBUGING SEND EMAIL]]"+ emailsmtp+emailuser+emailport+emailpassword);
                 smtp.Send(mail);
             }

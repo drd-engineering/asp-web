@@ -76,7 +76,7 @@ namespace DRD.Service
                 dict.Add("id", "4");
                 dict.Add("code", "EMAIL_SMTP");
                 dict.Add("description", "email smtp untuk kirim email");
-                dict.Add("value", "smtp-relay.gmail.com");
+                dict.Add("value", "smtp.gmail.com");
                 dict.Add("flag", "smtp.gmail.com");
                 dict.Add("data_type", "string");
                 dict.Add("data_length", "0");

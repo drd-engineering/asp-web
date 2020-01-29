@@ -19,6 +19,9 @@ namespace DRD.App.Controllers
     {
         private LoginController login = new LoginController();
         private UserSession user;
+        private CompanyService companyService = new CompanyService();
+        private MemberService memberService = new MemberService();
+        private SubscriptionService subscriptionService = new SubscriptionService();
         private Layout layout = new Layout();
 
         public void Initialize()
@@ -37,19 +40,12 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             Initialize();
-            CompanyService companyService = new CompanyService();
-
             return View(layout);
         }
         public ActionResult Member(long id)
         {
             Initialize();
-
-            CompanyService companyService = new CompanyService();
-            MemberService memberService = new MemberService();
-
             var company = companyService.GetCompany(id);
-            
             if(company == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
@@ -59,16 +55,21 @@ namespace DRD.App.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
-
             ViewBag.Company = company.Name;
             return View(layout);
         }
+
+        public ActionResult AddMembers(long companyId, string emails)
+        {
+            InitializeAPI();
+            var data = companyService.AddMembers(companyId, user.Id, emails);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
         public ActionResult GetCompanyList()
         {
             InitializeAPI();
-
-            CompanyService companyService = new CompanyService();
             CompanyList data = companyService.GetAllCompanyDetails(user.Id);
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -77,8 +78,6 @@ namespace DRD.App.Controllers
         public ActionResult GetSubscriptionList()
         {
             InitializeAPI();
-
-            SubscriptionService subscriptionService = new SubscriptionService();
             List<BusinessSubscription> data = subscriptionService.getSubscription();
 
             return Json(data, JsonRequestBehavior.AllowGet);

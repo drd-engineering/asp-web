@@ -1070,6 +1070,8 @@
                 var link = links[i];
                 var from = document.getElementById(link.elementFrom);
                 var to = document.getElementById(link.elementTo);
+                console.log(from);
+                console.log(to);
                 if (link.symbolCode == 'SUBMIT') {
                     $scope.addLinkSubmit(from, to);
                 } if (link.symbolCode == 'REJECT') {

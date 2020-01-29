@@ -10,6 +10,8 @@
     <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
     <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
     <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
 }
 @section Styles{
     <link href="/assets/css/pages/company-member.css" rel="stylesheet" type="text/css">
@@ -40,15 +42,12 @@
                             <div class="page-title">
                                 <h4><i class="icon-users2 position-left"></i>@ViewBag.Company </h4>
                                 <br />
-
                                 <div class="row">
-
                                     <div class="col-lg-6">
-
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control btn-process" ng-model="kriteria" placeholder="Find members" ng-keyup="$event.keyCode == 13 && getAcceptedMember(kriteria, page, row)">
-
+                                            <input type="text" class="form-control btn-process" ng-model="kriteria"
+                                                   placeholder="Find members" ng-keyup="$event.keyCode == 13 && getAcceptedMember(kriteria, page, row)">
                                         </div>
                                     </div>
                                 </div>
@@ -107,15 +106,13 @@
                         <strong>Invite via Email</strong>
                         <div class="row">
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="5" id="comment"></textarea>
+                                <div style="font-size:10px;align-self:end">*to invite more than 1 use use coma(,) as separator</div>
+                                <textarea class="form-control" rows="5" ng-model="emails"></textarea>
                             </div>
                             <div class="col-sm-2">
-
-                                <button class="btn bg-slate-700 btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()">
+                                <button class="btn bg-slate-700 btn-ladda btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="sendInvitationEmail(emails)">
                                     <span class="ladda-label">Invite</span><span class="ladda-spinner"></span>
-
                                 </button>
-
                             </div>
                         </div>
                     </div>
@@ -189,10 +186,12 @@
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             $scope.product = {};
             $scope.members = [];
+            $scope.emails = "";
             $scope.productCount = [];
             $scope.paging = [];
             $scope.kriteria = "";
             $scope.page = 1;
+            $scope.notiftime = 6000;
             $scope.row = 20;
             $scope.currPage = 0;
             $scope.isView = false;
@@ -243,6 +242,50 @@
                 });
             }
 
+            /*--------------------------------------------------------------
+            SEND INVITATION EMAIL
+            --------------------------------------------------------------*/
+            $scope.sendInvitationEmail = function (emails) {
+                $http.post('@Url.Action("AddMembers", "Company")', { companyId: $scope.companyId, emails: emails })
+                    .then(function (response) {
+                        if (response.data) {
+                            for (var i = 0; i < response.data.length; i++) {
+                                if (response.data[i].status == 1) {
+                                    $.jGrowl("You have success add " + response.data[i].email + " as memeber of this company", {
+                                        header: 'Add Member Success',
+                                        //sticky: true,
+                                        life: $scope.notiftime,
+                                        theme: 'alert-styled-right bg-info'
+                                    });
+                                }
+                                if (response.data[i].status == 0) {
+                                    $.jGrowl("You have success send email to invite " + response.data[i].email + " as member of this company", {
+                                        header: 'Add Member Failed but Email Sent',
+                                        //sticky: true,
+                                        life: $scope.notiftime,
+                                        theme: 'alert-styled-right bg-warning'
+                                    });
+                                }
+                                if (response.data[i].status == -1) {
+                                    $.jGrowl("You are not admin", {
+                                        header: 'You Are Not Admin',
+                                        //sticky: true,
+                                        life: $scope.notiftime,
+                                        theme: 'alert-styled-right bg-danger'
+                                    });
+                                }
+                                if (response.data[i].status == -2) {
+                                    $.jGrowl(response.data[i].email + " already invited as member of this company", {
+                                        header: 'Member Already Invited',
+                                        //sticky: true,
+                                        life: $scope.notiftime,
+                                        theme: 'alert-styled-right bg-warning'
+                                    });
+                                }
+                            }
+                        }
+                    });
+            }
 
             /*--------------------------------------------------------------
             GENERAL FUNCTION
@@ -250,7 +293,6 @@
             $scope.addMember = function (mid) {
                 location.href = "/invitation/invitation?mid=" + mid;
             }
-
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/

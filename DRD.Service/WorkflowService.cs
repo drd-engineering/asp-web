@@ -58,7 +58,7 @@ namespace DRD.Service
 
                 if (result != null)
                 {
-                    var nodes = db.WorkflowNodes.Where(workflow => workflow.WorkflowId == result.Id).ToList();
+                    var nodes = db.WorkflowNodes.Where(wfnode => wfnode.WorkflowId == result.Id).ToList();
                     if (nodes.Count() > 0)
                     {
                         int dmid = 0;
@@ -67,7 +67,7 @@ namespace DRD.Service
                         {
                             WorkflowNodeItem WorkflowNodeItem = new WorkflowNodeItem();
                             WorkflowNodeItem.Id = workflowNode.Id;
-                            WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).Name + "-" + dmid;
+                            WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + dmid;
                             WorkflowNodeItem.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
                             WorkflowNodeItem.userId = workflowNode.UserId;
                             WorkflowNodeItem.caption = workflowNode.Caption;
@@ -99,7 +99,8 @@ namespace DRD.Service
                         }
                     }
 
-                    var links = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNodes.WorkflowId == result.Id).ToList();
+                    var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.WorkflowNodes.WorkflowId == result.Id).ToList();
+                    System.Diagnostics.Debug.WriteLine("[[JUMLAH WFNODELINKS]] " + links.Count());
                     if (links.Count() > 0)
                     {
                         result.WorkflowNodeLinks = new List<WorkflowNodeLinkItem>();
@@ -109,8 +110,8 @@ namespace DRD.Service
                             WorkflowNodeLinkItem jwfnl = new WorkflowNodeLinkItem();
                             jwfnl.NodeId = wfnl.WorkflowNodeId;
                             jwfnl.NodeToId = wfnl.WorkflowNodeToId;
-                            jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(workflow => workflow.Id == wfnl.WorkflowNodeId).element;
-                            jwfnl.elementTo = result.WorkflowNodes.FirstOrDefault(workflow => workflow.Id == wfnl.WorkflowNodeToId).element;
+                            jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeId).element;
+                            jwfnl.elementTo = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeToId).element;
                             jwfnl.symbolCode = getSymbolsFromCsvById(wfnl.SymbolCode).Code;
                             jwfnl.caption = wfnl.Caption;
                             jwfnl.Operator = wfnl.Operator;
@@ -288,7 +289,8 @@ namespace DRD.Service
                             var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeToId);
                             nodelink.WorkflowNodeTos = to;
                             nodelink.Caption = jnodelink.caption;
-                           // nodelink.SymbolCode = db.Symbols.FirstOrDefault(workflow => workflow.Code.Equals(jnodelink.symbolCode)).Id;
+                            nodelink.SymbolCode = getSymbolsFromCsvByCode(jnodelink.symbolCode).Id;
+                            /*db.Symbols.FirstOrDefault(workflow => workflow.Code.Equals(jnodelink.symbolCode)).Id;*/
                             nodelink.Operator = jnodelink.Operator;
                             nodelink.Value = jnodelink.value;
                             db.WorkflowNodeLinks.Add(nodelink);

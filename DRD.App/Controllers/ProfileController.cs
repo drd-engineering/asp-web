@@ -60,6 +60,7 @@ namespace DRD.App.Controllers
             UserService userService = new UserService();
 
             UserProfile user = userService.GetById(userSession.Id, userSession.Id);
+            user.EncryptedId = Utilities.Encrypt(user.Id.ToString());
             var data = user;
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -106,7 +107,7 @@ namespace DRD.App.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult Upload(int idx)
         {
-            string folder = "images/member";
+            string folder = "images/member/temp";
             string imageName = "";
             string imageExtension = "";
 
@@ -114,6 +115,7 @@ namespace DRD.App.Controllers
             {
                 // get file from request body
                 var file = System.Web.HttpContext.Current.Request.Files["MyImages"];
+
                 if (file == null || file.ContentLength <= 0)
                     file = System.Web.HttpContext.Current.Request.Files[0];
 
@@ -127,14 +129,21 @@ namespace DRD.App.Controllers
                         imageExtension = ".png";
 
                     imageName = Guid.NewGuid().ToString();
-                    var imagePath = Server.MapPath("/" + folder + "/") + imageName + imageExtension;
+                    var targetdir = "/" + folder + "/";
+                    bool exists = System.IO.Directory.Exists(Server.MapPath(targetdir));
+                    if (!exists)
+                        System.IO.Directory.CreateDirectory(Server.MapPath(targetdir));
+
+                    var imagePath = Server.MapPath(targetdir) + imageName + imageExtension;
                     imageName = imageName + imageExtension;
 
                     ViewBag.Msg = imagePath;
                     var path = imagePath;
 
                     // Saving Image in Original Mode
+
                     file.SaveAs(path);
+                    System.Diagnostics.Debug.WriteLine("IMAGE UPLOADED :::" + path);
                 }
             }
             UploadResponse result = new UploadResponse();
@@ -158,25 +167,56 @@ namespace DRD.App.Controllers
             //user.CompanyId = userSession.CompanyId;
 
             UserService userService = new UserService();
-            UserProfile oldUser = userService.GetById(user.Id, userSession.Id);
+            /*UserProfile oldUser = userService.GetById(user.Id, userSession.Id);*/ // no need to validate who is log in
+            var data = new List<int>();
 
+            var ret1 = userService.Update(user);
 
-            //user.IsActive = oldUser.IsActive;
+            System.Diagnostics.Debug.WriteLine("PROFILE CONTROLLER, UPDATE RESULT" + ret1);
+            data.Add(1);
+            data.Add(MoveFromTemp(user, ret1.ImageInitials));
+            data.Add(MoveFromTemp(user, ret1.ImageKtp1));
+            data.Add(MoveFromTemp(user, ret1.ImageKtp2));
+            data.Add(MoveFromTemp(user, ret1.ImageProfile));
+            data.Add(MoveFromTemp(user, ret1.ImageSignature));
+            data.Add(MoveFromTemp(user, ret1.ImageStamp));
             
-            oldUser.ImageInitials = user.ImageInitials;
-            oldUser.ImageKtp1 = user.ImageKtp1;
-            oldUser.ImageKtp2 = user.ImageKtp2;
-            oldUser.ImageProfile = user.ImageProfile;
-            oldUser.ImageSignature = user.ImageSignature;
-            oldUser.ImageStamp = user.ImageStamp;
-            oldUser.OfficialIdNo = user.OfficialIdNo;
-
-            var data = userService.Update(oldUser);
-
-            System.Diagnostics.Debug.WriteLine("PROFILE CONTROLLER, UPDATE RESULT" + data);
-
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
+        private int MoveFromTemp(UserProfile user, string location)
+        {
+            if (location == null)
+                return -2;
+            string fromFolder = "images/member/temp";
+            string toFolder = "images/member/" + user.EncryptedId.ToString();
+            var targetdir = "/" + toFolder + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetdir));
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetdir));
+            try
+            {
+                int returnval = 0;
+                string Tranfiles, ProcessedFiles;
+                Tranfiles = Server.MapPath("/" + fromFolder + "/") + location;
+                System.Diagnostics.Debug.WriteLine("[[ IMAGE NAME ]] " + Tranfiles);
+                if (System.IO.File.Exists(Tranfiles))
+                {
+                    ProcessedFiles = Server.MapPath("/" + toFolder + "/") + location;
+                    //Need to move or overwrite the new file with actual file.
+                    System.IO.File.Move(Tranfiles, ProcessedFiles);
+                    System.IO.File.Delete(Tranfiles);
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[[ERROR HAPPEN]] " + ex.Message);
+                return 0;
+            }
+        }
     }
 }

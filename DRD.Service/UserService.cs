@@ -25,15 +25,14 @@ namespace DRD.Service
                     return resgistrationResponse;
                 }
 
-                UserService userService = new UserService();
                 User user = new User();
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.IsActive = true;
-                //user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
-                user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
-                long userId = userService.Save(user);
+                user.IsActive = false;
+                user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
+                // user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
+                long userId = Save(user);
                 user.Id = userId;
 
                 if (register.CompanyId != null)
@@ -41,13 +40,13 @@ namespace DRD.Service
                     Member member = new Member();
                     member.UserId = userId;
                     member.CompanyId = register.CompanyId.Value;
-                    long memberId = userService.Save(member);
+                    long memberId = Save(member);
                 }
 
                 //TODO: remove these lines when production
                 System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Will sent email of : " + user.Id + " - " + user.Name);
 
-                userService.sendEmailRegistration(user);
+                sendEmailRegistration(user);
 
                 resgistrationResponse.Id = "" + user.Id;
                 resgistrationResponse.Email = register.Email;
@@ -59,41 +58,44 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                //string encryptedPassword = Utilities.Encrypt(password);
-                string encryptedPassword = password;
+                string encryptedPassword = Utilities.Encrypt(password);
+                /*string encryptedPassword = password;*/
 
-                Expression<Func<UserSession, bool>> findUsername = s => s.Email == username;
+                Expression<Func<User, bool>> findUsername = s => s.Email == username;
                 if (!username.Contains('@'))
                 {
                     long userId = Convert.ToInt64(username);
+                    if (userId < 0)
+                        encryptedPassword = password;
                     findUsername = s => s.Id == userId;
                 }
+                User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
 
-                UserSession loginUser =
-                    (from user in db.Users
-                     where user.Password.Equals(encryptedPassword)
-                     select new UserSession
-                     {
-                         Id = user.Id,
-                         Name = user.Name,
-                         OfficialIdNo = user.OfficialIdNo,
-                         Phone = user.Phone,
-                         Email = user.Email,
-                         ImageProfile = user.ImageProfile,
-                         ImageSignature = user.ImageSignature,
-                         ImageInitials = user.ImageInitials,
-                         ImageStamp = user.ImageStamp,
-                         ImageKtp1 = user.ImageKtp1,
-                         ImageKtp2 = user.ImageKtp2
-                     }).Where(findUsername).FirstOrDefault();
-
-                if (loginUser != null)
+                if (userGet != null)
                 {
+                    if (userGet.IsActive == false)
+                    {
+                        userGet.IsActive = true;
+                        db.SaveChanges();
+                    }
+                    UserSession loginUser = new UserSession();
+                    loginUser.Id = userGet.Id;
+                    loginUser.Name = userGet.Name;
+                    loginUser.OfficialIdNo = userGet.OfficialIdNo;
+                    loginUser.Phone = userGet.Phone;
+                    loginUser.Email = userGet.Email;
+                    loginUser.ImageProfile = userGet.ImageProfile;
+                    loginUser.ImageSignature = userGet.ImageSignature;
+                    loginUser.ImageInitials = userGet.ImageInitials;
+                    loginUser.ImageStamp = userGet.ImageStamp;
+                    loginUser.ImageKtp1 = userGet.ImageKtp1;
+                    loginUser.ImageKtp2 = userGet.ImageKtp2;
+
                     loginUser.Name = loginUser.Name.Split(' ')[0];
+
                     return loginUser;
                 }
             }
-
             return null;
         }
 
@@ -101,7 +103,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-             var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
+                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
                 if (result.Count != 0) { return false; }
                 else { return true; }
             }
@@ -138,7 +140,7 @@ namespace DRD.Service
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_NUMBER_}", "" + user.Id);
-            body = body.Replace("{_PASSWORD_}", user.Password);
+            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
 
             body = body.Replace("//images", "/images");
 
@@ -151,24 +153,42 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
         }
 
-        public long Update(UserProfile userProfile)
+        public UserProfile Update(UserProfile userProfile)
         {
             User user;
             using (var db = new ServiceContext())
             {
                 user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
-                user.ImageInitials = userProfile.ImageInitials;
-                user.ImageKtp1 = userProfile.ImageKtp1;
-                user.ImageKtp2 = userProfile.ImageKtp2;
-                user.ImageProfile = userProfile.ImageProfile;
-                user.ImageSignature = userProfile.ImageSignature;
-                user.ImageStamp = userProfile.ImageStamp;
+                user.ImageInitials = (userProfile.ImageInitials == null ? null : removePrefixLocation(userProfile.ImageInitials));
+                user.ImageKtp1 = (userProfile.ImageKtp1 == null ? null : removePrefixLocation(userProfile.ImageKtp1));
+                user.ImageKtp2 = (userProfile.ImageKtp2 == null ? null : removePrefixLocation(userProfile.ImageKtp2));
+                user.ImageProfile = (userProfile.ImageProfile == null ? null : removePrefixLocation(userProfile.ImageProfile));
+                user.ImageSignature = (userProfile.ImageSignature == null ? null : removePrefixLocation(userProfile.ImageSignature));
+                user.ImageStamp = (userProfile.ImageStamp == null ? null : removePrefixLocation(userProfile.ImageStamp));
                 user.OfficialIdNo = userProfile.OfficialIdNo;
                 db.SaveChanges();
             }
 
             System.Diagnostics.Debug.WriteLine("USER SERVICE, UPDATE RESULT" + user);
-            return user.Id;
+            userProfile.ImageInitials = user.ImageInitials;
+            userProfile.ImageKtp1 = user.ImageKtp1;
+            userProfile.ImageKtp2 = user.ImageKtp2;
+            userProfile.ImageProfile = user.ImageProfile;
+            userProfile.ImageSignature = user.ImageSignature;
+            userProfile.ImageStamp = user.ImageStamp;
+            userProfile.OfficialIdNo = user.OfficialIdNo;
+
+            return userProfile;
+        }
+        public string removePrefixLocation(string location)
+        {
+            if (location == null)
+                return location;
+            string pattern = @"(^\/.*\/)";
+            location = "/" + location;
+            System.Diagnostics.Debug.WriteLine(location);
+            string removedPrefix = System.Text.RegularExpressions.Regex.Replace(location, pattern, string.Empty);
+            return removedPrefix;
         }
 
         public long Save(User user)
@@ -230,7 +250,7 @@ namespace DRD.Service
         }
 
         public String GetName(long id)
-        { 
+        {
             using (var db = new ServiceContext())
             {
                 var result =
@@ -277,7 +297,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ListSubscription getAllSubscription(long userId)
         {
-            using(var db = new ServiceContext())
+            using (var db = new ServiceContext())
             {
                 var returnValue = new ListSubscription();
                 //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
@@ -293,7 +313,7 @@ namespace DRD.Service
                                             type = "company",
                                             name = plan.SubscriptionName,
                                             companyId = company.Id,
-                                            companyName = company == null? null : company.Name
+                                            companyName = company == null ? null : company.Name
                                         }).ToList();
                 if (userBusinessPlan.Count != 0)
                 {
@@ -305,6 +325,60 @@ namespace DRD.Service
                 return returnValue;
             }
         }
-    }
+        /// <summary>
+        /// Change password of specify user that loged in to application
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public int UpdatePassword(UserSession user, String oldPassword, String newPassword)
+        {
+            using (var db = new ServiceContext())
+            {
+                var encryptedPassword = Utilities.Encrypt(oldPassword);
+                System.Diagnostics.Debug.WriteLine("[[ DEBBUG USER ]]" + user.Id);
+                User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
+                if (getUser == null)
+                    return -1;
+                getUser.Password = Utilities.Encrypt(newPassword);
+                db.SaveChanges();
+                return 1;
+            }
+        }
 
+        public int ResetPassword(string emailUser)
+        {
+            using (var db = new ServiceContext())
+            {
+                System.Diagnostics.Debug.WriteLine("[[ Email Usernya ]] " + emailUser);
+
+                var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
+                if (userGet == null) return 0;
+
+                var xpwd = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
+
+                userGet.Password = Utilities.Encrypt(xpwd);
+
+                System.Diagnostics.Debug.WriteLine("[[ SUCCESS RESETING PASSWORD ]]");
+                var result = db.SaveChanges();
+
+                EmailService emailService = new EmailService();
+                string body =
+                    "Dear " + userGet.Name + ",<br/><br/>" +
+                    "your password is reset, use the following temporary password:<br/><br/>" +
+                    "Temporary password: <b>" + xpwd + "</b><br/><br/>" +
+                    "Make a new password change after you login with this password.<br/><br/>" +
+                    "Thank you<br/><br/>" +
+                    "DRD Administrator<br/>";
+                var configGenerator = new AppConfigGenerator();
+                var emailfrom = configGenerator.GetConstant("EMAIL_USER")["value"];
+                var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+
+                var task = emailService.Send(emailfrom, emailfromdisplay + " Administrator", emailUser, "DRD Member Reset Password", body, false, new string[] { });
+                System.Diagnostics.Debug.WriteLine("[[ DEBUG CHANGE PASSWORD ]] sending email complete");
+                return 1;
+            }
+        }
+    }
 }

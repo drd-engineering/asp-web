@@ -48,6 +48,10 @@ namespace DRD.Models
 
         public Document()
         {
+            FileSize = 0;
+            MaxPrintPerActivity = 0;
+            MaxDownloadPerActivity = 0;
+            ExpiryDay = 0;
             //DocumentUser = new DocumentUser();
             DocumentElements = new System.Collections.Generic.List<DocumentElement>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
-using DRD.Models.View;
 using DRD.Models.API;
 using DRD.Service.Context;
 namespace DRD.Service
@@ -20,15 +19,15 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.IsActive == true).ToList();
+                var result = db.Companies.Where(companyItem => companyItem.IsActive).ToList();
                 var listReturn = new CompanyList();
-                foreach (Models.Company x in result)
+                foreach (Company x in result)
                 {
                     var company = new CompanyItem();
                     company.Id = x.Id;
                     company.Code = x.Code;
                     company.Name = x.Name;
-                    listReturn.companies.Append(company);
+                    listReturn.companies.Add(company);
                 }
                 return listReturn;
             }
@@ -326,6 +325,111 @@ namespace DRD.Service
                 db.SaveChanges();
 
                 return result;
+            }
+        }
+
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        {
+            List<AddMemberResponse> retVal = new List<AddMemberResponse>();
+            string[] listOfEmail = emails.Split(',');
+            using (var db = new ServiceContext())
+            {
+                Member admin = db.Members.Where(member => member.UserId == userId && member.CompanyId == companyId && member.IsAdministrator).FirstOrDefault();
+                if (admin == null)
+                {
+                    // user editting member is not administrator
+                    retVal.Add(new AddMemberResponse("", -1));
+                }
+                else
+                {
+                    Company companyInviting = db.Companies.Where(company => company.Id == companyId).FirstOrDefault();
+                    foreach (var emailItem in listOfEmail)
+                    {
+                        var email = emailItem.Replace(" ", string.Empty);
+                        Member memberBaru = new Member();
+                        User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
+                        if (target == null)
+                        {
+                            // user that wanted to invite is not found (not registered)
+                            retVal.Add(new AddMemberResponse(email, 0));
+                        }
+                        else
+                        {
+                            Member lama = db.Members.Where(member => member.UserId == target.Id
+                                && member.IsActive && member.CompanyId == companyId).FirstOrDefault();
+                            if (lama == null)
+                            {
+                                memberBaru.UserId = target.Id;
+                                memberBaru.CompanyId = companyId;
+                                memberBaru.isCompanyAccept = true;
+                                memberBaru.JoinedAt = DateTime.Now;
+                                db.Members.Add(memberBaru);
+                                db.SaveChanges();
+                                // success adding new member
+                                retVal.Add(new AddMemberResponse(email, 1));
+                            }
+                            else
+                            {
+                                // member already added
+                                retVal.Add(new AddMemberResponse(email, -2));
+                            }
+                        }
+                    }
+                }
+            }
+            return retVal;
+        }
+
+        public void sendEmailAddMember(string email, int status, string company)
+        {
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
+            
+            if(status == 1)
+            {
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
+                String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+                String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                //TODO: remove these lines when production
+                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration " + strPathAndQuery);
+
+                body = body.Replace("{_URL_}", strUrl);
+                body = body.Replace("{_COMPANYNAME_}", company);
+
+                body = body.Replace("//images", "/images");
+
+                var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+                //TODO: remove these lines when production
+                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration " + senderEmail);
+
+                var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
+            }
+            else if (status == 0)
+            {
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
+                String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+                String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                //TODO: remove these lines when production
+                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration " + strPathAndQuery);
+
+                body = body.Replace("{_URL_}", strUrl);
+                body = body.Replace("{_COMPANYNAME_}", company);
+
+                body = body.Replace("//images", "/images");
+
+                var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+                //TODO: remove these lines when production
+                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration " + senderEmail);
+
+                var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
             }
         }
     }

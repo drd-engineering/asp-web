@@ -138,12 +138,12 @@ namespace Core.Postgres
 
             Workflow wf1 = new Workflow { Id = -1, CreatorId = listOfUserCreated[0].Id, DateCreated = DateTime.Now, IsActive = true, Name = "myone", Description = "cuy", IsTemplate = false, UserEmail = listOfUserCreated[0].Email };
             
-            WorkflowNode wfn1 = new WorkflowNode { Id = -1, WorkflowId = wf1.Id, SymbolCode = 0, Caption = "Start", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
-            WorkflowNode wfn2 = new WorkflowNode { Id = -2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
-            WorkflowNode wfn3 = new WorkflowNode { Id = -3, WorkflowId = wf1.Id, SymbolCode = 5, Caption = "Activity", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>() };
+            WorkflowNode wfn1 = new WorkflowNode { Id = -1, WorkflowId = wf1.Id, SymbolCode = 0, Caption = "Start", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", TextColor = "#ffffff", BackColor = "#008000" };
+            WorkflowNode wfn2 = new WorkflowNode { Id = -2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", TextColor = "#ffffff", BackColor = "#ff0000" };
+            WorkflowNode wfn3 = new WorkflowNode { Id = -3, WorkflowId = wf1.Id, SymbolCode = 5, Caption = "Activity", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", PosLeft = "0px", PosTop = "0px", TextColor = "#ffffff", BackColor = "#deb887" };
 
-            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, WorkflowNodeId = wfn1.Id , WorkflowNodeToId = wfn3.Id};
-            WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = -2, WorkflowNodeId = wfn3.Id, WorkflowNodeToId = wfn2.Id };
+            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, WorkflowNodeId = wfn1.Id, Value = "0", WorkflowNodeToId = wfn3.Id, SymbolCode = 20 };
+            WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = -2, WorkflowNodeId = wfn3.Id, Value = "0", WorkflowNodeToId = wfn2.Id, SymbolCode = 20 };
 
             modelBuilder.Entity<Workflow>().HasData(wf1);
             modelBuilder.Entity<WorkflowNode>().HasData(wfn1, wfn2, wfn3);

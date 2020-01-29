@@ -25,5 +25,11 @@ namespace DRD.Models.Custom
 
         public ICollection<WorkflowNodeItem> WorkflowNodes { get; set; }
         public ICollection<WorkflowNodeLinkItem> WorkflowNodeLinks { get; set; }
+
+        public WorkflowItem()
+        {
+            IsUsed = false;
+            Type = 0;
+        }
     }
 }

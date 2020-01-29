@@ -19,6 +19,18 @@ namespace DRD.App.Controllers
             return View();
         }
 
+        public ActionResult ChangePassword()
+        {
+            CheckLogin(this);
+            GetUser(this);
+            return View();
+        }
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
         public ActionResult Login(string username, string password)
         {
             int ret = -1;
@@ -30,11 +42,6 @@ namespace DRD.App.Controllers
                 Session["_USER_LOGIN_"] = user;
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult ForgotPassword()
-        {
-            return View();
         }
 
         public void SetLogin(Controller controller, User user)
@@ -102,6 +109,24 @@ namespace DRD.App.Controllers
         public string ManipulateSubMenu(Controller controller, UserSession user)
         {
             return "";
+        }
+
+        // GET FUNCTION for change password
+        public ActionResult UpdatePassword(String oldPassword, String newPassword)
+        {
+            CheckLogin(this);
+            UserSession user = GetUser(this);
+            UserService usrService = new UserService();
+            var data = usrService.UpdatePassword(user, oldPassword, newPassword);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        // GET FUNCTION for reset password
+        public ActionResult ResetPassword(String emailUser)
+        {
+            UserService usrService = new UserService();
+            var data = usrService.ResetPassword(emailUser);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }
