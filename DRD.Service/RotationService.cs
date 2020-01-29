@@ -935,6 +935,7 @@ namespace DRD.Service
         {
             //rotationNode.RotationNodeDocs =
             
+            
             var result =
                 (from d in db.RotationNodeDocs
                  where d.RotationNode.Id == rnId
@@ -943,31 +944,33 @@ namespace DRD.Service
                      Id = d.Id,
                      FlagAction = d.FlagAction,
                      RotationNode = new RotationNodeInboxData
-                     {
-                         Rotation = d.RotationNode.Rotation,
+                     {  
+                         //this line error bcs of extent5.rotation_id does not exist
+                         RotationId = d.RotationNode.Rotation.Id,
                      },
                      Document = new DocumentInboxData
                      {
                          Title = d.Document.Title,
                          FileName = d.Document.FileName,
                          FileSize = d.Document.FileSize,
-                         //DocumentUser =
-                         //    (from dm in d.Document.DocumentUsers
-                         //     where dm.UserId == memId // default inbox member
-                         //     select new DocumentUser
-                         //     {
-                         //         Id = dm.Id,
-                         //         DocumentId = dm.DocumentId,
-                         //         UserId = dm.UserId,
-                         //         FlagAction = dm.FlagAction,
-                         //     }).FirstOrDefault(),
+                         // The original documentusers is also commented
+                     //    //DocumentUser =
+                     //    //    (from dm in d.Document.DocumentUsers
+                     //    //     where dm.UserId == memId // default inbox member
+                     //    //     select new DocumentUser
+                     //    //     {
+                     //    //         Id = dm.Id,
+                     //    //         DocumentId = dm.DocumentId,
+                     //    //         UserId = dm.UserId,
+                     //    //         FlagAction = dm.FlagAction,
+                     //    //     }).FirstOrDefault(),
 
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
                               select new DocumentElementInboxData
                               {
                                   Id = documentElement.Id,
-                                  Document = documentElement.Document,
+                                  //Document = documentElement.Document,
                                   Page = documentElement.Page,
                                   LeftPosition = documentElement.LeftPosition,
                                   TopPosition = documentElement.TopPosition,
@@ -993,11 +996,11 @@ namespace DRD.Service
                                   UserId = documentElement.UserId,
                                   CreatedAt = documentElement.CreatedAt,
                                   UpdatedAt = documentElement.UpdatedAt,
-                                  ElementType = new ElementTypeInboxData
-                                  {
-                                      Id = documentElement.ElementType.Id,
-                                      Code = documentElement.ElementType.Code,
-                                  }
+                     //             //ElementType = new ElementTypeInboxData
+                     //             //{
+                     //             //    Id = documentElement.ElementType.Id,
+                     //             //    Code = documentElement.ElementType.Code,
+                     //             //}
                               }).ToList(),
                      }
                  }).ToList();

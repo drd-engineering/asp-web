@@ -347,7 +347,7 @@ namespace DRD.App.Controllers
             }
             return File(pdfByte, "application/" + doc.ExtFile, doc.FileNameOri);
         }
-
+        */
         /// <summary>
         /// 
         /// </summary>
@@ -358,8 +358,8 @@ namespace DRD.App.Controllers
             ////LoginController login = new LoginController();
             ////login.CheckLogin(this);
 
-            //DocumentService docsvr = new DocumentService();
-            //DtoDocumentLite doc = docsvr.GetByUniqFileName(keyf, true);
+            DocumentService docsvr = new DocumentService();
+            DocumentItem doc = docsvr.GetByUniqFileName(keyf, true);
             //byte[] pdfByte = new byte[] { };
             //if (doc.Id != 0)
             //{
@@ -375,7 +375,7 @@ namespace DRD.App.Controllers
 
             byte[] pdfByte = new byte[] { };
 
-            string filepath = Server.MapPath("/doc/mgn/" + keyf);
+            string filepath = Server.MapPath("/doc/company/tmp/" + doc.FileName);
 
             XFEncryptionHelper xf = new XFEncryptionHelper();
             var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
@@ -383,6 +383,8 @@ namespace DRD.App.Controllers
             return Convert.ToBase64String(pdfByte);
         }
 
+
+        /*
         /// <summary>
         /// 
         /// </summary>
