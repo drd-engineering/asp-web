@@ -356,12 +356,9 @@
                 ];// not used
                 $('#autocomplete-company').autocomplete({
                     lookup: $scope.companyAll ,
-                    onSelect: function(e, term, item){
-                        /*$scope.model.CompanyId = suggestion.data;
-                        $scope.model.CompanyName = suggestion.value;*/
-                        console.log(e);
-                        console.log(term);
-                        console.log(item);
+                    onSelect: function(suggestion){
+                        $scope.model.CompanyId = suggestion.data;
+                        $scope.model.CompanyName = suggestion.value;
                     }
                 });
             }

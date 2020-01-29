@@ -434,7 +434,7 @@ namespace DRD.Service
         }
 
         // POST/GET AcceptMember/memberId
-        // return id if member accepted, return -1 if member not found. 
+        // return user id if member accepted, return -1 if member not found. 
         public long AcceptMember(long memberId)
         {
             using (var db = new ServiceContext())
@@ -444,14 +444,14 @@ namespace DRD.Service
                 {
                     memberSearch.isCompanyAccept = true;
                     db.SaveChanges();
-                    return memberSearch.Id;
+                    return memberSearch.UserId;
                 }
                 else
                     return -1;
             }
         }
         // POST/GET RejectMember/memberId
-        // return id if member accepted, return -1 if member not found. 
+        // return user id if member accepted, return -1 if member not found. 
         public long RejectMember(long memberId)
         {
             using (var db = new ServiceContext())
@@ -461,7 +461,7 @@ namespace DRD.Service
                 {
                     memberSearch.IsActive = false;
                     db.SaveChanges();
-                    return memberSearch.Id;
+                    return memberSearch.UserId;
                 }
                 else
                     return -1;
