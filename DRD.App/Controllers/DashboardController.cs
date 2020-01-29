@@ -68,7 +68,7 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetActivityCounter(long CompanyId)
+        public ActionResult GetActivityCounterCompany(long CompanyId)
         {
             Initialize();
             CounterItem counter = (CounterItem)Session["_COUNTER_"];

@@ -36,7 +36,22 @@ namespace DRD.App.Controllers
 
             InboxService inboxService = new InboxService();
             RotationInboxData product = inboxService.GetInboxItem(id,user.Id);
+            product.Document = new DocumentInboxData();
             layout.obj = product;
+            
+            return View(layout);
+        }
+        public ActionResult Inbox(int id)
+        {
+            Initialize();
+
+            System.Diagnostics.Debug.WriteLine("INBOX ID " + id);
+            
+            var data = inboxService.GetInboxItemById(id, user);
+            layout.dataId = id;
+
+            layout.obj = data;
+
             return View(layout);
         }
         public ActionResult List()
@@ -55,19 +70,6 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Inbox(int id)
-        {
-            Initialize();
-
-            System.Diagnostics.Debug.WriteLine("INBOX ID " + id);
-            
-            var data = inboxService.GetInboxItemById(id, user);
-            layout.dataId = id;
-
-            layout.obj = data;
-
-            return View(layout);
-        }
 
         public ActionResult AddDocument(int id) 
         {

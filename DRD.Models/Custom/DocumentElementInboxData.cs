@@ -40,7 +40,7 @@ namespace DRD.Models
         // Foreign keys
         public virtual ElementTypeInboxData ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
         [ForeignKey("DocumentId")]
-        public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
+        public virtual DocumentInboxData Document { get; set; } // FK_DocumentAnnotate_Document
         [ForeignKey("ElementId")]
         public Element Element { get; set; }
 

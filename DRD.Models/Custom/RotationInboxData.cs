@@ -27,6 +27,7 @@ namespace DRD.Models.Custom
         public byte SubscriptionType { get; set; }
         public long SubscriptionOf { set; get; }
         public string DecissionInfo { get; set; }
+        public DocumentInboxData Document { get; set; }
 
         // Document summaries
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
@@ -45,6 +46,8 @@ namespace DRD.Models.Custom
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
             SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
+
+            Document = new DocumentInboxData();
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();

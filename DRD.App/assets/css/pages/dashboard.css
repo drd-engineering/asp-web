@@ -1,183 +1,80 @@
-.center-text {
-    text-align: center;
-}
 
-.box-rounded {
-    border-radius: 15px;
-    padding: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    cursor: pointer;
-}
-
-.panel {
-    border: none;
-}
-
-.panel-heading {
-    /*make'em transparent, cause of panel in panel thing*/
-    background-color: #f5f5f5 !important;
-}
-
-.highlight-container {
-    /*same as hightlight-container in invitation-list*/
-    background-color: #f5f5f5;
-    padding: 0;
-    /*width: inherit;*/
-}
-
-    .highlight-container .container {
-        width: inherit;
+    .auto-style3 {
+        width: 64px;
     }
 
-.highlight-card {
-    background-color: white;
-    margin: inherit 10px;
-    padding: 10px;
-}
-
-.highlight-header {
-    border-bottom: solid 1px #e9ebf0;
-    margin-bottom: 10px;
-}
-
-    .highlight-header select {
-        border: none;
-        margin-top: 5px;
-        margin-bottom: 5px;
+    .image-wraper {
+        float: left;
+        margin-right: 10px;
+        width: 120px;
+        height: 120px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 4px;
     }
 
-select {
-    width: auto !important;
-    max-width: 100px;
-}
-
-.select-lg {
-    max-width: 320px;
-}
-
-.push-left {
-    margin-left: auto !important;
-}
-
-    .push-left select {
-        display: block;
-        margin-left: auto;
+    .image-content {
+        width: 120px;
+        cursor: pointer;
+        /*padding: 5px;*/
+        /*position: absolute;*/
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
-.text-align-right {
-    text-align: right !important;
-}
-
-.highlight-card .card-title {
-    /*similiar with medium-text class, font-size's different. Same as card-title in invitationList*/
-    font-weight: 400;
-    line-height: 1.25;
-    font-size: 14px;
-}
-
-.highlight-card .sub-card-title {
-    padding-left: 5px;
-    font-weight: 400;
-    color: #979494;
-    font-size: 13px;
-}
-
-p.card-title, p.sub-card-title {
-    margin: 0 !important;
-}
-
-.highlight-card .card-content {
-    /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
-    padding: 5px;
-    font-weight: 300;
-    color: grey;
-    line-height: 1;
-    font-size: 12px;
-}
-
-.highlight-card .card-filter {
-    /*similiar with small-text class, font-size's different. Same as card-title in invitationList*/
-    font-weight: 300;
-    color: black;
-    line-height: 1;
-    font-size: 12px;
-}
-
-.highlight-card h1 {
-    font-size: 96px;
-    color: black;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-..highlight-card .card-image-lg {
-    height: 100%;
-}
-
-
-.round-img, .round-img img {
-    border-radius: 50%; /* almost all image treated like this*/
-}
-
-.highlight-card .card-image-lg img {
-    height: 80px;
-    width: 80px;
-}
-
-.highlight-card .card-image img {
-    max-height: 60px;
-    max-width: 56px;
-}
-
-.highlight-card .card-image-xs img {
-    height: 30px;
-    width: 30px;
-}
-
-.card-content p {
-    line-height: 1;
-    margin-top: 5px;
-}
-
-/*
-    container of vertical-align content wannabe
-    use this for div with .row
-*/
-.vertical-align-row {
-    display: flex;
-    align-items: center;
-}
-
-.vertical-align-content {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-.log-header {
-    /* imitate col-md-* style */
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-    .log-header span:first-child {
-        padding-right: 5px;
-        margin-right: 5px;
+    .auto-style1 {
+        width: 40px;
     }
 
-/* default text*/
-p {
-    font-weight: 400;
-    font-size: 14px;
-}
-
-.text-light {
-    font-weight: 300;
-}
-
-.log {
-    margin-top: 30px;
-}
-
-    .log:last-child {
-        margin-bottom: 30px;
+    .auto-style2 {
+        width: 141px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
     }
+
+    .auto-style22 {
+        width: 141px;
+    }
+
+    .auto-style3 {
+        width: 100%;
+    }
+
+    .auto-style4 {
+    }
+
+    .auto-style5 {
+        text-align: center;
+        font-size: smaller;
+        width: 100px;
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+    }
+
+    .auto-style6 {
+        border-bottom-style: dotted;
+        border-bottom-width: 1px;
+        font-size: smaller;
+        color: gray;
+    }
+
+    .text-top {
+        height: 50px;
+        vertical-align: top;
+    }
+
+    .btn-permission {
+        cursor: pointer;
+        border-radius: 10%;
+        padding: 3px;
+        color: white;
+        background-color: cornflowerblue;
+    }
+
+    .action-processed {
+        background-color: brown;
+    }
+    

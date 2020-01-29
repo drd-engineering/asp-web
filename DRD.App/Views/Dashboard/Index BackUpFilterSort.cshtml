@@ -28,7 +28,7 @@
     <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
 }
     <body ng-controller="drdController">
-        <div class="page-container">
+        <div class="page-container" ng-controller="drdController">
             <section id="dashboard-highlight">
                 <div class="row">
 
@@ -170,6 +170,88 @@
                                             <option class="card-filter">PT Company 2</option>
                                             <option class="card-filter">...</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTER, SORT -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-4">
+                                        <!-- FILTER -->
+                                        <p class="sub-card-title">Filter</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Time</option>
+                                                    <option class="card-filter">This Week</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <!-- SORT -->
+                                        <p class="sub-card-title">Sort</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Subject</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Workflow</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -461,7 +543,6 @@
                 $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                     if (response.data) {
                         $scope.counter = response.data.New;
-                        console.log($scope.counter);
                     }
                     else {
                     }

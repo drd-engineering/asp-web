@@ -66,30 +66,30 @@
                         <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3" style="top:3px"></i></a></li>
                         <li>
                             <a href="/">
-                                @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@
+                                <!-- @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@ -->
                             </a>
                         </li>
                     </ul>
                     <div class="navbar-right">
                         <ul class="nav navbar-nav">
-                            @*<li>
+                            <!-- @*<li>
                                 <a href="/chat/chat">
                                     <i class="icon-bubble9"></i>
                                     <span class="visible-xs-inline-block position-right">Chat</span>
                                     <span class="badge bg-warning-400" ng-hide="counter.UnReadChat==0">{{counter.UnReadChat}}</span>
                                 </a>
-                            </li>*@
+                            </li>*@ -->
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="~/Images/Member/@Model.user.EncryptedId/@Model.user.ImageProfile" alt="">
-                                    @*<span>@Model.user.ShortName</span>*@
+                                    <img src="~/Images/Member/@Model.user.EncryptedId/@Model.user.ImageProfile" alt="" />
+                                    <!-- <span> @Model.user.Name </span> -->
                                     <i class="caret"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="/profile"><i class="icon-user-check"></i> <span>Profile</span></a></li>
-                                    @*<li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>Plan</span></a></li>
+                                    <!-- @*<li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>Plan</span></a></li>
                                     <li><a href="/memberaccount/memberaccountlist"><i class="icon-home8"></i> <span>Bank Account</span></a></li>
-                                    <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>DRD Point</span></a></li>*@
+                                    <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>DRD Point</span></a></li>*@ -->
                                     <li><a href="/Login/ChangePassword"><i class="icon-cog5"></i> <span>Change Password</span></a></li>
                                     <li class="divider"></li>
                                     <li><a href="/Login/Logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>

@@ -3397,6 +3397,7 @@
     <Content Include="assets\js\plugins\pickers\pickadate\translations\FORMATTING.md" />
     <Content Include="assets\js\plugins\pickers\pickadate\translations\NAMING.md" />
     <Content Include="assets\js\plugins\uploaders\plupload\files\Moxie.xap" />
+    <Content Include="ElementType.csv" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -3880,6 +3881,7 @@
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <None Include="Views\Company\Member.cshtml" />
+    <Content Include="Views\Inbox\Index.cshtml" />
     <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="WebForm1.aspx" />
     <Content Include="doc\json.json" />
