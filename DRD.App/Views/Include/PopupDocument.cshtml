@@ -39,10 +39,10 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label class="control-label" ng-show="model.Id!=0 || isUpload">
-                                        Original File Name: <br />
-                                        <b><a class="btn btn-dark" ng-click="annoDocument()">draft signature place of {{docFileName}}</a></b>
-                                    </label><br />
+                                    <div class="control-label" ng-show="model.Id!=0 || isUpload">
+                                        <small><b>Set up document</b> is used for placing signature and/or initial box</small><br />
+                                        <b><a class="btn btn-dark" ng-click="annoDocument()">Set up document</a></b> of {{docFileName}}
+                                    </div><br />
                                 </div>        
                                 <div class="row">
                                     <div class="col-6">
