@@ -9,6 +9,7 @@ namespace DRD.Models.Custom
     public class UserSession
     {
         public long Id { get; set; } // Id (Primary key)
+        public string EncryptedId { get; set; } // for folder destination location profile image
         public string Name { get; set; } // Name (length: 50)
         public string Phone { get; set; } // Phone (length: 20)
         public string Email { get; set; } // Email (length: 50)

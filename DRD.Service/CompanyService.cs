@@ -432,5 +432,41 @@ namespace DRD.Service
                 var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
             }
         }
+
+        // POST/GET AcceptMember/memberId
+        // return id if member accepted, return -1 if member not found. 
+        public long AcceptMember(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
+                {
+                    memberSearch.isCompanyAccept = true;
+                    db.SaveChanges();
+                    return memberSearch.Id;
+                }
+                else
+                    return -1;
+            }
+        }
+        // POST/GET RejectMember/memberId
+        // return id if member accepted, return -1 if member not found. 
+        public long RejectMember(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
+                {
+                    memberSearch.IsActive = false;
+                    db.SaveChanges();
+                    return memberSearch.Id;
+                }
+                else
+                    return -1;
+            }
+        }
+        
     }
 }

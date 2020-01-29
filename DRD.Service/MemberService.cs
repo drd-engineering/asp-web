@@ -142,6 +142,18 @@ namespace DRD.Service
             }
         }
 
+        public long Delete(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member member = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                member.IsActive = false;
+                db.SaveChanges();
+
+                return member.UserId;
+            }
+        }
+
         public bool addMemberToCompany(long userId, long companyId)
         {
             using (var db = new ServiceContext())

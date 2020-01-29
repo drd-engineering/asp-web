@@ -83,5 +83,19 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult AcceptMember(long memberId)
+        {
+            InitializeAPI();
+            var data = companyService.AcceptMember(memberId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult RejectMember(long memberId)
+        {
+            InitializeAPI();
+            var data = companyService.RejectMember(memberId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

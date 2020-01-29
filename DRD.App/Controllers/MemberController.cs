@@ -74,6 +74,15 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult Delete(long memberId)
+        {
+            InitializeAPI();
+
+            long data = memberService.Delete(memberId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult addCompanyToMember(long companyId, long userId)
         {
             InitializeAPI();

@@ -80,6 +80,7 @@ namespace DRD.Service
                     }
                     UserSession loginUser = new UserSession();
                     loginUser.Id = userGet.Id;
+                    loginUser.EncryptedId = Utilities.Encrypt(userGet.Id.ToString());
                     loginUser.Name = userGet.Name;
                     loginUser.OfficialIdNo = userGet.OfficialIdNo;
                     loginUser.Phone = userGet.Phone;
