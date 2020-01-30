@@ -10,6 +10,7 @@ namespace DRD.App.Controllers
     {
         LoginController login = new LoginController();
         DashboardService dashboardService = new DashboardService();
+        CompanyService companyService = new CompanyService();
         UserSession user;
         Layout layout = new Layout();
 
@@ -80,6 +81,14 @@ namespace DRD.App.Controllers
 
             var data = dashboardService.GetActivityCounter(user.Id, counter, CompanyId);
             Session["_COUNTER_"] = data;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetListCompanyOwned()
+        {
+            Initialize();
+            var data = companyService.getCompanyListByOwnerId(user.Id);
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

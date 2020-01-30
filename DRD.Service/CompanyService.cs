@@ -72,6 +72,38 @@ namespace DRD.Service
                 return null;
             }
         }
+        public CompanyList getCompanyListByOwnerId(long ownerId)
+        {
+            memberService = new MemberService();
+            using (var db = new ServiceContext())
+            {
+                var companies = new CompanyList();
+                var companyThatOwnedBy = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
+                if (companyThatOwnedBy != null)
+                {
+                    foreach (Company x in companyThatOwnedBy)
+                    {
+                        CompanyItem company = new CompanyItem();
+                        var subscription = getCompanySubscription(x.Id);
+                        company.Id = x.Id;
+                        company.Code = x.Code;
+                        company.Name = x.Name;
+                        company.Phone = x.Phone;
+                        company.Address = x.Address;
+                        company.PointLocation = x.PointLocation;
+                        company.OwnerId = x.OwnerId;
+                        company.OwnerName = userService.GetName(company.OwnerId);
+                        if (subscription != null) { company.SubscriptionId = subscription.Id; }
+                        if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
+                        company.IsActive = x.IsActive;
+                        company.IsVerified = x.IsVerified;
+
+                        companies.addCompany(company);
+                    }
+                }
+                return companies;
+            }
+        }
         public CompanyList getCompanyListByAdminId(long adminId)
         {
             memberService = new MemberService();
