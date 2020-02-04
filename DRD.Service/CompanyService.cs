@@ -75,6 +75,7 @@ namespace DRD.Service
         public CompanyList getCompanyListByOwnerId(long ownerId)
         {
             memberService = new MemberService();
+            userService = new UserService();
             using (var db = new ServiceContext())
             {
                 var companies = new CompanyList();
@@ -92,7 +93,7 @@ namespace DRD.Service
                         company.Address = x.Address;
                         company.PointLocation = x.PointLocation;
                         company.OwnerId = x.OwnerId;
-                        company.OwnerName = userService.GetName(company.OwnerId);
+                        company.OwnerName = userService.GetName(x.OwnerId);
                         if (subscription != null) { company.SubscriptionId = subscription.Id; }
                         if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
                         company.IsActive = x.IsActive;
