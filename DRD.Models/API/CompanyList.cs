@@ -49,6 +49,8 @@ namespace DRD.Models.API
         public bool IsActive { get; set; } // IsActive
         public bool IsVerified { get; set; } // IsVerified
         public long TotalMember { get; set; }
+        public bool IsOwnedByUser { get; set; }
+        public bool IsManagedByUser { get; set; }
 
         public List<MemberItem> Administrators { get; set; }
         public List<Member> Members { get; set; }

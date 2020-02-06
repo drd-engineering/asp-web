@@ -124,7 +124,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                return db.Members.Where(companyItem => companyItem.UserId == adminId && companyItem.IsActive & companyItem.IsAdministrator).ToList();
+                return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
             }
         }
 

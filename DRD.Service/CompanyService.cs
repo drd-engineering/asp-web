@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
+using DRD.Models.View;
 using DRD.Models.API;
 using DRD.Service.Context;
 namespace DRD.Service
@@ -117,6 +118,7 @@ namespace DRD.Service
                     var company = GetCompanyDetail(x.CompanyId);
                     if (company != null)
                     {
+                        company.IsManagedByUser = true;
                         companies.addCompany(company);
                     }
                 }
@@ -153,6 +155,7 @@ namespace DRD.Service
                     if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
                     company.IsActive = x.IsActive;
                     company.IsVerified = x.IsVerified;
+                    company.IsOwnedByUser = (x.Id == userId);
                     company.Administrators = memberService.getAdministrators(company.Id);
                     System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
 
@@ -164,6 +167,7 @@ namespace DRD.Service
                 return listReturn;
             }
         }
+
         public CompanyItem GetCompanyDetail(long id)
         {
             memberService = new MemberService();
