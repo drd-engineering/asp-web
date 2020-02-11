@@ -50,6 +50,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms.Ribbon35, Version=3.5.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Forms.Ribbon35.3.5.8.0\lib\net35\System.Windows.Forms.Ribbon35.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="XEncryptionHelper.cs" />
+    <Compile Include="XFEncryptionHelper.cs" />
     <Compile Include="AppConfigGenerator.cs" />
     <Compile Include="InboxService.cs" />
     <Compile Include="ContactService.cs" />
@@ -68,7 +73,9 @@
     <Compile Include="CompanyService.cs" />
     <Compile Include="MemberService.cs" />
     <Compile Include="MenuService.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Config.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Constant.cs" />
     <Compile Include="Context\ServiceContext.cs" />
     <Compile Include="EmailService.cs" />
@@ -91,6 +98,9 @@
       <Project>{9634c54d-bfac-4da4-8e04-9b65e7a84763}</Project>
       <Name>DRD.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Updates.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

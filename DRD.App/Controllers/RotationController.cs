@@ -4,6 +4,7 @@ using DRD.Models;
 using DRD.Models.View;
 using DRD.Models.Custom;
 using DRD.Service;
+using DRD.Models.API;
 
 namespace DRD.App.Controllers
 {
@@ -145,13 +146,13 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        //public ActionResult ProcessActivity(ProcessActivity param, int bit)
-        //{
-        //    var rotationService = new RotationService();// getUserLogin().AppZone.Code);
-        //    InitializeAPI();
+        public ActionResult ProcessActivity(ProcessActivity param, int bit)
+        {
+           var rotationService = new RotationService();// getUserLogin().AppZone.Code);
+            InitializeAPI();
 
-            //var data = rotationService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
-          //  return Json(data, JsonRequestBehavior.AllowGet);
-        //}
+           var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
+          return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

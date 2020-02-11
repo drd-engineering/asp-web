@@ -378,7 +378,7 @@
                 }else{
                     // error response, 404 inbox
                 }
-
+                console.log($scope);
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -1213,7 +1213,7 @@
 
                     file.upload = Upload.upload({
                         url: '/updownfile/xuploadastemporary?idx='+idx+'&fileType=0&companyId='+$scope.companyId,
-                        data: { MyImages: file }
+                        data: { FileUploaded: file }
                     });
 
                     file.upload.then(function (response) {
@@ -1227,12 +1227,15 @@
                             showInfo("Document quota is insufficient.");
                             $scope.progressValueUploadFile="Failed";
                         }else{
-                            $scope.model.FileName=file.result.filename;
+                            $scope.model.FileName= file.result.filename;
                             $scope.model.ExtFile=file.result.fileext;
                             $scope.fileTypeImage=$scope.model.ExtFile+".png";
                             $scope.progressValueUploadFile="Upload success";
                             $scope.isUpload=1;
-                            isdefineiframe=false;
+                            isdefineiframe = false;
+
+                            console.log($scope.model.FileName);
+                            console.log( $scope.model.ExtFile);
                         }
                         //});
                     }, function (response) {
@@ -1243,10 +1246,10 @@
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
 
                         if (file.progress>=100){
-                            //$scope.progressValueUploadFile="Upload success";
+                            $scope.progressValueUploadFile="Upload success";
                             ////$scope.podcastImage="podcast_uploaded.png";
-                            //$scope.isUpload=1;
-                            //isdefineiframe=false;
+                            $scope.isUpload=1;
+                            isdefineiframe=false;
                         }else
                             $scope.progressValueUploadFile="Uploading...("+file.progress+"%)";
 
@@ -1415,10 +1418,12 @@
             $scope.annoDocument = function () {
                 var iframe = document.getElementById('xpdfIFrame');
                 $("#modal_select_document").modal("hide");
+
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
-                $http.post('/document/openfile', { fileName: $scope.docFileName }).then(function (response) {
+                $http.post('/document/openfile', { fileName: $scope.model.FileName }).then(function (response) {
                     if (response.data) {
-                        $scope.openDocument(response.data);
+                        $scope.openDocument(response.data, true);
+                        console.log(response.data);
                     }
                 }, function (response) {
                     //error handle\
@@ -1426,25 +1431,25 @@
                 });                
             }
 
-            $scope.openDocument = function (fileName){
+            $scope.openDocument = function (fileName, isNew){
                 //if (!isdefineiframe){
-                    var iframe=document.getElementById('xpdfIFrame');
-                    if (iframe.contentWindow==null)
-                        return;
+                var iframe=document.getElementById('xpdfIFrame');
+                if (iframe.contentWindow==null)
+                    return;
 
-                    if ($scope.annos.length>0)
-                        iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//$scope.model.FileName);
+                if ($scope.annos.length>0)
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
                     iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
                     iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
                     iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
                     isdefineiframe=true;
-                //}
-                $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
-            }
+                    //}
+                    $("#modal_pdf_viewer").modal("show");
+                    $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+                }
 
-            var revisiFinished = function(e){
+                var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos=items;

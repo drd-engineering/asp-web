@@ -14,14 +14,19 @@ namespace DRD.Service
         {
             _connString = Constant.CONSTRING;
         }
-        public DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument)
+        public DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument, bool isTemp)
         {
             DocumentItem doc = new DocumentItem();
             using (var db = new ServiceContext())
             {
-                if (isDocument)
+                if (isTemp)
                 {
-                    var result = db.Documents.FirstOrDefault(c => c.FileName.Contains(uniqFileName));
+                    doc.FileName = uniqFileName;
+                    
+                }
+                else if (isDocument)
+                {
+                     var result = db.Documents.FirstOrDefault(c => c.FileName.Contains(uniqFileName));
                     if (result != null)
                     {
                         doc.Id = result.Id;

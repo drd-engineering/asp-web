@@ -33,14 +33,14 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             Initialize();
-
             InboxService inboxService = new InboxService();
+
             RotationInboxData product = inboxService.GetInboxItem(id,user.Id);
-            product.Document = new DocumentInboxData();
             layout.obj = product;
             
             return View(layout);
         }
+
         public ActionResult Inbox(int id)
         {
             Initialize();

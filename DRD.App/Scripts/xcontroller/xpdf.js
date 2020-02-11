@@ -1711,11 +1711,13 @@
         isAnnoElementEnable = flag;
     }
 
-    $scope.setDefaultPdf = function (filename) {
+    $scope.setDefaultPdf = function (filename, isNew) {
+        console.log("tes this is setdefault pdf: RESULT == "+filename);
         $scope.defaultDocumentName=filename;
-
-        $http.post('/updownfile/XGetPdfData', { keyf: filename }).then(function (response) {
+        $http.post('/updownfile/XGetPdfData', { keyf: filename, isNew: isNew }).then(function (response) {
             if (response.data) {
+
+        console.log("tes this is setdefault pdf: RESULT == "+response.data);
                 PDFViewerApplication.open('data:application/pdf;base64,'+response.data);
             }
         }, function (response) {

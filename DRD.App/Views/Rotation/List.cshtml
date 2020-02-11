@@ -100,12 +100,12 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr style="cursor:pointer;min-height:50px;vertical-align:central;" ng-repeat="x in products">
+                                                <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in products">
                                                     <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
                                                     <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
 
-                                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
+                                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus  ) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
                                                     <td width="100px">
                                                         <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
                                                     </td>

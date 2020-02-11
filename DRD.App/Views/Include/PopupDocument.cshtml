@@ -17,12 +17,11 @@
                             <div class="col-md-12">
                                 <div class="row justify-content-sm-center">
                                     <div class="col-sm-4">
+                                            <span style="position:absolute;padding:5px;font-size:smaller" ng-model="progressUploadFile">{{docFileName}}<br />{{progressValueUploadFile}}</span>
                                     </div>
                                     <div class="col-sm-4">
                                         
                                         <div class="image-wrapper">
-                                            <span style="position:absolute;padding:5px;font-size:smaller"
-                                                    ng-model="progressUploadFile">{{docFileName}}<br />{{progressValueUploadFile}}</span>
 
                                             <img ng-src="/Images/filetype/{{fileTypeImage}}" class="image-content"
                                                     ngf-drop="uploadDocFile(0,$file, $invalidFiles)"
@@ -35,7 +34,7 @@
                                                     ngf-max-size="1000MB" style="object-fit:fill" />
                                         </div>
                                         
-                                        <span style="font-size:xx-small">File Size (Bytes) : {{model.FileSize}}</span>   
+                                        <span style="font-size:xx-small">File Size: {{model.FileSize}}</span>   
                                     </div>
                                 </div>
                                 <div class="row">

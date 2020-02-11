@@ -119,8 +119,7 @@
                         <div class="panel panel-flat">
 
                             <div class="table-responsive" ng-show="isView">
-
-                                <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
+                                <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
                                             <th width="25px">#</th>
@@ -132,7 +131,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="x in products" style="vertical-align:top" @*on-finish-render="ngRepeatFinished"*@>
+                                        <tr  style="cursor:pointer;height:50px;height:50px;vertical-align:central;"  ng-repeat="x in products" style="vertical-align:top" @*on-finish-render="ngRepeatFinished"*@>
                                             <td>{{$index+1 + index}}</td>
                                             <td>
                                                 @*<input type="checkbox" class="control-danger" ng-model="options[$index]" ng-value="x.IsChecked" ng-change="toggleCurrency($index)">*@

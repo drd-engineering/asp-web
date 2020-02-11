@@ -53,8 +53,7 @@
                         <div class="panel panel-flat">
 
                             <div class="table-responsive" ng-show="isView">
-
-                                <table class="table table-bordered table-striped" style="font-size:small">
+                                <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
                                             <th width="25px">No.</th>
@@ -65,9 +64,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="x in products">
+                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-click="do_edit(x.Id);" ng-repeat="x in products">
                                             <td>{{$index+1 + index}}</td>
-                                            <td><a ng-click="do_edit(x.Id);">{{x.RotationName}}</a></td>
+                                            <td>{{x.RotationName}}</td>
                                             <td>{{x.CurrentActivity}}</td>
                                             <td>{{x.WorkflowName}}</td>
                                             <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>

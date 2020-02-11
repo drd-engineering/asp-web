@@ -10,7 +10,6 @@ using DRD.Service;
 
 using System.Net;
 using System.IO;
-using System.Based.Core;
 using System.Text;
 using DRD.Models;
 
@@ -41,29 +40,30 @@ namespace DRD.App.Controllers
             return login.GetUser(this);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="idx"></param>
-        /// <param name="fileType"></param>
-        /// <returns></returns>
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult XUploadAsTemporary(int idx, int fileType, long companyId)
         {
+            //check user session for login status
             Initialize();
-            string folder = "doc/company/temp"; // fileType = 0
+
+            //initiating variable folder and doc
             DocUploadResult result = new DocUploadResult();
+            string folder = "doc/company/temp"; // fileType = 0
             string _filename = string.Empty;
             string _ext = "";
+
+            //checking uploaded files through request
             if (System.Web.HttpContext.Current.Request.Files.AllKeys.Any())
             {
-                var pic = System.Web.HttpContext.Current.Request.Files["MyImages"];
-                if (pic == null || pic.ContentLength <= 0)
-                    pic = System.Web.HttpContext.Current.Request.Files[0];
+                //get uploaded file
+                var file = System.Web.HttpContext.Current.Request.Files["FileUploaded"];
+                if (file == null || file.ContentLength <= 0)
+                    file = System.Web.HttpContext.Current.Request.Files[0];
 
-                if (pic.ContentLength > 0)
+                //check file exist
+                if (file.ContentLength > 0) 
                 {
-                    // check doc quota balance
+                    // check storage quota 
                     var subscriptionService = new SubscriptionService();
                     var plan = subscriptionService.getPlanOfCompany(companyId);
                     if (plan == null)
@@ -71,22 +71,27 @@ namespace DRD.App.Controllers
                         result.idx = -2;
                         return Json(result, JsonRequestBehavior.AllowGet); //Invalid member plan
                     }
-                    if (plan.StorageSize - plan.StorageUsedinByte < pic.ContentLength)
+                    if (plan.StorageSize - plan.StorageUsedinByte < file.ContentLength)
                     {
                         result.idx = -4;
                         return Json(result, JsonRequestBehavior.AllowGet); //The used rotation exceeds the data packet quota number
                     }
+
                     var companyService = new CompanyService();
+                    _ext = Path.GetExtension(file.FileName);
                     var companyofUser = companyService.GetCompanyItem(companyId);
-                    var fileName = Path.GetFileName(pic.FileName);
-                    _ext = Path.GetExtension(pic.FileName);
+                    var fileName = Path.GetFileName(file.FileName);
+                    
+                    //meant for uploaded signature and initial
                     if (String.IsNullOrEmpty(_ext))
                         _ext = ".png";
 
+                    //generate unique identity for each file
                     _filename = Guid.NewGuid().ToString();
                     var _comPath = Server.MapPath("/" + folder + "/") + _filename + _ext;
-                    //var _comPath = Server.MapPath("/" + folder + "/" + companyofUser.Id + "_" + companyofUser.Name +"/") + _filename + _ext;
                     _filename = _filename + _ext;
+
+                    System.Diagnostics.Debug.WriteLine("[[FILE]] " + _filename + " [[EXT]] " + _ext);
 
                     ViewBag.Msg = _comPath;
                     var path = _comPath;
@@ -102,13 +107,7 @@ namespace DRD.App.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
             // quota upload belum dipotong
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="idx"></param>
-        /// <param name="fileType"></param>
-        /// <returns></returns>
+        
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult XUploadFree(int idx, int fileType)
         {
@@ -353,32 +352,20 @@ namespace DRD.App.Controllers
         /// </summary>
         /// <param name="keyf"></param>
         /// <returns></returns>
-        public string XGetPdfData(string keyf)
+        public string XGetPdfData(string keyf, bool isNew)
         {
-            ////LoginController login = new LoginController();
-            ////login.CheckLogin(this);
+            Initialize();
 
             DocumentService docsvr = new DocumentService();
-            DocumentItem doc = docsvr.GetByUniqFileName(keyf, true);
-            //byte[] pdfByte = new byte[] { };
-            //if (doc.Id != 0)
-            //{
-            //    string filepath = Server.MapPath("/doc/mgn/" + doc.FileName);
-
-            //    XFEncryptionHelper xf = new XFEncryptionHelper();
-            //    var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
-            //}
-            //return Convert.ToBase64String(pdfByte);
-
-            //LoginController login = new LoginController();
-            //login.CheckLogin(this);
+            DocumentItem doc = docsvr.GetByUniqFileName(keyf, true, isNew);
 
             byte[] pdfByte = new byte[] { };
 
-            string filepath = Server.MapPath("/doc/company/tmp/" + doc.FileName);
+            string filepath = Server.MapPath("/doc/company/temp/" + doc.FileName);
 
             XFEncryptionHelper xf = new XFEncryptionHelper();
             var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
+            System.Diagnostics.Debug.WriteLine("[[FILEPATH]] " + filepath + " [[OPEN DOC PDF]] " + xresult);
 
             return Convert.ToBase64String(pdfByte);
         }

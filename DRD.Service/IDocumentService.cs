@@ -10,8 +10,6 @@ namespace DRD.Service
         Document Create(Document document, long companyId, long rotationId);
         Document Update(Document document, long companyId, long rotationId);
         //void DoRevision(Document document);
-
-
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
         ICollection<DocumentElement> FillAnnos(Document doc);
@@ -19,7 +17,7 @@ namespace DRD.Service
         IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);
         Document GetById(long id);
-        DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument);
+        DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument, bool isNew);
         IEnumerable<DocumentItem> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize);
         IEnumerable<DocumentItem> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentItem> GetLiteAll(long creatorId, string topCriteria, int page, int pageSize, string order, string criteria);
