@@ -16,6 +16,8 @@
     <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
+
+
     <!-- Theme JS files -->
     <script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/visualization/d3/d3.min.js"></script>
@@ -26,7 +28,7 @@
     <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
 }
     <body ng-controller="drdController">
-        <div class="page-container">
+        <div class="page-container" ng-controller="drdController">
             <section id="dashboard-highlight">
                 <div class="row">
 
@@ -67,7 +69,7 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="card-content-lg">
-                                                            <h1>{{counter.New.InProgress}}</h1>
+                                                            <h1>{{counter.InProgress}}</h1>
                                                         </div>
 
                                                     </div>
@@ -85,7 +87,7 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="card-content-lg">
-                                                            <h1>{{counter.New.Completed}}</h1>
+                                                            <h1>{{counter.Completed}}</h1>
                                                         </div>
 
                                                     </div>
@@ -168,6 +170,88 @@
                                             <option class="card-filter">PT Company 2</option>
                                             <option class="card-filter">...</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTER, SORT -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-4">
+                                        <!-- FILTER -->
+                                        <p class="sub-card-title">Filter</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Time</option>
+                                                    <option class="card-filter">This Week</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <!-- SORT -->
+                                        <p class="sub-card-title">Sort</p>
+                                        <div class="select-group">
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Status</option>
+                                                    <option class="card-filter">Ongoing</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Subject</option>
+                                                    <option class="card-filter">??</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Code</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+
+                                            <span>
+                                                <!-- SELECT -->
+                                                <select class="card-filter">
+                                                    <option class="card-filter">Workflow</option>
+                                                    <option class="card-filter">???</option>
+                                                    <option class="card-filter">...</option>
+                                                </select>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -427,19 +511,15 @@
             $scope.kriteria = "";
             $scope.page = 1;
             $scope.row = 20;
-            $scope.companyOwned = [];
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
             initValues();
             $scope.dashboard = {};
-            $scope.counter = {
-                Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
-                New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
-            };
             $scope.$on("$destroy", function (event) {
                 clearInterval(xtimer);
             });
+            $scope.counter = { Inbox: 0, InProgress: 0, Pending: 0, Declined:0, Completed:0, Pending:0, Altered:0, Contact:0, DrDriveDesc:'0GB',Document:0 };
             $scope.notiftime = 5000;
             $scope.xtimer = 0;
             $scope.startCounting = function () {
@@ -454,110 +534,28 @@
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
             }
             angular.element(document).ready(function () {
-                $scope.getCompanyOwned();
+                $scope.startCounting();
                 $scope.getActivityCounter();
                 $("#content").show();
 
             });
             $scope.getActivityCounter = function () {
-                $scope.products = [];
                 $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                     if (response.data) {
-                        console.log(response.data);
-                        $scope.counter = response.data;
-                        var counter = response.data;
-                        $.jGrowl.defaults.closer = false;
-                        var val = counter.New.Inbox - counter.Old.Inbox;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' inbox', {
-                                header: 'Inbox Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.InProgress - counter.Old.InProgress;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' in progress', {
-                                header: 'In Progress Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-
-                        val = counter.New.Signed - counter.Old.Signed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' signed', {
-                                header: 'Signed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Declined - counter.Old.Declined;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' declined', {
-                                header: 'Declined Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-danger'
-                            });
-                        }
-                        val = counter.New.Completed - counter.Old.Completed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' completed', {
-                                header: 'Completed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Altered - counter.Old.Altered;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' altered', {
-                                header: 'Altered Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        val = counter.New.Revised - counter.Old.Revised;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' revised', {
-                                header: 'Revised Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        if (counter.New.DepositBalance != counter.Old.DepositBalance) {
-                            $.jGrowl("DRD Point " + $filter('number')(counter.New.DepositBalance, 0), {
-                                header: 'DRD Point ',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-success-400'
-                            });
-                        }
+                        $scope.counter = response.data.New;
                     }
                     else {
-                        clearInterval($scope.xtimer);
-                        swal({
-                            title: "Session expired!",
-                            text: "The session has expired, the page will redirect to login. I will close in 10 seconds.",
-                            confirmButtonColor: "#2196F3",
-                            timer: 10000
-                        }, function () {
-                            swal.close();
-                            location.href = "/Login";
-                        });
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
+            $scope.resetCounter = function () {
+                $scope.counter.InProgress = 0;
+                $scope.counter.Completed = 0;
 
+            }
             $scope.linkPage = function (name) {
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:name})[0].UrlPage;
                 location.href=url;
@@ -565,6 +563,8 @@
             /*--------------------------------------------------------------
             DO EDIT ROTATION
             --------------------------------------------------------------*/
+
+
             $scope.getProductCount = function (kriteria) {
                 $http.post('@Url.Action("GetListCount", "Rotation")', { topCriteria: kriteria }).then(function (response) {
                     if (response.data) {
@@ -591,14 +591,7 @@
             //         console.log("error send email")
             //     });
             // }
-            $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetListCompanyOwned", "Dashboard")', {}).then(function (response) {
-                    console.log("run");
-                    if (response.data) {
-                        $scope.companyOwned = response.data.companies;
-                    }
-                })
-            }
+            
             /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/

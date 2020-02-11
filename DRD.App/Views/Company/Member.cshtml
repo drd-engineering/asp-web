@@ -47,7 +47,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
                                             <input type="text" class="form-control btn-process" ng-model="kriteria"
-                                                   placeholder="Find members" ng-keyup="$event.keyCode == 13 && getAcceptedMember(kriteria, page, row)">
+                                                   placeholder="Find members" ng-keyup="$event.keyCode == 13 && searchAcceptedMember(kriteria, page, row)">
                                         </div>
                                     </div>
                                 </div>
@@ -58,16 +58,11 @@
 
                     <!-- /page header -->
                     <!-- Content area -->
-                    <div class="content" style="display:none">
+                    <div class="content" ng-show="hasMember()">
                         <div class="manage-member-header">
                             <div class="row content-align-right">
                                 <div class="col-lg-2">
-                                    <p class="clickable">
-                                        <a>ALL</a>
-                                    </p>
-                                </div>
-                                <div class="col-lg-2">
-                                    <p>Selected (19)</p>
+                                    <p> {{ acceptedMembers.length }} Members </p>
                                 </div>
                             </div>
                         </div>
@@ -77,18 +72,19 @@
                             <div calss="row">
                                 <div ng-repeat="x in acceptedMembers" class="col-lg-4 col-md-4 col-xs-6">
                                     <div class="row member-container">
-                                        <div class="col-sm-1">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="defaultUnchecked">
-                                            </div>
-                                        </div>
                                         <div class="col-sm-3 col-lg-3">
                                             <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
-
                                         </div>
                                         <div class="col-sm-8 col-lg-8 no-overflow">
                                             <strong class="ellipsis">{{x.User.Name}}</strong>
                                             <div>{{x.User.Email}}</div>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <button class="btn pull-right btn-cancel mg-left-10 red-border" data-style="slide-down"
+                                                    ng-click="DeleteMember(x.Id)" style="width:120px">
+                                                <span class="ladda-label">Delete</span><span class="ladda-spinner"></span>
+                                                <div class="ladda-progress" style="width: 0px;"></div>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -119,52 +115,59 @@
                     @*INVITE BY EMAIL*@
 
                     <!-- Content area -->
-                    <div class="content" style="display:none">
-                        <!-- Contextual classes -->
-                        <div class="request-join overflow-auto">
-                            @*JOIN BY REQUEST*@
-                            <div class="">
-                                <!-- LIST -->
-                                <div calss="row">
-                                    <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
-                                        <div class="row member-container">
-                                            <div class="col-sm-2 col-lg-2">
-                                                <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
+                <div class="content" ng-show="hasPendingRequest()">
+                    <!-- Contextual classes -->
+                    <div class="manage-member-header">
+                        <div class="row content-align-right">
+                            <div class="col-lg-2">
+                                <p> {{ waitingMembers.length }} Waiting Member Request </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="request-join overflow-auto">
+                        @*JOIN BY REQUEST*@
+                        <div>
+                            <!-- LIST -->
+                            <div calss="row">
+                                <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
+                                    <div class="row member-container">
+                                        <div class="col-sm-2 col-lg-2">
+                                            <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
 
-                                            </div>
-                                            <div class="col-sm-6 col-lg-6 no-overflow">
-                                                <strong class="ellipsis">{{x.User.Name}}</strong>
-                                                <div>{{x.User.Email}}</div>
-                                            </div>
-
-                                            <div class="col-sm-4 col-lg-4">
-                                                <div class="input-group-btn container">
-                                                    <div class="row pull-right">
-                                                        <span class="image-container-sm green-border">
-                                                            <img src="~/Images/icon/accept.png" ng-click="updateProduct()" />
-                                                        </span>
-
-                                                        <span class="image-container-sm red-border">
-                                                            <img src="~/Images/icon/reject.png" ng-click="updateProduct()" />
-                                                        </span>
-                                                    </div>
-
-
-                                                </div>
-
-                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-lg-6 no-overflow">
+                                            <strong class="ellipsis">{{x.User.Name}}</strong>
+                                            <div>{{x.User.Email}}</div>
                                         </div>
 
+                                        <div class="col-sm-4 col-lg-4">
+                                            <div class="input-group-btn container">
+                                                <div class="row pull-right">
+                                                    <button class="image-container-sm green-border" ng-click="acceptMember(x.Id)" >
+                                                        <img src="~/Images/icon/accept.png"/>
+                                                    </button>
+
+                                                    <button class="image-container-sm red-border" ng-click="rejectMember(x.Id)" >
+                                                        <img src="~/Images/icon/reject.png"/>
+                                                    </button>
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                 </div>
-                                <!-- /LIST -->
 
                             </div>
-                            @*JOIN BY REQUEST*@
-                        </div>
+                            <!-- /LIST -->
 
+                        </div>
+                        @*JOIN BY REQUEST*@
                     </div>
+
+                </div>
                     <!-- /content area -->
                 </div>
                 <!-- /main content -->
@@ -232,7 +235,7 @@
             }
 
             $scope.getWaitingMember = function (id) {
-            $scope.waitingMembers = [];
+                $scope.waitingMembers = [];
                 $http.post('@Url.Action("GetWaitingMember", "Member")', { companyId: id })
                     .then(function (response) {
                     if (response.data) {
@@ -241,7 +244,68 @@
                     }
                 });
             }
-
+            /*--------------------------------------------------------------
+            DELETE MEMBER
+            --------------------------------------------------------------*/
+            $scope.DeleteMember = function (MemberId) {
+                $http.post('@Url.Action("Delete", "Member")', { memberId: MemberId })
+                    .then(function (response) {
+                        if (response.data) {
+                            if (response.data > 0) {
+                                $.jGrowl("Success Delete Member", {
+                                    header: 'User ' + response.data + ' now is not this company member anymore',
+                                    //sticky: true,
+                                    life: $scope.notiftime,
+                                    theme: 'alert-styled-right bg-info'
+                                });
+                                $scope.getAcceptedMember($scope.companyId);
+                            }
+                        }
+                            
+                    })
+            }
+            /*--------------------------------------------------------------
+            ACCEPT MEMBER
+            --------------------------------------------------------------*/
+            $scope.acceptMember = function (MemberId) {
+                $http.post('@Url.Action("AcceptMember", "Company")', { memberId: MemberId })
+                    .then(function (response) {
+                        if (response.data) {
+                            if (response.data > 0) {
+                                $.jGrowl('Request from User with id ' + response.data + " Accepted", {
+                                    header: 'Request Accepted',
+                                    //sticky: true,
+                                    life: $scope.notiftime,
+                                    theme: 'alert-styled-right bg-info'
+                                });
+                                $scope.getAcceptedMember($scope.companyId);
+                                $scope.getWaitingMember($scope.companyId);
+                            }
+                        }
+                    })
+            }
+            /*--------------------------------------------------------------
+            REJECT MEMBER
+            --------------------------------------------------------------*/
+            $scope.rejectMember = function (MemberId) {
+                console.log("Rejecting member")
+                $http.post('@Url.Action("RejectMember", "Company")', { memberId: MemberId })
+                    .then(function (response) {
+                        if (response.data) {
+                            if (response.data > 0) {
+                                $.jGrowl('Request from User with id ' + response.data + " Rejected", {
+                                    header: "Request Rejected",
+                                    //sticky: true,
+                                    life: $scope.notiftime,
+                                    theme: 'alert-styled-right bg-info'
+                                });
+                                $scope.getAcceptedMember($scope.companyId);
+                                $scope.getWaitingMember($scope.companyId);
+                            }
+                        }
+                            
+                    })
+            }
             /*--------------------------------------------------------------
             SEND INVITATION EMAIL
             --------------------------------------------------------------*/
@@ -292,6 +356,18 @@
             --------------------------------------------------------------*/
             $scope.addMember = function (mid) {
                 location.href = "/invitation/invitation?mid=" + mid;
+            }
+            $scope.hasPendingRequest = function () {
+                if ($scope.waitingMembers.length > 0)
+                    return true;
+                else
+                    return false;
+            }
+            $scope.hasMember = function () {
+                if ($scope.acceptedMembers.length > 0)
+                    return true;
+                else
+                    return false;
             }
             /*--------------------------------------------------------------
             CONVERT JSON DATE

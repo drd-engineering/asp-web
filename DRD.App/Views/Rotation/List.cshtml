@@ -152,8 +152,6 @@
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
             }
             angular.element(document).ready(function () {
-                $scope.findRotations();
-                //$scope.GetPartners();
                 $scope.getSubscriptionList();
                 
                 $(".content").show();   
@@ -247,7 +245,7 @@
                                 showInfo("Workflow doesnt has start node");
                             else {
                                 showSuccess("Successful data process.");
-                                $scope.changePage($scope.kriteria, $scope.page, $scope.row);
+                                $scope.findRotations($scope.kriteria, $scope.page, $scope.row);
                             }
                         } else
                             showInfo("process data error.");

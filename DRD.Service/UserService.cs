@@ -39,6 +39,7 @@ namespace DRD.Service
                 {
                     Member member = new Member();
                     member.UserId = userId;
+                    member.isMemberAccept = true;
                     member.CompanyId = register.CompanyId.Value;
                     long memberId = Save(member);
                 }
@@ -80,6 +81,7 @@ namespace DRD.Service
                     }
                     UserSession loginUser = new UserSession();
                     loginUser.Id = userGet.Id;
+                    loginUser.EncryptedId = Utilities.Encrypt(userGet.Id.ToString());
                     loginUser.Name = userGet.Name;
                     loginUser.OfficialIdNo = userGet.OfficialIdNo;
                     loginUser.Phone = userGet.Phone;

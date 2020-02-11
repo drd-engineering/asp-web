@@ -119,10 +119,13 @@ namespace Core.Postgres
                 isMemberAccept = true, UserId = listOfUserCreated[5].Id, IsAdministrator = true  };
             Member member10 = new Member { Id = -10, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true  };
-            Member member11 = new Member { Id = -11, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+            Member member11 = new Member { Id = -11, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[2].Id,IsAdministrator = false };
             Member member12 = new Member { Id = -12, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false
+            };
+            Member member13 = new Member { Id = -13, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false
             };
 
             PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};

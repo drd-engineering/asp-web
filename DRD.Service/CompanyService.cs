@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DRD.Models;
+using DRD.Models.View;
 using DRD.Models.API;
 using DRD.Service.Context;
 namespace DRD.Service
@@ -72,6 +73,39 @@ namespace DRD.Service
                 return null;
             }
         }
+        public CompanyList getCompanyListByOwnerId(long ownerId)
+        {
+            memberService = new MemberService();
+            userService = new UserService();
+            using (var db = new ServiceContext())
+            {
+                var companies = new CompanyList();
+                var companyThatOwnedBy = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
+                if (companyThatOwnedBy != null)
+                {
+                    foreach (Company x in companyThatOwnedBy)
+                    {
+                        CompanyItem company = new CompanyItem();
+                        var subscription = getCompanySubscription(x.Id);
+                        company.Id = x.Id;
+                        company.Code = x.Code;
+                        company.Name = x.Name;
+                        company.Phone = x.Phone;
+                        company.Address = x.Address;
+                        company.PointLocation = x.PointLocation;
+                        company.OwnerId = x.OwnerId;
+                        company.OwnerName = userService.GetName(x.OwnerId);
+                        if (subscription != null) { company.SubscriptionId = subscription.Id; }
+                        if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
+                        company.IsActive = x.IsActive;
+                        company.IsVerified = x.IsVerified;
+
+                        companies.addCompany(company);
+                    }
+                }
+                return companies;
+            }
+        }
         public CompanyList getCompanyListByAdminId(long adminId)
         {
             memberService = new MemberService();
@@ -84,6 +118,7 @@ namespace DRD.Service
                     var company = GetCompanyDetail(x.CompanyId);
                     if (company != null)
                     {
+                        company.IsManagedByUser = true;
                         companies.addCompany(company);
                     }
                 }
@@ -120,6 +155,7 @@ namespace DRD.Service
                     if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
                     company.IsActive = x.IsActive;
                     company.IsVerified = x.IsVerified;
+                    company.IsOwnedByUser = (x.Id == userId);
                     company.Administrators = memberService.getAdministrators(company.Id);
                     System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
 
@@ -131,6 +167,7 @@ namespace DRD.Service
                 return listReturn;
             }
         }
+
         public CompanyItem GetCompanyDetail(long id)
         {
             memberService = new MemberService();
@@ -432,5 +469,41 @@ namespace DRD.Service
                 var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
             }
         }
+
+        // POST/GET AcceptMember/memberId
+        // return user id if member accepted, return -1 if member not found. 
+        public long AcceptMember(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
+                {
+                    memberSearch.isCompanyAccept = true;
+                    db.SaveChanges();
+                    return memberSearch.UserId;
+                }
+                else
+                    return -1;
+            }
+        }
+        // POST/GET RejectMember/memberId
+        // return user id if member accepted, return -1 if member not found. 
+        public long RejectMember(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
+                {
+                    memberSearch.IsActive = false;
+                    db.SaveChanges();
+                    return memberSearch.UserId;
+                }
+                else
+                    return -1;
+            }
+        }
+        
     }
 }

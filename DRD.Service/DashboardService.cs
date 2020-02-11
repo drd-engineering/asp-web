@@ -41,7 +41,6 @@ namespace DRD.Service
                 counter.Old.StorageQuota = counter.New.StorageQuota;
                 counter.Old.StorageUsage = counter.New.StorageUsage;
 
-                
                 var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
                 var storages = companyService.getActiveSubscription(companyId: companyId);
 
@@ -66,15 +65,14 @@ namespace DRD.Service
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
 
-
                 var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList();
                 if (rotationNodes != null)
                 { 
                     long[] Ids = (from c in rotationNodes select c.Rotation.Id).ToArray();
                     var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.UserId == memberId).ToList();
                     
-                    counter.New.InProgress = rot.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
-                    counter.New.Completed = rot.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));
+                    counter.New.InProgress = rot.Count(c => c.Status == 1);
+                    counter.New.Completed = rot.Count(c => c.Status == 90);
                 }
                 return counter;
             }

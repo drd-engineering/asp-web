@@ -66,30 +66,30 @@
                         <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3" style="top:3px"></i></a></li>
                         <li>
                             <a href="/">
-                                @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@
+                                <!-- @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@ -->
                             </a>
                         </li>
                     </ul>
                     <div class="navbar-right">
                         <ul class="nav navbar-nav">
-                            @*<li>
+                            <!-- @*<li>
                                 <a href="/chat/chat">
                                     <i class="icon-bubble9"></i>
                                     <span class="visible-xs-inline-block position-right">Chat</span>
-                                    <span class="badge bg-warning-400" ng-hide="counter.UnReadChat==0">{{counter.UnReadChat}}</span>
+                                    <span class="badge bg-warning-400" ng-hide="counter.New.UnReadChat==0">{{counter.New.UnReadChat}}</span>
                                 </a>
-                            </li>*@
+                            </li>*@ -->
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="~/Images/Member/@Model.user.ImageProfile" alt="">
-                                    <span>@Model.user.Name</span
+                                    <img src="~/Images/Member/@Model.user.EncryptedId/@Model.user.ImageProfile" alt="" />
+                                    <!-- <span> @Model.user.Name </span> -->
                                     <i class="caret"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="/profile"><i class="icon-user-check"></i> <span>Profile</span></a></li>
-                                    @*<li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>Plan</span></a></li>
+                                    <!-- @*<li><a href="/member/myplan"><i class="icon-puzzle4"></i> <span>Plan</span></a></li>
                                     <li><a href="/memberaccount/memberaccountlist"><i class="icon-home8"></i> <span>Bank Account</span></a></li>
-                                    <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>DRD Point</span></a></li>*@
+                                    <li><a href="/member/mydeposit"><i class="icon-wallet"></i> <span>DRD Point</span></a></li>*@ -->
                                     <li><a href="/Login/ChangePassword"><i class="icon-cog5"></i> <span>Change Password</span></a></li>
                                     <li class="divider"></li>
                                     <li><a href="/Login/Logout"><i class="icon-switch2"></i> <span>Logout</span></a></li>
@@ -175,8 +175,10 @@
             clearInterval(xtimer);
         }
         );
-
-        $scope.counter = { Inbox: 0, InProgress: 0, Pending: 0 };
+        $scope.counter = {
+            Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
+            New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
+        };
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
 
@@ -191,9 +193,10 @@
         INIT DATA
         --------------------------------------------------------------*/
         angular.element(document).ready(function () {
-            ////$scope.getFolders();
+            //$scope.getFolders();
             //$scope.startCounting();
-            //$scope.getActivityCounter();
+
+            $scope.getActivityCounter();
             $("#menu-content").show();
         });
 
@@ -206,115 +209,31 @@
         GET ASSET ITEM
         --------------------------------------------------------------*/
         $scope.getActivityCounter = function () {
-            $scope.products = [];
-            $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
-                if (response.data) {
-                    $scope.counter = response.data.New;
-                    var counter = response.data;
-                    $.jGrowl.defaults.closer = false;
-                    var val = counter.New.Inbox - counter.Old.Inbox;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' inbox', {
-                            header: 'Inbox Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
+                $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
+                    if (response.data) {
+                        console.log(response.data);
+                        $scope.counter = response.data;
                     }
-                    val = counter.New.InProgress - counter.Old.InProgress;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' in progress', {
-                            header: 'In Progress Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
-                    }
+                    else {
 
-                    val = counter.New.Signed - counter.Old.Signed;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' signed', {
-                            header: 'Signed Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
                     }
-                    val = counter.New.Declined - counter.Old.Declined;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' declined', {
-                            header: 'Declined Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-danger'
-                        });
-                    }
-                    val = counter.New.Completed - counter.Old.Completed;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' completed', {
-                            header: 'Completed Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
-                    }
-                    val = counter.New.Altered - counter.Old.Altered;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' altered', {
-                            header: 'Altered Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
-                    }
-                    val = counter.New.Revised - counter.Old.Revised;
-                    if (val > 0) {
-                        $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' revised', {
-                            header: 'Revised Notification',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-info'
-                        });
-                    }
-                    if (counter.New.DepositBalance != counter.Old.DepositBalance) {
-                        $.jGrowl("DRD Point " + $filter('number')(counter.New.DepositBalance, 0), {
-                            header: 'DRD Point ',
-                            //sticky: true,
-                            life: $scope.notiftime,
-                            theme: 'alert-styled-right bg-success-400'
-                        });
-                    }
-                }
-                else {
-                    $scope.resetCounter();
-                    clearInterval($scope.xtimer);
-                    swal({
-                        title: "Session expired!",
-                        text: "The session has expired, the page will redirect to login. I will close in 10 seconds.",
-                        confirmButtonColor: "#2196F3",
-                        timer: 10000
-                    }, function () {
-                        swal.close();
-                        location.href = "/Login";
-                    });
-                }
-            }, function (response) {
-                //error handle\
-                var x = 0;
-            });
-        }
-
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+/*
         $scope.resetCounter = function () {
-            $scope.counter.Rotation = 0;
-            $scope.counter.Inbox = 0;
-            $scope.counter.Altered = 0;
-            $scope.counter.Revised = 0;
-            $scope.counter.InProgress = 0;
-            $scope.counter.Pending = 0;
-            $scope.counter.Signed = 0;
-            $scope.counter.Declined = 0;
-            $scope.counter.Completed = 0;
-        }
+            $scope.counter.New.Rotation = 0;
+            $scope.counter.New.Inbox = 0;
+            $scope.counter.New.Altered = 0;
+            $scope.counter.New.Revised = 0;
+            $scope.counter.New.InProgress = 0;
+            $scope.counter.New.Pending = 0;
+            $scope.counter.New.Signed = 0;
+            $scope.counter.New.Declined = 0;
+            $scope.counter.New.Completed = 0;
+        }*/
 
         /*--------------------------------------------------------------
         JS

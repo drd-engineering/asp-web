@@ -124,7 +124,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                return db.Members.Where(companyItem => companyItem.UserId == adminId && companyItem.IsActive & companyItem.IsAdministrator).ToList();
+                return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
             }
         }
 
@@ -139,6 +139,18 @@ namespace DRD.Service
                 db.SaveChanges();
 
                 return result;
+            }
+        }
+
+        public long Delete(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member member = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                member.IsActive = false;
+                db.SaveChanges();
+
+                return member.UserId;
             }
         }
 
