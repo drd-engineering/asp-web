@@ -226,6 +226,7 @@
                         <ng-include src="'/Include/PopupDocument'"></ng-include>
                         <ng-include src="'/Include/PopupPassword'"></ng-include>
                         <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
+                        <ng-include src="'/Include/PdfIViewer'" onload="finishLoading()"></ng-include>
                         <!-- View member modal -->
                         <!--/MEMBER DATA-->
                         <!--CONFIRMATION THANK YOU-->
@@ -239,8 +240,6 @@
                             </div>
 
                         </div>
-                        <!--/CONFIRMATION THANK YOU-->
-                        @*<iframe id="xpdfIFrameView" frameborder="1" scrolling="auto" style="width: 500px; height:500px;" src="/include/pdfviewer"></iframe>*@
 
                     </div>
                 </div>
@@ -1231,11 +1230,7 @@
                             $scope.model.ExtFile=file.result.fileext;
                             $scope.fileTypeImage=$scope.model.ExtFile+".png";
                             $scope.progressValueUploadFile="Upload success";
-                            $scope.isUpload=1;
                             isdefineiframe = false;
-
-                            console.log($scope.model.FileName);
-                            console.log( $scope.model.ExtFile);
                         }
                         //});
                     }, function (response) {
@@ -1423,7 +1418,6 @@
                 $http.post('/document/openfile', { fileName: $scope.model.FileName }).then(function (response) {
                     if (response.data) {
                         $scope.openDocument(response.data, true);
-                        console.log(response.data);
                     }
                 }, function (response) {
                     //error handle\
@@ -1439,17 +1433,18 @@
 
                 if ($scope.annos.length>0)
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
-                    iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
-                    iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
-                    isdefineiframe=true;
-                    //}
-                    $("#modal_pdf_viewer").modal("show");
-                    $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
-                }
 
-                var revisiFinished = function(e){
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
+                isdefineiframe=true;
+                //}
+                $("#modal_pdf_viewer").modal("show");
+                $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+            }
+
+            var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos=items;

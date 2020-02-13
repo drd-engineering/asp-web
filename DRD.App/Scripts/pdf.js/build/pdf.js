@@ -152,7 +152,7 @@ var pdfjsDisplayAPICompatibility = __w_pdfjs_require__(132);
     });
   }
 }
-exports.build = pdfjsDisplayAPI.build;
+exports.build = pdfjsDisplayAPI.build; 
 exports.version = pdfjsDisplayAPI.version;
 exports.getDocument = pdfjsDisplayAPI.getDocument;
 exports.LoopbackPort = pdfjsDisplayAPI.LoopbackPort;
@@ -186,7 +186,8 @@ exports.addLinkAttributes = pdfjsDisplayDOMUtils.addLinkAttributes;
 exports.loadScript = pdfjsDisplayDOMUtils.loadScript;
 exports.GlobalWorkerOptions = pdfjsDisplayWorkerOptions.GlobalWorkerOptions;
 exports.apiCompatibilityParams = pdfjsDisplayAPICompatibility.apiCompatibilityParams;
-
+exports.AnnotationType = pdfjsSharedUtil.AnnotationType;
+    
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __w_pdfjs_require__) {
@@ -7873,7 +7874,7 @@ var fakeWorkerFilesLoader = null;
       require.ensure([], function () {
         try {
           var worker = void 0;
-          worker = require('./pdf.worker.js');
+          worker = require('/Scripts/pdf.js/build/pdf.worker.js');
           resolve(worker.WorkerMessageHandler);
         } catch (ex) {
           reject(ex);

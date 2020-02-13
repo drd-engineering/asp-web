@@ -365,9 +365,14 @@ namespace DRD.App.Controllers
 
             XFEncryptionHelper xf = new XFEncryptionHelper();
             var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
-            System.Diagnostics.Debug.WriteLine("[[FILEPATH]] " + filepath + " [[OPEN DOC PDF]] " + xresult);
+            if (xresult.Equals("OK"))
+            {
+                System.Diagnostics.Debug.WriteLine("[[FILEPATH]] " + filepath + " [[OPEN DOC PDF]] " + xresult);
 
-            return Convert.ToBase64String(pdfByte);
+                return Convert.ToBase64String(pdfByte);
+            }
+            else
+                return Convert.ToBase64String(new byte[] { });
         }
 
 
