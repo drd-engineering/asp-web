@@ -1240,13 +1240,15 @@
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
 
-                        if (file.progress>=100){
-                            $scope.progressValueUploadFile="Upload success";
-                            ////$scope.podcastImage="podcast_uploaded.png";
-                            $scope.isUpload=1;
-                            isdefineiframe=false;
-                        }else
-                            $scope.progressValueUploadFile="Uploading...("+file.progress+"%)";
+                            if (file.progress >= 100) {
+                                $scope.progressValueUploadFile = "Upload success";
+                                ////$scope.podcastImage="podcast_uploaded.png";
+                                $scope.isUpload = 1;
+                                isdefineiframe = false;
+                            } else {
+                                $scope.isUpload = 0;
+                                $scope.progressValueUploadFile = "Uploading...(" + file.progress + "%)";
+                            }
 
                     });
                 } else if ($scope.errFile != null) {

@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-full">
         <div class="modal-content">
             <div class="modal-header bg-primary" style="padding:5px">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" ng-click="popupDocument()">&times;</button>
                 <h6 class="modal-title">Document Viewer</h6>
             </div>
             <iframe onformchange="resizeIFrame(this);" onload="resizeIFrame(this);" id="xpdfIFrame" src="/include/pdfviewer#zoom=100&page=1"
