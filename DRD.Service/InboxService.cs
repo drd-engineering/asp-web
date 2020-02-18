@@ -18,7 +18,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList();
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id).ToList();
 
                     List<InboxList> result = new List<InboxList>();
 

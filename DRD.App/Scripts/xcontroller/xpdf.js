@@ -473,7 +473,6 @@
             type = annotationType.PRIVATESTAMP;
         else if (obj.currentTarget.id == "stamp")
             type = annotationType.STAMP;
-
         $("#" + obj.currentTarget.id).addClass("btn-active");
         toolType = type;
 
@@ -1094,7 +1093,7 @@
             event = 'none';
 
         $('.' + annoLayerClass).css({ 'pointer-events': event });
-        //$('.' + annoLayerClass).css({ 'touch-action': 'none' });
+        $('.' + annoLayerClass).css({ 'touch-action': event });
     }
 
     var itemArrange = function (dataIdx) {
