@@ -33,8 +33,6 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
 
-        public Rotation Rotations { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
-
         // FK
         [ForeignKey("CompanyId")]
         public Company Company { get; set; } //FK to Company

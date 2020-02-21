@@ -3523,6 +3523,7 @@
     <Content Include="assets\js\plugins\pickers\pickadate\translations\NAMING.md" />
     <Content Include="assets\js\plugins\uploaders\plupload\files\Moxie.xap" />
     <Content Include="ElementType.csv" />
+    <Content Include="doc\company\temp\9f0d9250-499c-4ada-b4c1-a5eb4b747a83.pdf.drd" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

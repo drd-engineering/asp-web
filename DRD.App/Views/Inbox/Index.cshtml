@@ -300,6 +300,7 @@
             $scope.docFileName="";
             $scope.fileTypeImage="no_document.png";
             $scope.model.Id = 0;
+            $scope.rotationId = 0;
             $scope.model.Status = 0;
               $scope.isUpload=0;
             $scope.infoSuccess="Data berhasil disimpan.";
@@ -343,6 +344,7 @@
                     console.log("INBOX", product);
                     console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
+                    $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId=product.RotationNodeId;
                     $scope.model.Subject = product.Subject
                     $scope.model.CurrentActivity = product.CurrentActivity;
@@ -378,6 +380,7 @@
                     // error response, 404 inbox
                 }
                 console.log($scope);
+                console.log("rotation id is "+$scope.rotationId);
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -1201,10 +1204,11 @@
             }
 
             $scope.uploadDocFile = function (idx, file, errFiles) {
+                $scope.finit = $scope.f;
                 $scope.f = file;
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
-                    $scope.docFileName=file.name
+                    $scope.docFileName = file.name;
                     $scope.model.FileUrl = file.name;
                     $scope.model.FileSize = $scope.humanFileSize(file.size,true);
                     //var obUrl = URL.createObjectURL(file);
@@ -1227,7 +1231,8 @@
                             $scope.progressValueUploadFile="Failed";
                         }else{
                             $scope.model.FileName= file.result.filename;
-                            $scope.model.ExtFile=file.result.fileext;
+                            $scope.model.ExtFile = file.result.fileext;
+                            $scope.model.FileNameOri = file.result.filenameori;
                             $scope.fileTypeImage=$scope.model.ExtFile+".png";
                             $scope.progressValueUploadFile="Upload success";
                             isdefineiframe = false;
@@ -1258,6 +1263,7 @@
 
 
             $scope.uploadAttachmentFile = function (idx, file, errFiles) {
+                $scope.finit = $scope.f;
                 $scope.f = file;
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
@@ -1378,28 +1384,34 @@
                 //}
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
+                console.log("TRY TO SAVE DOCUMENT");
                 $http.post('@Url.Action("Save", "document")',
                     {
                         prod: {
                             Id: $scope.model.Id,
                             Title: $scope.model.Title,
-                            Descr: $scope.model.Descr,
-                            FileName: $scope.model.FileName,
-                            FileNameOri: $scope.model.FileNameOri,
+                            Description: $scope.model.Descr,
+                            FileUrl: $scope.model.FileName,
+                            FileName: $scope.model.FileNameOri,
                             ExtFile: $scope.model.ExtFile,
                             FileSize: $scope.model.FileSize,
-                            MaxPrint: $scope.model.MaxPrint,
-                            MaxDownload: $scope.model.MaxDownload,
+                            MaxPrintPerActivity: $scope.model.MaxPrint,
+                            MaxDownloadPerActivity: $scope.model.MaxDownload,
                             ExpiryDay: $scope.model.ExpiryDay,
                             Version: $scope.model.Version,
-                            UserId: 'SYST',
+                            /*UserId: 'SYST',*/
                             //DocumentMembers:$scope.users,
-                            DocumentAnnotates:$scope.annos,
-                        }
+                            DocumentElements: $scope.annos,
+                        }, companyId: $scope.companyId,
+                        rotationId: $scope.rotationId
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.wizarno = 'success';
+                            $scope.f = $scope.finit;
+                            $scope.progressValueUploadFile = "";
+                            $scope.isUpload = 0;
+                            $("#modal_select_document").modal('hide');
+                            showInfo("Success store document");
                         }
                     }, function (response) {
                         //error handle\
@@ -1443,7 +1455,7 @@
                 isdefineiframe=true;
                 //}
                 $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+                // $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
             }
 
             var revisiFinished = function(e){

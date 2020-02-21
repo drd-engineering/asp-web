@@ -18,7 +18,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id).ToList();
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList();
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -149,14 +149,10 @@ namespace DRD.Service
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
 
                 }
-
-                changeUnreadtoReadInbox(inboxId: inboxId);
-
+                /*changeUnreadtoReadInbox(inboxId: inboxId);*/
                 return result;
             }
         }
-
-
 
         public bool changeUnreadtoReadInbox(long inboxId)
         {
