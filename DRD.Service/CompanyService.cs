@@ -34,6 +34,24 @@ namespace DRD.Service
             }
         }
 
+        public CompanyList GetAllCompanyOwnedbyUser(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
+                var listReturn = new CompanyList();
+                foreach (Company x in result)
+                {
+                    var company = new CompanyItem();
+                    company.Id = x.Id;
+                    company.Code = x.Code;
+                    company.Name = x.Name;
+                    listReturn.companies.Add(company);
+                }
+                return listReturn;
+            }
+        }
+
         public CompanyItem GetCompanyItem(long companyId)
         {
             using (var db = new ServiceContext())
@@ -125,7 +143,6 @@ namespace DRD.Service
                 return companies;
             }
         }
-
         public CompanyList GetAllCompanyDetails(long userId)
         {
             memberService = new MemberService();

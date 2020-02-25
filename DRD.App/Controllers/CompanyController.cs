@@ -42,6 +42,15 @@ namespace DRD.App.Controllers
             Initialize();
             return View(layout);
         }
+
+        public ActionResult GetAllCompanyOwnedbyUser()
+        {
+            Initialize();
+            var data = companyService.GetAllCompanyOwnedbyUser(user.Id);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Member(long id)
         {
             Initialize();

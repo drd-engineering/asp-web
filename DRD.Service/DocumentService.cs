@@ -581,14 +581,15 @@ namespace DRD.Service
         }
         public int Save(Document prod, long companyId, long rotationId)
         {
-            int result;
+            int result = 0;
             Document document;
             using (var db = new ServiceContext())
             {
                 if (prod.Id == 0)
                     document = Create(prod, companyId, rotationId);
                 else document = Update(prod, companyId, rotationId);
-                result = db.SaveChanges();
+                if (document.Id != 0)
+                    result = 1;
             }
 
             SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, document.DocumentElements);
@@ -628,7 +629,9 @@ namespace DRD.Service
 
                 // update subscription storage
                 plan.StorageUsedinByte = plan.StorageUsedinByte - document.FileSize; // update storage limit
-                
+
+                document.RotationId = rotationId;
+                document.CompanyId = companyId;
 
                 db.Documents.Add(document);
 
@@ -677,6 +680,7 @@ namespace DRD.Service
                 // update file size
                 document.FileSize = newDocument.FileSize;
                 document.UpdatedAt = DateTime.Now;
+
                 db.SaveChanges();
 
                 return document;

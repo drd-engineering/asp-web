@@ -44,9 +44,7 @@
                                             <div class="col-md-3 push-left">
                                                 <!-- SELECT -->
                                                 <select class="card-filter">
-                                                    <option class="card-filter">This Week</option>
-                                                    <option class="card-filter">Last Week</option>
-                                                    <option class="card-filter">...</option>
+                                                    <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -115,9 +113,7 @@
                                             <div class="col-md-3 push-left">
                                                 <!-- SELECT -->
                                                 <select class="card-filter">
-                                                    <option class="card-filter">This Week</option>
-                                                    <option class="card-filter">Last Week</option>
-                                                    <option class="card-filter">...</option>
+                                                    <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -164,9 +160,7 @@
                                     <div class="col-md-4 push-left">
                                         <!-- SELECT -->
                                         <select class="card-filter select-lg">
-                                            <option class="card-filter">PT Company 1</option>
-                                            <option class="card-filter">PT Company 2</option>
-                                            <option class="card-filter">...</option>
+                                            <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -592,10 +586,11 @@
             //     });
             // }
             $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetListCompanyOwned", "Dashboard")', {}).then(function (response) {
+                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     console.log("run");
                     if (response.data) {
                         $scope.companyOwned = response.data.companies;
+                        console.log($scope.companyOwned);
                     }
                 })
             }

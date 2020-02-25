@@ -153,14 +153,10 @@ namespace DRD.Service
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
 
                 }
-
-                changeUnreadtoReadInbox(inboxId: inboxId);
-
+                /*changeUnreadtoReadInbox(inboxId: inboxId);*/
                 return result;
             }
         }
-
-
 
         public bool changeUnreadtoReadInbox(long inboxId)
         {

@@ -473,7 +473,6 @@
             type = annotationType.PRIVATESTAMP;
         else if (obj.currentTarget.id == "stamp")
             type = annotationType.STAMP;
-
         $("#" + obj.currentTarget.id).addClass("btn-active");
         toolType = type;
 
@@ -1094,7 +1093,7 @@
             event = 'none';
 
         $('.' + annoLayerClass).css({ 'pointer-events': event });
-        //$('.' + annoLayerClass).css({ 'touch-action': 'none' });
+        $('.' + annoLayerClass).css({ 'touch-action': event });
     }
 
     var itemArrange = function (dataIdx) {
@@ -1712,13 +1711,10 @@
     }
 
     $scope.setDefaultPdf = function (filename, isNew) {
-        console.log("tes this is setdefault pdf: RESULT == "+filename);
-        $scope.defaultDocumentName=filename;
+        $scope.defaultDocumentName = filename;
         $http.post('/updownfile/XGetPdfData', { keyf: filename, isNew: isNew }).then(function (response) {
             if (response.data) {
-
-        console.log("tes this is setdefault pdf: RESULT == "+response.data);
-                PDFViewerApplication.open('data:application/pdf;base64,'+response.data);
+                PDFViewerApplication.open('data:application/pdf;base64, ' + response.data);
             }
         }, function (response) {
             //error handle\

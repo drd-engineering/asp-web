@@ -10,6 +10,7 @@ namespace DRD.Models.API
     {
         public long idx;
         public string filename;
+        public string filenameori;
         public string fileext;
     }
 }

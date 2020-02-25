@@ -84,14 +84,6 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetListCompanyOwned()
-        {
-            Initialize();
-            var data = companyService.getCompanyListByOwnerId(user.Id);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
         // public ActionResult Sendemail()
         // {
         //     Initialize();

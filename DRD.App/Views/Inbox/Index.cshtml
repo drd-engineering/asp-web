@@ -132,13 +132,13 @@
                                                 <div style="height:5px"></div>
                                                 <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
                                                     <thead>
-                                                        <trgbs>
+                                                        <tr>
                                                             <th width="25px">#</th>
                                                             <th>Title</th>
                                                             <th width="150px">Original File Name</th>
                                                             <th width="100px">Action</th>
                                                         </tr>
-                                                    </thead>                                                                                                                                                                                                                                                                                                                        
+                                                    </thead>
                                                     <tbody>
                                                         <tr ng-repeat="x in docs">
                                                             <td class="text-top">{{$index+1 + index}}</td>
@@ -226,6 +226,7 @@
                         <ng-include src="'/Include/PopupDocument'"></ng-include>
                         <ng-include src="'/Include/PopupPassword'"></ng-include>
                         <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
+                        <ng-include src="'/Include/PdfIViewer'" onload="finishLoading()"></ng-include>
                         <!-- View member modal -->
                         <!--/MEMBER DATA-->
                         <!--CONFIRMATION THANK YOU-->
@@ -239,8 +240,6 @@
                             </div>
 
                         </div>
-                        <!--/CONFIRMATION THANK YOU-->
-                        @*<iframe id="xpdfIFrameView" frameborder="1" scrolling="auto" style="width: 500px; height:500px;" src="/include/pdfviewer"></iframe>*@
 
                     </div>
                 </div>
@@ -301,6 +300,7 @@
             $scope.docFileName="";
             $scope.fileTypeImage="no_document.png";
             $scope.model.Id = 0;
+            $scope.rotationId = 0;
             $scope.model.Status = 0;
               $scope.isUpload=0;
             $scope.infoSuccess="Data berhasil disimpan.";
@@ -344,6 +344,7 @@
                     console.log("INBOX", product);
                     console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
+                    $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId=product.RotationNodeId;
                     $scope.model.Subject = product.Subject
                     $scope.model.CurrentActivity = product.CurrentActivity;
@@ -378,7 +379,8 @@
                 }else{
                     // error response, 404 inbox
                 }
-                console.log($scope.model);
+                console.log($scope);
+                console.log("rotation id is "+$scope.rotationId);
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -959,7 +961,7 @@
 
                 if ($scope.model.Status!='00') {
                     showInfo("The inbox has expired to be processed");
-                    return; 
+                    return;
                 }
 
                 if ($scope.model.Value==undefined && $scope.model.DecissionInfo!='') {
@@ -1202,10 +1204,11 @@
             }
 
             $scope.uploadDocFile = function (idx, file, errFiles) {
+                $scope.finit = $scope.f;
                 $scope.f = file;
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
-                    $scope.docFileName=file.name
+                    $scope.docFileName = file.name;
                     $scope.model.FileUrl = file.name;
                     $scope.model.FileSize = $scope.humanFileSize(file.size,true);
                     //var obUrl = URL.createObjectURL(file);
@@ -1228,11 +1231,11 @@
                             $scope.progressValueUploadFile="Failed";
                         }else{
                             $scope.model.FileName= file.result.filename;
-                            $scope.model.ExtFile=file.result.fileext;
+                            $scope.model.ExtFile = file.result.fileext;
+                            $scope.model.FileNameOri = file.result.filenameori;
                             $scope.fileTypeImage=$scope.model.ExtFile+".png";
                             $scope.progressValueUploadFile="Upload success";
-                            $scope.isUpload=1;
-                            isdefineiframe = false
+                            isdefineiframe = false;
                         }
                         //});
                     }, function (response) {
@@ -1241,14 +1244,16 @@
                         }
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                                
-                        if (file.progress>=100){
-                            $scope.progressValueUploadFile="Upload success";
-                            ////$scope.podcastImage="podcast_uploaded.png";
-                            $scope.isUpload=1;
-                            isdefineiframe=false;
-                        }else
-                            $scope.progressValueUploadFile="Uploading...("+file.progress+"%)";
+
+                            if (file.progress >= 100) {
+                                $scope.progressValueUploadFile = "Upload success";
+                                ////$scope.podcastImage="podcast_uploaded.png";
+                                $scope.isUpload = 1;
+                                isdefineiframe = false;
+                            } else {
+                                $scope.isUpload = 0;
+                                $scope.progressValueUploadFile = "Uploading...(" + file.progress + "%)";
+                            }
 
                     });
                 } else if ($scope.errFile != null) {
@@ -1258,6 +1263,7 @@
 
 
             $scope.uploadAttachmentFile = function (idx, file, errFiles) {
+                $scope.finit = $scope.f;
                 $scope.f = file;
                 $scope.errFile = errFiles && errFiles[0];
                 if (file) {
@@ -1378,28 +1384,34 @@
                 //}
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
+                console.log("TRY TO SAVE DOCUMENT");
                 $http.post('@Url.Action("Save", "document")',
                     {
                         prod: {
                             Id: $scope.model.Id,
                             Title: $scope.model.Title,
-                            Descr: $scope.model.Descr,
-                            FileName: $scope.model.FileName,
-                            FileNameOri: $scope.model.FileNameOri,
+                            Description: $scope.model.Descr,
+                            FileUrl: $scope.model.FileName,
+                            FileName: $scope.model.FileNameOri,
                             ExtFile: $scope.model.ExtFile,
                             FileSize: $scope.model.FileSize,
-                            MaxPrint: $scope.model.MaxPrint,
-                            MaxDownload: $scope.model.MaxDownload,
+                            MaxPrintPerActivity: $scope.model.MaxPrint,
+                            MaxDownloadPerActivity: $scope.model.MaxDownload,
                             ExpiryDay: $scope.model.ExpiryDay,
                             Version: $scope.model.Version,
-                            UserId: 'SYST',
+                            /*UserId: 'SYST',*/
                             //DocumentMembers:$scope.users,
-                            DocumentAnnotates:$scope.annos,
-                        }
+                            DocumentElements: $scope.annos,
+                        }, companyId: $scope.companyId,
+                        rotationId: $scope.rotationId
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.wizarno = 'success';
+                            $scope.f = $scope.finit;
+                            $scope.progressValueUploadFile = "";
+                            $scope.isUpload = 0;
+                            $("#modal_select_document").modal('hide');
+                            showInfo("Success store document");
                         }
                     }, function (response) {
                         //error handle\
@@ -1420,7 +1432,6 @@
                 $http.post('/document/openfile', { fileName: $scope.model.FileName }).then(function (response) {
                     if (response.data) {
                         $scope.openDocument(response.data, true);
-                        console.log(response.data);
                     }
                 }, function (response) {
                     //error handle\
@@ -1436,17 +1447,18 @@
 
                 if ($scope.annos.length>0)
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
-                    iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
-                    iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
-                    isdefineiframe=true;
-                    //}
-                    $("#modal_pdf_viewer").modal("show");
-                    $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
-                }
 
-                var revisiFinished = function(e){
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
+                isdefineiframe=true;
+                //}
+                $("#modal_pdf_viewer").modal("show");
+                // $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+            }
+
+            var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos=items;

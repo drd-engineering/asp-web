@@ -190,9 +190,9 @@ namespace DRD.App.Controllers
             string fromFolder = "images/member/temp";
             string toFolder = "images/member/" + user.EncryptedId.ToString();
             var targetdir = "/" + toFolder + "/";
-            bool exists = System.IO.Directory.Exists(Server.MapPath(targetdir));
+            bool exists = System.IO.Directory.Exists(targetdir);
             if (!exists)
-                System.IO.Directory.CreateDirectory(Server.MapPath(targetdir));
+                System.IO.Directory.CreateDirectory(targetdir);
             try
             {
                 int returnval = 0;
