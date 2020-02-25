@@ -579,9 +579,9 @@ namespace DRD.Service
         {
             return GetAnnotateDocs(memberId, topCriteria, page, pageSize, null, null);
         }
-        public int Save(Document prod, long companyId, long rotationId)
+        public long Save(Document prod, long companyId, long rotationId)
         {
-            int result = 0;
+            long result = 0;
             Document document;
             using (var db = new ServiceContext())
             {
@@ -589,7 +589,7 @@ namespace DRD.Service
                     document = Create(prod, companyId, rotationId);
                 else document = Update(prod, companyId, rotationId);
                 if (document.Id != 0)
-                    result = 1;
+                    result = document.Id;
             }
 
             SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, document.DocumentElements);
