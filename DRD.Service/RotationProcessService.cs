@@ -52,6 +52,7 @@ namespace DRD.Service
         {
             if (!subscriptionService.isSubscriptionValid(userId, subscriptionId))
             {
+                System.Diagnostics.Debug.WriteLine("::DEBUG:: GAK VALID  :: ");
                 return null;
             }
             List<ActivityItem> retvalues = new List<ActivityItem>();
@@ -71,6 +72,7 @@ namespace DRD.Service
                 rt.CompanyId = companyIdStarted;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
+                System.Diagnostics.Debug.WriteLine("::DEBUG:: " + rt.Status+ " :: ");
 
                 // first node, node after start symbol
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.WorkflowId && c.WorkflowNodes.SymbolCode == 0).ToList();
@@ -181,8 +183,10 @@ namespace DRD.Service
                     rtnode.Status = (int)Constant.RotationStatus.Altered;
                 else if (strbit.Equals("REJECT"))
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
+                System.Diagnostics.Debug.WriteLine("I AM HERE " + rtnode.Status + "  " + bit + "::"+strbit);
 
-                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNode.Id && c.SymbolCode.Equals(strbit)).ToList();
+                //TODO: FINISH BIT COMPARATOR!!
+                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNode.Id && c.SymbolCode==(int)bit).ToList();
                 List<RotationNode> rotnodes = new List<RotationNode>();
                 foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                 {

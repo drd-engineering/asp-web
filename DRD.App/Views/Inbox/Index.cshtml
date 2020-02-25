@@ -132,13 +132,13 @@
                                                 <div style="height:5px"></div>
                                                 <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
                                                     <thead>
-                                                        <tr>
+                                                        <trgbs>
                                                             <th width="25px">#</th>
                                                             <th>Title</th>
                                                             <th width="150px">Original File Name</th>
                                                             <th width="100px">Action</th>
                                                         </tr>
-                                                    </thead>
+                                                    </thead>                                                                                                                                                                                                                                                                                                                        
                                                     <tbody>
                                                         <tr ng-repeat="x in docs">
                                                             <td class="text-top">{{$index+1 + index}}</td>
@@ -378,7 +378,7 @@
                 }else{
                     // error response, 404 inbox
                 }
-                console.log($scope);
+                console.log($scope.model);
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -959,7 +959,7 @@
 
                 if ($scope.model.Status!='00') {
                     showInfo("The inbox has expired to be processed");
-                    return;
+                    return; 
                 }
 
                 if ($scope.model.Value==undefined && $scope.model.DecissionInfo!='') {
@@ -1232,10 +1232,7 @@
                             $scope.fileTypeImage=$scope.model.ExtFile+".png";
                             $scope.progressValueUploadFile="Upload success";
                             $scope.isUpload=1;
-                            isdefineiframe = false;
-
-                            console.log($scope.model.FileName);
-                            console.log( $scope.model.ExtFile);
+                            isdefineiframe = false
                         }
                         //});
                     }, function (response) {
@@ -1244,7 +1241,7 @@
                         }
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-
+                                
                         if (file.progress>=100){
                             $scope.progressValueUploadFile="Upload success";
                             ////$scope.podcastImage="podcast_uploaded.png";
