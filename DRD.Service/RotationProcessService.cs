@@ -171,22 +171,36 @@ namespace DRD.Service
                 int x = 0;
                 foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                 {
+
+                    System.Diagnostics.Debug.WriteLine("TEST SYMBOL ACTIVITY::" + symbolService.getSymbolId("ACTIVITY"));
                     var nodeto = workflowNodeLink.WorkflowNodeTos;
+
+                    System.Diagnostics.Debug.WriteLine("TEST NodeTO SYMBOL::" + nodeto.SymbolCode);
+                    System.Diagnostics.Debug.WriteLine("TEST comparison SYMBOL::" + (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY")));
+
                     if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
                     {
+                    System.Diagnostics.Debug.WriteLine("TEST INTO ACTIVITY SECTION::" );
                         RotationNode rtnode2 = new RotationNode();
 
-                        rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                        rtnode2.WorkflowNode.Id = workflowNodeLink.WorkflowNodeToId;
+                        rtnode2.RotationId = rtnode.RotationId;
+                        rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
                         rtnode2.SenderRotationNodeId = rtnode.Id;
-                        rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                        rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
                         rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
                 System.Diagnostics.Debug.WriteLine("I AM HERE in ACTIVITY" + rtnode.Status + " ,,WFNODES::" + wfnodes + "RTNODE2::"+ rtnode2.PrevWorkflowNodeId);
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
                         rtnode2.CreatedAt = DateTime.Now;
                         db.RotationNodes.Add(rtnode2);
-                        retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+    `                   ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
+                        retvalues.Add(activityItem);
+
+                        //sending inboxto every user in all new nodes
+                        InboxService inboxService = new InboxService();
+                        inboxService.CreateInbox(activityItem);
+                        /*MemberService.sendEmailInbox(act);*/
+
                     }
                     else if (nodeto.SymbolCode == symbolService.getSymbolId("PARALLEL"))
                     {
@@ -343,7 +357,7 @@ namespace DRD.Service
                         else
                             updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Completed);
                     }
-
+                    
                 }
 
                 var result = db.SaveChanges();
