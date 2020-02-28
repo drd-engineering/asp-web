@@ -136,12 +136,12 @@
                                         <tr>
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission :&ensp;</span>
-                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
-                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPemission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-success" ng-checked="{{getFlagPemission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
+                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
                                         </tr>
                                     </tbody>
@@ -277,7 +277,7 @@
                 location.href = url;
             }
 
-            $scope.getFlagPemission = function (val, bit) {
+            $scope.getFlagPermission = function (val, bit) {
                 //var reult="";
                 //if ((val & bit)==bit)
                 //    result="√";
@@ -287,19 +287,18 @@
             SAVE PRODUCT
             --------------------------------------------------------------*/
             $scope.saveProduct = function () {
-                for(i=0;i<$scope.users.length;i++){
-                    var bit=8;
-                    var flag=0;
-                    for (x = 1; x < 5; x++) {
+                for(i = 0; i < $scope.users.length; i++){
+                    var bit = 1;
+                    var flag = 39; ///artinya sudah bisa view, sign, stamp, add annotation
+                    for (x = 1; x < 6; x++) {
                         var cb = $('#checkboxmt' + $scope.users[i].WorkflowNodeId + "-" + bit)[0];
                         if (typeof cb !== 'undefined') {
-                            if (cb.checked) {
+                            if (cb.checked)
                                 flag += bit;
-                            }
-                            bit += bit;
                         }
+                        bit += bit;
                     }
-                    $scope.users[i].FlagPermission=flag;
+                    $scope.users[i].FlagPermission = flag;
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
@@ -529,7 +528,6 @@
                 $http.post("/Rotation/start?rotationId=" + rotationId + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
-                        
                         if (response.data) {
                             if (response.data == -1)
                                 showError("Invalid rotation.");
