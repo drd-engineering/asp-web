@@ -84,7 +84,7 @@ namespace DRD.App.Controllers
             if (user == null)
                 return null;
             MenuService menuService = new MenuService();
-            System.Diagnostics.Debug.WriteLine("I AM HERE "+ user.Name);
+
             return menuService.GetMenus(activeId);
         }
 

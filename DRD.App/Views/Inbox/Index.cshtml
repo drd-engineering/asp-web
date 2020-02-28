@@ -288,8 +288,6 @@
                 var product = @Html.Raw(Json.Encode(Model.obj));
 
                 if (product.id!=0) {
-                    console.log("INBOX", product);
-                    console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId=product.RotationNodeId;

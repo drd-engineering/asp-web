@@ -79,6 +79,7 @@ namespace DRD.Service
                                                  Id = r.Id,
                                                  Subject = r.Subject,
                                                  WorkflowId = rn.WorkflowNode.Id,
+                                        
                                                  Status = rn.Status,
                                                  UserId = rn.UserId,
                                                  //MemberId = 0,
@@ -122,6 +123,9 @@ namespace DRD.Service
                         DateCreated = c.CreatedAt,
                         DateUpdated = c.UpdatedAt,
                         DateStarted = c.DateRead,
+                        DefWorkflowNodeId = c.WorkflowNodeId,
+                        FlagAction = 0,
+                        DecissionInfo = "",
                         RotationNodeId = c.Id,
 
                     }).FirstOrDefault();

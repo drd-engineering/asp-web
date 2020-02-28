@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SymbolService.cs" />
     <Compile Include="XEncryptionHelper.cs" />
     <Compile Include="XFEncryptionHelper.cs" />
     <Compile Include="AppConfigGenerator.cs" />
