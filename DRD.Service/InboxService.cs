@@ -147,7 +147,6 @@ namespace DRD.Service
                         result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
                     else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
-
                 }
                 /*changeUnreadtoReadInbox(inboxId: inboxId);*/
                 return result;

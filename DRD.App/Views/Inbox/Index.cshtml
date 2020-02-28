@@ -138,10 +138,10 @@
                                                                 </a><br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,32)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,32)" ng-click="stampDocument($index);">{{(validAction(x.FlagAction,32)?'Stamped':'Stamp')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
+                                                                    <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.FlagAction,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
+                                                                    <span class="btn-permission{{(validAction(x.FlagAction,32)?' action-processed':'')}}" ng-show="validAction(x.FlagAction,32)" ng-click="stampDocument($index);">{{(validAction(x.FlagAction,32)?'Stamped':'Stamp')}}</span>
+                                                                    <span class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.FlagAction,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
+                                                                    <span class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.FlagAction,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
                                                                     @*<span class="btn-permission{{(validAction(x.FlagAction,8)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,8)" ng-click="printDocument($index);">{{(validAction(x.FlagAction,8)?'Printed':'Print')}}</span>
                                                                         <span class="btn-permission{{(validAction(x.FlagAction,16)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,16)" ng-click="downloadDocument($index);">{{(validAction(x.FlagAction,16)?'Downloaded':'Download')}}</span>*@
                                                                 </span>
@@ -1157,7 +1157,7 @@
                 if (file) {
                     $scope.docFileName = file.name;
                     $scope.model.FileUrl = file.name;
-                    $scope.model.FileSize = $scope.humanFileSize(file.size,true);
+                    $scope.model.FileSize = $scope.humanFileSize(file.size, true);
                     //var obUrl = URL.createObjectURL(file);
                     //document.getElementById('audio').setAttribute('src', obUrl);
 
@@ -1172,24 +1172,32 @@
                         if (file.result.idx==-2){
                             show +
                                 Info("Invalid plan Used.");
-                            $scope.progressValueUploadFile="Failed";
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
                         }else if (file.result.idx==-4){
                             showInfo("Document quota is insufficient.");
-                            $scope.progressValueUploadFile="Failed";
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
                         } else {
-                            var doc = {};
-                            doc.Document = {};
-                            doc.Document.FileName = file.result.filename;
-                            doc.FlagAction=0;
-                            doc.Document.FileNameOri=file.result.filenameori;
-                            doc.Document.ExtFile=file.result.fileext;
-                            $scope.tempDoc = doc;
-                            $scope.model.FileName= file.result.filename;
-                            $scope.model.ExtFile = file.result.fileext;
-                            $scope.model.FileNameOri = file.result.filenameori;
-                            $scope.fileTypeImage=$scope.model.ExtFile+".png";
-                            $scope.progressValueUploadFile="Upload success";
-                            isdefineiframe = false;
+                            if (file.result) {
+                                $scope.model.FileName= file.result.filename;
+                                $scope.model.ExtFile = file.result.fileext;
+                                $scope.model.FileNameOri = file.result.filenameori;
+                                $scope.fileTypeImage=$scope.model.ExtFile+".png";
+                                $scope.progressValueUploadFile="Upload success";
+                                isdefineiframe = false;
+                                var doc = {};
+                                doc.Document = {};
+                                doc.Document.FileName = file.result.filename;
+                                doc.FlagAction = $scope.model.FlagAction;
+                                doc.Document.FileNameOri=file.result.filenameori;
+                                doc.Document.ExtFile=file.result.fileext;
+                                $scope.tempDoc = doc;
+                                $scope.isUpload = 1;
+                                document.querySelector('.submit-document').disabled = false;
+                            }
                         }
                         //});
                     }, function (response) {
@@ -1198,17 +1206,13 @@
                         }
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-
                             if (file.progress >= 100) {
                                 $scope.progressValueUploadFile = "Upload success";
                                 ////$scope.podcastImage="podcast_uploaded.png";
-                                $scope.isUpload = 1;
                                 isdefineiframe = false;
                             } else {
-                                $scope.isUpload = 0;
                                 $scope.progressValueUploadFile = "Uploading...(" + file.progress + "%)";
                             }
-
                     });
                 } else if ($scope.errFile != null) {
                     showError("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
@@ -1263,6 +1267,22 @@
                 var isvalid = theForm.$valid;
                 return isvalid;
             };
+            $scope.resetFileUploadDetails = function () {
+                $scope.f = $scope.finit;
+                $scope.docFileName = "";
+                $scope.model.FileUrl = "";
+                $scope.model.FileSize = "";
+                $scope.model.FileName = "";
+                $scope.model.ExtFile = "";
+                $scope.model.FileNameOri = "";
+                $scope.fileTypeImage = "no_document.png";
+                $scope.progressValueUploadFile = "";
+                var doc = {};
+                $scope.tempDoc = doc;
+                $scope.isUpload = 0;
+                document.querySelector('.submit-document').disabled = true;
+
+            }
 
             $scope.saveProduct = function () {
                 //for(i=0;i<$scope.users.length;i++){
@@ -1301,14 +1321,11 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.f = $scope.finit;
-                            $scope.progressValueUploadFile = "";
-                            $scope.isUpload = 0;
-                            $("#modal_select_document").modal('hide');
-                            showInfo("Success store document");
+                            $scope.resetFileUploadDetails();
                             $scope.tempDoc.Document.DocumentId = response.data;
                             $scope.docs.push($scope.tempDoc);
-                            console.log($scope.docs);
+                            $("#modal_select_document").modal('hide');
+                            showInfo("Success store document");
                         }
                     }, function (response) {
                         //error handle\

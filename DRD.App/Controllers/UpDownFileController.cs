@@ -49,6 +49,12 @@ namespace DRD.App.Controllers
             //initiating variable folder and doc
             DocUploadResult result = new DocUploadResult();
             string folder = "doc/company/temp"; // fileType = 0
+            
+            var targetdir = "/" + folder + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetdir));
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetdir));
+
             string filenameori = string.Empty;
             string _filename = string.Empty;
             string _ext = "";
@@ -93,13 +99,18 @@ namespace DRD.App.Controllers
                     var _comPath = Server.MapPath("/" + folder + "/") + _filename + _ext;
                     _filename = _filename + _ext;
 
-                    System.Diagnostics.Debug.WriteLine("[[FILE]] " + _filename + " [[EXT]] " + _ext);
+                    System.Diagnostics.Debug.WriteLine("[[FILE]] " + _filename + " [[EXT]] " + _ext +"  [[PATH]]" + _comPath);
 
                     ViewBag.Msg = _comPath;
                     var path = _comPath;
 
                     XFEncryptionHelper xf = new XFEncryptionHelper();
                     var xresult = xf.FileEncryptRequest(Request, path);
+                } else
+                {
+                    System.Diagnostics.Debug.WriteLine("Not exist file");
+                    result.idx = -5;
+                    return Json(result, JsonRequestBehavior.AllowGet); //Invalid member plan
                 }
             }
 
