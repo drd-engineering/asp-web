@@ -2891,7 +2891,7 @@
     <Content Include="Images\userlogin2.png" />
     <Content Include="Images\userlogin.png" />
     <Content Include="layout_navbar_sidebar_fixed.html" />
-    <Content Include="NewFile1.txt" />
+    <Content Include="menudocument.txt" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\autocomplete\autocomplete.min.js" />

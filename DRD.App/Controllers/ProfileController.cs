@@ -187,12 +187,12 @@ namespace DRD.App.Controllers
         {
             if (location == null)
                 return -2;
-            string fromFolder = "images/member/temp";
-            string toFolder = "images/member/" + user.EncryptedId.ToString();
-            var targetdir = "/" + toFolder + "/";
-            bool exists = System.IO.Directory.Exists(targetdir);
+            string fromFolder = "Images/Member/temp";
+            string toFolder = "Images/Member/" + user.EncryptedId.ToString();
+            var targetDir = "/" + toFolder + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
             if (!exists)
-                System.IO.Directory.CreateDirectory(targetdir);
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
             try
             {
                 int returnval = 0;
