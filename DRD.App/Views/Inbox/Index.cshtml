@@ -252,7 +252,7 @@
             $scope.infoSuccess="Data berhasil disimpan.";
 
             $scope.currentRotationNode = {};
-            $scope.tempDoc = "";
+            $scope.tempDoc = {};
             $scope.docs=[];
             $scope.updocs=[];
             $scope.annos=[];
@@ -288,6 +288,8 @@
                 var product = @Html.Raw(Json.Encode(Model.obj));
 
                 if (product.id!=0) {
+                    console.log("INBOX", product);
+                    console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId=product.RotationNodeId;
@@ -1279,22 +1281,10 @@
                 $scope.tempDoc = doc;
                 $scope.isUpload = 0;
                 document.querySelector('.submit-document').disabled = true;
-
             }
 
             $scope.saveProduct = function () {
-                //for(i=0;i<$scope.users.length;i++){
-                //    var bit=1;
-                //    var flag=0;
-                //    for(x=1;x<8;x++){
-                //        var cb= $('#checkboxmt'+$scope.users[i].MemberId+""+bit)[0];
-                //        if (cb.checked)
-                //            flag+=bit;
-                //        bit+=bit;
-                //    }
-                //    $scope.users[i].FlagPermission=flag;
-                //}
-                var btn = Ladda.create(document.querySelector('.btn-submit'));
+                var btn = Ladda.create(document.querySelector('.submit-document'));
                 btn.start();
                 console.log("TRY TO SAVE DOCUMENT");
                 $http.post('@Url.Action("Save", "document")',
@@ -1319,9 +1309,9 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.resetFileUploadDetails();
                             $scope.tempDoc.Document.DocumentId = response.data;
                             $scope.docs.push($scope.tempDoc);
+                            $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
                         }

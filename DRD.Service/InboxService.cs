@@ -110,7 +110,7 @@ namespace DRD.Service
             var rotationNodeId = GetRotationNodeId(inboxId);
             using (var db = new ServiceContext())
             {
-                var result =
+                var result =d
                    (from c in db.RotationNodes
                     where c.Id == rotationNodeId
                     select new RotationInboxData

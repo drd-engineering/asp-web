@@ -188,12 +188,12 @@ namespace DRD.Service
                         rtnode2.SenderRotationNodeId = rtnode.Id;
                         rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
                         rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
-                System.Diagnostics.Debug.WriteLine("I AM HERE in ACTIVITY" + rtnode.Status + " ,,WFNODES::" + wfnodes + "RTNODE2::"+ rtnode2.PrevWorkflowNodeId);
+                        System.Diagnostics.Debug.WriteLine("I AM HERE in ACTIVITY" + rtnode.Status + " ,,WFNODES::" + wfnodes + "RTNODE2::"+ rtnode2.PrevWorkflowNodeId);
                         rtnode2.Status = (int)Constant.RotationStatus.Open;
                         rtnode2.Value = rtnode.Value;
                         rtnode2.CreatedAt = DateTime.Now;
                         db.RotationNodes.Add(rtnode2);
-    `                   ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
+                        ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
                         retvalues.Add(activityItem);
 
                         //sending inboxto every user in all new nodes
