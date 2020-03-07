@@ -108,9 +108,10 @@
 
 div.modal-content{
     width: 640px;
-
 }
-
+div.modal-content .row{
+    margin-left:20px;
+}
 div.transfer-double{
     border: none;
     box-shadow: none;

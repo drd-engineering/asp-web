@@ -92,5 +92,21 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
+        {
+            InitializeAPI();
+
+            var data = memberService.BecomeAdmin(companyId, adminCandidate);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult BecomeMember(long companyId, ICollection<MemberItem> memberCandidate)
+        {
+            InitializeAPI();
+
+            var data = memberService.BecomeMember(companyId, memberCandidate);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

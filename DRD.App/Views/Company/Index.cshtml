@@ -202,7 +202,7 @@
                             <div class="modal-content">
                                 <div class="modal-header" style="background:black; color:white;padding:10px;">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h6 class="modal-title">Select Location</h6>
+                                    <h6 class="modal-title">Change Admin</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-5">
@@ -219,11 +219,11 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 @*<input  class='btn btn-sm' id='btnRight' value='  >  ' />*@
-                                                <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='  >  ' />
+                                                <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='>' style="border:1px solid black;"/>
                                             </div>
                                             <div class="col-md-12">
                                                 @*<input class='btn btn-sm' id='btnLeft' value='  <  ' />*@
-                                                <input ng-click="makeMember(selectedAdmins)" class='btn btn-sm' id='btnLeft' value='  <  ' />
+                                                <input ng-click="makeMember(selectedAdmins)" class='btn btn-sm' id='btnLeft' value='<' style="border:1px solid black;"/>
                                             </div>
                                         </div>
                                     </div>
@@ -240,7 +240,8 @@
                                 </div>
                                 <div class="modal-footer" style="margin-top:15px">
                                     <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
+                                    <button type="button" class="btn btn-ladda " data-dismiss="modal"
+                                            style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
                                 </div>
                             </div>
                         </div>
@@ -724,10 +725,32 @@
             }
 
             $scope.setAdmin = function () {
-                console.log(adminsManage.getSelectedItems());
-                angular.element('#modal_manage_admin').modal('hide');
+                $http.post('@Url.Action("BecomeAdmin", "Member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, adminCandidate: $scope.administratorsList })
+                    .then(function (response) {
+                        if (response.data) {
+                            $scope.administratorsList = response.data.members;
+                            $scope.setMember();showInfo("Success change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                        else {
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Failed change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                });
             }
-
+            $scope.setMember = function () {
+                $http.post('@Url.Action("BecomeMember", "Member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, memberCandidate: $scope.membersList })
+                    .then(function (response) {
+                        if (response.data) {
+                            $scope.memberList = response.data.members;
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Success change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                        else {
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Failed change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                });
+            }
 
 
         });
