@@ -294,6 +294,8 @@ namespace DRD.Service
                         memberItem.isCompanyAccept = candidate.isCompanyAccept;
                         memberItem.isMemberAccept = candidate.isMemberAccept;
                         memberItem.JoinedAt = candidate.JoinedAt;
+                        memberItem.User = x.User;
+                        memberItem.Company = x.Company;
                         data.addMember(memberItem);
                     }
                     else
@@ -326,6 +328,8 @@ namespace DRD.Service
                         memberItem.isCompanyAccept = candidate.isCompanyAccept;
                         memberItem.isMemberAccept = candidate.isMemberAccept;
                         memberItem.JoinedAt = candidate.JoinedAt;
+                        memberItem.User = x.User;
+                        memberItem.Company = x.Company;
                         data.addMember(memberItem);
                     }
                     else

@@ -102,7 +102,7 @@
                                                     <label class="control-label">Administrator</label>
                                                     <p>administrator can manage members and edit company profile</p>
                                                     <div class="input-group" ng-click="showAdmins($index)" style="cursor:pointer">
-                                                        <input type="text" class="form-control" readonly ng-model="adminsString[$index]" />
+                                                        <input type="text" class="form-control" readonly value="{{adminsString[$index][0]}}"/>
                                                         <span class="input-group-addon" data-toggle="modal" data-target="#modal_manage_admin"><i class="icon-users"></i></span>
                                                     </div>
                                                 </div>
@@ -399,7 +399,6 @@
                                         });
                                     $scope.adminsString[index].push(tempString);
                             });
-                            
                         }
                 });
             }
@@ -432,7 +431,7 @@
                 var i = $scope.findMember(tempMember, $scope.membersList);
                 if ( i != -1) {
                     $scope.administratorsList.push(tempMember);
-                    $scope.membersList.splice(i, 1); 
+                    $scope.membersList.splice(i, 1);
                 }
                 $scope.selectedMembers = [];
             }
@@ -729,7 +728,9 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.administratorsList = response.data.members;
-                            $scope.setMember();showInfo("Success change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                            $scope.setMember();
+                            $scope.setAdminsString();
+                            console.log($scope.adminsString);
                         }
                         else {
                             angular.element('#modal_manage_admin').modal('hide');
@@ -751,7 +752,16 @@
                         }
                 });
             }
-
+            $scope.setAdminsString = function () {
+                $scope.adminsString[$scope.companyIndex].splice(0, 1);
+                var tempString = "";
+                $scope.administratorsList.forEach(
+                    function (value, index, array) {
+                        tempString += index == 0 ? value.User.Name : (", " + value.User.Name);
+                    }
+                );
+                $scope.adminsString[$scope.companyIndex].push(tempString);
+            }
 
         });
 
