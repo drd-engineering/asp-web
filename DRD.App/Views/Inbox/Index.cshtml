@@ -1357,13 +1357,13 @@
                 isdefineiframe=true;
                 //}
                 $("#modal_pdf_viewer").modal("show");
-                // $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+                $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
             }
 
             var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                $scope.annos=items;
+                $scope.annos = items;
             }
 
 

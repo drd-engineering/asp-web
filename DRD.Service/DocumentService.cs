@@ -592,7 +592,7 @@ namespace DRD.Service
                     result = document.Id;
             }
 
-            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, document.DocumentElements);
+            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
             return result;
 
         }
@@ -770,20 +770,26 @@ namespace DRD.Service
                 //
                 var cxold = db.DocumentElements.Count(c => c.Document.Id == documentId);
                 var cxnew = annos.Count();
+                System.Diagnostics.Debug.WriteLine("[count ] " + cxnew);
                 //nambah old document
                 if (cxold < cxnew)
                 {
                     var ep = annos.ElementAt(0); // get 1 data for sample
+                    System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + ep);
                     for (var x = cxold; x < cxnew; x++)
                     {
                         DocumentElement da = new DocumentElement();
-                        da.Document.Id = documentId;
+                        da.DocumentId = documentId;
                         da.Page = ep.Page;
-                        da.ElementType.Id = ep.ElementType.Id;
+                        //harus diganti nanti
+                        da.ElementTypeId = 1 /*ep.ElementTypeId*/;
+
                         da.UserId = userEmail;
                         da.CreatedAt = DateTime.Now;
+                        System.Diagnostics.Debug.WriteLine("[ Dataelementbaru ] :" + da);
                         db.DocumentElements.Add(da);
                     }
+                    System.Diagnostics.Debug.WriteLine("[ Saved data ]");
                     db.SaveChanges();
                 }
                 else if (cxold > cxnew)
@@ -800,9 +806,9 @@ namespace DRD.Service
                 foreach (DocumentElement da in dnew)
                 {
                     var epos = annos.ElementAt(v);
-                    da.Document.Id = documentId;
+                    da.DocumentId = documentId;
                     da.Page = epos.Page;
-                    da.ElementType.Id = epos.ElementType.Id;
+                    da.ElementTypeId = 1/*epos.ElementType.Id*/;
                     da.LeftPosition = epos.LeftPosition;
                     da.TopPosition = epos.TopPosition;
                     da.WidthPosition = epos.WidthPosition;

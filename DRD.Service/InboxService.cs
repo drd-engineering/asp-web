@@ -1,5 +1,6 @@
 ﻿using DRD.Models.Custom;
 using DRD.Service.Context;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -137,19 +138,19 @@ namespace DRD.Service
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
-                    if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
+                    if (workflowNodeLink.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("SUBMIT").Id)
                     {
                         result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
-                        if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("DECISION"))
+                        if (workflowNodeLink.WorkflowNodeTos.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("DECISION").Id)
                             result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTos.Operator + " " + workflowNodeLink.WorkflowNodeTos.Value;
-                        else if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("CASE"))
+                        else if (workflowNodeLink.WorkflowNodeTos.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("CASE").Id)
                             result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTos.Value;
                     }
-                    else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
+                    else if (workflowNodeLink.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("REJECT").Id)
                         result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
-                    else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
+                    else if (workflowNodeLink.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("REVISI").Id)
                         result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
-                    else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
+                    else if (workflowNodeLink.SymbolCode == WorkflowService.getSymbolsFromCsvByCode("ALTER").Id)
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
                 }
                 /*changeUnreadtoReadInbox(inboxId: inboxId);*/
