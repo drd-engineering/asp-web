@@ -11,7 +11,6 @@ namespace DRD.Service.Context
     public class ServiceContext : DbContext
     {
         public ServiceContext() : base("AppContext"){    }
-        public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
         public DbSet<Contact> Contacts { get; set; }

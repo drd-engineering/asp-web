@@ -38,9 +38,6 @@ namespace DRD.Models
         public long DocumentId {set; get;}
         public int ElementTypeId { set; get; }
 
-        // Foreign keys
-        [ForeignKey("ElementTypeId")]
-        public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
         [ForeignKey("DocumentId")]
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
         [ForeignKey("ElementId")]

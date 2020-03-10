@@ -91,11 +91,7 @@ namespace DRD.Service
                                   UserId = documentElement.UserId,
                                   CreatedAt = documentElement.CreatedAt,
                                   UpdatedAt = documentElement.UpdatedAt,
-                                  ElementType = new ElementType
-                                  {
-                                      Id = documentElement.ElementType.Id,
-                                      Code = documentElement.ElementType.Code,
-                                  }
+                                  ElementTypeId = documentElement.ElementTypeId
                               }).ToList(),
                      }
                  }).ToList();
