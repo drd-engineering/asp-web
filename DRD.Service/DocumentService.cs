@@ -809,7 +809,7 @@ namespace DRD.Service
                     var epos = annos.ElementAt(v);
                     da.DocumentId = documentId;
                     da.Page = epos.Page;
-                    da.ElementTypeId = epos.ElementType.Id;
+                    da.ElementTypeId = epos.ElementTypeId;
                     da.LeftPosition = epos.LeftPosition;
                     da.TopPosition = epos.TopPosition;
                     da.WidthPosition = epos.WidthPosition;
