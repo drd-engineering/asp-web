@@ -23,12 +23,13 @@ namespace DRD.Models
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
         public double TransitionX { get; set; } // TransitionX
-        public double TransitionY { get; set; } // TransY
+        public double TransitionY { get; set; } // TransitionY
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
-        public long? ElementId { get; set; } // AnnotateId
+        public long? ElementId { get; set; } // ElementId
         public int Flag { get; set; } // Flag
+        public bool IsDeleted { get; set; }
         public string FlagCode { get; set; } // FlagCode (length: 20)
         public System.DateTime? FlagDate { get; set; } // FlagDate
         public string FlagImage { get; set; } // FlagImage (length: 100)

@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -314,7 +314,7 @@
     var bindAnnoDataMember = function(i)
     {
         var item = $scope.annoItems[i];
-        if (item.AnnotateId == null || !(item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL || item.AnnotateType == annotationType.PRIVATESTAMP))
+        if (item.ElementId == null || !(item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL || item.AnnotateType == annotationType.PRIVATESTAMP))
             return;
 
         var no = item.SvgId.replace('svg', '');
@@ -332,7 +332,7 @@
     }
     var bindAnnoDataStamp = function (i) {
         var item = $scope.annoItems[i];
-        if (item.AnnotateId == null || item.AnnotateType != annotationType.STAMP)
+        if (item.ElementId == null || item.AnnotateType != annotationType.STAMP)
             return;
 
         var no = item.SvgId.replace('svg', '');
@@ -1772,7 +1772,7 @@
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.AnnotateId = id;
+        item.ElementId = id;
         item.Annotate.Number = number;
         item.Annotate.Name = name;
         item.Annotate.Foto = imageProfile;
@@ -1867,7 +1867,7 @@
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.AnnotateId = id;
+        item.ElementId = id;
         item.Annotate.Name = descr;
         item.Annotate.Foto = stampFile;
 

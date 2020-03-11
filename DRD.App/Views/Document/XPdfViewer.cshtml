@@ -572,10 +572,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                         item.SvgId='svg'+i;
                         item.Page=ix.Page;
                         item.AnnotateType=ix.AnnotateTypeId;
-                        item.LeftPos=ix.LeftPos;
-                        item.TopPos=ix.TopPos;
-                        item.WidthPos=ix.WidthPos;
-                        item.HeightPos=ix.HeightPos;
+                        item.LeftPosition=ix.LeftPosition;
+                        item.TopPosition=ix.TopPosition;
+                        item.WidthPosition=ix.WidthPosition;
+                        item.HeightPosition=ix.HeightPosition;
                         item.Color=ix.Color;
                         item.BackColor=ix.BackColor;
                         item.Data=ix.Data;
@@ -583,8 +583,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                         item.Rotation=ix.Rotation;
                         item.ScaleX=ix.ScaleX;
                         item.ScaleY=ix.ScaleY;
-                        item.TransX=ix.TransX;
-                        item.TransY=ix.TransY;
+                        item.TransitionX=ix.TransitionX;
+                        item.TransitionY=ix.TransitionY;
                         item.StrokeWidth=ix.StrokeWidth;
                         item.Opacity=ix.Opacity;
                         item.Flag=ix.Flag;
@@ -592,7 +592,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                         item.FlagDate = convertJsonDate(ix.FlagDate);
                         item.FlagImage = ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.AnnotateId=ix.AnnotateId;
+                        item.ElementId=ix.ElementId;
                         item.Annotate=ix.Annotate;
                         $scope.annos.push(item);
                     }
@@ -624,10 +624,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                     var item={};
                     item.Page=ix.Page;
                     item.AnnotateTypeId=(ix.AnnotateTypeId==undefined?ix.AnnotateType:ix.AnnotateTypeId);
-                    item.LeftPos=ix.LeftPos;
-                    item.TopPos=ix.TopPos;
-                    item.WidthPos=ix.WidthPos;
-                    item.HeightPos=ix.HeightPos;
+                    item.LeftPosition=ix.LeftPosition;
+                    item.TopPosition=ix.TopPosition;
+                    item.WidthPosition=ix.WidthPosition;
+                    item.HeightPosition=ix.HeightPosition;
                     item.Color=ix.Color;
                     item.BackColor=ix.BackColor;
                     item.Data=ix.Data;
@@ -635,8 +635,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                     item.Rotation=ix.Rotation;
                     item.ScaleX=ix.ScaleX;
                     item.ScaleY=ix.ScaleY;
-                    item.TransX=ix.TransX;
-                    item.TransY=ix.TransY;
+                    item.TransitionX=ix.TransitionX;
+                    item.TransitionY=ix.TransitionY;
                     item.StrokeWidth=ix.StrokeWidth;
                     item.Opacity=ix.Opacity;
                     item.Flag=ix.Flag;
@@ -644,7 +644,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     item.FlagDate=ix.FlagDate;
                     item.FlagImage=ix.FlagImage;
                     item.CreatorId=ix.CreatorId;
-                    item.AnnotateId=ix.AnnotateId;
+                    item.ElementId=ix.ElementId;
                     annos.push(item);
                 }
                 $http.post('/document/saveannos', { documentId:$scope.document.Id, creatorId:creatorId, annos:annos}).then(function (response) {
