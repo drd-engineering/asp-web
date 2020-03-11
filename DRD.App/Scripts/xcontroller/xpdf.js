@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPos: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -122,8 +122,8 @@
         var field = $('#' + svgElement.id).append(html).find('.' + signatureClass);
         if (item.WidthPosition != null)
             field.css({ 'width': item.WidthPosition + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
 
         field.show();
 
@@ -150,8 +150,8 @@
         var field = $('#' + svgElement.id).append(html).find('.' + initialClass);
         if (item.WidthPosition != null)
             field.css({ 'width': item.WidthPosition + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
         signatureArrange(initialClass, item.LeftPosition, item.TopPosition);
@@ -178,8 +178,8 @@
         var field = $('#' + svgElement.id).append(html).find('.' + privateStampClass);
         if (item.WidthPosition != null)
             field.css({ 'width': item.WidthPosition + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
         signatureArrange(privateStampClass, item.LeftPosition, item.TopPosition);
@@ -198,8 +198,8 @@
 
         if (item.WidthPosition != null)
             field.css({ 'width': item.WidthPosition + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
         signatureArrange(stampClass, item.LeftPosition, item.TopPosition);
@@ -222,8 +222,8 @@
         field.css({ 'top': item.TopPosition + 'px' });
         if (item.WidthPosition != null)
             field.css({ 'width': item.WidthPosition + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         if (!isAnnoElementEnable)
             $('.' + editTextClass).attr('contenteditable', 'false');
         var defFlag = dropedToCenter;
@@ -253,7 +253,7 @@
         var t = item.TopPosition - svgPadding;
         var l = item.LeftPosition - svgPadding;
         var w = item.WidthPosition + (svgPadding * 2);
-        var h = item.HeightPos + (svgPadding * 2);
+        var h = item.HeightPosition + (svgPadding * 2);
         $('#' + svgElement.id).css({ 'top': t + 'px' });
         $('#' + svgElement.id).css({ 'left': l + 'px' });
         $('#' + svgElement.id).css({ 'width': w + 'px' });
@@ -952,9 +952,9 @@
         item.LeftPosition = rectsvg.left + (svgPadding * 2);
         item.TopPosition = rectsvg.top + (svgPadding * 2);;
         item.WidthPosition = rectsvg.width - pad;
-        item.HeightPos = rectsvg.height - pad;
+        item.HeightPosition = rectsvg.height - pad;
 
-        $scope.debugText = "L:" + item.LeftPosition + " T:" + item.TopPosition + " W:" + item.WidthPosition + " H:" + item.HeightPos;
+        $scope.debugText = "L:" + item.LeftPosition + " T:" + item.TopPosition + " W:" + item.WidthPosition + " H:" + item.HeightPosition;
     }
 
     var delKeyDown = function(e)
@@ -1100,8 +1100,8 @@
         var item = $scope.annoItems[dataIdx];
         if (item.WidthPosition != null)
             $('#' + svgElement.id).css({ "width": item.WidthPosition + 'px' })
-        if (item.HeightPos != null)
-            $('#' + svgElement.id).css({ "height": item.HeightPos + 'px' });
+        if (item.HeightPosition != null)
+            $('#' + svgElement.id).css({ "height": item.HeightPosition + 'px' });
         $('#' + svgElement.id).css({ 'top': item.TopPosition + 'px' });
         $('#' + svgElement.id).css({ 'left': item.LeftPosition + 'px' });
     }
@@ -1490,7 +1490,7 @@
             item.TopPosition = t;
             item.LeftPosition = l;
             item.WidthPosition = w;
-            item.HeightPos = h;
+            item.HeightPosition = h;
             item.Color = tmpPenAnnoItem.Color;
             item.BackColor = tmpPenAnnoItem.BackColor;
             item.Data = newd;

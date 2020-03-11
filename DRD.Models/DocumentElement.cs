@@ -14,7 +14,7 @@ namespace DRD.Models
         public double? LeftPosition { get; set; } // LeftPosition
         public double? TopPosition { get; set; } // TopPosition
         public double? WidthPosition { get; set; } // WidthPosition
-        public double? HeightPosition { get; set; } // HeightPos
+        public double? HeightPosition { get; set; } // HeightPosition
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
         public string Data { get; set; } // Data
