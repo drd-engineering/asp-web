@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 

@@ -22,7 +22,7 @@ namespace DRD.Models
         public int Rotation { get; set; } // Rotation
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
-        public double TransitionX { get; set; } // TransX
+        public double TransitionX { get; set; } // TransitionX
         public double TransitionY { get; set; } // TransY
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
