@@ -29,7 +29,6 @@ namespace DRD.Models
         public long? CreatorId { get; set; } // CreatorId
         public long? ElementId { get; set; } // ElementId
         public int Flag { get; set; } // Flag
-        public bool IsDeleted { get; set; }
         public string FlagCode { get; set; } // FlagCode (length: 20)
         public System.DateTime? FlagDate { get; set; } // FlagDate
         public string FlagImage { get; set; } // FlagImage (length: 100)

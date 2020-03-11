@@ -516,7 +516,7 @@ namespace DRD.App.Controllers
             return folder;
         }
 
-        public int MoveFromTemporaryToActual(Document newDocument, long companyId)
+        public int MoveFromTemporaryToActual(DocumentInboxData newDocument, long companyId)
         {
             string Tranfiles, ProcessedFiles;
             //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);

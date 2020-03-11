@@ -220,7 +220,7 @@ namespace DRD.App.Controllers
             var data = srv.CheckingPrivateStamp(memberId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Save(Document prod, long companyId, long rotationId)
+        public ActionResult Save(DocumentInboxData prod, long companyId, long rotationId)
         {
             Initialize();
             prod.CreatorId = user.Id;
@@ -271,7 +271,7 @@ namespace DRD.App.Controllers
         }
 
 
-        public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentElement> annos)
+        public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentElementInboxData> annos)
         {
             var srv = new DocumentService();
             var data = srv.SaveAnnos(documentId, creatorId, "ANDRO", annos);

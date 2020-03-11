@@ -578,10 +578,10 @@ namespace DRD.Service
         {
             return GetAnnotateDocs(memberId, topCriteria, page, pageSize, null, null);
         }
-        public long Save(Document prod, long companyId, long rotationId)
+        public long Save(DocumentInboxData prod, long companyId, long rotationId)
         {
             long result = 0;
-            Document document;
+            DocumentInboxData document;
             using (var db = new ServiceContext())
             {
                 if (prod.Id == 0)
@@ -596,7 +596,7 @@ namespace DRD.Service
 
         }
 
-        public Document Create(Document newDocument, long companyId, long rotationId)
+        public DocumentInboxData Create(DocumentInboxData newDocument, long companyId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
@@ -633,15 +633,15 @@ namespace DRD.Service
                 document.CompanyId = companyId;
 
                 db.Documents.Add(document);
-
                 db.SaveChanges();
+                newDocument.Id = document.Id;
 
-                return document;
+                return newDocument;
             }
 
         }
 
-        public Document Update(Document newDocument, long companyId, long rotationId)
+        public DocumentInboxData Update(DocumentInboxData newDocument, long companyId, long rotationId)
         {
 
 
@@ -664,8 +664,7 @@ namespace DRD.Service
 
                 document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.UserEmail = newDocument.UserEmail;
-                document.CreatedAt = DateTime.Now;
-
+                
                 // NEW
                 document.ExpiryDay = newDocument.ExpiryDay;
                 document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
@@ -682,14 +681,16 @@ namespace DRD.Service
                 document.UpdatedAt = DateTime.Now;
 
                 db.SaveChanges();
+                newDocument.UpdatedAt = document.UpdatedAt;
+                newDocument.Id = document.Id;
 
-                return document;
+                return newDocument;
             }
 
         }
 
         // Validate Document with Company's or Personal's Plan
-        public bool ValidateWithPlan(Document oldDocument, Document newDocument, PlanBusiness plan)
+        public bool ValidateWithPlan(Document oldDocument, DocumentInboxData newDocument, PlanBusiness plan)
         {
 
             if (!plan.IsActive) throw new NotImplementedException();
@@ -704,7 +705,7 @@ namespace DRD.Service
         }
 
         // Currently, this method only used when Update Document
-        public bool Validate(Document document)
+        public bool Validate(DocumentInboxData document)
         {
             if (document.ExpiryDay < 0) throw new NotImplementedException();
 
@@ -763,7 +764,7 @@ namespace DRD.Service
             }
         }
 
-        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElement> annos)
+        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
         {
             using (var db = new ServiceContext())
             {
@@ -777,7 +778,7 @@ namespace DRD.Service
                 if (cxold < cxnew)
                 {
                     var ep = annos.ElementAt(0); // get 1 data for sample
-                    System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + ep);
+                    System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + ep.ToString());
                     for (var x = cxold; x < cxnew; x++)
                     {
                         DocumentElement da = new DocumentElement();
@@ -803,10 +804,12 @@ namespace DRD.Service
                 // save data (update)
                 //
                 var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
+                System.Diagnostics.Debug.WriteLine("[count data want to save] " + dnew.Count());
                 int v = 0;
                 foreach (DocumentElement da in dnew)
                 {
                     var epos = annos.ElementAt(v);
+                    System.Diagnostics.Debug.WriteLine("[count data want to save] " + epos.ElementTypeId+ epos.LeftPosition+ epos.TopPosition+ epos.WidthPosition+ epos.HeightPosition);
                     da.DocumentId = documentId;
                     da.Page = epos.Page;
                     da.ElementTypeId = epos.ElementTypeId;

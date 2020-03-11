@@ -7,8 +7,8 @@ namespace DRD.Service
 {
     public interface IDocumentService
     {
-        Document Create(Document document, long companyId, long rotationId);
-        Document Update(Document document, long companyId, long rotationId);
+        DocumentInboxData Create(DocumentInboxData document, long companyId, long rotationId);
+        DocumentInboxData Update(DocumentInboxData document, long companyId, long rotationId);
         //void DoRevision(Document document);
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
@@ -33,8 +33,8 @@ namespace DRD.Service
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);
-        long Save(Document prod, long companyId, long rotationId);
-        int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElement> annos);
+        long Save(DocumentInboxData prod, long companyId, long rotationId);
+        int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos);
         int SaveCxDownload(string docName, long memberId);
         int SaveCxPrint(string docName, long memberId);
         void sendEmailSignature(Member member, string rotName, string docName, string numbers);
