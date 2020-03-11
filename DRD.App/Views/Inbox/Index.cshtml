@@ -1364,6 +1364,7 @@
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos = items;
+                console.log($scope.annos);
             }
 
 

@@ -884,14 +884,14 @@ namespace DRD.Service
                     foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
                     {
                         if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
-                        if (documentElement.ElementType.Code.Equals("SIGNATURE") || documentElement.ElementType.Code.Equals("INITIAL") || documentElement.ElementType.Code.Equals("PRIVATESTAMP"))
+                        if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("SIGNATURE").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("INITIAL").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
                             documentElement.Element.UserId = user.Id;
                             documentElement.Element.Name = user.Name;
                             documentElement.Element.Foto = user.ImageProfile;
                         }
-                        else if (documentElement.ElementType.Code.Equals("STAMP"))
+                        else if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("STAMP").Id)
                         {
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
                             documentElement.Element.Name = stmp.Descr;

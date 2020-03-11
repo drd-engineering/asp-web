@@ -11,8 +11,8 @@ namespace DRD.Models
         [Key]
         public long Id { get; set; } // Id (Primary key)
         public int Page { get; set; } // Page
-        public double? LeftPosition { get; set; } // LeftPos
-        public double? TopPosition { get; set; } // TopPos
+        public double? LeftPosition { get; set; } // LeftPosition
+        public double? TopPosition { get; set; } // TopPosition
         public double? WidthPosition { get; set; } // WidthPos
         public double? HeightPosition { get; set; } // HeightPos
         public string Color { get; set; } // Color (length: 50)
