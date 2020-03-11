@@ -13,7 +13,7 @@ namespace DRD.Models
         public int Page { get; set; } // Page
         public double? LeftPosition { get; set; } // LeftPosition
         public double? TopPosition { get; set; } // TopPosition
-        public double? WidthPosition { get; set; } // WidthPos
+        public double? WidthPosition { get; set; } // WidthPosition
         public double? HeightPosition { get; set; } // HeightPos
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
