@@ -98,8 +98,19 @@
                                     <label class="control-label">Tags</label>
                                 </div>
                                 <div class="col-sm-12">
-                                    <input type="text" class="form-control" ng-model="model.Tags" maxlength="100" />
+                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="$event.keyCode == 188 && addTagList()"/>
                                 </div>
+                                <div class="col-sm-12">
+                                    <div style="color:black;font-size:10px;align-self:end">use coma to input the tag</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <span class="tag-item" ng-repeat="tag in model.Tags">
+                                    {{tag}}
+                                    <button class="image-container-sm red-border" ng-click="removeTag($index)">
+                                        <img src="~/Images/icon/reject.png" />
+                                    </button>
+                                </span>
                             </div>
                         </div>
                         <div style="height:5px"></div>
@@ -217,6 +228,7 @@
             $scope.index = 0;
             // modal workflow
 
+            $scope.newTag = ""
             $scope.SubscriptionList = [];
             $scope.model = {};
             $scope.subscriptions = [];
@@ -224,7 +236,8 @@
             $scope.master = {};
             $scope.model.IsActive=true;
             $scope.model.Id = 0;
-            $scope.model.Status="00";
+            $scope.model.Status = "00";
+            $scope.model.Tags = [];
             $scope.users=[];
             initValues();
 
@@ -255,7 +268,6 @@
                 var product = @Html.Raw(Json.Encode(Model.obj));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
                 if (product.Id!=0 ){
-
                     $scope.model.Id = product.Id;
                     $scope.model.Subject = product.Subject;
                     $scope.model.Status = product.Status;
@@ -310,7 +322,8 @@
                             Remark: $scope.model.Remark,
                             WorkflowId:$scope.workflow.Id,
                             Status: "00",
-                            RotationUsers:$scope.users,
+                            RotationUsers: $scope.users,
+                            Tags: $scope.Tags,
                             //IsActive: $('#checkbox1')[0].checked,
                         }
                     }).then(function (response) {
@@ -560,6 +573,16 @@
                             $scope.SubscriptionList = response.data.subscriptions;
                         }
                     });
+            }
+            $scope.addTagList = function () {
+                $scope.newTag = $scope.newTag.replace(",", "");
+                if ($scope.newTag !== "" && $scope.model.Tags.indexOf($scope.newTag) === -1) {
+                    $scope.model.Tags.push($scope.newTag);
+                }
+                $scope.newTag = "";
+            }
+            $scope.removeTag = function (index) {
+                $scope.model.Tags.splice(index, 1);
             }
         });
 

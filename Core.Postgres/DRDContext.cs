@@ -36,6 +36,7 @@ namespace Core.Postgres
 
         //public DbSet<RotationActivity> RotationActvities { get; set; }
         public DbSet<Inbox> Inbox { get; set; }
+        public DbSet<TagItem> TagItems { get; set; }
 
 
 
@@ -178,6 +179,8 @@ namespace Core.Postgres
             modelBuilder.Entity<RotationNode>().HasData(rtn1);
             modelBuilder.Entity<RotationUser>().HasData(rtnusr1);
             modelBuilder.Entity<Inbox>().HasData(inbox1);
+
+            modelBuilder.Entity<TagItem>().HasKey(e => new { e.TagId, e.RotationId });
         }
     }
 }

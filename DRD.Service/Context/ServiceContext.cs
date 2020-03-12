@@ -34,5 +34,6 @@ namespace DRD.Service.Context
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
+        public DbSet<TagItem> TagItems { get; set; }
     }
 }

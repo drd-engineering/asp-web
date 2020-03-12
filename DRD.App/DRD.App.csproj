@@ -363,6 +363,7 @@
     <Content Include="assets\css\pages\company-member.css" />
     <Content Include="assets\css\pages\company.css" />
     <Content Include="assets\css\pages\dashboard.css" />
+    <Content Include="assets\css\pages\inbox.css" />
     <Content Include="assets\css\pages\layout.css" />
     <Content Include="assets\css\pages\rotation-list.css" />
     <Content Include="assets\css\pages\rotation.css" />

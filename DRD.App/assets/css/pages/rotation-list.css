@@ -99,3 +99,34 @@ label {
     height: 75px;
     width: 100%;
 }
+.tag-item {
+    font-size: xx-small;
+    border-radius: 10%;
+    padding: 5px;
+    margin:3px;
+    color: white;
+    background-color: cornflowerblue;
+    display:inline-block;
+}
+.image-container-sm {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: solid 1px #888888;
+    position: relative;
+    margin-left: 2px;
+    margin-right: 2px;
+    z-index:9;
+}
+.image-container-sm img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width:auto;
+    height:200%;
+}
+.red-border {
+    border-color: #ff8799 !important;
+}
