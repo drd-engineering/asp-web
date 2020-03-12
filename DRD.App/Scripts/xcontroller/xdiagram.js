@@ -25,18 +25,18 @@
     $scope.elmPararrelName = "node-pararrel";
 
     $scope.linkTypeSubmit = "grid";
-    $scope.linkTypeRevisi = "straight";
+/*    $scope.linkTypeRevisi = "straight";
     $scope.linkTypeReject = "fluid";
-    $scope.linkTypeAlter = "straight";
+    $scope.linkTypeAlter = "straight";*/
     $scope.linkTypeYes = "grid";
     $scope.linkTypeNo = "grid";
     $scope.linkTypeSubmitCase = "grid";
     $scope.linkEndPlug = 'arrow1';
     $scope.linkLabelFontSize = '8pt';
 
-    $scope.linkColorSubmit = "black";
+/*    $scope.linkColorSubmit = "black";
     $scope.linkColorReject = "red";
-    $scope.linkColorRevisi = "chocolate";
+    $scope.linkColorRevisi = "chocolate";*/
     $scope.linkColorAlter = "dodgerblue";
     $scope.linkColorYes = "green";
     $scope.linkColorNo = "red";
@@ -139,26 +139,26 @@
     $scope.initActivity = function (idNo) {
         var activityId = $scope.elmActivityName + "-" + idNo;
         var submitId = "submit-" + idNo;
-        var rejectId = "reject-" + idNo;
+/*        var rejectId = "reject-" + idNo;
         var revisiId = "revisi-" + idNo;
-        var alterId = "alter-" + idNo;
+        var alterId = "alter-" + idNo;*/
 
         var activity = document.getElementById(activityId);
         var submit = document.getElementById(submitId);
-        var reject = document.getElementById(rejectId);
+/*        var reject = document.getElementById(rejectId);
         var revisi = document.getElementById(revisiId);
-        var alter = document.getElementById(alterId);
+        var alter = document.getElementById(alterId);*/
 
         var
-        lineSubmit = new LeaderLine(activity, submit, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorSubmit,
-        }),
-        lineReject = new LeaderLine(activity, reject, {
+            lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmit,
+            });
+        /*lineReject = new LeaderLine(activity, reject, {
             endPlug: 'behind',
             hide: true,
             path: 'straight',
@@ -181,7 +181,7 @@
             dash: { animation: true },
             size: 2,
             color: $scope.linkColorAlter,
-        });
+        });*/
 
         $("#" + submitId).draggable({
             create: function (event, ui) { },
@@ -195,7 +195,7 @@
                 event.target.style.top = "";
             }
         });
-        $("#" + rejectId).draggable({
+       /* $("#" + rejectId).draggable({
             create: function (event, ui) { },
             drag: function (event, ui) {
                 lineReject.position().show();
@@ -230,7 +230,7 @@
                 event.target.style.left = "";
                 event.target.style.top = "";
             }
-        });
+        });*/
 
         $("#" + activityId).droppable({
             drop: function (event, ui) {
@@ -734,7 +734,7 @@
                                 });
         $scope.addLink(elmFrom.id, elmTo.id, 'SUBMIT', '', line);
     }
-    $scope.addLinkReject = function (elmFrom, elmTo) {
+    /*$scope.addLinkReject = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
@@ -751,7 +751,7 @@
                                     middleLabel: LeaderLine.pathLabel({ text: 'Revision', color: $scope.linkColorRevisi, fontSize: $scope.linkLabelFontSize })
                                 });
         $scope.addLink(elmFrom.id, elmTo.id, 'REVISI', 'Revision', line);
-    }
+    }*/
     $scope.addLinkYes = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
@@ -770,7 +770,7 @@
                                 });
         $scope.addLink(elmFrom.id, elmTo.id, 'NO', "No", line);
     }
-    $scope.addLinkAlter = function (elmFrom, elmTo) {
+   /* $scope.addLinkAlter = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
@@ -778,7 +778,7 @@
                                     middleLabel: LeaderLine.pathLabel({ text: 'Period?', color: $scope.linkColorAlter, fontSize: $scope.linkLabelFontSize })
                                 });
         $scope.addLink(elmFrom.id, elmTo.id, 'ALTER', "Period?", line);
-    }
+    }*/
     $scope.addLinkSubmitCase = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
@@ -1074,16 +1074,21 @@
                 console.log(to);
                 if (link.symbolCode == 'SUBMIT') {
                     $scope.addLinkSubmit(from, to);
-                } if (link.symbolCode == 'REJECT') {
+                }
+                /*if (link.symbolCode == 'REJECT') {
                     $scope.addLinkReject(from, to);
-                } if (link.symbolCode == 'REVISI') {
+                }*/
+                /*if (link.symbolCode == 'REVISI') {
                     $scope.addLinkRevisi(from, to);
-                } if (link.symbolCode == 'YES') {
+                }*/
+                if (link.symbolCode == 'YES') {
                     $scope.addLinkYes(from, to);
-                } if (link.symbolCode == 'NO') {
+                }
+                if (link.symbolCode == 'NO') {
                     $scope.addLinkNo(from, to);
-                } if (link.symbolCode == 'ALTER') {
-                    $scope.addLinkAlter(from, to);
+                }
+                /*if (link.symbolCode == 'ALTER') {
+                    $scope.addLinkAlter(from, to);*/
 
                     var val = link.value + ' ' + link.Operator + (link.value > 1 ? 'S' : '');
                     if (link.Operator == null) {
