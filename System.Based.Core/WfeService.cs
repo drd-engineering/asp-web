@@ -761,7 +761,8 @@ namespace System.Based.Core
                 else if (strbit.Equals("REJECT"))
                     rtnode.Status = "98";
 
-                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId && c.Symbol.Code.Equals(strbit)).ToList();
+                //TODO SymbolCode == 20 is only for submit activity. Make a universal identifier
+                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId && c.SymbolCode == 20).ToList();
                 List<RotationNode> rotnodes = new List<RotationNode>();
                 foreach (WorkflowNodeLink wfnl in wfnodes)
                 {

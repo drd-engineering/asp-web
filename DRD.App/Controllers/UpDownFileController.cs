@@ -49,6 +49,7 @@ namespace DRD.App.Controllers
             //initiating variable folder and doc
             DocUploadResult result = new DocUploadResult();
             string folder = "doc/company/temp"; // fileType = 0
+            string filenameori = string.Empty;
             string _filename = string.Empty;
             string _ext = "";
 
@@ -81,6 +82,7 @@ namespace DRD.App.Controllers
                     _ext = Path.GetExtension(file.FileName);
                     var companyofUser = companyService.GetCompanyItem(companyId);
                     var fileName = Path.GetFileName(file.FileName);
+                    filenameori = fileName;
                     
                     //meant for uploaded signature and initial
                     if (String.IsNullOrEmpty(_ext))
@@ -103,6 +105,7 @@ namespace DRD.App.Controllers
 
             result.idx = idx;
             result.filename = _filename;
+            result.filenameori = filenameori;
             result.fileext = _ext.Replace(".", "");
             return Json(result, JsonRequestBehavior.AllowGet);
             // quota upload belum dipotong
@@ -504,34 +507,38 @@ namespace DRD.App.Controllers
 
         public int MoveFromTemporaryToActual(Document newDocument, long companyId)
         {
+            string Tranfiles, ProcessedFiles;
+            //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
+            var tempFolder = "doc/company/temp";
+            var encryptedCompanyId = Utilities.Encrypt(companyId.ToString());
+            var actualPath = "doc/company/" + encryptedCompanyId;
+            var targetDir = "/" + actualPath + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
+
             try
             {
-                string Tranfiles, ProcessedFiles;
-                //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
-                var tempFolder = "doc/company/temp";
-                var encryptedCompanyId = Utilities.Encrypt(companyId.ToString());
-                var actualPath = "doc/company/" + encryptedCompanyId;
-                
-                if (System.IO.File.Exists("/" + tempFolder + "/" + newDocument.FileUrl))
+                Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
+                System.Diagnostics.Debug.WriteLine("LOCATION FILE " + Tranfiles);
+                if (System.IO.File.Exists(Tranfiles))
                 {
-                    Tranfiles = Server.MapPath("/" + tempFolder + "/" + newDocument.FileUrl);
                     //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
                     //1)Cannot create a file when that file already exists
                     //2)The path....is a folder not a file.
                     //ProcessedFiles = Server.MapPath(@"~\ProcessedFiles"); //Wrong
-                    ProcessedFiles = Server.MapPath("/" + actualPath + "/" + newDocument.FileUrl);//Need to mention any file in dest folder,even though it doesnt contain this file.
+                    ProcessedFiles = Server.MapPath("/" + actualPath + "/" )+ newDocument.FileUrl + ".drd";//Need to mention any file in dest folder,even though it doesnt contain this file.
 
                     //Need to move or overwrite the new file with actual file.
                     System.IO.File.Move(Tranfiles, ProcessedFiles);
-                    System.IO.File.Delete("/" + tempFolder + "/" + newDocument.FileUrl);
+                    System.IO.File.Delete(Tranfiles);
                     return 1;
                 }
                 return 0;
-
             }
             catch (Exception ex)
             {
-                return 0;
+                return -1;
             }
         }
     }

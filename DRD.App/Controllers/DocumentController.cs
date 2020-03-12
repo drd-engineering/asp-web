@@ -220,15 +220,20 @@ namespace DRD.App.Controllers
             var data = srv.CheckingPrivateStamp(memberId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
         public ActionResult Save(Document prod, long companyId, long rotationId)
         {
             Initialize();
             prod.CreatorId = user.Id;
             prod.UserEmail = user.Email;
             //prod.CompanyId = (long)user.CompanyId;
-            var fileController = new UpDownFileController();
-            if (fileController.MoveFromTemporaryToActual(prod, companyId) == 1) {
+            System.Diagnostics.Debug.WriteLine("TRY TO MOVE DIR");
+            System.Diagnostics.Debug.WriteLine("ROTATION ID NYA "+rotationId);
+            var fileController = DependencyResolver.Current.GetService<UpDownFileController>();
+            fileController.ControllerContext = new ControllerContext(this.Request.RequestContext, fileController);
+
+            var moveDirResult = fileController.MoveFromTemporaryToActual(prod, companyId);
+            System.Diagnostics.Debug.WriteLine("MOVE DIR RESPONSE " + moveDirResult);
+            if (moveDirResult == 1) {
                 var srv = new DocumentService();
                 var data = srv.Save(prod, companyId, rotationId);
                 return Json(data, JsonRequestBehavior.AllowGet);

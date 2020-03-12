@@ -18,7 +18,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id).ToList();
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList();
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -79,6 +79,7 @@ namespace DRD.Service
                                                  Id = r.Id,
                                                  Subject = r.Subject,
                                                  WorkflowId = rn.WorkflowNode.Id,
+                                        
                                                  Status = rn.Status,
                                                  UserId = rn.UserId,
                                                  //MemberId = 0,
@@ -122,6 +123,9 @@ namespace DRD.Service
                         DateCreated = c.CreatedAt,
                         DateUpdated = c.UpdatedAt,
                         DateStarted = c.DateRead,
+                        DefWorkflowNodeId = c.WorkflowNodeId,
+                        FlagAction = 0,
+                        DecissionInfo = "",
                         RotationNodeId = c.Id,
 
                     }).FirstOrDefault();
@@ -149,14 +153,10 @@ namespace DRD.Service
                         result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
 
                 }
-
-                changeUnreadtoReadInbox(inboxId: inboxId);
-
+                /*changeUnreadtoReadInbox(inboxId: inboxId);*/
                 return result;
             }
         }
-
-
 
         public bool changeUnreadtoReadInbox(long inboxId)
         {

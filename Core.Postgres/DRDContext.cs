@@ -128,9 +128,9 @@ namespace Core.Postgres
                 isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false
             };
 
-            PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
-            PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageUsedinByte= 1000, totalAdministrators=1, SubscriptionName= "Business"};
-            PlanBusiness planBusiness3 = new PlanBusiness { Id = -3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageUsedinByte= 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
+            PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageSize=1000000, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
+            PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageSize = 1000000, StorageUsedinByte = 1000, totalAdministrators=1, SubscriptionName= "Business"};
+            PlanBusiness planBusiness3 = new PlanBusiness { Id = -3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageSize = 1000000, StorageUsedinByte = 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
