@@ -7,11 +7,15 @@ namespace DRD.Models
     [Table("TagItems", Schema = "public")]
     public class TagItem
     {
-        public int TagId { get; set; } 
-        public string RotationId { get; set; }
+        [Key]
+        [Column(Order = 1)]
+        public int TagId { get; set; }
+        [Key]
+        [Column(Order = 2)]
+        public long RotationId { get; set; }
         [ForeignKey("TagId")]
         public virtual Tag Tag { get; set; }
-        [ForeignKey("Rotation")]
+        [ForeignKey("RotationId")]
         public virtual Rotation Rotation { get; set; }
     }
 }

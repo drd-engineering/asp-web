@@ -25,8 +25,10 @@ namespace DRD.Models.View
         public long DefWorkflowNodeId { get; set; }
         public int FlagAction { get; set; }
         public string DecissionInfo { get; set; }
+        public virtual System.Collections.Generic.ICollection<string> Tags { get; set; } // Calon Tag yang akan dibuat atau di ambil
 
         // Document summaries
+        public virtual System.Collections.Generic.ICollection<TagItem> TagItems { get; set; }
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
