@@ -37,6 +37,7 @@ namespace Core.Postgres
         //public DbSet<RotationActivity> RotationActvities { get; set; }
         public DbSet<Inbox> Inbox { get; set; }
         public DbSet<TagItem> TagItems { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
 
 

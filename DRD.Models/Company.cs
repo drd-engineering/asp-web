@@ -36,7 +36,7 @@ namespace DRD.Models
         // public virtual ICollection<Document> Documents { get; set; } // Document.FK_Document_Company
         public virtual ICollection<Member> Members { get; set; } // Member.FK_Member_Company
         //public virtual System.Collections.Generic.ICollection<DtoMemberSubscribe> MemberSubscribes { get; set; } // MemberSubscribe.FK_MemberSubscribe_Company
-        public virtual ICollection<Tag> Tags { get; set; } // Project.FK_Project_Company
+        /*public virtual ICollection<Tag> Tags { get; set; } // Project.FK_Project_Company*/
 
         // Foreign keys
         //public virtual SubscriptType subscript_type { get; set; } // FK_Company_SubscriptType
