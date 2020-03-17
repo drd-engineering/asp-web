@@ -323,7 +323,7 @@
                             WorkflowId:$scope.workflow.Id,
                             Status: "00",
                             RotationUsers: $scope.users,
-                            Tags: $scope.Tags,
+                            Tags: $scope.model.Tags,
                             //IsActive: $('#checkbox1')[0].checked,
                         }
                     }).then(function (response) {
@@ -574,9 +574,25 @@
                         }
                     });
             }
+            var array = [ 'I', 'hAve', 'theSe', 'ITEMs' ];
+                    var query = 'these'.toLowerCase();
+                    var index = -1;
+                    array.some(function(element, i) {
+                    if (query === element.toLowerCase()) {
+                        index = i;
+                        return true;
+                    }
+            });
             $scope.addTagList = function () {
-                $scope.newTag = $scope.newTag.replace(",", "");
-                if ($scope.newTag !== "" && $scope.model.Tags.indexOf($scope.newTag) === -1) {
+                $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                var alreadyUsed = false;
+                $scope.model.Tags.some(function (element, i) {
+                    if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        alreadyUsed = true;
+                        return;
+                    }
+                })
+                if (!alreadyUsed) {
                     $scope.model.Tags.push($scope.newTag);
                 }
                 $scope.newTag = "";

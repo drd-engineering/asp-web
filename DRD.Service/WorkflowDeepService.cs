@@ -254,9 +254,37 @@ namespace DRD.Service
                 {
                     return 0;
                 }
+                // Tags
+                var tagold = 0;
+                if (product.TagItems != null)
+                    tagold = product.TagItems.Count();
+                var tagnew = prod.Tags.Count();
+                var tagItemListInDb = db.TagItems.Where(tagitemdb => tagitemdb.RotationId == product.Id).ToList();
+                foreach (string tag in prod.Tags)
+                {
+                    var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));
+                    if (tagfromDB == null)
+                    {
+                        tagfromDB = new Tag();
+                        tagfromDB.Name = tag;
+                        db.Tags.Add(tagfromDB);
+                        db.SaveChanges();
+                    }
+                    var tagItemFromDb = tagItemListInDb.FirstOrDefault(tagitemdb => tagitemdb.TagId == tagfromDB.Id && tagitemdb.RotationId == product.Id);
+                    if(tagItemFromDb == null)
+                    {
+                        tagItemFromDb = new TagItem();
+                        tagItemFromDb.RotationId = product.Id;
+                        tagItemFromDb.Rotation = product;
+                        tagItemFromDb.TagId = tagfromDB.Id;
+                        tagItemFromDb.Tag = tagfromDB;
+                        System.Diagnostics.Debug.WriteLine("[[ID of tag]] " + tagfromDB.Id + " " + product.Id);
+                        db.TagItems.Add(tagItemFromDb);
+                        product.TagItems.Add(tagItemFromDb);
+                    }
+                }
                 db.SaveChanges();
                 return product.Id;
-
             }
 
         }

@@ -47,7 +47,6 @@ namespace DRD.Models
             IsVerified = false;
             CreatedAt = DateTime.Now;
             Members = new List<Member>();
-            Tags = new List<Tag>();
         }
     }
 }
