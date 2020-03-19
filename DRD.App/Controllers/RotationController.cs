@@ -72,7 +72,6 @@ namespace DRD.App.Controllers
             InitializeAPI();
             prod.CreatorId = user.Id;
             prod.UserId = user.Id;
-
             var data = rotationService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }

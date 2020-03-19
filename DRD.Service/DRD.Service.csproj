@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SymbolService.cs" />
+    <Compile Include="TagService.cs" />
     <Compile Include="XEncryptionHelper.cs" />
     <Compile Include="XFEncryptionHelper.cs" />
     <Compile Include="AppConfigGenerator.cs" />

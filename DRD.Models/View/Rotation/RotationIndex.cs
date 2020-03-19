@@ -27,7 +27,7 @@ namespace DRD.Models.View
         public string ActivityName { get; set; }
         public string WorkflowName { get; set; }
         public string StatusDescription { get; set; }
-
+        public virtual System.Collections.Generic.ICollection<string> Tags { get; set; } // Calon Tag yang akan dibuat atau di ambil
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
         public virtual System.Collections.Generic.ICollection<RotationUserItem> RotationUsers { get; set; } // RotationNode.FK_RotationNode_Rotation
         public virtual Member Member { get; set; } // FK_Rotation_Member
@@ -50,10 +50,10 @@ namespace DRD.Models.View
         public int FlagPermission { get; set; } // FlagPermission
 
         public string ActivityName { get; set; }
-        public string MemberPicture { get; set; }
-        public long? MemberNumber { get; set; }
-        public string MemberName { get; set; }
-        public string MemberEmail { get; set; }
+        public string Picture { get; set; }
+        public long? Number { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
 
         public RotationUserItem()
         {

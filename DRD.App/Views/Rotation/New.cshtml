@@ -477,16 +477,13 @@
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data.Items;
-
                         $scope.index = row * (page - 1);
-
                         $scope.paging = [];
                         var jumlahData = response.data.Count;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
-
                         $scope.page = "1";
                         $scope.isView = true;
                     }
@@ -574,15 +571,6 @@
                         }
                     });
             }
-            var array = [ 'I', 'hAve', 'theSe', 'ITEMs' ];
-                    var query = 'these'.toLowerCase();
-                    var index = -1;
-                    array.some(function(element, i) {
-                    if (query === element.toLowerCase()) {
-                        index = i;
-                        return true;
-                    }
-            });
             $scope.addTagList = function () {
                 $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
                 var alreadyUsed = false;

@@ -61,13 +61,14 @@ namespace DRD.Service
                          RotationUsers = (from x in rotation.RotationUsers
                                           select new RotationUserItem
                                           {
+                                              Id = x.Id,
                                               UserId = x.UserId,
                                               WorkflowNodeId = x.WorkflowNodeId,
                                               ActivityName = x.WorkflowNode.Caption,
-                                              MemberNumber = (x.UserId == null ? (long?) null : x.User.Id),
-                                              MemberName = (x.UserId == null ? "Undefined" : x.User.Name),
-                                              MemberEmail = (x.UserId == null ? "" : x.User.Email),
-                                              MemberPicture = (x.UserId == null ? "icon_user.png" : x.User.ImageProfile),
+                                              Number = (x.UserId == null ? (long?) null : x.User.Id),
+                                              Name = (x.UserId == null ? "Undefined" : x.User.Name),
+                                              Email = (x.UserId == null ? "" : x.User.Email),
+                                              Picture = (x.UserId == null ? "icon_user.png" : x.User.ImageProfile),
                                               FlagPermission = x.FlagPermission,
                                               //FlagAction = x.FlagAction,
                                               //CxDownload = x.CxDownload,
@@ -75,7 +76,12 @@ namespace DRD.Service
                                           }).ToList(),
 
                      }).FirstOrDefault();
-
+                if(result != null)
+                {
+                    var tagService = new TagService();
+                    var tags = tagService.GetTags(result.Id);
+                    result.Tags = (from tag in tags select tag.Name).ToList();
+                } 
                 return result;
             }
         }
