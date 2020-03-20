@@ -77,7 +77,16 @@ namespace DRD.Service
                 return counter;
             }
         }
-        
+
+
+        // untuk tampilan front dari dashboard.
+        public int GetDashboardRotationStatus(long companyId, ICollection<string> Tags)
+        {
+            RotationService rotationService = new RotationService();
+            var 
+            return 0;
+        }
+
         // public int SendEmail(String message)
         // {
         //     System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");

@@ -146,6 +146,85 @@
                 </div>
             </section>
 
+            <section id="dashboard-rotation-status">
+                <div class="panel highlight-container">
+                    <div class="highlight-card">
+                        <!-- HEADER -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="control-label">Tags Filter</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <form>
+                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 188 || $event.keyCode == 13) && addTagList()" />
+                                            <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="tag-item" ng-repeat="tag in tags">
+                                            {{tag}}
+                                            <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
+                                                <img src="~/Images/icon/reject.png" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-8">
+                                        <p class="card-title"><strong>Rotation Status</strong></p>
+                                    </div>
+                                    <div class="col-md-4 push-left">
+                                        <!-- SELECT -->
+                                        <select class="card-filter select-lg">
+                                            <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="card-content">
+                            <!-- each rotation status -->
+                            <div class="container">
+                                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Workflow Name</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Workflow</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                            <th>Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in products">
+                                            <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
+                                            <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
+                                            <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
+
+                                            <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus  ) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
+                                            <td width="100px">
+                                                <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
+                                            </td>
+                                            <td ng-click="do_edit(x.Id);" width="175px" style="font-size:10px">{{x.CreatedAt}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
             <section id="dashboard-log">
 
                 <div class="panel highlight-container">
@@ -154,7 +233,7 @@
                         <div class="highlight-header">
                             <div class="container">
                                 <div class="row vertical-align-row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <p class="card-title"><strong>LOG</strong></p>
                                     </div>
                                     <div class="col-md-4 push-left">
@@ -286,8 +365,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
 
                             <div class="log container">
@@ -355,7 +432,6 @@
                 </div>
 
             </section>
-
             <!-- <button ng-click="sendEmail()">SEND EMAIL</button> -->
         </div>
 
@@ -383,9 +459,6 @@
                 type: 'pie',
                 data: data
             });
-
-
-
             var ctxs = document.getElementById('otherPie');
             var datas = {
                 datasets: [{
@@ -425,6 +498,8 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
+            $scope.tags = [];
+            $scope.newTag = "";
             initValues();
             $scope.dashboard = {};
             $scope.counter = {
@@ -551,7 +626,60 @@
                     var x = 0;
                 });
             }
+            $scope.getCompanyOwned = function () {
+                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                    console.log("run");
+                    if (response.data) {
+                        $scope.companyOwned = response.data.companies;
+                        console.log($scope.companyOwned);
+                    }
+                })
+            }
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+            /*--------------------------------------------------------------
+            TAGGING SYSTEM FILTER
+            --------------------------------------------------------------*/
+            $scope.addTagList = function () {
+                $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                var alreadyUsed = false;
+                $scope.tags.some(function (element, i) {
+                    if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        alreadyUsed = true;
+                        return;
+                    }
+                })
+                if (!alreadyUsed) {
+                    $scope.tags.push($scope.newTag);
+                }
+                $scope.newTag = "";
+                $scope.getDashboardRotationStatus();
+            }
+            $scope.removeTag = function (index) {
+                $scope.tags.splice(index, 1);
+            }
 
+            $scope.getDashboardRotationStatus = function () {
+                console.log($scope.companyOwned[$scope.companySelected]);
+                $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+
+
+            // belum dipake gue rasa
             $scope.linkPage = function (name) {
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:name})[0].UrlPage;
                 location.href=url;
@@ -585,26 +713,10 @@
             //         console.log("error send email")
             //     });
             // }
-            $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
-                    console.log("run");
-                    if (response.data) {
-                        $scope.companyOwned = response.data.companies;
-                        console.log($scope.companyOwned);
-                    }
-                })
-            }
+            
             /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
-            /*--------------------------------------------------------------
-            CONVERT JSON DATE
-            --------------------------------------------------------------*/
-            $scope.convertJsonDate = function (val) {
-                if (val == undefined)
-                    return '';
-                return new Date(parseInt(val.substr(6)));
-            }
             $scope.sendEmail = function () {
                 $http.post('@Url.Action("Sendemail", "dashboard")', {  }).then(function (response) {
                     if (response.data) {

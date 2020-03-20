@@ -84,6 +84,15 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        // untuk tampilan front dari dashboard.
+        public ActionResult GetDashboardRotationStatus(long companyId, ICollection<string> Tags)
+        {
+            Initialize();
+            var data = dashboardService.GetDashboardRotationStatus(companyId, Tags);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
         // public ActionResult Sendemail()
         // {
         //     Initialize();
