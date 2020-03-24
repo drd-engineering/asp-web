@@ -128,9 +128,9 @@ namespace Core.Postgres
                 isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false
             };
 
-            PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageSize=1000000, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
-            PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageSize = 1000000, StorageUsedinByte = 1000, totalAdministrators=1, SubscriptionName= "Business"};
-            PlanBusiness planBusiness3 = new PlanBusiness { Id = -3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageSize = 1000000, StorageUsedinByte = 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
+            PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageSize=100000000, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
+            PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageSize = 100000000, StorageUsedinByte = 1000, totalAdministrators=1, SubscriptionName= "Business"};
+            PlanBusiness planBusiness3 = new PlanBusiness { Id = -3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageSize = 100000000, StorageUsedinByte = 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
@@ -145,8 +145,8 @@ namespace Core.Postgres
             WorkflowNode wfn2 = new WorkflowNode { Id = -2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", TextColor = "#ffffff", BackColor = "#ff0000" };
             WorkflowNode wfn3 = new WorkflowNode { Id = -3, WorkflowId = wf1.Id, SymbolCode = 5, Caption = "Activity", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", PosLeft = "0px", PosTop = "0px", TextColor = "#ffffff", BackColor = "#deb887" };
 
-            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, WorkflowNodeId = wfn1.Id, Value = "0", WorkflowNodeToId = wfn3.Id, SymbolCode = 20 };
-            WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = -2, WorkflowNodeId = wfn3.Id, Value = "0", WorkflowNodeToId = wfn2.Id, SymbolCode = 20 };
+            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, FirstNodeId = wfn3.Id, EndNodeId = wfn2.Id,  WorkflowNodeId = wfn1.Id, Value = "0", WorkflowNodeToId = wfn3.Id, SymbolCode = 20 };
+            WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = -2, FirstNodeId = wfn3.Id, EndNodeId = wfn2.Id, WorkflowNodeId = wfn3.Id, Value = "0", WorkflowNodeToId = wfn2.Id, SymbolCode = 20 };
 
             modelBuilder.Entity<Workflow>().HasData(wf1);
             modelBuilder.Entity<WorkflowNode>().HasData(wfn1, wfn2, wfn3);

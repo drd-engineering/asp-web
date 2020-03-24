@@ -28,6 +28,7 @@ namespace DRD.Service.Context
         public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
         public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
         public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<Inbox> Inboxes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Stamp> Stamps { get; set; }

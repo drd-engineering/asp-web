@@ -99,7 +99,7 @@ namespace DRD.Service
                         }
                     }
 
-                    var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.WorkflowNodes.WorkflowId == result.Id).ToList();
+                    var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.WorkflowNode.WorkflowId == result.Id).ToList();
                     System.Diagnostics.Debug.WriteLine("[[JUMLAH WFNODELINKS]] " + links.Count());
                     if (links.Count() > 0)
                     {
@@ -110,8 +110,12 @@ namespace DRD.Service
                             WorkflowNodeLinkItem jwfnl = new WorkflowNodeLinkItem();
                             jwfnl.NodeId = wfnl.WorkflowNodeId;
                             jwfnl.NodeToId = wfnl.WorkflowNodeToId;
+                            jwfnl.firstNodeId = wfnl.FirstNodeId;
+                            jwfnl.endNodeId = wfnl.EndNodeId;
                             jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeId).element;
                             jwfnl.elementTo = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeToId).element;
+                            jwfnl.firstNode = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.FirstNodeId).element;
+                            jwfnl.endNode = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.EndNodeId).element;
                             jwfnl.symbolCode = getSymbolsFromCsvById(wfnl.SymbolCode).Code;
                             jwfnl.caption = wfnl.Caption;
                             jwfnl.Operator = wfnl.Operator;
@@ -240,7 +244,7 @@ namespace DRD.Service
                     // delete existing node
                     if (WorkflowItem.Id != 0)
                     {
-                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNodes.WorkflowId == WorkflowItem.Id || workflow.WorkflowNodeTos.WorkflowId == WorkflowItem.Id).ToList();
+                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNode.WorkflowId == WorkflowItem.Id || workflow.WorkflowNodeTo.WorkflowId == WorkflowItem.Id).ToList();
                         db.WorkflowNodeLinks.RemoveRange(oldNodeLinks);
                         db.SaveChanges();
 
@@ -284,12 +288,18 @@ namespace DRD.Service
                             var nodelink = new WorkflowNodeLink();
                             nodelink.WorkflowNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
                             var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeId);
-                            nodelink.WorkflowNodes = wfnod;
+                            nodelink.WorkflowNode = wfnod;
                             nodelink.WorkflowNodeToId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
                             var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeToId);
-                            nodelink.WorkflowNodeTos = to;
+                            nodelink.WorkflowNodeTo = to;
                             nodelink.Caption = jnodelink.caption;
                             nodelink.SymbolCode = getSymbolsFromCsvByCode(jnodelink.symbolCode).Id;
+                            nodelink.FirstNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.firstNode)).Id;
+                            nodelink.EndNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.endNode)).Id;
+                            var first = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.FirstNodeId);
+                            var end = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.EndNodeId);
+                            nodelink.FirstNode = first;
+                            nodelink.EndNode = end;
                             /*db.Symbols.FirstOrDefault(workflow => workflow.Code.Equals(jnodelink.symbolCode)).Id;*/
                             nodelink.Operator = jnodelink.Operator;
                             nodelink.Value = jnodelink.value;

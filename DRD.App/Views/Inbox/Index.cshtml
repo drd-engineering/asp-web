@@ -138,12 +138,9 @@
                                                                 </a><br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,32)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,32)" ng-click="stampDocument($index);">{{(validAction(x.FlagAction,32)?'Stamped':'Stamp')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
-                                                                    <span class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
-                                                                    @*<span class="btn-permission{{(validAction(x.FlagAction,8)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,8)" ng-click="printDocument($index);">{{(validAction(x.FlagAction,8)?'Printed':'Print')}}</span>
-                                                                        <span class="btn-permission{{(validAction(x.FlagAction,16)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,16)" ng-click="downloadDocument($index);">{{(validAction(x.FlagAction,16)?'Downloaded':'Download')}}</span>*@
+
+                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
+                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
                                                                 </span>
                                                             </td>
                                                             <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
@@ -158,8 +155,8 @@
                                 <br />
                                 <div class="col-md-10" style="display:none" id="action-panel">
                                     <div class="panel panel-body border-top-primary text-center">
-                                        <button type="button" ng-show="validAction(model.FlagAction,4)" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                        <button type="button" ng-show="validAction(model.FlagAction,2)" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
+                                        <button type="button" ng-show="true" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
+                                        <button type="button" ng-show="true" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
                                         <button type="button" ng-show="validAction(model.FlagAction,8)" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(8)">Alter</span></button>
                                         <button type="button" ng-show="true" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(1)">Submit</span></button>
                                     </div>
@@ -477,28 +474,7 @@
                             return;
                         }
 
-                        swal({
-                            title: "Confirmation",
-                            text: "This document will be stamped after this form is submitted, continue?",
-                            type: "warning",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                            confirmButtonColor: "#2196F3",
-                            showLoaderOnConfirm: true,
-                            confirmButtonText: "Yes, sign it!",
-                            cancelButtonText: "No, cancel please!",
-                        },
-                        function (isConfirm) {
-                            setTimeout(function () {
-                            if (isConfirm){
-                                //var doc=$scope.docs[idx];
-                                //doc.FlagAction|=32;
-                                $scope.stampDocumentValidation(idx);
-                            }
-                            swal.close();
-                            }, 500);
-
-                        });
+                       $scope.stampDocumentValidation(idx);
 
                     }
                 }, function (response) {
@@ -782,7 +758,7 @@
             --------------------------------------------------------------*/
             $scope.submitActivity = function (bit){
                 var eventString="";
-                if (bit==1)
+                if (bit == 1)
                     eventString="Submit";
                 else if (bit==2)
                     eventString="Reject";
@@ -803,7 +779,9 @@
                 },
                 function (isConfirm) {
                     setTimeout(function () {
-                        if (isConfirm){
+                        if (isConfirm) {
+
+
                             $scope.submitActivityProcess(bit);
                         }
                         swal.close();
@@ -818,7 +796,16 @@
                 for(i=0;i<$scope.docs.length;i++){
                     var doc={};
                     doc.DocumentId=$scope.docs[i].DocumentId;
-                    doc.FlagAction=$scope.docs[i].FlagAction;
+                    doc.FlagAction = $scope.docs[i].FlagAction;
+
+                    if (bit == 1 && $scope.validAction(doc.FlagAction1, 1)) {
+                        $scope.signDocument(i);
+                    }
+
+                    if (bit == 1 && $scope.validAction(doc.FlagAction1, 32)) {
+                        $scope.stampDocument(i);
+                    }
+
                     doc.Document={};
                     var annos=[];
                     for(x=0;x<$scope.docs[i].Document.DocumentAnnotates.length;x++){

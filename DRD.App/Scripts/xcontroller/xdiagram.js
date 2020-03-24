@@ -14,7 +14,7 @@
 
     $scope.nodeItem = { element: '', memberId: 0, symbolCode: '', caption: '', info: '', Operator: '', value: 0, textColor: '', backColor: '', posLeft: 0, posTop: 0, width: 0, height: 0, member: { number: '', name: '', email: '', imageProfile: '' } };
     $scope.nodes = [];
-    $scope.linkItem = { elementFrom: '', elementTo: '', symbolCode: '', caption: '', Operator: '', value: 0, line: {} };
+    $scope.linkItem = { elementFrom: '', elementTo: '', firstNode: '', endNode:'', symbolCode: '', caption: '', Operator: '', value: 0, line: {} };
     $scope.links = [];
     $scope.inode = 0;
     $scope.elmActivityName = "node-activity";
@@ -45,6 +45,9 @@
     $scope.selectedLinkNodeNo = -1;
     $scope.selectedLinkNo = -1;
     $scope.selectedLinkNoIdx = -1;
+
+    $scope.firstNode = '';
+    $scope.endNode = '';
 
     $scope.activity = {};
     $scope.decision = {};
@@ -115,6 +118,9 @@
                 var fromIdx = $scope.getIndex(ui.draggable.context.id);
                 var from = document.getElementById($scope.elmActivityName + "-" + fromIdx);
                 var to = document.getElementById("end-1");
+                $scope.endNode = to;
+                console.log($scope.endNode);
+
                 if (ui.draggable.context.id == 'submit-' + fromIdx && fromIdx!='start') {
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'reject-' + fromIdx) {
@@ -239,6 +245,7 @@
                 var to = document.getElementById($scope.elmActivityName + "-" + idNo);
                 if (ui.draggable.context.id == 'submit-start') {
                     from = document.getElementById("start-0");
+                    $scope.firstNode = to;
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'submit-' + fromIdx) {
                     $scope.addLinkSubmit(from, to);
@@ -694,11 +701,11 @@
         $scope.inode++;
     }
 
-    $scope.addLink = function (elmFrom, elmTo, sym, cap, line) {
+    $scope.addLink = function (elmFrom, elmTo, frstNode, endElement, sym, cap, line) {
 
         var isready = false;
         for (i = 0; i < $scope.links.length; i++) {
-            var lnk=$scope.links[i];
+            var lnk = $scope.links[i];
             if ((lnk.elementFrom == elmFrom && lnk.elementTo == elmTo && lnk.symbolCode == sym) ||
                 (lnk.elementFrom == elmFrom && sym == 'ALTER') ||
                 (lnk.elementFrom == elmFrom && elmFrom.includes('transfer') && sym == 'SUBMIT')) {
@@ -712,16 +719,23 @@
             link = angular.copy($scope.linkItem);
         else {
             link = $scope.links[i];
-            if (link.line!=undefined && link.line._id != undefined)
+            if (link.line != undefined && link.line._id != undefined)
                 link.line.remove();
         }
 
+        if (elmFrom == "start-0") {
+            $scope.firstNode =  elmTo;
+        }
+        link.firstNode = $scope.firstNode;
+        link.endNode = "end-1";
         link.elementFrom = elmFrom;
         link.elementTo = elmTo;
         link.symbolCode = sym;
         link.caption = cap;
         link.line = line;
 
+        console.log("add link ");
+        console.log(link);
         if (!isready)
             $scope.links.push(link);
     }
@@ -729,64 +743,75 @@
     $scope.addLinkSubmit = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
+            });
+
+        console.log("ADD LINK SUBMIT :: " + $scope.firstNode+" "+$scope.endNode);
+        $scope.addLink(elmFrom.id, elmTo.id, $scope.firstNode.id, $scope.endNode.id, 'SUBMIT', '', line);
+    }
+
+    $scope.addLinkSubmit = function (elmFrom, elmTo, frstNode, endElement) {
+        if (elmFrom.id == elmTo.id) return;
+        var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'SUBMIT', '', line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement,'SUBMIT', '', line);
     }
-    $scope.addLinkReject = function (elmFrom, elmTo) {
+    $scope.addLinkReject = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeReject, size: 2, color: $scope.linkColorReject,
                                     middleLabel: LeaderLine.pathLabel({ text: 'Reject', color: $scope.linkColorReject, fontSize: $scope.linkLabelFontSize, })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'REJECT', 'Reject', line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'REJECT', 'Reject', line);
     }
-    $scope.addLinkRevisi = function (elmFrom, elmTo) {
+    $scope.addLinkRevisi = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeRevisi, size: 2, color: $scope.linkColorRevisi,
                                     middleLabel: LeaderLine.pathLabel({ text: 'Revision', color: $scope.linkColorRevisi, fontSize: $scope.linkLabelFontSize })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'REVISI', 'Revision', line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'REVISI', 'Revision', line);
     }
-    $scope.addLinkYes = function (elmFrom, elmTo) {
+    $scope.addLinkYes = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeYes, size: 2, color: $scope.linkColorYes,
                                     middleLabel: LeaderLine.pathLabel({ text: 'Yes', color: $scope.linkColorYes, fontSize: $scope.linkLabelFontSize })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'YES', "Yes", line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'YES', "Yes", line);
     }
-    $scope.addLinkNo = function (elmFrom, elmTo) {
+    $scope.addLinkNo = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeNo, size: 2, color: $scope.linkColorNo,
                                     middleLabel: LeaderLine.pathLabel({ text: 'No', color: $scope.linkColorNo, fontSize: $scope.linkLabelFontSize })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'NO', "No", line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'NO', "No", line);
     }
-    $scope.addLinkAlter = function (elmFrom, elmTo) {
+    $scope.addLinkAlter = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeAlter, size: 2, color: $scope.linkColorAlter,
                                     middleLabel: LeaderLine.pathLabel({ text: 'Period?', color: $scope.linkColorAlter, fontSize: $scope.linkLabelFontSize })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'ALTER', "Period?", line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'ALTER', "Period?", line);
     }
-    $scope.addLinkSubmitCase = function (elmFrom, elmTo) {
+    $scope.addLinkSubmitCase = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
                                 {
                                     endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmitCase, size: 2, color: $scope.linkColorSubmitCase,
                                     middleLabel: LeaderLine.pathLabel({ text: 'Expression?', color: $scope.linkColorSubmitCase, fontSize: $scope.linkLabelFontSize })
                                 });
-        $scope.addLink(elmFrom.id, elmTo.id, 'SUBMITCASE', 'Expression?', line);
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'SUBMITCASE', 'Expression?', line);
     }
 
     $scope.removeActivity = function (idx) {
@@ -1070,8 +1095,7 @@
                 var link = links[i];
                 var from = document.getElementById(link.elementFrom);
                 var to = document.getElementById(link.elementTo);
-                console.log(from);
-                console.log(to);
+
                 if (link.symbolCode == 'SUBMIT') {
                     $scope.addLinkSubmit(from, to);
                 } if (link.symbolCode == 'REJECT') {
@@ -1285,6 +1309,7 @@
             node.width = elm.style.width;
             node.height = elm.style.height;
         }
+
         return { nodes: $scope.nodes, links: $scope.links };
     }
 
@@ -1588,7 +1613,12 @@ $(function () {
     });
 
     $('.context-menu-one').on('click', function (e) {
-        console.log('clicked', this);
+        var scope = angular.element(document.getElementById("xdiagramController")).scope();
+        console.log("scope.firstNode");
+        console.log(scope.firstNode);
+        console.log("scope.endNode");
+        console.log(scope.endNode);
+
     })
 });
 

@@ -28,10 +28,10 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationUser.FK_RotationUser_WorkflowNode
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_WorkflowNode
         [ForeignKey("WorkflowNodeId")]
-        [InverseProperty("WorkflowNodes")]
+        [InverseProperty("WorkflowNode")]
         public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinks { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode
         [ForeignKey("WorkflowNodeToId")]
-        [InverseProperty("WorkflowNodeTos")]
+        [InverseProperty("WorkflowNodeTo")]
         public virtual System.Collections.Generic.ICollection<WorkflowNodeLink> WorkflowNodeLinkTos { get; set; } // WorkflowNodeLink.FK_WorkflowNodeLink_WorkflowNode1
 
         // Foreign keys

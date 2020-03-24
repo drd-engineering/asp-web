@@ -5,14 +5,11 @@ using DRD.Service.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DRD.Service
 {
     public class RotationProcessService
     {
-
         private readonly string _connString;
         private string _appZoneAccess;
         private SubscriptionService subscriptionService = new SubscriptionService();
@@ -76,7 +73,7 @@ namespace DRD.Service
                 System.Diagnostics.Debug.WriteLine("::DEBUG:: " + rt.Status+ " :: ");
 
                 // first node, node after start symbol
-                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodes.WorkflowId == rt.WorkflowId && c.WorkflowNodes.SymbolCode == 0).ToList();
+                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNode.WorkflowId == rt.WorkflowId && c.WorkflowNode.SymbolCode == 0).ToList();
                 if (workflowNodeLinks == null)
                 {
                     retvalues.Add(createActivityResult(-5));
@@ -86,7 +83,7 @@ namespace DRD.Service
 
                 long rotId = rt.Id;
 
-                // send to all activity under start node 
+                // send to all activity under start node +
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
                     RotationNode rtnode = new RotationNode();
@@ -94,7 +91,7 @@ namespace DRD.Service
                     rtnode.RotationId = rt.Id;
                     //rtnode.RotationId = rotId;
                     rtnode.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
-                    rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTos;
+                    rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTo;
                     System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE:: " + rtnode.WorkflowNodeId + " : " + workflowNodeLink.WorkflowNodeToId);
                     //long user = db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rt.Id).UserId.Value;
                     long userNodeId = getUserId(workflowNodeLink.WorkflowNodeToId, rt.Id);
@@ -133,7 +130,6 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var strbit = bit.ToString();
-                System.Diagnostics.Debug.WriteLine("::DEBUG:: bitstring:"+strbit+ "bit:" + bit);
 
                 //get current rotation node
                 RotationNode rtnode = db.RotationNodes.FirstOrDefault(c => c.Id == param.RotationNodeId);
@@ -145,7 +141,7 @@ namespace DRD.Service
                 rtnode.Rotation.DateStarted = DateTime.Now;
                 insertDoc(param.RotationNodeDocs, db, ref rtnode, docSvr);
                 insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
-                    
+
                 // insert remark to table
                 if (!string.IsNullOrEmpty(param.Remark))
                 {
@@ -156,109 +152,215 @@ namespace DRD.Service
                 }
 
                 if (strbit.Equals("REVISI"))
-                    rtnode.Status = (int)Constant.RotationStatus.Revision;
-                else if (strbit.Equals("ALTER"))
-                    rtnode.Status = (int)Constant.RotationStatus.Altered;
-                else if (strbit.Equals("REJECT"))
-                    rtnode.Status = (int)Constant.RotationStatus.Declined;
-
-                Symbol symbol = symbolService.getSymbol(strbit);
-                int symbolCode = symbol == null?0:symbol.Id;
-                System.Diagnostics.Debug.WriteLine("symbol ID "+ symbolCode);
-                
-                var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
-                List<RotationNode> rotnodes = new List<RotationNode>();
-                int x = 0;
-                foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                 {
+                    rtnode.Status = (int)Constant.RotationStatus.Revision;
+                    System.Diagnostics.Debug.WriteLine("TEST INTO REVISION SECTION::");
 
-                    System.Diagnostics.Debug.WriteLine("TEST SYMBOL ACTIVITY::" + symbolService.getSymbolId("ACTIVITY"));
-                    var nodeto = workflowNodeLink.WorkflowNodeTos;
+                    var workflowNodeLink = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId).FirstOrDefault();
+                    RotationNode rtnode2 = new RotationNode();
 
-                    System.Diagnostics.Debug.WriteLine("TEST NodeTO SYMBOL::" + nodeto.SymbolCode);
-                    System.Diagnostics.Debug.WriteLine("TEST comparison SYMBOL::" + (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY")));
+                    rtnode2.RotationId = rtnode.RotationId;
+                    rtnode2.WorkflowNodeId = workflowNodeLink.FirstNodeId;
+                    rtnode2.SenderRotationNodeId = rtnode.Id;
+                    rtnode2.UserId = (long)workflowNodeLink.FirstNode.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.FirstNodeId && c.RotationId == rtnode.RotationId).User.Id;
+                    rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
+                    rtnode2.Status = (int)Constant.RotationStatus.Open;
+                    rtnode2.Value = rtnode.Value;
+                    rtnode2.CreatedAt = DateTime.Now;
+                    db.RotationNodes.Add(rtnode2);
+                    ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
+                    retvalues.Add(activityItem);
 
-                    if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
+                    //sending inboxto every user in all new nodes
+                    InboxService inboxService = new InboxService();
+                    inboxService.CreateInbox(activityItem);
+                    /*MemberService.sendEmailInbox(act);*/
+                }
+                else if (strbit.Equals("REJECT"))
+                {
+                    rtnode.Status = (int)Constant.RotationStatus.Declined;
+                    updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
+                }
+                else if (strbit.Equals("SUBMIT")) 
+                { 
+                    Symbol symbol = symbolService.getSymbol(strbit);
+                    int symbolCode = symbol == null ? 0 : symbol.Id;
+                    var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
+                    List<RotationNode> rotnodes = new List<RotationNode>();
+                    int x = 0;
+                    foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                     {
-                    System.Diagnostics.Debug.WriteLine("TEST INTO ACTIVITY SECTION::" );
-                        RotationNode rtnode2 = new RotationNode();
 
-                        rtnode2.RotationId = rtnode.RotationId;
-                        rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
-                        rtnode2.SenderRotationNodeId = rtnode.Id;
-                        rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
-                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
-                System.Diagnostics.Debug.WriteLine("I AM HERE in ACTIVITY" + rtnode.Status + " ,,WFNODES::" + wfnodes + "RTNODE2::"+ rtnode2.PrevWorkflowNodeId);
-                        rtnode2.Status = (int)Constant.RotationStatus.Open;
-                        rtnode2.Value = rtnode.Value;
-                        rtnode2.CreatedAt = DateTime.Now;
-                        db.RotationNodes.Add(rtnode2);
-    `                   ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
-                        retvalues.Add(activityItem);
+                        System.Diagnostics.Debug.WriteLine("TEST SYMBOL ACTIVITY::" + symbolService.getSymbolId("ACTIVITY"));
+                        var nodeto = workflowNodeLink.WorkflowNodeTo;
 
-                        //sending inboxto every user in all new nodes
-                        InboxService inboxService = new InboxService();
-                        inboxService.CreateInbox(activityItem);
-                        /*MemberService.sendEmailInbox(act);*/
+                        System.Diagnostics.Debug.WriteLine("TEST NodeTO SYMBOL::" + nodeto.SymbolCode);
+                        System.Diagnostics.Debug.WriteLine("TEST comparison SYMBOL::" + (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY")));
 
-                    }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("PARALLEL"))
-                    {
-                        bool ispending = false;
-                        foreach (WorkflowNodeLink workflowNodeLinkx in workflowNodeLink.WorkflowNodeTos.WorkflowNodeLinkTos)
+                        if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
                         {
-                            var rotnode = db.RotationNodes.FirstOrDefault(c => c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId);
-                            if (rotnode.WorkflowNode.Id != rtnode.WorkflowNode.Id)
+                            System.Diagnostics.Debug.WriteLine("TEST INTO ACTIVITY SECTION::");
+                            RotationNode rtnode2 = new RotationNode();
+
+                            rtnode2.RotationId = rtnode.RotationId;
+                            rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
+                            rtnode2.SenderRotationNodeId = rtnode.Id;
+                            rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
+                            rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
+                            rtnode2.Status = (int)Constant.RotationStatus.Open;
+                            rtnode2.Value = rtnode.Value;
+                            rtnode2.CreatedAt = DateTime.Now;
+                            db.RotationNodes.Add(rtnode2);
+                            ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
+                            retvalues.Add(activityItem);
+
+                            //sending inboxto every user in all new nodes
+                            InboxService inboxService = new InboxService();
+                            inboxService.CreateInbox(activityItem);
+                            /*MemberService.sendEmailInbox(act);*/
+
+                        }
+                        else if (nodeto.SymbolCode == symbolService.getSymbolId("PARALLEL"))
+                        {
+                            bool ispending = false;
+                            foreach (WorkflowNodeLink workflowNodeLinkx in workflowNodeLink.WorkflowNodeTo.WorkflowNodeLinkTos)
                             {
-                                //var isready02 = false;
-                                //RotationNode retnode02 = null;
-                                if (rotnode.Status.Equals(Constant.RotationStatus.Revision))
+                                var rotnode = db.RotationNodes.FirstOrDefault(c => c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId);
+                                if (rotnode.WorkflowNode.Id != rtnode.WorkflowNode.Id)
                                 {
-                                    // checking apakah 05 sudah menjadi 02 di id lain
-                                    var retnode02 = db.RotationNodes.FirstOrDefault(c =>
-                                                     c.Rotation.Id == rotnode.Rotation.Id &&
-                                                     c.UserId == rotnode.UserId &&
-                                                     c.PrevWorkflowNodeId == rotnode.PrevWorkflowNodeId &&
-                                                     c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId &&
-                                                     c.Status.Equals(Constant.RotationStatus.Pending));
-                                    //isready02 = (retnode02 != null);
-                                    if (retnode02 != null) rotnode = retnode02;
+                                    //var isready02 = false;
+                                    //RotationNode retnode02 = null;
+                                    if (rotnode.Status.Equals(Constant.RotationStatus.Revision))
+                                    {
+                                        // checking apakah 05 sudah menjadi 02 di id lain
+                                        var retnode02 = db.RotationNodes.FirstOrDefault(c =>
+                                                         c.Rotation.Id == rotnode.Rotation.Id &&
+                                                         c.UserId == rotnode.UserId &&
+                                                         c.PrevWorkflowNodeId == rotnode.PrevWorkflowNodeId &&
+                                                         c.WorkflowNode.Id == workflowNodeLinkx.WorkflowNodeId &&
+                                                         c.Status.Equals(Constant.RotationStatus.Pending));
+                                        //isready02 = (retnode02 != null);
+                                        if (retnode02 != null) rotnode = retnode02;
+                                    }
+                                    int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
+                                    if ((statuses).Contains(rotnode.Status))
+                                    {
+                                        ispending = true;
+                                        break;
+                                    }
+                                    else if (rotnode.Status.Equals((int)Constant.RotationStatus.Pending))
+                                    {
+                                        rotnodes.Add(rotnode);
+                                    }
                                 }
-                                int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
-                                if ((statuses).Contains(rotnode.Status))
+                            }
+                            if (ispending)
+                            {
+                                rtnode.Status = (int)Constant.RotationStatus.Pending;
+                                continue;
+                            }
+                            else
+                            {
+                                // ubah semua status jadi 01, yang pending (02) menjadi in progress
+                                foreach (RotationNode rotn in rotnodes)
                                 {
-                                    ispending = true;
-                                    break;
+                                    rotn.Status = (int)Constant.RotationStatus.In_Progress;
                                 }
-                                else if (rotnode.Status.Equals((int)Constant.RotationStatus.Pending))
+
+                                foreach (WorkflowNodeLink lnk in nodeto.WorkflowNodeLinkTos)
                                 {
-                                    rotnodes.Add(rotnode);
+                                    RotationNode rtnode2 = new RotationNode();
+
+                                    rtnode2.Rotation.Id = rtnode.Rotation.Id;
+                                    rtnode2.WorkflowNode.Id = lnk.WorkflowNodeToId;
+                                    rtnode2.SenderRotationNodeId = rtnode.Id;
+                                    //rtnode2.UserId = (long)lnk.WorkflowNodeTo.UserId;
+                                    rtnode2.UserId = (long)lnk.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == lnk.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                                    rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId; // tested OK
+                                    rtnode2.Status = (int)Constant.RotationStatus.Open;
+                                    rtnode2.Value = rtnode.Value;
+                                    rtnode2.CreatedAt = DateTime.Now;
+                                    db.RotationNodes.Add(rtnode2);
+                                    retvalues.Add(createActivityResult(rtnode2.UserId, 1));
                                 }
                             }
                         }
-                        if (ispending)
+                        else if (nodeto.SymbolCode == symbolService.getSymbolId("DECISION"))
                         {
-                            rtnode.Status = (int)Constant.RotationStatus.Pending;
-                            continue;
-                        }
-                        else
-                        {
-                            // ubah semua status jadi 01, yang pending (02) menjadi in progress
-                            foreach (RotationNode rotn in rotnodes)
-                            {
-                                rotn.Status = (int)Constant.RotationStatus.In_Progress;
-                            }
+                            WorkflowNodeLink nodeToNext;
+                            //if (decissionValue(rtnode.Value, nodeto.Value, nodeto.Operator))
+                            //    nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("YES"));
+                            //else
+                            nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("NO"));
 
-                            foreach (WorkflowNodeLink lnk in nodeto.WorkflowNodeLinkTos)
+                            RotationNode rtnode2 = new RotationNode();
+
+                            rtnode2.Rotation.Id = rtnode.Rotation.Id;
+                            rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
+                            rtnode2.SenderRotationNodeId = rtnode.Id;
+                            //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
+                            rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                            rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;//tested OK
+                            rtnode2.Status = (int)Constant.RotationStatus.Open;
+                            rtnode2.Value = rtnode.Value;
+                            rtnode2.CreatedAt = DateTime.Now;
+                            db.RotationNodes.Add(rtnode2);
+                            retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+                        }
+                        else if (nodeto.SymbolCode == symbolService.getSymbolId("TRANSFER"))
+                        {
+                            WorkflowNodeLink nodeToNext;
+                            nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault();
+
+                            RotationNode rtnode2 = new RotationNode();
+
+                            rtnode2.Rotation.Id = rtnode.Rotation.Id;
+                            rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
+                            rtnode2.SenderRotationNodeId = rtnode.Id;
+                            //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
+                            rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                            rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
+                            rtnode2.Status = (int)Constant.RotationStatus.Open;
+                            rtnode2.Value = rtnode.Value;// "TRF:" + nodeto.Value + ",ID:" + rtnode.Id + ",MEMBER:" + rtnode.UserId;
+                            rtnode2.CreatedAt = DateTime.Now;
+
+                            // check for double rotation node
+                            if (!isExistNode(rtnode2))
+                            {
+                                db.RotationNodes.Add(rtnode2);
+                                retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+                            }
+                        }
+                        else if (nodeto.SymbolCode == symbolService.getSymbolId("CASE"))
+                        {
+                            WorkflowNodeLink nodeToNext = null; ;
+                            WorkflowNodeLink elseLink = null;
+                            foreach (WorkflowNodeLink p in nodeto.WorkflowNodeLinks)
+                            {
+                                if (!p.Operator.Equals("ELSE"))
+                                {
+                                    //if (decissionValue(rtnode.Value, p.Value, p.Operator))
+                                    //{
+                                    //    nodeToNext = p;
+                                    //    break;
+                                    //}
+                                }
+                                else
+                                    elseLink = p;
+                            }
+                            if (nodeToNext == null && elseLink != null)
+                                nodeToNext = elseLink;
+
+                            if (nodeToNext != null)
                             {
                                 RotationNode rtnode2 = new RotationNode();
 
                                 rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                                rtnode2.WorkflowNode.Id = lnk.WorkflowNodeToId;
+                                rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
                                 rtnode2.SenderRotationNodeId = rtnode.Id;
-                                //rtnode2.UserId = (long)lnk.WorkflowNodeTos.UserId;
-                                rtnode2.UserId = (long)lnk.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == lnk.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                                rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId; // tested OK
+                                //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
+                                rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
+                                rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
                                 rtnode2.Status = (int)Constant.RotationStatus.Open;
                                 rtnode2.Value = rtnode.Value;
                                 rtnode2.CreatedAt = DateTime.Now;
@@ -266,100 +368,16 @@ namespace DRD.Service
                                 retvalues.Add(createActivityResult(rtnode2.UserId, 1));
                             }
                         }
-                    }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("DECISION"))
-                    {
-                        WorkflowNodeLink nodeToNext;
-                        //if (decissionValue(rtnode.Value, nodeto.Value, nodeto.Operator))
-                        //    nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("YES"));
-                        //else
-                        nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals("NO"));
-
-                        RotationNode rtnode2 = new RotationNode();
-
-                        rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                        rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                        rtnode2.SenderRotationNodeId = rtnode.Id;
-                        //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
-                        rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;//tested OK
-                        rtnode2.Status = (int)Constant.RotationStatus.Open;
-                        rtnode2.Value = rtnode.Value;
-                        rtnode2.CreatedAt = DateTime.Now;
-                        db.RotationNodes.Add(rtnode2);
-                        retvalues.Add(createActivityResult(rtnode2.UserId, 1));
-                    }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("TRANSFER"))
-                    {
-                        WorkflowNodeLink nodeToNext;
-                        nodeToNext = nodeto.WorkflowNodeLinks.FirstOrDefault();
-
-                        RotationNode rtnode2 = new RotationNode();
-
-                        rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                        rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                        rtnode2.SenderRotationNodeId = rtnode.Id;
-                        //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
-                        rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                        rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
-                        rtnode2.Status = (int)Constant.RotationStatus.Open;
-                        rtnode2.Value = rtnode.Value;// "TRF:" + nodeto.Value + ",ID:" + rtnode.Id + ",MEMBER:" + rtnode.UserId;
-                        rtnode2.CreatedAt = DateTime.Now;
-
-                        // check for double rotation node
-                        if (!isExistNode(rtnode2))
+                        else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
                         {
-                            db.RotationNodes.Add(rtnode2);
-                            retvalues.Add(createActivityResult(rtnode2.UserId, 1));
-                        }
-                    }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("CASE"))
-                    {
-                        WorkflowNodeLink nodeToNext = null; ;
-                        WorkflowNodeLink elseLink = null;
-                        foreach (WorkflowNodeLink p in nodeto.WorkflowNodeLinks)
-                        {
-                            if (!p.Operator.Equals("ELSE"))
-                            {
-                                //if (decissionValue(rtnode.Value, p.Value, p.Operator))
-                                //{
-                                //    nodeToNext = p;
-                                //    break;
-                                //}
-                            }
+                            if (rtnode.Status.Equals((int)Constant.RotationStatus.Declined))
+                                updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
                             else
-                                elseLink = p;
+                                updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Completed);
                         }
-                        if (nodeToNext == null && elseLink != null)
-                            nodeToNext = elseLink;
 
-                        if (nodeToNext != null)
-                        {
-                            RotationNode rtnode2 = new RotationNode();
-
-                            rtnode2.Rotation.Id = rtnode.Rotation.Id;
-                            rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                            rtnode2.SenderRotationNodeId = rtnode.Id;
-                            //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.UserId;
-                            rtnode2.UserId = (long)nodeToNext.WorkflowNodeTos.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
-                            rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeToId;// tested OK
-                            rtnode2.Status = (int)Constant.RotationStatus.Open;
-                            rtnode2.Value = rtnode.Value;
-                            rtnode2.CreatedAt = DateTime.Now;
-                            db.RotationNodes.Add(rtnode2);
-                            retvalues.Add(createActivityResult(rtnode2.UserId, 1));
-                        }
                     }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
-                    {
-                        if (rtnode.Status.Equals((int)Constant.RotationStatus.Declined))
-                            updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
-                        else
-                            updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Completed);
-                    }
-                    
                 }
-
                 var result = db.SaveChanges();
 
                 return retvalues;

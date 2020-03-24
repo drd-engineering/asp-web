@@ -301,10 +301,10 @@ namespace DRD.Service
                     if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
                     {
                         result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
-                        if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("DECISION"))
-                            result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTos.Operator + " " + workflowNodeLink.WorkflowNodeTos.Value;
-                        else if (workflowNodeLink.WorkflowNodeTos.SymbolCode.Equals("CASE"))
-                            result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTos.Value;
+                        if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("DECISION"))
+                            result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTo.Operator + " " + workflowNodeLink.WorkflowNodeTo.Value;
+                        else if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("CASE"))
+                            result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTo.Value;
                     }
                     else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
@@ -801,8 +801,8 @@ namespace DRD.Service
                     foreach (WorkflowNodeLink workflowNodeLink in nodetos)
                     {
                         int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
-                        if (statuses.Contains(workflowNodeLink.WorkflowNodes.RotationNodes.FirstOrDefault().Status))
-                            rotationNode.Note += workflowNodeLink.WorkflowNodes.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeId).User.Name + " | " + workflowNodeLink.WorkflowNodes.Caption + ", ";
+                        if (statuses.Contains(workflowNodeLink.WorkflowNode.RotationNodes.FirstOrDefault().Status))
+                            rotationNode.Note += workflowNodeLink.WorkflowNode.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeId).User.Name + " | " + workflowNodeLink.WorkflowNode.Caption + ", ";
                     }
 
                     if (rotationNode.Note.EndsWith(", "))

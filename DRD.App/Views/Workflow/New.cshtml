@@ -411,7 +411,8 @@
                 btn.start();
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
-                $http.post('@Url.Action("Save", "Workflow")',
+                console.log(data.links);
+                                $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {
                             Id: $scope.model.Id,
@@ -434,10 +435,11 @@
                             digramScope.clearDiagram();
                         }
                     }, function (response) {
-                        btn.stop();
+                            btn.stop();
                         //error handle\
                         var x = 0;
                     });
+
             }
             $scope.saveProductDraft = function () {
                 var btn = Ladda.create(document.querySelector('.btn-submit2'));
@@ -489,9 +491,9 @@
                     scrollTop: $(id).offset().top
                 }, 200);
             }
-            $scope.isValidObject = function (name) {
+/*            $scope.isValidObject = function (name) {
                 return $scope.objectItems.includes(name);
-            };
+            };*/
             /*--------------------------------------------------------------
                 POPUP WORKFLOW
             --------------------------------------------------------------*/

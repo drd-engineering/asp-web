@@ -6,7 +6,7 @@ namespace DRD.Service
     {
         public const string CONSTRING = "ServiceContext";
         public const string ENCRYPT_DECRYPT_SALT = "50b25ef599144db2953b656f11a84139";
-        public const string ENCRYPT_DECRYPT_PWD = "drdw1w1rjang";
+        public const string ENCRYPT_DECRYPT_PWD = "drdw1w1rjang";   
         public const string ENCRYPT_KEY = "drdtul@l1t3";
         public const string INIT_LOGIN = "_init_login_xbudi_";
         public const int LOOP_TRY_SAVE = 10;
