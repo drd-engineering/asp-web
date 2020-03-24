@@ -32,9 +32,6 @@ namespace DRD.Models
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
         
-        //Tag
-        public virtual System.Collections.Generic.ICollection<Tag> Tags { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
-
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
         public virtual System.Collections.Generic.ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation
