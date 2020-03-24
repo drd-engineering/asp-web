@@ -196,12 +196,37 @@ namespace DRD.Service
             }
         }
 
+        public IEnumerable<DocumentItem> GetAllCompanyDocument(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result =
+                (from doc in db.Documents
+                 where doc.CompanyId == companyId
+                 orderby doc.CreatedAt descending
+                 select new DocumentItem
+                 {
+                     Id = doc.Id,
+                     Title = doc.Title,
+                     FileName = doc.FileName,
+                     FileSize = doc.FileSize,
+                     CreatorId = doc.CreatorId,
+                     CreatedAt = doc.CreatedAt,
+                     Description = doc.Description,
+                     MaxDownload = doc.MaxDownloadPerActivity,
+                     MaxPrint = doc.MaxPrintPerActivity,
+                     ExpiryDay = doc.ExpiryDay
+                 }).ToList();
+                return result;
+            }
+        }
+
         // Author: Rani
         /*
          Changes: 
             Sorting criteria and order is fixed.
         */
-        public IEnumerable<DocumentItem> GetAll(long creatorId, string searchKeyword, int page, int pageSize)
+        public IEnumerable<DocumentItem> GetCompanyDocument(long creatorId, string searchKeyword, int page, int pageSize, long companyId)
         {
             int skip = pageSize * (page - 1);
 
@@ -216,7 +241,8 @@ namespace DRD.Service
             {
                 var result =
                 (from doc in db.Documents
-                 where doc.CreatorId == creatorId && (keywords.All(x => (doc.Title).Contains(x)))
+                 where (doc.CreatorId == creatorId || doc.CompanyId == companyId)
+                 && (keywords.All(x => (doc.Title).Contains(x)))
                  orderby doc.CreatedAt descending
                  select new DocumentItem
                  {

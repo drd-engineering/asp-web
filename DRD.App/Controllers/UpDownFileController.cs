@@ -12,6 +12,7 @@ using System.Net;
 using System.IO;
 using System.Text;
 using DRD.Models;
+using System.IO.Compression;
 
 namespace DRD.App.Controllers
 {
@@ -121,7 +122,44 @@ namespace DRD.App.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
             // quota upload belum dipotong
         }
-        
+
+        public int MoveFromTemporaryToActual(DocumentInboxData newDocument, long companyId)
+        {
+            string Tranfiles, ProcessedFiles;
+            //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
+            var tempFolder = "doc/company/temp";
+            var encryptedCompanyId = Utilities.Encrypt(companyId.ToString());
+            var actualPath = "doc/company/" + encryptedCompanyId;
+            var targetDir = "/" + actualPath + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
+
+            try
+            {
+                Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
+                System.Diagnostics.Debug.WriteLine("LOCATION FILE " + Tranfiles);
+                if (System.IO.File.Exists(Tranfiles))
+                {
+                    //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
+                    //1)Cannot create a file when that file already exists
+                    //2)The path....is a folder not a file.
+                    //ProcessedFiles = Server.MapPath(@"~\ProcessedFiles"); //Wrong
+                    ProcessedFiles = Server.MapPath("/" + actualPath + "/") + newDocument.FileUrl + ".drd";//Need to mention any file in dest folder,even though it doesnt contain this file.
+
+                    //Need to move or overwrite the new file with actual file.
+                    System.IO.File.Move(Tranfiles, ProcessedFiles);
+                    System.IO.File.Delete(Tranfiles);
+                    return 1;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult XUploadFree(int idx, int fileType)
         {
@@ -161,6 +199,49 @@ namespace DRD.App.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Give zip file result fo all file in company.
+        /// </summary>
+        /// <param name="companyId">company id of targeted login</param>
+        /// <returns></returns>
+        public ActionResult DownloadAllDocumentfromCompany(long companyId)
+        {
+            var companyServ = new CompanyService();
+            var companyItem = companyServ.GetCompany(companyId);
+            if (companyItem != null)
+            {
+                var folder = "doc/company";
+                var encryptedId = XEncryptionHelper.Encrypt(companyItem.Id.ToString());
+                var pathTarget = "/" + folder + "/" + encryptedId + "/";
+                var docServ = new DocumentService();
+                var allDocument = docServ.GetAllCompanyDocument(companyItem.Id);
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var doc in allDocument)
+                        {
+                            byte[] pdfByte = new byte[] { };
+                            if (doc.Id != 0)
+                            {
+                                string filepath = Server.MapPath(pathTarget) + doc.FileName + "/";
+
+                                XFEncryptionHelper xf = new XFEncryptionHelper();
+                                var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
+                            }
+                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.ExtFile, CompressionLevel.Fastest);
+                            using (var entryStream = inerFile.Open())
+                            using (var streamWriter = new StreamWriter(entryStream))
+                            {
+                                streamWriter.Write(pdfByte);
+                            }
+                        }
+                    }
+                    return File(memoryStream.ToArray(), "application/zip", companyItem.Name+".zip");
+                }
+            }
+            else return null;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -514,43 +595,6 @@ namespace DRD.App.Controllers
             //    folder = "student";
 
             return folder;
-        }
-
-        public int MoveFromTemporaryToActual(DocumentInboxData newDocument, long companyId)
-        {
-            string Tranfiles, ProcessedFiles;
-            //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
-            var tempFolder = "doc/company/temp";
-            var encryptedCompanyId = Utilities.Encrypt(companyId.ToString());
-            var actualPath = "doc/company/" + encryptedCompanyId;
-            var targetDir = "/" + actualPath + "/";
-            bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
-            if (!exists)
-                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
-
-            try
-            {
-                Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
-                System.Diagnostics.Debug.WriteLine("LOCATION FILE " + Tranfiles);
-                if (System.IO.File.Exists(Tranfiles))
-                {
-                    //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
-                    //1)Cannot create a file when that file already exists
-                    //2)The path....is a folder not a file.
-                    //ProcessedFiles = Server.MapPath(@"~\ProcessedFiles"); //Wrong
-                    ProcessedFiles = Server.MapPath("/" + actualPath + "/" )+ newDocument.FileUrl + ".drd";//Need to mention any file in dest folder,even though it doesnt contain this file.
-
-                    //Need to move or overwrite the new file with actual file.
-                    System.IO.File.Move(Tranfiles, ProcessedFiles);
-                    System.IO.File.Delete(Tranfiles);
-                    return 1;
-                }
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                return -1;
-            }
         }
     }
 }

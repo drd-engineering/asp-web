@@ -212,6 +212,7 @@
     <Compile Include="TagItem.cs" />
     <Compile Include="View\Document\DocumentItem.cs" />
     <Compile Include="View\ElementType.cs" />
+    <Compile Include="View\Rotation\RotationDashboard.cs" />
     <Compile Include="View\UserProfile.cs" />
     <Compile Include="View\UploadResponse.cs" />
     <Compile Include="View\Rotation\RotationItem.cs" />

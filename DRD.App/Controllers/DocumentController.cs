@@ -109,7 +109,15 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new DocumentService();
-            var data = srv.GetAll(user.Id, searchKeyword, page, pageSize);
+            var data = srv.GetLiteAll(user.Id, searchKeyword, page, pageSize);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetCompanyDocument(string searchKeyword, int page, int pageSize, long companyId)
+        {
+            LoginController login = new LoginController();
+            UserSession user = login.GetUser(this);
+            var srv = new DocumentService();
+            var data = srv.GetCompanyDocument(user.Id, searchKeyword, page, pageSize, companyId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

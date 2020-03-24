@@ -1,51 +1,29 @@
 ﻿@model DRD.Models.View.Layout
 
-@{ 
+@{
     ViewBag.Title = "Document";
     ViewBag.Submenu = "DOCUMENT";
 }
 
-@*<link rel="stylesheet" href="/assets/css/demo.css">
-    <link rel="stylesheet" href="/assets/css/header-user-dropdown.css">
-    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    <link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
-
-    <script type="text/javascript" src="/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
-
+@section Scripts
+{
     <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
     <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
-    <script src="/assets/js/core/app.js" type="text/javascript"></script>
     <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
-*@
 
-<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
-<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
-<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
-
-<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
-<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
-<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+    <script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+    <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
 
 
-<script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
-<script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
-<script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
-
-@*<script src="~/Scripts/modal-member.js"></script>*@
-
-
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+}
+@section Styles{
+    <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
+}
 
 <body @*ng-app="ppriApp"*@>
 
@@ -53,33 +31,25 @@
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
         <div class="page-content">
-
-
             <!-- Main content -->
             <div class="content-wrapper">
                 <!-- Page header -->
-                <div class="page-header page-header-default">
+                <div ng-show="noCompanyFound()">
+                    You Don't have any Company, so you can not see any document
+                </div>
+                <div class="page-header page-header-default" ng-show="hasCompany()">
                     <div class="page-header-content">
                         <div class="page-title">
-                            <h4>@*<i class="icon-arrow-left52 position-left"></i>*@Document List</h4>
+                            <h4>Document List</h4>
                             <span style="font-size:small">Document list</span>
-                            <br /><br />
-
+                            <br />
+                            <br />
                             <div class="row">
-                                <div class="col-lg-10">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
-                                        <span class="input-group-btn">
-                                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
-                                                <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
-                                                <div class="ladda-progress" style="width: 0px;"></div>
-                                            </button>
-                                        </span>
-                                    </div>
+                                <div class="col-lg-12" style="width:100% !important;">
+                                    <!-- SELECT -->
+                                    <select class="card-filter" ng-model="companySelected" ng-options="x.Name for x in companyOwned"></select>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -87,38 +57,20 @@
                 <!-- /page header -->
                 <!-- Content area -->
 
-                <div class="content" style="display:none">
-                    <!-- Contextual classes -->
-                    <div class="row">
-
-                        <div class="col-md-6">
-                            <button class="btn btn-xs border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
-                                &nbsp;&nbsp;Add New&nbsp;&nbsp;
-                            </button>
-                            @*<div class="btn-group">
-                                <button type="button" class="btn btn-xs border-slate text-slate-800 btn-flat dropdown-toggle" data-toggle="dropdown" aria-expanded="false" ng-disabled="diabledMove()">Move <span class="caret"></span></button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li ng-repeat="x in folders"><a href="" ng-click="moveToFolder(x.Id)"><i class="icon-folder6"></i> {{x.Name}}</a></li>
-                                    
-                                </ul>
-                            </div>*@
-                        </div>
-                        <div class="col-md-6">
-                            <div class="pull-right">
-                                <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
-                                    <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                <div class="content" ng-show="hasCompany()" ng-init="">
                     <div style="height:10px"></div>
                     <!-- LIST -->
                     <div calss="row">
-
-
                         <div class="panel panel-flat">
-
                             <div class="table-responsive" ng-show="isView">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button class="image-container-sm" ng-click="downloadAllDocumentCompany()">
+                                            <span class="tooltiptext">download all document</span>
+                                            <img src="~/Images/icon/download-icon.png" />
+                                        </button>
+                                    </div>
+                                </div>
                                 <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
@@ -131,12 +83,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr  style="cursor:pointer;height:50px;height:50px;vertical-align:central;"  ng-repeat="x in products" style="vertical-align:top" @*on-finish-render="ngRepeatFinished"*@>
+                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-repeat="x in products" style="vertical-align:top" @*on-finish-render="ngRepeatFinished"*@>
                                             <td>{{$index+1 + index}}</td>
-                                            <td>
-                                                @*<input type="checkbox" class="control-danger" ng-model="options[$index]" ng-value="x.IsChecked" ng-change="toggleCurrency($index)">*@
-                                                <a ng-click="do_edit('@Model.key', x.Key);">{{x.Title}}</a>
-                                            </td>
+                                            <td>{{x.Title}}</td>
                                             <td>{{x.Version}}</td>
                                             <td style="text-align:right">{{x.FileSize | number}}</td>
                                             <td><img src="/Images/FileType/{{x.ExtFile}}.png" width="16" /> {{x.FileNameOri}}</td>
@@ -189,6 +138,10 @@
             $scope.options = [];
             $scope.folders = [];
 
+            $scope.companySelected = {};
+            $scope.companySearched = false;
+            $scope.companyOwned = [];
+
             //$scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
             //    $(".control-danger").uniform({
             //        radioClass: 'choice',
@@ -204,12 +157,71 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                //$scope.getFolders();
-                //$scope.GetPartners();
-                $(".content").show();
-                $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row)
+                $scope.getCompanyOwned();
+                /*$scope.getProducts($scope.kriteria, $scope.page, $scope.row, $scope.companySelected.Id);*/
             });
+            /*--------------------------------------------------------------
+            GET ALL COMPANY FILTER FOR USER ONLY SHOW DOCUMENT THAT RELATED
+            --------------------------------------------------------------*/
+            $scope.getCompanyOwned = function () {
+                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                    if (response.data) {
+                        $scope.companyOwned = response.data.companies;
+                        $scope.companySearched = true;
+                    } else $scope.companySearched = true;
+                })
+            }
+            $scope.hasCompany = function () {
+                if ($scope.companyOwned.length > 0) {
+                    return true;
+                } else return false;
+            }
+            $scope.noCompanyFound = function () {
+                if ($scope.companyOwned.length <= 0 && $scope.companySearched) {
+                    return true;
+                } else return false;
+            }
+            /*--------------------------------------------------------------
+            GET PRODUCT
+            --------------------------------------------------------------*/
+            $scope.getProducts = function (kriteria, page, row, companyId) {
+                /*var btn = Ladda.create(document.querySelector('.btn-process'));
+                btn.start();*/
+                $scope.products = [];
+                $http.post('@Url.Action("GetCompanyDocument", "document")', { searchKeyword: kriteria, page: page, pageSize: row, companyId: companyId }).then(function (response) {
+                    btn.stop();
+                    if (response.data) {
+                        $scope.products = response.data;
+                        $scope.isView = true;
+                    }
+                }, function (response) {
+                    btn.stop();
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+            $scope.downloadAllDocumentCompany = function () {
+                $http.post('@Url.Action("DownloadAllDocumentfromCompany", "updownfile")', { companyId: $scope.companySelected.Id })
+                    .then(function (response) {
+                        if (response.data) {
+                            save(response.data);
+                        }
+                    }, function (response) {
+                        //error handle\
+                        var x = 0;
+                    });
+            }
 
+
+            /// Belum digunakan
             /*--------------------------------------------------------------
             DO EDIT
             --------------------------------------------------------------*/
@@ -284,34 +296,6 @@
                     var x = 0;
                 });
             }
-            /*--------------------------------------------------------------
-            GET PRODUCT
-            --------------------------------------------------------------*/
-            $scope.getLiteProducts = function (kriteria, page, row) {
-                var btn = Ladda.create(document.querySelector('.btn-process'));
-                btn.start();
-                $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll", "document")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    btn.stop();
-                    if (response.data) {
-                        $scope.products = response.data;
-
-                        $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        $scope.getProductCount(kriteria);
-
-                        $scope.isView = true;
-
-                        //Ladda.stopAll();
-
-                    }
-                }, function (response) {
-                    btn.stop();
-                    //error handle\
-                    var x = 0;
-                });
-            }
 
             $scope.changePage = function (kriteria, page, row) {
                 $scope.products = [];
@@ -350,16 +334,6 @@
             /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
-
-
-            /*--------------------------------------------------------------
-            CONVERT JSON DATE
-            --------------------------------------------------------------*/
-            $scope.convertJsonDate = function (val) {
-                if (val == undefined)
-                    return '';
-                return new Date(parseInt(val.substr(6)));
-            }
 
         });
 
