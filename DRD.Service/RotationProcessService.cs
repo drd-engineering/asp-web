@@ -448,8 +448,15 @@ namespace DRD.Service
                     }
 
                     //DocumentService docSvr = new DocumentService();
-                    if (rnc.Document != null) // save annos first before set sign/initial/stamp
-                        docSvr.SaveAnnos((long)rnc.Document.Id, memberId, "CALLER", rnc.Document.DocumentElements);
+                    if (rnc.Document != null)
+                    { // save annos first before set sign/initial/stamp
+                        ICollection<DocumentElementInboxData> docElement = new List<DocumentElementInboxData>();
+                        foreach (DocumentElement x in rnc.Document.DocumentElements)
+                        {
+                            docElement.Add(new DocumentElementInboxData(x));
+                        }
+                        docSvr.SaveAnnos((long)rnc.Document.Id, memberId, "CALLER", docElement);
+                    }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
                         docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)

@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using DRD.Service;
 using DRD.Models.View;
 using DRD.Models.API;
@@ -84,11 +85,20 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // public ActionResult Sendemail()
-        // {
-        //     Initialize();
-        //     var data = dashboardService.SendEmail("test");
-        //     return Json(data, JsonRequestBehavior.AllowGet);
-        // }
+        // untuk tampilan front dari dashboard.
+        public ActionResult GetDashboardRotationStatus(long companyId, ICollection<string> Tags, int page, int pageSize)
+        {
+            Initialize();
+            int skip = (page - 1) * pageSize;
+            var data = dashboardService.GetDashboardRotationStatus(companyId, Tags, skip, pageSize);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult sendEmailNotifikasiRotasi(long rotationId, long userId)
+        {
+            Initialize();
+            var data = dashboardService.sendEmailNotifikasiRotasi(rotationId, userId);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

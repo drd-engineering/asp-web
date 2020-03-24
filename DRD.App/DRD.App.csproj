@@ -191,6 +191,12 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.IO.Pipelines, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.4.7.0\lib\netstandard2.0\System.IO.Pipelines.dll</HintPath>
     </Reference>
@@ -363,6 +369,7 @@
     <Content Include="assets\css\pages\company-member.css" />
     <Content Include="assets\css\pages\company.css" />
     <Content Include="assets\css\pages\dashboard.css" />
+    <Content Include="assets\css\pages\inbox.css" />
     <Content Include="assets\css\pages\layout.css" />
     <Content Include="assets\css\pages\rotation-list.css" />
     <Content Include="assets\css\pages\rotation.css" />
@@ -2891,7 +2898,7 @@
     <Content Include="Images\userlogin2.png" />
     <Content Include="Images\userlogin.png" />
     <Content Include="layout_navbar_sidebar_fixed.html" />
-    <Content Include="NewFile1.txt" />
+    <Content Include="menudocument.txt" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\autocomplete\autocomplete.min.js" />

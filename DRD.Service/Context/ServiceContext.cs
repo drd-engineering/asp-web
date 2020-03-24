@@ -11,7 +11,6 @@ namespace DRD.Service.Context
     public class ServiceContext : DbContext
     {
         public ServiceContext() : base("AppContext"){    }
-        public DbSet<ElementType> ElementTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
         public DbSet<Contact> Contacts { get; set; }
@@ -36,5 +35,7 @@ namespace DRD.Service.Context
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
+        public DbSet<TagItem> TagItems { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }

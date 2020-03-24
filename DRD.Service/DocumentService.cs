@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+
 using DRD.Models;
 using DRD.Models.View;
 using DRD.Service.Context;
@@ -22,11 +24,11 @@ namespace DRD.Service
                 if (isTemp)
                 {
                     doc.FileName = uniqFileName;
-                    
+
                 }
                 else if (isDocument)
                 {
-                     var result = db.Documents.FirstOrDefault(c => c.FileName.Contains(uniqFileName));
+                    var result = db.Documents.FirstOrDefault(c => c.FileName.Contains(uniqFileName));
                     if (result != null)
                     {
                         doc.Id = result.Id;
@@ -97,11 +99,7 @@ namespace DRD.Service
                                 UserId = x.UserId,
                                 CreatedAt = x.CreatedAt,
                                 UpdatedAt = x.UpdatedAt,
-                                ElementType = new ElementType
-                                {
-                                    Id = x.ElementType.Id,
-                                    Code = x.ElementType.Code,
-                                }
+                                ElementTypeId = x.ElementTypeId
                             }).ToList(),
                      }).FirstOrDefault();
 
@@ -110,14 +108,15 @@ namespace DRD.Service
                     foreach (DocumentElement da in result.DocumentElements)
                     {
                         if (da.ElementId == null) continue;
-                        if (da.ElementType.Code.Equals("SIGNATURE") || da.ElementType.Code.Equals("INITIAL") || da.ElementType.Code.Equals("PRIVATESTAMP"))
+                        if (da.ElementTypeId == getElementTypeFromCsvByCode("SIGNATURE").Id || da.ElementTypeId == getElementTypeFromCsvByCode("INITIAL").Id
+                            || da.ElementTypeId == getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                         {
                             var mem = db.Users.FirstOrDefault(c => c.Id == da.ElementId);
                             da.Element.UserId = mem.Id;
                             da.Element.Name = mem.Name;
                             da.Element.Foto = mem.ImageProfile;
                         }
-                        else if (da.ElementType.Code.Equals("STAMP"))
+                        else if (da.ElementTypeId == getElementTypeFromCsvByCode("STAMP").Id)
                         {
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == da.ElementId);
                             da.Element.Name = stmp.Descr;
@@ -162,7 +161,7 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == creatorId  && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                 where c.CreatorId == creatorId && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
                  orderby c.CreatedAt descending
                  select new DocumentItem
                  {
@@ -197,12 +196,37 @@ namespace DRD.Service
             }
         }
 
+        public IEnumerable<DocumentItem> GetAllCompanyDocument(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result =
+                (from doc in db.Documents
+                 where doc.CompanyId == companyId
+                 orderby doc.CreatedAt descending
+                 select new DocumentItem
+                 {
+                     Id = doc.Id,
+                     Title = doc.Title,
+                     FileName = doc.FileName,
+                     FileSize = doc.FileSize,
+                     CreatorId = doc.CreatorId,
+                     CreatedAt = doc.CreatedAt,
+                     Description = doc.Description,
+                     MaxDownload = doc.MaxDownloadPerActivity,
+                     MaxPrint = doc.MaxPrintPerActivity,
+                     ExpiryDay = doc.ExpiryDay
+                 }).ToList();
+                return result;
+            }
+        }
+
         // Author: Rani
         /*
          Changes: 
             Sorting criteria and order is fixed.
         */
-        public IEnumerable<DocumentItem> GetAll(long creatorId, string searchKeyword, int page, int pageSize)
+        public IEnumerable<DocumentItem> GetCompanyDocument(long creatorId, string searchKeyword, int page, int pageSize, long companyId)
         {
             int skip = pageSize * (page - 1);
 
@@ -217,7 +241,8 @@ namespace DRD.Service
             {
                 var result =
                 (from doc in db.Documents
-                 where doc.CreatorId == creatorId && (keywords.All(x => (doc.Title).Contains(x)))
+                 where (doc.CreatorId == creatorId || doc.CompanyId == companyId)
+                 && (keywords.All(x => (doc.Title).Contains(x)))
                  orderby doc.CreatedAt descending
                  select new DocumentItem
                  {
@@ -270,7 +295,7 @@ namespace DRD.Service
 
 
 
-            public long GetLiteAllCount(long memberId, string topCriteria)
+        public long GetLiteAllCount(long memberId, string topCriteria)
         {
             return GetLiteAllCount(memberId, topCriteria, null);
         }
@@ -291,7 +316,7 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId  && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                     where c.CreatorId == memberId && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
@@ -338,7 +363,7 @@ namespace DRD.Service
                          Description = c.Description,
                          Title = c.Title,
                          FileName = c.FileName,
-                         
+
                      }).Skip(skip).Take(pageSize).ToList();
 
                 return result;
@@ -377,7 +402,7 @@ namespace DRD.Service
                 var result =
                 (from c in db.Documents
                  where c.CreatorId == memberId &&
-                    (topCriteria == null || tops.All(x => (c.Title ).Contains(x)))
+                    (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
                  select new DocumentItem
                  {
                      Id = c.Id,
@@ -425,7 +450,7 @@ namespace DRD.Service
                 var result =
                 (from c in db.Documents
                  where c.CreatorId == memberId &&
-                    (topCriteria == null || tops.All(x => (c.Title ).Contains(x)))
+                    (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
                  select new DocumentItem
                  {
                      Id = c.Id,
@@ -459,14 +484,14 @@ namespace DRD.Service
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(c.ElementType.Code) && (c.Flag & 1) == 1 &&
-                        (topCriteria == null || tops.All(x => (c.Document.Title ).Contains(x)))
+                     where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code) && (c.Flag & 1) == 1 &&
+                        (topCriteria == null || tops.All(x => (c.Document.Title).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
                      {
                          Id = c.Document.Id,
-                         CxSignature = (c.ElementType.Code.Equals("SIGNATURE") ? 1 : 0),
-                         CxInitial = (c.ElementType.Code.Equals("INITIAL") ? 1 : 0),
+                         CxSignature = (c.ElementTypeId == getElementTypeFromCsvByCode("SIGNATURE").Id ? 1 : 0),
+                         CxInitial = (c.ElementTypeId == getElementTypeFromCsvByCode("INITIAL").Id ? 1 : 0),
                          DateCreated = c.FlagDate,
                      }).ToList();
 
@@ -532,8 +557,8 @@ namespace DRD.Service
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(c.ElementType.Code) &&
-                            (topCriteria == null || tops.All(x => (c.Document.Title ).Contains(x)))
+                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code) &&
+                            (topCriteria == null || tops.All(x => (c.Document.Title).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
                      {
@@ -579,10 +604,10 @@ namespace DRD.Service
         {
             return GetAnnotateDocs(memberId, topCriteria, page, pageSize, null, null);
         }
-        public long Save(Document prod, long companyId, long rotationId)
+        public long Save(DocumentInboxData prod, long companyId, long rotationId)
         {
             long result = 0;
-            Document document;
+            DocumentInboxData document;
             using (var db = new ServiceContext())
             {
                 if (prod.Id == 0)
@@ -592,12 +617,12 @@ namespace DRD.Service
                     result = document.Id;
             }
 
-            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, document.DocumentElements);
+            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
             return result;
 
         }
 
-        public Document Create(Document newDocument, long companyId, long rotationId)
+        public DocumentInboxData Create(DocumentInboxData newDocument, long companyId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
@@ -634,24 +659,25 @@ namespace DRD.Service
                 document.CompanyId = companyId;
 
                 db.Documents.Add(document);
-
                 db.SaveChanges();
+                newDocument.Id = document.Id;
 
-                return document;
+                return newDocument;
             }
-            
+
         }
 
-        public Document Update(Document newDocument, long companyId, long rotationId) {
-            
+        public DocumentInboxData Update(DocumentInboxData newDocument, long companyId, long rotationId)
+        {
+
 
             using (var db = new ServiceContext())
             {
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
-                
+
                 // GET Plan
                 PlanBusiness plan = db.PlanBusinesses.Where(c => c.CompanyId == companyId).FirstOrDefault();
-                
+
                 // validation
                 ValidateWithPlan(document, newDocument, plan);
                 Validate(newDocument);
@@ -664,8 +690,7 @@ namespace DRD.Service
 
                 document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.UserEmail = newDocument.UserEmail;
-                document.CreatedAt = DateTime.Now;
-
+                
                 // NEW
                 document.ExpiryDay = newDocument.ExpiryDay;
                 document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
@@ -682,42 +707,46 @@ namespace DRD.Service
                 document.UpdatedAt = DateTime.Now;
 
                 db.SaveChanges();
+                newDocument.UpdatedAt = document.UpdatedAt;
+                newDocument.Id = document.Id;
 
-                return document;
+                return newDocument;
             }
 
         }
 
         // Validate Document with Company's or Personal's Plan
-        public bool ValidateWithPlan(Document oldDocument, Document newDocument, PlanBusiness plan) {
+        public bool ValidateWithPlan(Document oldDocument, DocumentInboxData newDocument, PlanBusiness plan)
+        {
 
             if (!plan.IsActive) throw new NotImplementedException();
-            
+
             // TANYAIN
             //if (plan.SubscriptionName != "Business") throw new NotImplementedException();
 
             // reach out the storage limit
-            if (plan.StorageUsedinByte < (newDocument.FileSize - oldDocument.FileSize)) 
+            if (plan.StorageUsedinByte < (newDocument.FileSize - oldDocument.FileSize))
                 throw new NotImplementedException();
             return true;
         }
 
         // Currently, this method only used when Update Document
-        public bool Validate(Document document)
+        public bool Validate(DocumentInboxData document)
         {
             if (document.ExpiryDay < 0) throw new NotImplementedException();
-            
+
             // kalo isCurrent salah gimana? pindahin ke orang pertama itu di document service???
             return true;
         }
 
-        public void DoRevision(long documentId) {
+        public void DoRevision(long documentId)
+        {
 
             using (var db = new ServiceContext())
             {
                 //document.IsCurrent = false;
             }
-            
+
             throw new NotImplementedException();
         }
 
@@ -761,7 +790,7 @@ namespace DRD.Service
             }
         }
 
-        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElement> annos)
+        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
         {
             using (var db = new ServiceContext())
             {
@@ -770,20 +799,25 @@ namespace DRD.Service
                 //
                 var cxold = db.DocumentElements.Count(c => c.Document.Id == documentId);
                 var cxnew = annos.Count();
+                System.Diagnostics.Debug.WriteLine("[count ] " + cxnew);
                 //nambah old document
                 if (cxold < cxnew)
                 {
                     var ep = annos.ElementAt(0); // get 1 data for sample
+                    System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + ep.ToString());
                     for (var x = cxold; x < cxnew; x++)
                     {
                         DocumentElement da = new DocumentElement();
-                        da.Document.Id = documentId;
+                        da.DocumentId = documentId;
                         da.Page = ep.Page;
-                        da.ElementType.Id = ep.ElementType.Id;
+                        da.ElementTypeId = ep.ElementTypeId;
+
                         da.UserId = userEmail;
                         da.CreatedAt = DateTime.Now;
+                        System.Diagnostics.Debug.WriteLine("[ Dataelementbaru ] :" + da);
                         db.DocumentElements.Add(da);
                     }
+                    System.Diagnostics.Debug.WriteLine("[ Saved data ]");
                     db.SaveChanges();
                 }
                 else if (cxold > cxnew)
@@ -796,13 +830,15 @@ namespace DRD.Service
                 // save data (update)
                 //
                 var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
+                System.Diagnostics.Debug.WriteLine("[count data want to save] " + dnew.Count());
                 int v = 0;
                 foreach (DocumentElement da in dnew)
                 {
                     var epos = annos.ElementAt(v);
-                    da.Document.Id = documentId;
+                    System.Diagnostics.Debug.WriteLine("[count data want to save] " + epos.ElementTypeId+ epos.LeftPosition+ epos.TopPosition+ epos.WidthPosition+ epos.HeightPosition);
+                    da.DocumentId = documentId;
                     da.Page = epos.Page;
-                    da.ElementType.Id = epos.ElementType.Id;
+                    da.ElementTypeId = epos.ElementTypeId;
                     da.LeftPosition = epos.LeftPosition;
                     da.TopPosition = epos.TopPosition;
                     da.WidthPosition = epos.WidthPosition;
@@ -839,7 +875,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var mem = db.Users.FirstOrDefault(c => c.Id == memberId);
-                if (mem.ImageSignature == null || mem.ImageInitials == null || mem.ImageKtp1 == null || mem.ImageKtp2 == null || string.IsNullOrEmpty(""+mem.OfficialIdNo))
+                if (mem.ImageSignature == null || mem.ImageInitials == null || mem.ImageKtp1 == null || mem.ImageKtp2 == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
                     ret = -1;
             }
             return ret;
@@ -861,7 +897,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && ("SIGNATURE, INITIAL").Contains(c.ElementType.Code) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
+                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && ("SIGNATURE, INITIAL").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
                 var member = db.Users.FirstOrDefault(c => c.Id == memberId);
@@ -875,7 +911,7 @@ namespace DRD.Service
                     da.Flag = 1;
                     da.FlagDate = dt;
                     da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = (da.ElementType.Code.Equals("SIGNATURE") ? member.ImageSignature : member.ImageInitials);
+                    da.FlagImage = (da.ElementTypeId == getElementTypeFromCsvByCode("SIGNATURE").Id ? member.ImageSignature : member.ImageInitials);
                     if (!numbers.Equals(""))
                         numbers += ", ";
                     numbers += da.FlagCode;
@@ -972,7 +1008,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementType.Code.Equals("PRIVATESTAMP") && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
+                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementTypeId == getElementTypeFromCsvByCode("PRIVATESTAMP").Id && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
                 var member = db.Users.FirstOrDefault(c => c.Id == memberId);
@@ -1047,12 +1083,13 @@ namespace DRD.Service
                 {
                     ret = rm.FlagPermission;
 
-                    var docs = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementId == memberId && ("SIGNATURE,INITIAL,PRIVATESTAMP").Contains(c.ElementType.Code)).ToList();
+                    var docs = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementId == memberId 
+                            && ("SIGNATURE,INITIAL,PRIVATESTAMP").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code)).ToList();
                     foreach (DocumentElement doc in docs)
                     {
-                        if (("SIGNATURE,INITIAL").Contains(doc.ElementType.Code))
+                        if (("SIGNATURE,INITIAL").Contains(getElementTypeFromCsvById(doc.ElementTypeId).Code))
                             ret |= 1;
-                        else if (doc.ElementType.Code.Equals("PRIVATESTAMP"))
+                        else if (doc.ElementTypeId == getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                             ret |= 32;
                     }
                 }
@@ -1068,6 +1105,27 @@ namespace DRD.Service
         public void sendEmailStamp(Member member, string rotName, string docName, string numbers)
         {
             throw new NotImplementedException();
+        }
+
+        public static ElementType getElementTypeFromCsvByCode(string code)
+        {
+            var root = System.Web.HttpContext.Current.Server.MapPath("~");
+            var path = Path.Combine(root, @"ElementType.csv");
+            ElementType values = File.ReadAllLines(path)
+                                           .Select(v => ElementType.fromCsv(v))
+                                           .Where(c => c.Code.Equals(code)).FirstOrDefault();
+
+            return values;
+        }
+        public static ElementType getElementTypeFromCsvById(int id)
+        {
+            var root = System.Web.HttpContext.Current.Server.MapPath("~");
+            var path = Path.Combine(root, @"ElementType.csv");
+            ElementType values = File.ReadAllLines(path)
+                                           .Select(v => ElementType.fromCsv(v))
+                                           .Where(c => c.Id == id).FirstOrDefault();
+
+            return values;
         }
     }
 }

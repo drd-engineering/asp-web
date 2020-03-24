@@ -91,11 +91,7 @@ namespace DRD.Service
                                   UserId = documentElement.UserId,
                                   CreatedAt = documentElement.CreatedAt,
                                   UpdatedAt = documentElement.UpdatedAt,
-                                  ElementType = new ElementType
-                                  {
-                                      Id = documentElement.ElementType.Id,
-                                      Code = documentElement.ElementType.Code,
-                                  }
+                                  ElementTypeId = documentElement.ElementTypeId
                               }).ToList(),
                      }
                  }).ToList();
@@ -153,9 +149,11 @@ namespace DRD.Service
             Rotation product;
             using (var db = new ServiceContext())
             {
+                System.Diagnostics.Debug.WriteLine("seek for rotation");
                 if (prod.Id != 0)
                 {
                     product = db.Rotations.FirstOrDefault(c => c.Id == prod.Id);
+                    System.Diagnostics.Debug.WriteLine("seek for rotation "+product.Id);
                 }
                 else
                 {
@@ -254,13 +252,68 @@ namespace DRD.Service
                         db.SaveChanges();
                     }
                 }
-                else
+                // kalau jumlah sama harus di cek setiap elemennya apakah tidak berubah
+                else {
+                    var rotationUserOld = db.RotationUsers.Where(c => c.Rotation.Id == product.Id).ToList();
+                    int v = 0;
+                    foreach (RotationUser userItem in rotationUserOld)
+                    {
+                        var epos = prod.RotationUsers.ElementAt(v);
+                        var wfl = db.WorkflowNodes.FirstOrDefault(c => c.Id == epos.WorkflowNodeId);
+                        userItem.WorkflowNodeId = wfl.Id;
+                        userItem.WorkflowNode = wfl;
+                        wfl.RotationUsers.Add(userItem);
+                        User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
+                        userItem.User = gotUser;
+                        userItem.UserId = gotUser.Id;
+                        userItem.FlagPermission = epos.FlagPermission;
+                        //d.FlagAction = epos.FlagAction;
+                        //d.CxDownload = epos.CxDownload;
+                        //d.CxPrint = epos.CxPrint;
+                        //db.SaveChanges();
+                        v++;
+                        db.SaveChanges();
+                    }
+                }
+                // Tags
+                var tagItemListInDb = db.TagItems.Where(tagitemdb => tagitemdb.RotationId == product.Id).ToList();
+                foreach (string tag in prod.Tags)
                 {
-                    return 0;
+                    var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));
+                    if (tagfromDB == null)
+                    {
+                        tagfromDB = new Tag();
+                        tagfromDB.Name = tag;
+                        db.Tags.Add(tagfromDB);
+                        db.SaveChanges();
+                    }
+                    var tagItemFromDb = tagItemListInDb.FirstOrDefault(tagitemdb => tagitemdb.TagId == tagfromDB.Id && tagitemdb.RotationId == product.Id);
+                    if(tagItemFromDb == null)
+                    {
+                        tagItemFromDb = new TagItem();
+                        tagItemFromDb.RotationId = product.Id;
+                        tagItemFromDb.Rotation = product;
+                        tagItemFromDb.TagId = tagfromDB.Id;
+                        tagItemFromDb.Tag = tagfromDB;
+                        System.Diagnostics.Debug.WriteLine("[[ID of tag]] " + tagfromDB.Id + " " + product.Id);
+                        db.TagItems.Add(tagItemFromDb);
+                        product.TagItems.Add(tagItemFromDb);
+                    }
+                    else
+                    {
+                        tagItemListInDb.Remove(tagItemFromDb);
+                    }
+                }
+                if (tagItemListInDb.Count() != 0)
+                {
+                    foreach(var item in tagItemListInDb)
+                    {
+                        db.TagItems.Remove(item);
+                    }
                 }
                 db.SaveChanges();
-                return product.Id;
 
+                return product.Id;
             }
 
         }

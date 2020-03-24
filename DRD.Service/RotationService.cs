@@ -61,13 +61,14 @@ namespace DRD.Service
                          RotationUsers = (from x in rotation.RotationUsers
                                           select new RotationUserItem
                                           {
+                                              Id = x.Id,
                                               UserId = x.UserId,
                                               WorkflowNodeId = x.WorkflowNodeId,
                                               ActivityName = x.WorkflowNode.Caption,
-                                              MemberNumber = (x.UserId == null ? (long?) null : x.User.Id),
-                                              MemberName = (x.UserId == null ? "Undefined" : x.User.Name),
-                                              MemberEmail = (x.UserId == null ? "" : x.User.Email),
-                                              MemberPicture = (x.UserId == null ? "icon_user.png" : x.User.ImageProfile),
+                                              Number = (x.UserId == null ? (long?) null : x.User.Id),
+                                              Name = (x.UserId == null ? "Undefined" : x.User.Name),
+                                              Email = (x.UserId == null ? "" : x.User.Email),
+                                              Picture = (x.UserId == null ? "icon_user.png" : x.User.ImageProfile),
                                               FlagPermission = x.FlagPermission,
                                               //FlagAction = x.FlagAction,
                                               //CxDownload = x.CxDownload,
@@ -75,7 +76,12 @@ namespace DRD.Service
                                           }).ToList(),
 
                      }).FirstOrDefault();
-
+                if(result != null)
+                {
+                    var tagService = new TagService();
+                    var tags = tagService.GetTags(result.Id);
+                    result.Tags = (from tag in tags select tag.Name).ToList();
+                } 
                 return result;
             }
         }
@@ -744,7 +750,54 @@ namespace DRD.Service
             return workflowDeepService.Save(prod);
         }
 
-       
+        public ICollection<RotationDashboard> GetRelatedToCompany(long companyId, ICollection<string> tags, int skip, int pageSize)
+        {
+            using (var db = new ServiceContext())
+            {
+                var data = (from rotation in db.Rotations
+                            where rotation.CompanyId == companyId
+                            select new RotationDashboard
+                            {
+                                Id = rotation.Id,
+                                Subject = rotation.Subject,
+                                Status = rotation.Status,
+                                DateCreated = rotation.DateCreated,
+                                DateUpdated = rotation.DateUpdated,
+                                DateStarted = rotation.DateStarted,
+                                Tags = (from tagitem in rotation.TagItems
+                                        join tag in db.Tags on tagitem.TagId equals tag.Id
+                                        select tag.Name.ToLower()).ToList(),
+                                RotationUsers = (from user in rotation.RotationUsers
+                                                 select new RotationDashboard.UserDashboard
+                                                 {
+                                                     Id = user.Id,
+                                                     ImageProfile = user.User.ImageProfile
+                                                 }).ToList(),
+                                Creator = (from user in db.Users
+                                           where user.Id == rotation.CreatorId
+                                           select new RotationDashboard.UserDashboard
+                                           {
+                                               Id = user.Id,
+                                               ImageProfile = user.ImageProfile
+                                           }).FirstOrDefault(),
+                                Workflow = new RotationDashboard.WorkflowDashboard
+                                {
+                                    Id = rotation.Workflow.Id,
+                                    Name = rotation.Workflow.Name
+                                }
+                            }).ToList().Where(item => tags.All(itag=>item.Tags.Contains(itag))).Skip(skip).Take(pageSize).ToList();
+                foreach(RotationDashboard x in data)
+                {
+                    x.Creator.EncryptedId = XEncryptionHelper.Encrypt(x.Creator.Id.ToString());
+                    foreach(RotationDashboard.UserDashboard y in x.RotationUsers)
+                    {
+                        y.EncryptedId = XEncryptionHelper.Encrypt(y.Id.ToString());
+                    }
+                }
+                return data;
+            }
+        }
+
         public RotationInboxData assignNodes(ServiceContext db, RotationInboxData rot, long memberId, IDocumentService docSvr)
         {
             RotationInboxData rotation = rot;
@@ -884,14 +937,14 @@ namespace DRD.Service
                     foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
                     {
                         if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
-                        if (documentElement.ElementType.Code.Equals("SIGNATURE") || documentElement.ElementType.Code.Equals("INITIAL") || documentElement.ElementType.Code.Equals("PRIVATESTAMP"))
+                        if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("SIGNATURE").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("INITIAL").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
                             documentElement.Element.UserId = user.Id;
                             documentElement.Element.Name = user.Name;
                             documentElement.Element.Foto = user.ImageProfile;
                         }
-                        else if (documentElement.ElementType.Code.Equals("STAMP"))
+                        else if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("STAMP").Id)
                         {
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
                             documentElement.Element.Name = stmp.Descr;

@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPos: 0, TopPos: 0, WidthPos: null, HeightPos: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransX: 0, TransY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, AnnotateId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -120,14 +120,14 @@
             html = html.replace(/-xx/g, "-" + cno);
         }
         var field = $('#' + svgElement.id).append(html).find('.' + signatureClass);
-        if (item.WidthPos != null)
-            field.css({ 'width': item.WidthPos + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.WidthPosition != null)
+            field.css({ 'width': item.WidthPosition + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
 
         field.show();
 
-        signatureArrange(signatureClass, item.LeftPos, item.TopPos);
+        signatureArrange(signatureClass, item.LeftPosition, item.TopPosition);
     }
     $scope.addAnnoInitial = function (dataIdx) {
         var item = $scope.annoItems[dataIdx];
@@ -148,13 +148,13 @@
             html = html.replace(/-xx/g, "-" + cno);
         }
         var field = $('#' + svgElement.id).append(html).find('.' + initialClass);
-        if (item.WidthPos != null)
-            field.css({ 'width': item.WidthPos + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.WidthPosition != null)
+            field.css({ 'width': item.WidthPosition + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
-        signatureArrange(initialClass, item.LeftPos, item.TopPos);
+        signatureArrange(initialClass, item.LeftPosition, item.TopPosition);
     }
     $scope.addAnnoPrivateStamp = function (dataIdx) {
         var item = $scope.annoItems[dataIdx];
@@ -176,13 +176,13 @@
             html = html.replace(/-xx/g, "-" + cno);
         }
         var field = $('#' + svgElement.id).append(html).find('.' + privateStampClass);
-        if (item.WidthPos != null)
-            field.css({ 'width': item.WidthPos + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.WidthPosition != null)
+            field.css({ 'width': item.WidthPosition + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
-        signatureArrange(privateStampClass, item.LeftPos, item.TopPos);
+        signatureArrange(privateStampClass, item.LeftPosition, item.TopPosition);
     }
     $scope.addAnnoStamp = function (dataIdx) {
         var item = $scope.annoItems[dataIdx];
@@ -196,13 +196,13 @@
         var text = '<img class="' + stampClass + '" id="' + stampClass + cno + '" src="/images/stamp/empty.png" style="left:0px; top:0px; height:100px; width:200px; padding: ' + svgPadding + 'px;" onclick="annoSelector(' + "'" + stampClass + cno + "'" + ')"/>';
         var field = $('#' + svgElement.id).append(text).find('.' + stampClass);
 
-        if (item.WidthPos != null)
-            field.css({ 'width': item.WidthPos + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        if (item.WidthPosition != null)
+            field.css({ 'width': item.WidthPosition + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         field.show();
 
-        signatureArrange(stampClass, item.LeftPos, item.TopPos);
+        signatureArrange(stampClass, item.LeftPosition, item.TopPosition);
     }
     $scope.addAnnoText = function (dataIdx) {
         var item = $scope.annoItems[dataIdx];
@@ -218,17 +218,17 @@
         var field = $('#' + svgElement.id).append(html);
 
         document.getElementById(editTextClass + cno).addEventListener("input", onEditText, false);
-        field.css({ 'left': item.LeftPos + 'px' });
-        field.css({ 'top': item.TopPos + 'px' });
-        if (item.WidthPos != null)
-            field.css({ 'width': item.WidthPos + 'px' });
-        if (item.HeightPos != null)
-            field.css({ 'height': item.HeightPos + 'px' });
+        field.css({ 'left': item.LeftPosition + 'px' });
+        field.css({ 'top': item.TopPosition + 'px' });
+        if (item.WidthPosition != null)
+            field.css({ 'width': item.WidthPosition + 'px' });
+        if (item.HeightPosition != null)
+            field.css({ 'height': item.HeightPosition + 'px' });
         if (!isAnnoElementEnable)
             $('.' + editTextClass).attr('contenteditable', 'false');
         var defFlag = dropedToCenter;
         dropedToCenter = false;
-        signatureArrange(editTextClass, item.LeftPos, item.TopPos);
+        signatureArrange(editTextClass, item.LeftPosition, item.TopPosition);
         dropedToCenter = defFlag;
     }
     $scope.addAnnoPen = function (dataIdx) {
@@ -250,10 +250,10 @@
         path.setAttribute('class', penClass);
         path.setAttribute('onclick', "annoSelector(" + "'" + penClass + cno + "'" + ")");
         $('#' + svgElement.id).append(path);
-        var t = item.TopPos - svgPadding;
-        var l = item.LeftPos - svgPadding;
-        var w = item.WidthPos + (svgPadding * 2);
-        var h = item.HeightPos + (svgPadding * 2);
+        var t = item.TopPosition - svgPadding;
+        var l = item.LeftPosition - svgPadding;
+        var w = item.WidthPosition + (svgPadding * 2);
+        var h = item.HeightPosition + (svgPadding * 2);
         $('#' + svgElement.id).css({ 'top': t + 'px' });
         $('#' + svgElement.id).css({ 'left': l + 'px' });
         $('#' + svgElement.id).css({ 'width': w + 'px' });
@@ -314,7 +314,7 @@
     var bindAnnoDataMember = function(i)
     {
         var item = $scope.annoItems[i];
-        if (item.AnnotateId == null || !(item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL || item.AnnotateType == annotationType.PRIVATESTAMP))
+        if (item.ElementId == null || !(item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL || item.AnnotateType == annotationType.PRIVATESTAMP))
             return;
 
         var no = item.SvgId.replace('svg', '');
@@ -332,7 +332,7 @@
     }
     var bindAnnoDataStamp = function (i) {
         var item = $scope.annoItems[i];
-        if (item.AnnotateId == null || item.AnnotateType != annotationType.STAMP)
+        if (item.ElementId == null || item.AnnotateType != annotationType.STAMP)
             return;
 
         var no = item.SvgId.replace('svg', '');
@@ -949,12 +949,12 @@
 
         var i = $scope.findAnnoItem(selected[0].parentNode.id);
         var item = $scope.annoItems[i];
-        item.LeftPos = rectsvg.left + (svgPadding * 2);
-        item.TopPos = rectsvg.top + (svgPadding * 2);;
-        item.WidthPos = rectsvg.width - pad;
-        item.HeightPos = rectsvg.height - pad;
+        item.LeftPosition = rectsvg.left + (svgPadding * 2);
+        item.TopPosition = rectsvg.top + (svgPadding * 2);;
+        item.WidthPosition = rectsvg.width - pad;
+        item.HeightPosition = rectsvg.height - pad;
 
-        $scope.debugText = "L:" + item.LeftPos + " T:" + item.TopPos + " W:" + item.WidthPos + " H:" + item.HeightPos;
+        $scope.debugText = "L:" + item.LeftPosition + " T:" + item.TopPosition + " W:" + item.WidthPosition + " H:" + item.HeightPosition;
     }
 
     var delKeyDown = function(e)
@@ -1098,12 +1098,12 @@
 
     var itemArrange = function (dataIdx) {
         var item = $scope.annoItems[dataIdx];
-        if (item.WidthPos != null)
-            $('#' + svgElement.id).css({ "width": item.WidthPos + 'px' })
-        if (item.HeightPos != null)
-            $('#' + svgElement.id).css({ "height": item.HeightPos + 'px' });
-        $('#' + svgElement.id).css({ 'top': item.TopPos + 'px' });
-        $('#' + svgElement.id).css({ 'left': item.LeftPos + 'px' });
+        if (item.WidthPosition != null)
+            $('#' + svgElement.id).css({ "width": item.WidthPosition + 'px' })
+        if (item.HeightPosition != null)
+            $('#' + svgElement.id).css({ "height": item.HeightPosition + 'px' });
+        $('#' + svgElement.id).css({ 'top': item.TopPosition + 'px' });
+        $('#' + svgElement.id).css({ 'left': item.LeftPosition + 'px' });
     }
     var signatureArrange = function (theClass, offsetX, offsetY) {
         var field = $('#' + svgElement.id).find('.' + theClass);
@@ -1159,8 +1159,8 @@
         var item = angular.copy(annoItem);
         item.Page = page;
         item.AnnotateType = annotationType.SIGNATURE;
-        item.TopPos = out.y;
-        item.LeftPos = out.x;
+        item.TopPosition = out.y;
+        item.LeftPosition = out.x;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1175,8 +1175,8 @@
         var item = angular.copy(annoItem);
         item.Page = page;
         item.AnnotateType = annotationType.INITIAL;
-        item.TopPos = out.y;
-        item.LeftPos = out.x;
+        item.TopPosition = out.y;
+        item.LeftPosition = out.x;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1191,8 +1191,8 @@
         var item = angular.copy(annoItem);
         item.Page = page;
         item.AnnotateType = annotationType.PRIVATESTAMP;
-        item.TopPos = out.y;
-        item.LeftPos = out.x;
+        item.TopPosition = out.y;
+        item.LeftPosition = out.x;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1207,8 +1207,8 @@
         var item = angular.copy(annoItem);
         item.Page = page;
         item.AnnotateType = annotationType.STAMP;
-        item.TopPos = out.y;
-        item.LeftPos = out.x;
+        item.TopPosition = out.y;
+        item.LeftPosition = out.x;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1223,8 +1223,8 @@
         var item = angular.copy(annoItem);
         item.Page = page;
         item.AnnotateType = annotationType.TEXT;
-        item.TopPos = out.y;
-        item.LeftPos = out.x;
+        item.TopPosition = out.y;
+        item.LeftPosition = out.x;
         item.Data = defaultText;
         item.ScaleX = 1;
         item.ScaleY = 1;
@@ -1487,10 +1487,10 @@
             var item = angular.copy(annoItem);
             item.Page = tmpPenAnnoItem.Page;
             item.AnnotateType = annotationType.PEN;
-            item.TopPos = t;
-            item.LeftPos = l;
-            item.WidthPos = w;
-            item.HeightPos = h;
+            item.TopPosition = t;
+            item.LeftPosition = l;
+            item.WidthPosition = w;
+            item.HeightPosition = h;
             item.Color = tmpPenAnnoItem.Color;
             item.BackColor = tmpPenAnnoItem.BackColor;
             item.Data = newd;
@@ -1772,7 +1772,7 @@
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.AnnotateId = id;
+        item.ElementId = id;
         item.Annotate.Number = number;
         item.Annotate.Name = name;
         item.Annotate.Foto = imageProfile;
@@ -1867,7 +1867,7 @@
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.AnnotateId = id;
+        item.ElementId = id;
         item.Annotate.Name = descr;
         item.Annotate.Foto = stampFile;
 

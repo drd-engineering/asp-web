@@ -3,12 +3,8 @@
     ViewBag.Title = "Problem";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
     <body>
-
-
         <!--- middle Container ---->
-
         <div class="middle-container" ng-controller="drdController">
             <div class="paddings thankyou-section" data-moduleid="2050" id="ContactUsPane">
                 @if (Model.errorInfo != null)
@@ -29,12 +25,9 @@
         </div>
         <!--- middle Container ---->
         <Script type="text/javascript">
-
-
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
             myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-
                 /*--------------------------------------------------------------
                 INIT DATA
                 --------------------------------------------------------------*/

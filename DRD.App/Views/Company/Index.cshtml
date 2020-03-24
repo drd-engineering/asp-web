@@ -102,7 +102,7 @@
                                                     <label class="control-label">Administrator</label>
                                                     <p>administrator can manage members and edit company profile</p>
                                                     <div class="input-group" ng-click="showAdmins($index)" style="cursor:pointer">
-                                                        <input type="text" class="form-control" readonly ng-model="adminsString[$index]" />
+                                                        <input type="text" class="form-control" readonly value="{{adminsString[$index][0]}}"/>
                                                         <span class="input-group-addon" data-toggle="modal" data-target="#modal_manage_admin"><i class="icon-users"></i></span>
                                                     </div>
                                                 </div>
@@ -202,7 +202,7 @@
                             <div class="modal-content">
                                 <div class="modal-header" style="background:black; color:white;padding:10px;">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h6 class="modal-title">Select Location</h6>
+                                    <h6 class="modal-title">Change Admin</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-5">
@@ -219,11 +219,11 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 @*<input  class='btn btn-sm' id='btnRight' value='  >  ' />*@
-                                                <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='  >  ' />
+                                                <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='>' style="border:1px solid black;"/>
                                             </div>
                                             <div class="col-md-12">
                                                 @*<input class='btn btn-sm' id='btnLeft' value='  <  ' />*@
-                                                <input ng-click="makeMember(selectedAdmins)" class='btn btn-sm' id='btnLeft' value='  <  ' />
+                                                <input ng-click="makeMember(selectedAdmins)" class='btn btn-sm' id='btnLeft' value='<' style="border:1px solid black;"/>
                                             </div>
                                         </div>
                                     </div>
@@ -240,7 +240,8 @@
                                 </div>
                                 <div class="modal-footer" style="margin-top:15px">
                                     <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
+                                    <button type="button" class="btn btn-ladda " data-dismiss="modal"
+                                            style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setAdmin()">Set</button>
                                 </div>
                             </div>
                         </div>
@@ -398,7 +399,6 @@
                                         });
                                     $scope.adminsString[index].push(tempString);
                             });
-                            
                         }
                 });
             }
@@ -431,7 +431,7 @@
                 var i = $scope.findMember(tempMember, $scope.membersList);
                 if ( i != -1) {
                     $scope.administratorsList.push(tempMember);
-                    $scope.membersList.splice(i, 1); 
+                    $scope.membersList.splice(i, 1);
                 }
                 $scope.selectedMembers = [];
             }
@@ -724,11 +724,44 @@
             }
 
             $scope.setAdmin = function () {
-                console.log(adminsManage.getSelectedItems());
-                angular.element('#modal_manage_admin').modal('hide');
+                $http.post('@Url.Action("BecomeAdmin", "Member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, adminCandidate: $scope.administratorsList })
+                    .then(function (response) {
+                        if (response.data) {
+                            $scope.administratorsList = response.data.members;
+                            $scope.setMember();
+                            $scope.setAdminsString();
+                            console.log($scope.adminsString);
+                        }
+                        else {
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Failed change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                });
             }
-
-
+            $scope.setMember = function () {
+                $http.post('@Url.Action("BecomeMember", "Member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, memberCandidate: $scope.membersList })
+                    .then(function (response) {
+                        if (response.data) {
+                            $scope.memberList = response.data.members;
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Success change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                        else {
+                            angular.element('#modal_manage_admin').modal('hide');
+                            showInfo("Failed change administrator in " + $scope.CompanyList[$scope.companyIndex].Name);
+                        }
+                });
+            }
+            $scope.setAdminsString = function () {
+                $scope.adminsString[$scope.companyIndex].splice(0, 1);
+                var tempString = "";
+                $scope.administratorsList.forEach(
+                    function (value, index, array) {
+                        tempString += index == 0 ? value.User.Name : (", " + value.User.Name);
+                    }
+                );
+                $scope.adminsString[$scope.companyIndex].push(tempString);
+            }
 
         });
 

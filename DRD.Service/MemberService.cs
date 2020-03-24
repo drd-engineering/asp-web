@@ -273,5 +273,72 @@ namespace DRD.Service
                 return returnValue;
             }
         }
+        public MemberList BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
+        {
+            MemberList data = new MemberList();
+            using (var db = new ServiceContext())
+            {
+                foreach (MemberItem x in adminCandidate)
+                {
+                    Member candidate = db.Members.FirstOrDefault(item => item.Id == x.Id && !item.IsAdministrator && item.IsActive && x.CompanyId == companyId);
+                    if (candidate != null)
+                    {
+                        candidate.IsAdministrator = true;
+                        db.SaveChanges();
+                        var memberItem = new MemberItem();
+                        memberItem.Id = candidate.Id;
+                        memberItem.CompanyId = candidate.CompanyId;
+                        memberItem.UserId = candidate.UserId;
+                        memberItem.IsActive = candidate.IsActive;
+                        memberItem.IsAdministrator = candidate.IsAdministrator;
+                        memberItem.isCompanyAccept = candidate.isCompanyAccept;
+                        memberItem.isMemberAccept = candidate.isMemberAccept;
+                        memberItem.JoinedAt = candidate.JoinedAt;
+                        memberItem.User = x.User;
+                        memberItem.Company = x.Company;
+                        data.addMember(memberItem);
+                    }
+                    else
+                    {
+                        data.addMember(x);
+                    }
+                }
+            }
+            return data;
+        }
+
+        public MemberList BecomeMember(long companyId, ICollection<MemberItem> memberCandidate)
+        {
+            MemberList data = new MemberList();
+            using (var db = new ServiceContext())
+            {
+                foreach (MemberItem x in memberCandidate)
+                {
+                    Member candidate = db.Members.FirstOrDefault(item => item.Id == x.Id && item.IsAdministrator && item.IsActive && x.CompanyId == companyId);
+                    if (candidate != null)
+                    {
+                        candidate.IsAdministrator = false;
+                        db.SaveChanges();
+                        var memberItem = new MemberItem();
+                        memberItem.Id = candidate.Id;
+                        memberItem.CompanyId = candidate.CompanyId;
+                        memberItem.UserId = candidate.UserId;
+                        memberItem.IsActive = candidate.IsActive;
+                        memberItem.IsAdministrator = candidate.IsAdministrator;
+                        memberItem.isCompanyAccept = candidate.isCompanyAccept;
+                        memberItem.isMemberAccept = candidate.isMemberAccept;
+                        memberItem.JoinedAt = candidate.JoinedAt;
+                        memberItem.User = x.User;
+                        memberItem.Company = x.Company;
+                        data.addMember(memberItem);
+                    }
+                    else
+                    {
+                        data.addMember(x);
+                    }
+                }
+            }
+            return data;
+        }
     }
 }

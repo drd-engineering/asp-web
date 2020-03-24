@@ -178,7 +178,7 @@
                                             <div class="col-md-3 vertically-center">
                                                 <div class="image-wrapper">
 
-                                                    <img ng-src="/Images/member/{{model.ImageProfile}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageProfile}}" class="image-content"
                                                          ngf-drop="uploadFiles(0,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(0,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -224,7 +224,7 @@
                                             <div class="col-md-3">
                                                 <label class="control-label">KTP</label>
                                                 <div class="image-wrapper">
-                                                    <img ng-src="/Images/member/{{model.ImageKtp1}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageKtp1}}" class="image-content"
                                                          ngf-drop="uploadFiles(4,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(4,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -237,7 +237,7 @@
                                                 <label class="control-label">KTP Pose</label>
                                                 <div class="image-wrapper">
 
-                                                    <img ng-src="/Images/member/{{model.ImageKtp2}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageKtp2}}" class="image-content"
                                                          ngf-drop="uploadFiles(5,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(5,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -258,7 +258,7 @@
                                                 <span class="pull-right"><a ng-click="signaturePad(0)"><i class="icon-pencil7"></i></a></span>
 
                                                 <div class="image-wrapper">
-                                                    <img ng-src="/Images/member/{{model.ImageSignature}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageSignature}}" class="image-content"
                                                          ngf-drop="uploadFiles(1,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(1,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -274,7 +274,7 @@
                                                 <label class="control-label">Initial</label>
                                                 <span class="pull-right"><a ng-click="signaturePad(1)"><i class="icon-pencil7"></i></a></span>
                                                 <div class="image-wrapper">
-                                                    <img ng-src="/Images/member/{{model.ImageInitials}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageInitials}}" class="image-content"
                                                          ngf-drop="uploadFiles(2,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(2,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -289,7 +289,7 @@
                                                 <label class="control-label">Private Stamp</label>
                                                 <div class="image-wrapper">
 
-                                                    <img ng-src="/Images/member/{{model.ImageStamp}}" class="image-content"
+                                                    <img ng-src="/Images/Member/{{model.ImageStamp}}" class="image-content"
                                                          ngf-drop="uploadFiles(3,$file, $invalidFiles)"
                                                          ngf-select="uploadFiles(3,$file, $invalidFiles)"
                                                          ngf-pattern="'image/*'"
@@ -618,7 +618,7 @@
                                 showError("Email "+$scope.model.Email+" has been used by other users. Please use another email.");
                                 return;
                             }
-                            $scope.infoSuccess+="<br/>Registration number <b>"+response.data+"</b>, this number is used to log in.";
+                            $scope.infoSuccess+="<br/>Success update User info";
                             $scope.infoSuccess=$sce.trustAsHtml($scope.infoSuccess);
                             $scope.wizarno = 'success';
                         }
@@ -702,4 +702,3 @@
     </script>
 
 </body>
-

@@ -146,6 +146,99 @@
                 </div>
             </section>
 
+            <section id="dashboard-rotation-status">
+                <div class="panel highlight-container">
+                    <div class="highlight-card">
+                        <!-- HEADER -->
+                        <div class="highlight-header">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="control-label">Tags Filter</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <form>
+                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 188 || $event.keyCode == 13) && addTagList()" />
+                                            <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="tag-item" ng-repeat="tag in tags">
+                                            {{tag}}
+                                            <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
+                                                <img src="~/Images/icon/reject.png" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row vertical-align-row">
+                                    <div class="col-md-1">
+                                        <button class="image-container-sm" ng-click="exportRotationListToCSV()">
+                                            <span class="tooltiptext">export as csv</span>
+                                            <img src="~/Images/icon/export-csv.png"/>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <p class="card-title"><strong>Rotation Status</strong></p>
+                                    </div>
+                                    <div class="col-md-4 push-left">
+                                        <!-- SELECT -->
+                                        <select class="card-filter select-lg">
+                                            <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="card-content">
+                            <!-- each rotation status -->
+                            <div class="container">
+                                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 14%">Workflow Name</th>
+                                            <th style="width: 14%">Name</th>
+                                            <th style="width: 7%">Status</th>
+                                            <th style="width: 7%">Created</th>
+                                            <th style="width: 7%">Updated</th>
+                                            <th style="width: 44%">Position Now</th>
+                                            <th style="width: 7%">Send Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in listrotationStatus">
+                                            <td>{{x.Workflow.Name}}</td>
+                                            <td>{{x.Subject}}</td>
+                                            <td>{{x.Status}}</td>
+                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                            <td>
+                                                <span ng-repeat="usr in x.RotationUsers"><img src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                            </td>
+                                            <td><button ng-click="sendEmailNotifikasiRotasi($index)">Notify Latest Person</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination-container">
+                                <div class="pagination">
+                                    <a ng-click="backRotationStat()">&laquo;</a>
+                                    <a href="#" class="active">{{ pagerotationstatus }}</a>
+                                    <a ng-click="nextRotationStat()">&raquo;</a>
+                                </div>
+                                <p class="pagination-info">{{ pagerotationstatus }}</p>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
             <section id="dashboard-log">
 
                 <div class="panel highlight-container">
@@ -154,7 +247,7 @@
                         <div class="highlight-header">
                             <div class="container">
                                 <div class="row vertical-align-row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <p class="card-title"><strong>LOG</strong></p>
                                     </div>
                                     <div class="col-md-4 push-left">
@@ -286,8 +379,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
 
                             <div class="log container">
@@ -355,8 +446,6 @@
                 </div>
 
             </section>
-
-            <!-- <button ng-click="sendEmail()">SEND EMAIL</button> -->
         </div>
 
         <script>
@@ -383,9 +472,6 @@
                 type: 'pie',
                 data: data
             });
-
-
-
             var ctxs = document.getElementById('otherPie');
             var datas = {
                 datasets: [{
@@ -427,6 +513,15 @@
             $scope.index = 0;
             initValues();
             $scope.dashboard = {};
+            
+            $scope.tags = [];
+            $scope.newTag = "";
+            $scope.listrotationStatus = [];
+            $scope.pagerotationstatus = 1;
+            $scope.pagesizerotationstatus = 10;
+
+            $scope.companySelected = {};
+
             $scope.counter = {
                 Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
                 New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
@@ -450,8 +545,8 @@
             angular.element(document).ready(function () {
                 $scope.getCompanyOwned();
                 $scope.getActivityCounter();
+                $scope.getDashboardRotationStatus();
                 $("#content").show();
-
             });
             $scope.getActivityCounter = function () {
                 $scope.products = [];
@@ -551,7 +646,151 @@
                     var x = 0;
                 });
             }
+            $scope.getCompanyOwned = function () {
+                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                    console.log("run");
+                    if (response.data) {
+                        $scope.companyOwned = response.data.companies;
+                        console.log($scope.companyOwned);
+                    }
+                })
+            }
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
+            /*--------------------------------------------------------------
+            TAGGING SYSTEM FILTER
+            --------------------------------------------------------------*/
+            $scope.addTagList = function () {
+                $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                var alreadyUsed = false;
+                $scope.tags.some(function (element, i) {
+                    if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        alreadyUsed = true;
+                        return;
+                    }
+                })
+                if (!alreadyUsed) {
+                    $scope.tags.push($scope.newTag);
+                }
+                $scope.newTag = "";
+                $scope.getDashboardRotationStatus();
+            }
+            $scope.removeTag = function (index) {
+                $scope.tags.splice(index, 1);
+            }
+            /*--------------------------------------------------------------
+            Dashboard Rotation Status
+            --------------------------------------------------------------*/
+            $scope.getDashboardRotationStatus = function () {
+                console.log($scope.companyOwned[$scope.companySelected]);
+                $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
+                    { companyId: -1, Tags: $scope.tags, page: $scope.pagerotationstatus, pageSize: $scope.pagesizerotationstatus }
+                ).then(function (response) {
+                    if (response.data) {
+                        $scope.listrotationStatus = response.data;
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }, function (response) {
+                    //error handle\
+                        var x = 0;
+                        return false;
+                });
+            }
+            $scope.backRotationStat = function () {
+                $scope.pagerotationstatus -= 1;
+                if (!$scope.getDashboardRotationStatus()) {
+                    $scope.pagerotationstatus += 1;
+                    window.alert("This is the first page");
+                }
+            }
+            $scope.nextRotationStat = function () {
+                $scope.pagerotationstatus += 1;
+                if (!$scope.getDashboardRotationStatus()) {
+                    $scope.pagerotationstatus -= 1;
+                    window.alert("This is the last page");
+                }
+            }
+            /*--------------------------------------------------------------
+            CSV Handling
+            --------------------------------------------------------------*/
+            $scope.convertToCSV = function (objArray) {
+                var array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+                var str = '';
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        if (line != '') {line += ',';}
+                        if (typeof array[i][index] === 'object') {
+                            var penggantiobj = array[i][index];
+                            for (var index2 in penggantiobj) {
+                                line += penggantiobj[index2];
+                            }
+                        } else {
+                            line += array[i][index];
+                        }
+                    }
+                    str += line + '\r\n';
+                }
+                return str;
+            }
+            $scope.exportCSVFile = function (headers, items, fileTitle) {
+                if (headers) {
+                    items.unshift(headers);
+                }
 
+                // Convert Object to JSON
+                var jsonObject = JSON.stringify(items);
+
+                var csv = $scope.convertToCSV(jsonObject);
+
+                var exportedFilename = fileTitle + '.csv' || 'export.csv';
+
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                if (navigator.msSaveBlob) { // IE 10+
+                    navigator.msSaveBlob(blob, exportedFilename);
+                } else {
+                    var link = document.createElement("a");
+                    if (link.download !== undefined) { // feature detection
+                        // Browsers that support HTML5 download attribute
+                        var url = URL.createObjectURL(blob);
+                        link.setAttribute("href", url);
+                        link.setAttribute("download", exportedFilename);
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                }
+            }
+            $scope.exportRotationListToCSV = function () {
+                var filename = $scope.tags.toString() + $scope.companySelected.Name;
+                $scope.exportCSVFile(null, $scope.listrotationStatus, filename);
+            }
+
+            
+            $scope.sendEmailNotifikasiRotasi = function (index) {
+
+                $http.post('@Url.Action("sendEmailNotifikasiRotasi","Dashboard")', {}).then(function (response) {
+                    if (response.data) {
+                        console.log('send email success')
+                    } else {
+                        console.log('Filed send email')
+                    }
+                }, function (response) {
+                    console.log("error send email")
+                });
+            }
+
+            // belum dipake gue rasa
             $scope.linkPage = function (name) {
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:name})[0].UrlPage;
                 location.href=url;
@@ -574,46 +813,10 @@
                     var x = 0;
                 });
             }
-             // $scope.sendEmail = function () {
-            //     $http.post('@Url.Action("SendEmail","Dashboard")', {}).then(function (response) {
-            //         if (response.data) {
-            //             console.log('send email success')
-            //         } else {
-            //             console.log('Filed send email')
-            //         }
-            //     }, function (response) {
-            //         console.log("error send email")
-            //     });
-            // }
-            $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
-                    console.log("run");
-                    if (response.data) {
-                        $scope.companyOwned = response.data.companies;
-                        console.log($scope.companyOwned);
-                    }
-                })
-            }
+            
             /*--------------------------------------------------------------
             GENERAL FUNCTION
             --------------------------------------------------------------*/
-            /*--------------------------------------------------------------
-            CONVERT JSON DATE
-            --------------------------------------------------------------*/
-            $scope.convertJsonDate = function (val) {
-                if (val == undefined)
-                    return '';
-                return new Date(parseInt(val.substr(6)));
-            }
-            $scope.sendEmail = function () {
-                $http.post('@Url.Action("Sendemail", "dashboard")', {  }).then(function (response) {
-                    if (response.data) {
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
         });
         $(function () {
         });

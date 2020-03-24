@@ -249,7 +249,7 @@
             $scope.infoSuccess="Data berhasil disimpan.";
 
             $scope.currentRotationNode = {};
-            $scope.tempDoc = "";
+            $scope.tempDoc = {};
             $scope.docs=[];
             $scope.updocs=[];
             $scope.annos=[];
@@ -285,6 +285,8 @@
                 var product = @Html.Raw(Json.Encode(Model.obj));
 
                 if (product.id!=0) {
+                    console.log("INBOX", product);
+                    console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId=product.RotationNodeId;
@@ -359,10 +361,10 @@
                         item.SvgId='svg'+i;
                         item.Page=ix.Page;
                         item.AnnotateType=ix.AnnotateTypeId;
-                        item.LeftPos=ix.LeftPos;
-                        item.TopPos=ix.TopPos;
-                        item.WidthPos=ix.WidthPos;
-                        item.HeightPos=ix.HeightPos;
+                        item.LeftPosition=ix.LeftPosition;
+                        item.TopPosition=ix.TopPosition;
+                        item.WidthPosition=ix.WidthPosition;
+                        item.HeightPosition=ix.HeightPosition;
                         item.Color=ix.Color;
                         item.BackColor=ix.BackColor;
                         item.Data=ix.Data;
@@ -370,8 +372,8 @@
                         item.Rotation=ix.Rotation;
                         item.ScaleX=ix.ScaleX;
                         item.ScaleY=ix.ScaleY;
-                        item.TransX=ix.TransX;
-                        item.TransY=ix.TransY;
+                        item.TransitionX=ix.TransitionX;
+                        item.TransitionY=ix.TransitionY;
                         item.StrokeWidth=ix.StrokeWidth;
                         item.Opacity=ix.Opacity;
                         item.Flag=ix.Flag;
@@ -379,7 +381,7 @@
                         item.FlagDate=convertJsonDate(ix.FlagDate);
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.AnnotateId=ix.AnnotateId;
+                        item.ElementId=ix.ElementId;
                         item.Annotate=ix.Annotate;
                         $scope.annos.push(item);
                     }
@@ -503,10 +505,10 @@
                     item.SvgId='svg'+i;
                     item.Page=ix.Page;
                     item.AnnotateType=(ix.AnnotateTypeId==undefined?ix.AnnotateType:ix.AnnotateTypeId);
-                    item.LeftPos=ix.LeftPos;
-                    item.TopPos=ix.TopPos;
-                    item.WidthPos=ix.WidthPos;
-                    item.HeightPos=ix.HeightPos;
+                    item.LeftPosition=ix.LeftPosition;
+                    item.TopPosition=ix.TopPosition;
+                    item.WidthPosition=ix.WidthPosition;
+                    item.HeightPosition=ix.HeightPosition;
                     item.Color=ix.Color;
                     item.BackColor=ix.BackColor;
                     item.Data=ix.Data;
@@ -514,8 +516,8 @@
                     item.Rotation=ix.Rotation;
                     item.ScaleX=ix.ScaleX;
                     item.ScaleY=ix.ScaleY;
-                    item.TransX=ix.TransX;
-                    item.TransY=ix.TransY;
+                    item.TransitionX=ix.TransitionX;
+                    item.TransitionY=ix.TransitionY;
                     item.StrokeWidth=ix.StrokeWidth;
                     item.Opacity=ix.Opacity;
                     item.Flag=ix.Flag;
@@ -523,7 +525,7 @@
                     item.FlagDate = convertJsonDate(ix.FlagDate);
                     item.FlagImage=ix.FlagImage;
                     item.CreatorId=ix.CreatorId;
-                    item.AnnotateId=ix.AnnotateId;
+                    item.ElementId=ix.ElementId;
                     item.Annotate=ix.Annotate;
                     item.IsDeleted=ix.IsDeleted;
                     $scope.annos.push(item);
@@ -602,7 +604,7 @@
                 for(i=0;i<doc.Document.DocumentAnnotates.length;i++){
                     var anno=doc.Document.DocumentAnnotates[i];
 
-                    if (anno.AnnotateId==null || anno.AnnotateId!= $scope.curentUser.Id || anno.IsDeleted)
+                    if (anno.ElementId==null || anno.ElementId!= $scope.curentUser.Id || anno.IsDeleted)
                         continue;
 
                     if (anno.AnnotateType==4 || anno.AnnotateType==5)
@@ -719,10 +721,10 @@
                         item.SvgId='svg'+i;
                         item.Page=ix.Page;
                         item.AnnotateType=ix.AnnotateTypeId;
-                        item.LeftPos=ix.LeftPos;
-                        item.TopPos=ix.TopPos;
-                        item.WidthPos=ix.WidthPos;
-                        item.HeightPos=ix.HeightPos;
+                        item.LeftPosition=ix.LeftPosition;
+                        item.TopPosition=ix.TopPosition;
+                        item.WidthPosition=ix.WidthPosition;
+                        item.HeightPosition=ix.HeightPosition;
                         item.Color=ix.Color;
                         item.BackColor=ix.BackColor;
                         item.Data=ix.Data;
@@ -730,8 +732,8 @@
                         item.Rotation=ix.Rotation;
                         item.ScaleX=ix.ScaleX;
                         item.ScaleY=ix.ScaleY;
-                        item.TransX=ix.TransX;
-                        item.TransY=ix.TransY;
+                        item.TransitionX=ix.TransitionX;
+                        item.TransitionY=ix.TransitionY;
                         item.StrokeWidth=ix.StrokeWidth;
                         item.Opacity=ix.Opacity;
                         item.Flag=ix.Flag;
@@ -739,7 +741,7 @@
                         item.FlagDate = convertJsonDate(ix.FlagDate);
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.AnnotateId=ix.AnnotateId;
+                        item.ElementId=ix.ElementId;
                         item.Annotate=ix.Annotate;
                         $scope.annos.push(item);
                     }
@@ -814,10 +816,10 @@
                         var item={};
                         item.Page=ix.Page;
                         item.AnnotateTypeId=(ix.AnnotateTypeId==undefined?ix.AnnotateType:ix.AnnotateTypeId);
-                        item.LeftPos=ix.LeftPos;
-                        item.TopPos=ix.TopPos;
-                        item.WidthPos=ix.WidthPos;
-                        item.HeightPos=ix.HeightPos;
+                        item.LeftPosition=ix.LeftPosition;
+                        item.TopPosition=ix.TopPosition;
+                        item.WidthPosition=ix.WidthPosition;
+                        item.HeightPosition=ix.HeightPosition;
                         item.Color=ix.Color;
                         item.BackColor=ix.BackColor;
                         item.Data=ix.Data;
@@ -825,8 +827,8 @@
                         item.Rotation=ix.Rotation;
                         item.ScaleX=ix.ScaleX;
                         item.ScaleY=ix.ScaleY;
-                        item.TransX=ix.TransX;
-                        item.TransY=ix.TransY;
+                        item.TransitionX=ix.TransitionX;
+                        item.TransitionY=ix.TransitionY;
                         item.StrokeWidth=ix.StrokeWidth;
                         item.Opacity=ix.Opacity;
                         item.Flag=ix.Flag;
@@ -834,7 +836,7 @@
                         item.FlagDate=ix.FlagDate;
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.AnnotateId=ix.AnnotateId;
+                        item.ElementId=ix.ElementId;
                         annos.push(item);
                     }
                     doc.Document.DocumentAnnotates = annos;
@@ -1142,7 +1144,7 @@
                 if (file) {
                     $scope.docFileName = file.name;
                     $scope.model.FileUrl = file.name;
-                    $scope.model.FileSize = $scope.humanFileSize(file.size,true);
+                    $scope.model.FileSize = $scope.humanFileSize(file.size, true);
                     //var obUrl = URL.createObjectURL(file);
                     //document.getElementById('audio').setAttribute('src', obUrl);
 
@@ -1157,24 +1159,32 @@
                         if (file.result.idx==-2){
                             show +
                                 Info("Invalid plan Used.");
-                            $scope.progressValueUploadFile="Failed";
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
                         }else if (file.result.idx==-4){
                             showInfo("Document quota is insufficient.");
-                            $scope.progressValueUploadFile="Failed";
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
                         } else {
-                            var doc = {};
-                            doc.Document = {};
-                            doc.Document.FileName = file.result.filename;
-                            doc.FlagAction=0;
-                            doc.Document.FileNameOri=file.result.filenameori;
-                            doc.Document.ExtFile=file.result.fileext;
-                            $scope.tempDoc = doc;
-                            $scope.model.FileName= file.result.filename;
-                            $scope.model.ExtFile = file.result.fileext;
-                            $scope.model.FileNameOri = file.result.filenameori;
-                            $scope.fileTypeImage=$scope.model.ExtFile+".png";
-                            $scope.progressValueUploadFile="Upload success";
-                            isdefineiframe = false;
+                            if (file.result) {
+                                $scope.model.FileName= file.result.filename;
+                                $scope.model.ExtFile = file.result.fileext;
+                                $scope.model.FileNameOri = file.result.filenameori;
+                                $scope.fileTypeImage=$scope.model.ExtFile+".png";
+                                $scope.progressValueUploadFile="Upload success";
+                                isdefineiframe = false;
+                                var doc = {};
+                                doc.Document = {};
+                                doc.Document.FileName = file.result.filename;
+                                doc.FlagAction = $scope.model.FlagAction;
+                                doc.Document.FileNameOri=file.result.filenameori;
+                                doc.Document.ExtFile=file.result.fileext;
+                                $scope.tempDoc = doc;
+                                $scope.isUpload = 1;
+                                document.querySelector('.submit-document').disabled = false;
+                            }
                         }
                         //});
                     }, function (response) {
@@ -1183,17 +1193,13 @@
                         }
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-
                             if (file.progress >= 100) {
                                 $scope.progressValueUploadFile = "Upload success";
                                 ////$scope.podcastImage="podcast_uploaded.png";
-                                $scope.isUpload = 1;
                                 isdefineiframe = false;
                             } else {
-                                $scope.isUpload = 0;
                                 $scope.progressValueUploadFile = "Uploading...(" + file.progress + "%)";
                             }
-
                     });
                 } else if ($scope.errFile != null) {
                     showError("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
@@ -1218,10 +1224,10 @@
                     item.Id=ix.Id;
                     item.Page=ix.Page;
                     item.AnnotateTypeId=ix.AnnotateType;
-                    item.LeftPos=ix.LeftPos;
-                    item.TopPos=ix.TopPos;
-                    item.WidthPos=ix.WidthPos;
-                    item.HeightPos=ix.HeightPos;
+                    item.LeftPosition=ix.LeftPosition;
+                    item.TopPosition=ix.TopPosition;
+                    item.WidthPosition=ix.WidthPosition;
+                    item.HeightPosition=ix.HeightPosition;
                     item.Color=ix.Color;
                     item.BackColor=ix.BackColor;
                     item.Data=ix.Data;
@@ -1229,8 +1235,8 @@
                     item.Rotation=ix.Rotation;
                     item.ScaleX=ix.ScaleX;
                     item.ScaleY=ix.ScaleY;
-                    item.TransX=ix.TransX;
-                    item.TransY=ix.TransY;
+                    item.TransitionX=ix.TransitionX;
+                    item.TransitionY=ix.TransitionY;
                     item.StrokeWidth=ix.StrokeWidth;
                     item.Opacity=ix.Opacity;
                     item.Flag=ix.Flag;
@@ -1238,7 +1244,7 @@
                     item.FlagDate = ix.FlagDate;
                     item.FlagImage = ix.FlagImage;
                     item.CreatorId=ix.CreatorId;
-                    item.AnnotateId=ix.AnnotateId;
+                    item.ElementId=ix.ElementId;
                     $scope.annos.push(item);
                 }
                 $scope.saveProduct();
@@ -1248,20 +1254,24 @@
                 var isvalid = theForm.$valid;
                 return isvalid;
             };
+            $scope.resetFileUploadDetails = function () {
+                $scope.f = $scope.finit;
+                $scope.docFileName = "";
+                $scope.model.FileUrl = "";
+                $scope.model.FileSize = "";
+                $scope.model.FileName = "";
+                $scope.model.ExtFile = "";
+                $scope.model.FileNameOri = "";
+                $scope.fileTypeImage = "no_document.png";
+                $scope.progressValueUploadFile = "";
+                var doc = {};
+                $scope.tempDoc = doc;
+                $scope.isUpload = 0;
+                document.querySelector('.submit-document').disabled = true;
+            }
 
             $scope.saveProduct = function () {
-                //for(i=0;i<$scope.users.length;i++){
-                //    var bit=1;
-                //    var flag=0;
-                //    for(x=1;x<8;x++){
-                //        var cb= $('#checkboxmt'+$scope.users[i].MemberId+""+bit)[0];
-                //        if (cb.checked)
-                //            flag+=bit;
-                //        bit+=bit;
-                //    }
-                //    $scope.users[i].FlagPermission=flag;
-                //}
-                var btn = Ladda.create(document.querySelector('.btn-submit'));
+                var btn = Ladda.create(document.querySelector('.submit-document'));
                 btn.start();
                 console.log("TRY TO SAVE DOCUMENT");
                 $http.post('@Url.Action("Save", "document")',
@@ -1286,14 +1296,11 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.f = $scope.finit;
-                            $scope.progressValueUploadFile = "";
-                            $scope.isUpload = 0;
-                            $("#modal_select_document").modal('hide');
-                            showInfo("Success store document");
                             $scope.tempDoc.Document.DocumentId = response.data;
                             $scope.docs.push($scope.tempDoc);
-                            console.log($scope.docs);
+                            $scope.resetFileUploadDetails();
+                            $("#modal_select_document").modal('hide');
+                            showInfo("Success store document");
                         }
                     }, function (response) {
                         //error handle\
@@ -1337,13 +1344,14 @@
                 isdefineiframe=true;
                 //}
                 $("#modal_pdf_viewer").modal("show");
-                // $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
+                $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
             }
 
             var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                $scope.annos=items;
+                $scope.annos = items;
+                console.log($scope.annos);
             }
 
 

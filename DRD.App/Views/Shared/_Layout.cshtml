@@ -1,6 +1,6 @@
 ﻿@model DRD.Models.View.Layout
 @{
-    
+
 }
     <head>
         <meta charset="utf-8" />
@@ -81,8 +81,8 @@
                             </li>*@ -->
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="~/Images/Member/@Model.user.EncryptedId/@Model.user.ImageProfile" alt="" />
-                                    <!-- <span> @Model.user.Name </span> -->
+                                    <img src="@(Model.user.ImageProfile!=null ? "/Images/Member/"+Model.user.EncryptedId+"/"+Model.user.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
+                                    <span> @Model.user.Name </span>
                                     <i class="caret"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
@@ -148,10 +148,6 @@
                         <div class="content">
                             @RenderBody()
                         </div>
-
-
-
-
                         <!-- /content area -->
                     </div>
                     <!-- /main content -->

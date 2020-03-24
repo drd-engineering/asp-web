@@ -11,10 +11,10 @@ namespace DRD.Models
         [Key]
         public long Id { get; set; } // Id (Primary key)
         public int Page { get; set; } // Page
-        public double? LeftPosition { get; set; } // LeftPos
-        public double? TopPosition { get; set; } // TopPos
-        public double? WidthPosition { get; set; } // WidthPos
-        public double? HeightPosition { get; set; } // HeightPos
+        public double? LeftPosition { get; set; } // LeftPosition
+        public double? TopPosition { get; set; } // TopPosition
+        public double? WidthPosition { get; set; } // WidthPosition
+        public double? HeightPosition { get; set; } // HeightPosition
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
         public string Data { get; set; } // Data
@@ -22,12 +22,12 @@ namespace DRD.Models
         public int Rotation { get; set; } // Rotation
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
-        public double TransitionX { get; set; } // TransX
-        public double TransitionY { get; set; } // TransY
+        public double TransitionX { get; set; } // TransitionX
+        public double TransitionY { get; set; } // TransitionY
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
-        public long? ElementId { get; set; } // AnnotateId
+        public long? ElementId { get; set; } // ElementId
         public int Flag { get; set; } // Flag
         public string FlagCode { get; set; } // FlagCode (length: 20)
         public System.DateTime? FlagDate { get; set; } // FlagDate
@@ -38,9 +38,6 @@ namespace DRD.Models
         public long DocumentId {set; get;}
         public int ElementTypeId { set; get; }
 
-        // Foreign keys
-        [ForeignKey("ElementTypeId")]
-        public virtual ElementType ElementType { get; set; } // FK_DocumentAnnotate_AnnotateType
         [ForeignKey("DocumentId")]
         public virtual Document Document { get; set; } // FK_DocumentAnnotate_Document
         [ForeignKey("ElementId")]

@@ -332,7 +332,7 @@
             var penWidth = 4;
             var highlighterWidth = 12;
 
-            var annoItem = {SvgId:'', Page: 0, AnnotateType: '', LeftPos: 0, TopPos: 0, WidthPos: 0, HeightPos: 0, Color: '', BackColor: '', Data: '', Scale: 0 };
+            var annoItem = {SvgId:'', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: 0, HeightPosition: 0, Color: '', BackColor: '', Data: '', Scale: 0 };
             $scope.annoItems = [];
             var iAnnoItem = 0;
 
@@ -353,10 +353,10 @@
                 item.SvgId = "svg" + iAnnoItem;
                 item.Page = page;
                 item.AnnotateType = annotateType;
-                item.LeftPos = leftPos;
-                item.TopPos = topPos;
-                item.WidthPos = widthPos;
-                item.HeightPos = heightPos;
+                item.LeftPosition = leftPos;
+                item.TopPosition = topPos;
+                item.WidthPosition = widthPos;
+                item.HeightPosition = heightPos;
                 item.Color = color;
                 item.BackColor = backColor;
                 item.Data = data;
@@ -390,14 +390,14 @@
                 html = html.replace(/-xx-/g, signatureNo);
                 html = html.replace(/-xx/g, "-" + signatureNo);
                 var field = $('#' + svgElement.id).append(html).find('.' + signatureClass);
-                if (item.WidthPos != null)
-                    field.css({ 'width': item.WidthPos + 'px' });
-                if (item.HeightPos != null)
-                    field.css({ 'height': item.HeightPos + 'px' });
+                if (item.WidthPosition != null)
+                    field.css({ 'width': item.WidthPosition + 'px' });
+                if (item.HeightPosition != null)
+                    field.css({ 'height': item.HeightPosition + 'px' });
 
                 field.show();
 
-                signatureArrange(signatureClass, item.LeftPos, item.TopPos);
+                signatureArrange(signatureClass, item.LeftPosition, item.TopPosition);
 
                 //$scope.annoSelector(signatureClass + '-' + signatureNo);
                 signatureNo++;
@@ -418,13 +418,13 @@
                 html = html.replace(/-xx-/g, initialNo);
                 html = html.replace(/-xx/g, "-" + initialNo);
                 var field = $('#' + svgElement.id).append(html).find('.' + initialClass);
-                if (item.WidthPos != null)
-                    field.css({ 'width': item.WidthPos + 'px' });
-                if (item.HeightPos != null)
-                    field.css({ 'height': item.HeightPos + 'px' });
+                if (item.WidthPosition != null)
+                    field.css({ 'width': item.WidthPosition + 'px' });
+                if (item.HeightPosition != null)
+                    field.css({ 'height': item.HeightPosition + 'px' });
                 field.show();
 
-                signatureArrange(initialClass, item.LeftPos, item.TopPos);
+                signatureArrange(initialClass, item.LeftPosition, item.TopPosition);
 
                 //$scope.annoSelector(initialClass + '-' + initialNo);
                 initialNo++;
@@ -442,13 +442,13 @@
                 var text = '<img class="' + stampClass + '" id="' + stampClass + stampNo + '" src="/images/stamp/empty.png" style="left:0px; top:0px; height:100px; width:200px; padding: ' + svgPadding + 'px;" onclick="annoSelector(' + "'" + stampClass + stampNo + "'" + ')"/>';
                 var field = $('#' + svgElement.id).append(text).find('.' + stampClass);
 
-                if (item.WidthPos != null)
-                    field.css({ 'width': item.WidthPos + 'px' });
-                if (item.HeightPos != null)
-                    field.css({ 'height': item.HeightPos + 'px' });
+                if (item.WidthPosition != null)
+                    field.css({ 'width': item.WidthPosition + 'px' });
+                if (item.HeightPosition != null)
+                    field.css({ 'height': item.HeightPosition + 'px' });
                 field.show();
 
-                signatureArrange(stampClass, item.LeftPos, item.TopPos);
+                signatureArrange(stampClass, item.LeftPosition, item.TopPosition);
                 //$scope.annoSelector(stampClass + stampNo);
                 stampNo++;
             }
@@ -468,11 +468,11 @@
                 var field = $('#' + svgElement.id).append(html);
 
                 document.getElementById(editTextClass + edittextNo).addEventListener("input", onEditText, false);
-                if (item.WidthPos != null)
-                    field.css({ 'width': item.WidthPos + 'px' });
-                if (item.HeightPos != null)
-                    field.css({ 'height': item.HeightPos + 'px' });
-                signatureArrange(editTextClass, item.LeftPos, item.TopPos);
+                if (item.WidthPosition != null)
+                    field.css({ 'width': item.WidthPosition + 'px' });
+                if (item.HeightPosition != null)
+                    field.css({ 'height': item.HeightPosition + 'px' });
+                signatureArrange(editTextClass, item.LeftPosition, item.TopPosition);
                 //var text = document.getElementById(editTextClass + edittextNo);
                 //setTimeout(function () {
                 //    text.focus();
