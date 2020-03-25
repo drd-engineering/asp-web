@@ -38,7 +38,7 @@
                     <tbody>
                         <tr ng-repeat="x in workflows" style="vertical-align:top;background-color:{{(x.IsTemplate?'#fff9c4':'')}}" data-dismiss="modal" ng-click="setWorkflow($index);">
                             <td width="25px">{{$index+1 + index}}</td>
-                            <td>>{{x.Name}}</td>
+                            <td>{{x.Name}}</td>
                             <td width="150px">{{(x.IsTemplate?"Template":"My workflow")}}</td>
                         </tr>
                     </tbody>

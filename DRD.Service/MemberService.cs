@@ -259,7 +259,7 @@ namespace DRD.Service
                                                         Phone = user.Phone,
                                                         Email = user.Email,
                                                         ImageProfile = user.ImageProfile
-                                                    }).Where(criteria).Skip(skip).Take(pageSize).ToList();
+                                                    }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
                 ListMemberData returnValue = new ListMemberData();
                 if (contactListAllMatch != null)
                 {
