@@ -146,7 +146,7 @@
                 </div>
             </section>
 
-            <section id="dashboard-rotation-status" ng-init="getDashboardRotationStatus">
+            <section id="dashboard-rotation-status" ng-init="getDashboardRotationStatus" ng-show="haveCompany">
                 <div class="panel highlight-container">
                     <div class="highlight-card">
                         <!-- HEADER -->
@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="col-sm-12">
                                         <form>
-                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 188 || $event.keyCode == 13) && addTagList()" />
+                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="$event.keyCode == 188 && addTagList()" />
                                             <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
                                         </form>
                                     </div>
@@ -194,7 +194,7 @@
                         </div>
 
                         <!-- CONTENT -->
-                        <div class="card-content" ng-show="listrotationStatus.Count() > 0" >
+                        <div class="card-content" ng-show="showRotationStatus" >
                             <!-- each rotation status -->
                             <div class="container">
                                 <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
@@ -213,13 +213,13 @@
                                         <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in listrotationStatus">
                                             <td>{{x.Workflow.Name}}</td>
                                             <td>{{x.Subject}}</td>
-                                            <td>{{x.Status}}</td>
+                                            <td>{{(x.Status == 0) ? "Not Started" : "Started"}}</td>
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td>
-                                                <span ng-repeat="usr in x.RotationUsers"><img src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                                <span style="padding:3px; border:0.5px solid black; border-radius:10px 10px;" ng-repeat="usr in x.RotationUsers"><img src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}"/></span>
                                             </td>
-                                            <td><button ng-click="sendEmailNotifikasiRotasi($index)">Notify Latest Person</button></td>
+                                            <td><button style="font-size:9px" ng-click="sendEmailNotifikasiRotasi($index)">Notify Latest Person</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -646,6 +646,7 @@
                     var x = 0;
                 });
             }
+
             $scope.getCompanyOwned = function () {
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     console.log("run");
@@ -654,6 +655,9 @@
                         console.log($scope.companyOwned);
                     }
                 })
+            }
+            $scope.haveCompany = function () {
+                return $scope.companyOwned.Count() > 0;
             }
             /*--------------------------------------------------------------
             CONVERT JSON DATE
@@ -669,14 +673,16 @@
             $scope.addTagList = function () {
                 $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
                 var alreadyUsed = false;
-                $scope.tags.some(function (element, i) {
-                    if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
-                        alreadyUsed = true;
-                        return;
+                if ($scope.newTag != '') {
+                    $scope.tags.some(function (element, i) {
+                        if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                            alreadyUsed = true;
+                            return;
+                        }
+                    })
+                    if (!alreadyUsed) {
+                        $scope.tags.push($scope.newTag);
                     }
-                })
-                if (!alreadyUsed) {
-                    $scope.tags.push($scope.newTag);
                 }
                 $scope.newTag = "";
                 $scope.getDashboardRotationStatus();
@@ -694,6 +700,7 @@
                 ).then(function (response) {
                     if (response.data) {
                         $scope.listrotationStatus = response.data;
+                        console.log($scope.listrotationStatus);
                         return true;
                     }
                     else {
@@ -718,6 +725,9 @@
                     $scope.pagerotationstatus -= 1;
                     window.alert("This is the last page");
                 }
+            }
+            $scope.showRotationStatus = function () {
+                return $scope.listrotationStatus.Count() > 0
             }
             /*--------------------------------------------------------------
             CSV Handling

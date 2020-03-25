@@ -90,7 +90,7 @@ namespace DRD.App.Controllers
         {
             Initialize();
             int skip = (page - 1) * pageSize;
-            var data = dashboardService.GetDashboardRotationStatus(companyId, Tags, skip, pageSize);
+            var data = dashboardService.GetDashboardRotationStatus(companyId, user.Id, Tags, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
