@@ -146,7 +146,7 @@
                 </div>
             </section>
 
-            <section id="dashboard-rotation-status">
+            <section id="dashboard-rotation-status" ng-init="getDashboardRotationStatus">
                 <div class="panel highlight-container">
                     <div class="highlight-card">
                         <!-- HEADER -->
@@ -194,7 +194,7 @@
                         </div>
 
                         <!-- CONTENT -->
-                        <div class="card-content">
+                        <div class="card-content" ng-show="listrotationStatus.Count() > 0" >
                             <!-- each rotation status -->
                             <div class="container">
                                 <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">

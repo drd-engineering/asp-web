@@ -14,7 +14,6 @@ namespace Core.Postgres
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyQuota> CompanyQuotas { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
 
@@ -49,37 +48,37 @@ namespace Core.Postgres
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -2, Name = "amanudin bin saleh", Phone = "085858585858", Email = "r@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -2, Name = "burhanudin bin saleh", Phone = "085858585858", Email = "r@hotmail.com",
                 OfficialIdNo = 3511202020202020, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -3, Name = "amirudin bin saleh", Phone = "085151515151", Email = "n@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -3, Name = "camirudin bin saleh", Phone = "085151515151", Email = "n@hotmail.com",
                 OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -4, Name = "amiradin bin saleh", Phone = "085888811111", Email = "i@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -4, Name = "dinudin bin saleh", Phone = "085888811111", Email = "i@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -5, Name = "amir bin saleh", Phone = "085151515151", Email = "q@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -5, Name = "eminudin bin saleh", Phone = "085151515151", Email = "q@hotmail.com",
                 OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -6, Name = "adin bin saleh", Phone = "085888811111", Email = "w@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -6, Name = "funudin bin saleh", Phone = "085888811111", Email = "w@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -7, Name = "mirud bin saleh", Phone = "085151515151", Email = "e@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -7, Name = "gunudin bin saleh", Phone = "085151515151", Email = "e@hotmail.com",
                 OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -8, Name = "din bin saleh", Phone = "085888811111", Email = "p@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -8, Name = "hinudin bin saleh", Phone = "085888811111", Email = "p@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now

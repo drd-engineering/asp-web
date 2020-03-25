@@ -27,26 +27,21 @@
             </div>
 
             <div style="height:450px" class="table-responsive">
-                @*class="modal-body"*@
                 <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                     <thead>
                         <tr>
                             <th width="25px">#</th>
-                            @*<th width="25px">Set</th>*@
-                            <th>Nomor</th>
                             <th>Name</th>
                             <th>Phone</th>
-                            @*<th>Email</th>*@
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in members" style="vertical-align:top">
+                        <tr ng-repeat="x in members" style="vertical-align:top" data-dismiss="modal" ng-click="setMember($index);">
                             <td width="25px">{{$index+1 + index}}</td>
-                            @*<td width="25px"><a data-dismiss="modal" ng-click="setMember($index);">Select</a></td>*@
-                            <td><a data-dismiss="modal" ng-click="setMember($index);">{{x.Id}}</a></td>
                             <td>{{x.Name}}</td>
                             <td>{{x.Phone}}</td>
-                            @*<td>{{x.Email}}</td>*@
+                            <td>{{x.Email}}</td>
                         </tr>
                     </tbody>
                 </table>

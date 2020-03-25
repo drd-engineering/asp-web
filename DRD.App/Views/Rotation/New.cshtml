@@ -505,8 +505,13 @@
                     var x = 0;
                 });
             }
-
-
+            $scope.removeMember = function (idx) {
+                $scope.users.splice(idx,1);
+            }
+            $scope.popupMember = function () {
+                $scope.memberIdx=-1;
+                $scope.members = [];
+            }
             /*--------------------------------------------------------------
                 END POPUP MEMBER
             --------------------------------------------------------------*/
