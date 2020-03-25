@@ -377,7 +377,7 @@ namespace DRD.Service
         public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
+            Expression<Func<RotationData, string>> ordering = WorkflowData => "Name";
 
             if (order != null)
                 ordering = order;
@@ -397,6 +397,7 @@ namespace DRD.Service
                     var result =
                     (from rotation in db.Rotations
                      where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
+                     orderby rotation.DateCreated descending, rotation.Subject descending
                      select new RotationData
                      {
                          Id = rotation.Id,
@@ -408,7 +409,7 @@ namespace DRD.Service
                          CreatedAt = rotation.DateCreated,
                          UpdatedAt = rotation.DateUpdated,
                          DateStarted = rotation.DateUpdated,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+                     }).Where(criteria).Skip(skip).Take(pageSize).ToList();
 
                     foreach (RotationData resultItem in result){
                         resultItem.StatusDescription = constant.getRotationStatusName(resultItem.Status);
