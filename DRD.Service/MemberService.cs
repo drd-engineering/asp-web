@@ -236,6 +236,7 @@ namespace DRD.Service
                 var contactListAllMatch = (from Contact in db.Contacts
                                            join User in db.Users on Contact.ContactItemId equals User.Id
                                            where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                           orderby User.Name
                                            select new MemberData
                                            {
                                                Id = User.Id,
@@ -258,7 +259,7 @@ namespace DRD.Service
                                                         Phone = user.Phone,
                                                         Email = user.Email,
                                                         ImageProfile = user.ImageProfile
-                                                    }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+                                                    }).Where(criteria).Skip(skip).Take(pageSize).ToList();
                 ListMemberData returnValue = new ListMemberData();
                 if (contactListAllMatch != null)
                 {

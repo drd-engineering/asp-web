@@ -512,7 +512,7 @@
 
             $scope.changePageMember = function (kriteria, page, row) {
                 $scope.products = [];
-                $http.post('/Member/GetLiteGroupAll', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data;
                         $scope.index = row * (page - 1);
