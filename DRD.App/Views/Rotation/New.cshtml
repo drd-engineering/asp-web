@@ -229,6 +229,7 @@
             // modal workflow
 
             $scope.newTag = ""
+
             $scope.SubscriptionList = [];
             $scope.model = {};
             $scope.subscriptions = [];
@@ -580,18 +581,17 @@
                 $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
                 var alreadyUsed = false;
                 if ($scope.newTag != '') {
-                    $scope.tags.some(function (element, i) {
+                    $scope.model.Tags.some(function (element, i) {
                         if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
                             alreadyUsed = true;
                             return;
                         }
                     })
                     if (!alreadyUsed) {
-                        $scope.tags.push($scope.newTag);
+                        $scope.model.Tags.push($scope.newTag);
                     }
                 }
                 $scope.newTag = "";
-                $scope.getDashboardRotationStatus();
             }
             $scope.removeTag = function (index) {
                 $scope.model.Tags.splice(index, 1);

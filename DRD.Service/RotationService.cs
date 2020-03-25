@@ -829,7 +829,6 @@ namespace DRD.Service
                                 }
                             }).Skip(skip).Take(pageSize).ToList();
                 }
-                System.Diagnostics.Debug.WriteLine("[[ INI DATA DASHBOARDNYA ]] : " + data.ElementAt(0));
                 foreach(RotationDashboard x in data)
                 {
                     x.Creator.EncryptedId = XEncryptionHelper.Encrypt(x.Creator.Id.ToString());
