@@ -138,9 +138,6 @@
                                                                 </a><br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
-
-                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,2)" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
-                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,4,8,16)" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
                                                                 </span>
                                                             </td>
                                                             <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
