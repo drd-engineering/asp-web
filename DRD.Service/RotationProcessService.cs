@@ -140,7 +140,7 @@ namespace DRD.Service
                 rtnode.UpdatedAt = DateTime.Now;
                 rtnode.Rotation.DateStarted = DateTime.Now;
                 insertDoc(param.RotationNodeDocs, db, ref rtnode, docSvr);
-                // insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
+                insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
 
                 // insert remark to table
                 if (!string.IsNullOrEmpty(param.Remark))
