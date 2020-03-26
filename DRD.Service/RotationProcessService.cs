@@ -104,7 +104,7 @@ namespace DRD.Service
                     db.RotationNodes.Add(rtnode);
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: " + rt.WorkflowId);
                     db.SaveChanges();
-                    retvalues.Add(createActivityResult(rtnode.UserId, 1, rt.Subject, rtnode.Id));
+                    retvalues.Add(createActivityResult(rtnode.UserId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();
                 return retvalues;
@@ -168,13 +168,10 @@ namespace DRD.Service
                     rtnode2.Value = rtnode.Value;
                     rtnode2.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode2);
-                    ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
-                    retvalues.Add(activityItem);
 
-                    //sending inboxto every user in all new nodes
-                    InboxService inboxService = new InboxService();
-                    inboxService.CreateInbox(activityItem);
-                    /*MemberService.sendEmailInbox(act);*/
+                    //TODO change how to get last id inserted
+                    long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                 }
                 else if (strbit.Equals("REJECT"))
                 {
@@ -182,7 +179,8 @@ namespace DRD.Service
                     updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
                 }
                 else if (strbit.Equals("SUBMIT")) 
-                { 
+                {
+                    System.Diagnostics.Debug.WriteLine("::MASUK:: SUBMIT  :: ");
                     Symbol symbol = symbolService.getSymbol(strbit);
                     int symbolCode = symbol == null ? 0 : symbol.Id;
                     var wfnodes = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
@@ -194,13 +192,13 @@ namespace DRD.Service
                         System.Diagnostics.Debug.WriteLine("TEST SYMBOL ACTIVITY::" + symbolService.getSymbolId("ACTIVITY"));
                         var nodeto = workflowNodeLink.WorkflowNodeTo;
 
-                        System.Diagnostics.Debug.WriteLine("TEST NodeTO SYMBOL::" + nodeto.SymbolCode);
-                        System.Diagnostics.Debug.WriteLine("TEST comparison SYMBOL::" + (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY")));
+
 
                         if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
                         {
                             System.Diagnostics.Debug.WriteLine("TEST INTO ACTIVITY SECTION::");
-                            RotationNode rtnode2 = new RotationNode();
+                            /*                            RotationNode rtnode2 = new RotationNode();*/
+                            RotationNode rtnode2= db.RotationNodes.Create<RotationNode>();
 
                             rtnode2.RotationId = rtnode.RotationId;
                             rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
@@ -211,13 +209,11 @@ namespace DRD.Service
                             rtnode2.Value = rtnode.Value;
                             rtnode2.CreatedAt = DateTime.Now;
                             db.RotationNodes.Add(rtnode2);
-                            ActivityItem activityItem = createActivityResult(rtnode2.UserId, 1);
-                            retvalues.Add(activityItem);
 
-                            //sending inboxto every user in all new nodes
-                            InboxService inboxService = new InboxService();
-                            inboxService.CreateInbox(activityItem);
-                            /*MemberService.sendEmailInbox(act);*/
+
+                            //TODO change how to get last id inserted
+                            long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+                            retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
 
                         }
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("PARALLEL"))
@@ -281,7 +277,9 @@ namespace DRD.Service
                                     rtnode2.Value = rtnode.Value;
                                     rtnode2.CreatedAt = DateTime.Now;
                                     db.RotationNodes.Add(rtnode2);
-                                    retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+
+                                    long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+                                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                                 }
                             }
                         }
@@ -305,7 +303,9 @@ namespace DRD.Service
                             rtnode2.Value = rtnode.Value;
                             rtnode2.CreatedAt = DateTime.Now;
                             db.RotationNodes.Add(rtnode2);
-                            retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+
+                            long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+                            retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                         }
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("TRANSFER"))
                         {
@@ -328,7 +328,9 @@ namespace DRD.Service
                             if (!isExistNode(rtnode2))
                             {
                                 db.RotationNodes.Add(rtnode2);
-                                retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+                                long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+
+                                retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                             }
                         }
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("CASE"))
@@ -365,7 +367,12 @@ namespace DRD.Service
                                 rtnode2.Value = rtnode.Value;
                                 rtnode2.CreatedAt = DateTime.Now;
                                 db.RotationNodes.Add(rtnode2);
-                                retvalues.Add(createActivityResult(rtnode2.UserId, 1));
+                                
+
+                                //TODO change how to get last id inserted
+                                long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
+                                retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
+
                             }
                         }
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
@@ -379,6 +386,15 @@ namespace DRD.Service
                     }
                 }
                 var result = db.SaveChanges();
+
+                InboxService inboxService = new InboxService();
+                EmailService emailService = new EmailService();
+                foreach (ActivityItem act in retvalues)
+                {
+                    System.Diagnostics.Debug.WriteLine(":: MASUK AKHIR :: ");
+                    emailService.sendEmailInbox(act);
+                    inboxService.GenerateNewInbox(act);
+                }
 
                 return retvalues;
             }
@@ -488,12 +504,27 @@ namespace DRD.Service
             }
         }
 
-        private ActivityItem createActivityResult(long userId, int exitCode, string rotationName, long rotationNodeId)
+        private ActivityItem createActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationId, long rotationNodeId, string lastActivityStatus)
+        {
+            using (var db = new ServiceContext())
+            {
+                ActivityItem ret = createActivityResult(userId, exitCode, rotationName, rotationNodeId,rotationId);
+                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
+                ret.PreviousEmail = mem.Email;
+                ret.PreviousUserId = userId;
+                ret.PreviousUserName = mem.Name;
+                ret.LastActivityStatus = lastActivityStatus;
+                return ret;
+            }
+        }
+
+        private ActivityItem createActivityResult(long userId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
                 ActivityItem ret = new ActivityItem();
                 var mem = db.Users.FirstOrDefault(c => c.Id == userId);
+                ret.RotationId = rotationId;
                 ret.ExitCode = exitCode;
                 ret.Email = mem.Email;
                 ret.UserId = userId;

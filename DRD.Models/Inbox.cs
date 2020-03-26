@@ -16,6 +16,7 @@ namespace DRD.Models
         public long Id { get; set; } // Id (Primary key)
         public bool IsUnread { get; set; }
         public String Message { get; set; }
+        public long RotationId { get; set; }
 
         [ForeignKey("Activity")]
         public long ActivityId { get; set; }

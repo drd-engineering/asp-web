@@ -18,7 +18,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList();
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt);
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -32,6 +32,9 @@ namespace DRD.Service
 
                         item.CurrentActivity = activity.WorkflowNode.Caption;
                         item.RotationName = activity.Rotation.Subject;
+                        item.RotationId = activity.RotationId;
+                        item.Message = i.Message;
+                        item.DateNote = i.DateNote;
                         item.WorkflowName = activity.WorkflowNode.Workflow.Name;
                         item.CreatedAt = i.CreatedAt;
 
@@ -207,6 +210,7 @@ namespace DRD.Service
                         }
                         else { return -1; }
                     }
+                    inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
                     inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
                     db.Inboxes.Add(inboxItem);
@@ -215,6 +219,38 @@ namespace DRD.Service
                 }
             }
             return returnItem;
+        }
+
+        public int GenerateNewInbox(ActivityItem activity)
+        {
+            using (var db = new ServiceContext())
+            {
+                var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId==activity.UserId).FirstOrDefault();
+                if (inbox != null)
+                {
+                System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId);
+                    inbox.ActivityId = activity.RotationNodeId;
+                    inbox.CreatedAt = DateTime.Now;
+                    if (activity.LastActivityStatus.Equals("SUBMIT"))
+                    {
+                        inbox.DateNote = "You need to review " + activity.RotationName;
+                    }
+                    else if (activity.LastActivityStatus.Equals("REVISI"))
+                    {
+                        inbox.DateNote = "You need to revise " + activity.RotationName;
+                    }
+                    else if (activity.LastActivityStatus.Equals("REJECT"))
+                    {
+                        inbox.DateNote = "This " + activity.RotationName + " has ben rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + "}";
+                    }
+                    return db.SaveChanges();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("INBOX NULL");
+                    return CreateInbox(activity);
+                }
+            }
         }
 
     }

@@ -43,32 +43,32 @@ namespace Core.Postgres
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             List<User> listOfUserCreated = new List<User>();
-            listOfUserCreated.Add(new User { Id = -1, Name = "aminudin bin saleh", Phone = "085140451404", Email = "a@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -1, Name = "user 1", Phone = "085140451404", Email = "a@hotmail.com",
                 OfficialIdNo = 3511101010101010, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -2, Name = "burhanudin bin saleh", Phone = "085858585858", Email = "r@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -2, Name = "user 2", Phone = "085858585858", Email = "r@hotmail.com",
                 OfficialIdNo = 3511202020202020, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -3, Name = "camirudin bin saleh", Phone = "085151515151", Email = "n@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -3, Name = "user 3", Phone = "085151515151", Email = "n@hotmail.com",
                 OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -4, Name = "dinudin bin saleh", Phone = "085888811111", Email = "i@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -4, Name = "user 4", Phone = "085888811111", Email = "i@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -5, Name = "eminudin bin saleh", Phone = "085151515151", Email = "q@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -5, Name = "user 5", Phone = "085151515151", Email = "q@hotmail.com",
                 OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -6, Name = "funudin bin saleh", Phone = "085888811111", Email = "w@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -6, Name = "user 6", Phone = "085888811111", Email = "w@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
@@ -87,15 +87,15 @@ namespace Core.Postgres
 
             List<Company> listOfCompanyCreated = new List<Company>();
             listOfCompanyCreated.Add(
-                new Company { Id = -1, Code = "DG23JJKL3L", Name = "PT AMARTHA INDAH SENTOSA", Phone = "0214556372", Email = "sempoasupport@sempoa.com",
+                new Company { Id = -1, Code = "DG23JJKL3L", Name = "PT perusahaan 1", Phone = "0214556372", Email = "sempoasupport@sempoa.com",
                     Descr = "a company dummy", Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe", PostalCode = "122122", IsActive = true,
                     OwnerId = listOfUserCreated[0].Id, CreatedAt = DateTime.Now });
             listOfCompanyCreated.Add(
-                new Company { Id = -2, Code = "DG23JJ2PDO", Name = "PT SEMPUA", Phone = "0218229103", Email = "sempuasupport@sempua.com",
+                new Company { Id = -2, Code = "DG23JJ2PDO", Name = "PT perusahaan 2", Phone = "0218229103", Email = "sempuasupport@sempua.com",
                     Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211", IsActive = true,
                     OwnerId = listOfUserCreated[2].Id, CreatedAt = DateTime.Now });
             listOfCompanyCreated.Add(
-                new Company { Id = -3, Code = "DG23JE4PDO", Name = "PT simin TIGI RIDI", Phone = "0218229103", Email = "siminsupport@sempua.com",
+                new Company { Id = -3, Code = "DG23JE4PDO", Name = "PT perusahaan 3", Phone = "0218229103", Email = "siminsupport@sempua.com",
                     Descr = "a company dummy", Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu", PostalCode = "221211", IsActive = true,
                     OwnerId = listOfUserCreated[4].Id, CreatedAt = DateTime.Now });
 
