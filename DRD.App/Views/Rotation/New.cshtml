@@ -44,8 +44,8 @@
             <h3>@ViewBag.Title</h3>
         </div>
         <!-- ROTATION FORM-->
-        <form name="myForm" class="form-horizontal" autocomplete="off">
-            <div ng-show="wizarno=='product'">
+        <div ng-show="wizarno=='product'">
+            <form name="myForm" class="form-horizontal" autocomplete="off">
                 <fieldset>
                     <div class="row">
                         <div class="col-md-6">
@@ -98,7 +98,7 @@
                                     <label class="control-label">Tags</label>
                                 </div>
                                 <div class="col-sm-12">
-                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="$event.keyCode == 188 && addTagList()"/>
+                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="$event.keyCode == 188 && addTagList()" />
                                 </div>
                                 <div class="col-sm-12">
                                     <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
@@ -148,9 +148,9 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission :&ensp;</span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
+                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -168,16 +168,14 @@
                     </button>
                 </div>
                 <!-- end of SUBMIT BUTTON -->
-            </div>
-        </form>
+
+            </form>
+        </div>
         <!--end of ROTATION FORM-->
         <!--CONFIRMATION THANK YOU-->
         <div ng-show="wizarno=='success'">
-            <div class="col-md-12">
-
-                <div class="alert alert-success alert-styled-left">
-                    Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
-                </div>
+            <div class="alert alert-success alert-styled-left">
+                Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
             </div>
         </div>
 

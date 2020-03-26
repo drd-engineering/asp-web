@@ -397,7 +397,7 @@ namespace DRD.Service
                     var result =
                     (from rotation in db.Rotations
                      where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     orderby rotation.DateCreated descending, rotation.Subject descending
+                     orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                      select new RotationData
                      {
                          Id = rotation.Id,
