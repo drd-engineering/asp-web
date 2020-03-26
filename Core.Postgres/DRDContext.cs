@@ -16,7 +16,7 @@ namespace Core.Postgres
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
-
+        public DbSet<DocumentUser> DocumentUsers { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<PlanBusiness> PlanBusinesses { get; set; }
         public DbSet<Rotation> Rotations { get; set; }

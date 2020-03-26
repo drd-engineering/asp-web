@@ -140,7 +140,7 @@ namespace DRD.Service
                 rtnode.UpdatedAt = DateTime.Now;
                 rtnode.Rotation.DateStarted = DateTime.Now;
                 insertDoc(param.RotationNodeDocs, db, ref rtnode, docSvr);
-                insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
+                // insertUpDoc(param.RotationNodeUpDocs, ref rtnode);
 
                 // insert remark to table
                 if (!string.IsNullOrEmpty(param.Remark))
@@ -418,19 +418,13 @@ namespace DRD.Service
         {
             if (docs != null && docs.Count() > 0)
             {
-                var distincts =
-                    (from c in docs
-                     select new RotationNodeDoc
-                     {
-                         Document = c.Document,
-                         FlagAction = c.FlagAction,
-                     }).ToList();
-
                 foreach (RotationNodeDoc rnc in docs)
                 {
                     RotationNodeDoc dx = new RotationNodeDoc();
-                    dx.Document.Id = rnc.Document.Id;
+                    dx.DocumentId = rnc.Document.Id;
                     dx.FlagAction = rnc.FlagAction;
+                    dx.RotationNodeId = rotationNode.Id;
+                    dx.RotationId = rotationNode.RotationId;
                     rotationNode.RotationNodeDocs.Add(dx);
 
                     // update flag action di master rotationNodeDoc member
@@ -441,7 +435,7 @@ namespace DRD.Service
                     else
                     {
                         DocumentUser docmem = new DocumentUser();
-                        docmem.DocumentId = (long)rnc.Document.Id;
+                        docmem.DocumentId = rnc.Document.Id;
                         docmem.UserId = memberId;
                         docmem.FlagAction = rnc.FlagAction;
                         db.DocumentUsers.Add(docmem);
@@ -462,6 +456,7 @@ namespace DRD.Service
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
                         docSvr.Stamp((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
                 }
+                db.SaveChanges();
             }
         }
 
@@ -482,6 +477,8 @@ namespace DRD.Service
                             db.Documents.Add(upload);
                             db.SaveChanges();
                             rnc.DocumentId = upload.Id;
+                            rnc.RotationId = rotationNode.RotationId;
+                            rnc.RotationNodeId = rotationNode.Id;
                         }
                     }
                     RotationNodeUpDoc dx = new RotationNodeUpDoc();
