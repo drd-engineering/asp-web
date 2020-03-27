@@ -38,6 +38,12 @@ namespace DRD.App.Controllers
             var data = memberService.FindMembers(user.Id, topCriteria, page, pageSize, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult FindMembersCountAll(string topCriteria)
+        {
+            InitializeAPI();
+            var data = memberService.FindMembersCountAll(user.Id, topCriteria);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult GetAcceptedMember(long companyId)
         {

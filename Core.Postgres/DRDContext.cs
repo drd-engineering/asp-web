@@ -38,8 +38,6 @@ namespace Core.Postgres
         public DbSet<TagItem> TagItems { get; set; }
         public DbSet<Tag> Tags { get; set; }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             List<User> listOfUserCreated = new List<User>();
@@ -54,7 +52,7 @@ namespace Core.Postgres
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = -3, Name = "user 3", Phone = "085151515151", Email = "n@hotmail.com",
-                OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
+                OfficialIdNo = 3511303030303030, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
@@ -64,7 +62,7 @@ namespace Core.Postgres
                 IsActive = true, CreatedAt = DateTime.Now
             });
             listOfUserCreated.Add(new User { Id = -5, Name = "user 5", Phone = "085151515151", Email = "q@hotmail.com",
-                OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
+                OfficialIdNo = 3511303030303030, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
@@ -73,12 +71,12 @@ namespace Core.Postgres
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -7, Name = "gunudin bin saleh", Phone = "085151515151", Email = "e@hotmail.com",
-                OfficialIdNo = 3511303030303030, ImageProfile = "ann.jpg", Password = "kapandeadline",
+            listOfUserCreated.Add(new User { Id = -7, Name = "user 7", Phone = "085151515151", Email = "e@hotmail.com",
+                OfficialIdNo = 3511303030303030, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -8, Name = "hinudin bin saleh", Phone = "085888811111", Email = "p@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -8, Name = "user 8", Phone = "085888811111", Email = "p@hotmail.com",
                 OfficialIdNo = 3511404040404040, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = null, ImageInitials = null, ImageStamp = null, ImageKtp1 = null, ImageKtp2 = null,
                 IsActive = true, CreatedAt = DateTime.Now
@@ -99,8 +97,21 @@ namespace Core.Postgres
                     Descr = "a company dummy", Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu", PostalCode = "221211", IsActive = true,
                     OwnerId = listOfUserCreated[4].Id, CreatedAt = DateTime.Now });
 
+            // Owner
+            Member member6 = new Member { Id = -6, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[0].Id,IsAdministrator = false };
+            Member member11 = new Member { Id = -11, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[2].Id,IsAdministrator = false };
+            Member member13 = new Member { Id = -13, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
+            // Member biasa
             Member member1 = new Member { Id = -1, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true,
                 isMemberAccept = true, UserId = listOfUserCreated[2].Id, IsAdministrator = true  };
+            Member member7 = new Member { Id = -7, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
+            Member member8 = new Member { Id = -8, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
+
             Member member2 = new Member { Id = -2, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true,
                 isMemberAccept = true, UserId = listOfUserCreated[3].Id, IsAdministrator = false  };
             Member member3 = new Member { Id = -3, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
@@ -109,24 +120,21 @@ namespace Core.Postgres
                 isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
             Member member5 = new Member { Id = -5, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[5].Id,IsAdministrator = false };
-            Member member6 = new Member { Id = -6, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[0].Id,IsAdministrator = false };
-            Member member7 = new Member { Id = -7, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
-            Member member8 = new Member { Id = -8, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
+            Member member15 = new Member { Id = -15, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[1].Id,IsAdministrator = false };
+            Member member16 = new Member { Id = -16, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[6].Id,IsAdministrator = false };
+            Member member17 = new Member { Id = -17, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[7].Id,IsAdministrator = false };
+            
             Member member9 = new Member { Id = -9, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[5].Id, IsAdministrator = true  };
             Member member10 = new Member { Id = -10, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true  };
-            Member member11 = new Member { Id = -11, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[2].Id,IsAdministrator = false };
             Member member12 = new Member { Id = -12, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false
-            };
-            Member member13 = new Member { Id = -13, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false
-            };
+                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
+            Member member14 = new Member { Id = -14, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
+                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
 
             PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageSize=100000000, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
             PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageSize = 100000000, StorageUsedinByte = 1000, totalAdministrators=1, SubscriptionName= "Business"};
@@ -153,7 +161,7 @@ namespace Core.Postgres
             modelBuilder.Entity<WorkflowNodeLink>().HasData(wflnl1, wflnl2);
 
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2]);
-            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10, member11, member12);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10, member11, member12, member13, member14, member15, member16, member17);
             modelBuilder.Entity<PlanBusiness>().HasData(planBusiness1, planBusiness2, planBusiness3);
 
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });

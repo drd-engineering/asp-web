@@ -14,13 +14,13 @@
             <div class="modal-body">
                 <div class="">
                     <label class="control-label">Name</label>
-                    <input type="text" class="form-control" ng-model="activity.Name" maxlength="100" />
+                    <input type="text" class="form-control" ng-model="$parent.activity.Name" maxlength="100" />
 
                 </div>
 
                 <div class="">
                     <label class="control-label">Info</label><br />
-                    <textarea class="control-label" ng-model="activity.Info" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 100px;width:100%" @*ng-required="wizarno=='product'"*@></textarea>
+                    <textarea class="control-label" ng-model="$parent.activity.Info" rows="3" style="resize: none; overflow-y: hidden; opacity: 0.8; height: 100px;width:100%" @*ng-required="wizarno=='product'"*@></textarea>
                 </div>
             </div>
             <div class="modal-footer">

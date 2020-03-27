@@ -30,7 +30,6 @@ namespace DRD.Models
         public RotationUser()
         {
             FlagPermission = 0;
-
         }
     }
 }

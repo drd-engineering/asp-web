@@ -13,14 +13,14 @@
 
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteCompanies(kriteria, page, row)" class="form-control" ng-model="kriteria" placeholder="Enter company name" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteCompanies($parent.kriteria, $parent.page, $parent.row)" class="form-control" ng-model="kriteria" placeholder="Enter company name" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="getLiteCompanies(kriteria, page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="getLiteCompanies($parent.kriteria, $parent.page, $parent.row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="page" class="form-control" ng-change="changePageCompanies(kriteria, page, row)">
+                    <select ng-model="$parent.page" class="form-control" ng-change="changePageCompanies($parent.kriteria, $parent.page, $parent.row)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>
