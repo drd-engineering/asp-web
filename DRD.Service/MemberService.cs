@@ -252,6 +252,7 @@ namespace DRD.Service
                                                     && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
                                                     && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
                                                     && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
+                                                    orderby user.Name
                                                     select new MemberData
                                                     {
                                                         Id = user.Id,

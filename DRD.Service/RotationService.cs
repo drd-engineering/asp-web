@@ -773,11 +773,11 @@ namespace DRD.Service
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from user in rotation.RotationUsers
+                                RotationUsers = (from rtuser in rotation.RotationUsers
                                                  select new RotationDashboard.UserDashboard
                                                  {
-                                                     Id = user.Id,
-                                                     ImageProfile = user.User.ImageProfile
+                                                     Id = rtuser.User.Id,
+                                                     ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -809,11 +809,11 @@ namespace DRD.Service
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from user in rotation.RotationUsers
+                                RotationUsers = (from rtuser in rotation.RotationUsers
                                                  select new RotationDashboard.UserDashboard
                                                  {
-                                                     Id = user.Id,
-                                                     ImageProfile = user.User.ImageProfile
+                                                     Id = rtuser.User.Id,
+                                                     ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -1014,8 +1014,6 @@ namespace DRD.Service
                 //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
                 //}
             }
-
-
             return rotation;
         }
 
