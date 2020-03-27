@@ -377,7 +377,7 @@ namespace DRD.Service
         public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "Name";
+            Expression<Func<RotationData, string>> ordering = rotation => "Name";
 
             if (order != null)
                 ordering = order;
@@ -761,7 +761,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.Status descending, rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
@@ -797,7 +797,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.Status descending, rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
