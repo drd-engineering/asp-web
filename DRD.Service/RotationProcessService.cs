@@ -92,6 +92,7 @@ namespace DRD.Service
                     //rtnode.RotationId = rotId;
                     rtnode.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
                     rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTo;
+                    rtnode.FirstNodeId = workflowNodeLink.FirstNodeId;
                     System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE:: " + rtnode.WorkflowNodeId + " : " + workflowNodeLink.WorkflowNodeToId);
                     //long user = db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rt.Id).UserId.Value;
                     long userNodeId = getUserId(workflowNodeLink.WorkflowNodeToId, rt.Id);
@@ -104,7 +105,7 @@ namespace DRD.Service
                     db.RotationNodes.Add(rtnode);
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: " + rt.WorkflowId);
                     db.SaveChanges();
-                    retvalues.Add(createActivityResult(rtnode.UserId, 1, rt.Subject, rtnode.Id, rotationId));
+                    retvalues.Add(createActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();
                 return retvalues;
@@ -161,6 +162,7 @@ namespace DRD.Service
 
                     rtnode2.RotationId = rtnode.RotationId;
                     rtnode2.WorkflowNodeId = workflowNodeLink.FirstNodeId;
+                    rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                     rtnode2.SenderRotationNodeId = rtnode.Id;
                     rtnode2.UserId = (long)workflowNodeLink.FirstNode.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.FirstNodeId && c.RotationId == rtnode.RotationId).User.Id;
                     rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
@@ -202,6 +204,7 @@ namespace DRD.Service
 
                             rtnode2.RotationId = rtnode.RotationId;
                             rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
+                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
                             rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
@@ -269,6 +272,7 @@ namespace DRD.Service
 
                                     rtnode2.Rotation.Id = rtnode.Rotation.Id;
                                     rtnode2.WorkflowNode.Id = lnk.WorkflowNodeToId;
+                                    rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                                     rtnode2.SenderRotationNodeId = rtnode.Id;
                                     //rtnode2.UserId = (long)lnk.WorkflowNodeTo.UserId;
                                     rtnode2.UserId = (long)lnk.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == lnk.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -295,6 +299,7 @@ namespace DRD.Service
 
                             rtnode2.Rotation.Id = rtnode.Rotation.Id;
                             rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
+                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                             rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -316,6 +321,7 @@ namespace DRD.Service
 
                             rtnode2.Rotation.Id = rtnode.Rotation.Id;
                             rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
+                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                             rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -359,6 +365,7 @@ namespace DRD.Service
 
                                 rtnode2.Rotation.Id = rtnode.Rotation.Id;
                                 rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
+                                rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
                                 rtnode2.SenderRotationNodeId = rtnode.Id;
                                 //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                                 rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -511,27 +518,32 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                ActivityItem ret = createActivityResult(userId, exitCode, rotationName, rotationNodeId,rotationId);
-                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
-                ret.PreviousEmail = mem.Email;
-                ret.PreviousUserId = userId;
-                ret.PreviousUserName = mem.Name;
+                ActivityItem ret = createActivityResult(userId, previousUserId, exitCode, rotationName, rotationNodeId,rotationId);
                 ret.LastActivityStatus = lastActivityStatus;
                 return ret;
             }
         }
 
-        private ActivityItem createActivityResult(long userId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
+        private ActivityItem createActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
         {
+            System.Diagnostics.Debug.WriteLine(":: MASUK AKHIR :: "+ userId + previousUserId + exitCode + rotationName + rotationNodeId + rotationId);
             using (var db = new ServiceContext())
             {
                 ActivityItem ret = new ActivityItem();
-                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
                 ret.RotationId = rotationId;
                 ret.ExitCode = exitCode;
-                ret.Email = mem.Email;
+
+                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
                 ret.UserId = userId;
                 ret.UserName = mem.Name;
+                ret.Email = mem.Email;
+                
+                var prev = db.Users.FirstOrDefault(c => c.Id == previousUserId);
+                ret.PreviousUserId = userId;
+                ret.PreviousUserName = prev.Name;
+                ret.PreviousEmail = prev.Email;
+
+
                 ret.RotationName = rotationName;
                 ret.RotationNodeId = rotationNodeId;
                 return ret;

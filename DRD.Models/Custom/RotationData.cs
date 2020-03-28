@@ -16,6 +16,7 @@ namespace DRD.Models.Custom
         public int Status { get; set; } // Status (length: 2)
         public long? UserId { get; set; } // userid
         public long? MemberId { get; set; } //memberid
+        public long FirstNodeId { get; set; }
         public System.DateTime CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public System.DateTime? DateStatus { get; set; } // DateUpdated

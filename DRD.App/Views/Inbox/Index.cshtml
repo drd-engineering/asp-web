@@ -400,6 +400,8 @@
                 showInfo("Click on "+text);
             }
 
+
+
             $scope.signDocument = function (idx) {
                 $http.post('/document/CheckingSignature', { memberId: 0 }).then(function (response) {
                     if (response.data) {
@@ -1132,6 +1134,48 @@
                     ++u;
                 } while(Math.abs(bytes) >= thresh && u < units.length - 1);
                 return bytes.toFixed(1)+' '+units[u];
+            }
+
+            $scope.getStatusName = function (status) {
+                switch (status) {
+                    case 0:
+                        return "Open";
+                        break;
+                    case 1:
+                        return "In Progress";
+                        break;
+                    case 2:
+                        return "Pending";
+                        break;
+                    case 3:
+                        return "Signed";
+                        break;
+                    case 5:
+                        return "Revision";
+                        break;
+                    case 6:
+                        return "Altered";
+                        break;
+                    case 90:
+                        return "Completed";
+                        break;
+                    case 98:
+                        return "Declined";
+                        break;
+                    case 99:
+                        return "Canceled";
+                        break;
+                    case 10:
+                        return "Waiting_For_Response";
+                        break;
+                    case 11:
+                        return "Accepted";
+                        break;
+                    case 97:
+                        return "Expired";
+                        break;
+
+                }
             }
 
             $scope.uploadDocFile = function (idx, file, errFiles) {

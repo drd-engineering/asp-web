@@ -18,7 +18,9 @@ namespace DRD.Models.API
         public String Message { get; set; }
         public long RotationId { get; set; }
         public String DateNote { get; set; }
-
+        public String LastStatus { get; set; }
+        public string prevUserName { get; set; }
+        public string prevUserEmail { get; set; }
 
     }
 }

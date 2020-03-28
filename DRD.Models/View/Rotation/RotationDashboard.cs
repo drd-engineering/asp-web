@@ -32,6 +32,7 @@ namespace DRD.Models.View
         public class UserDashboard
         {
             public long Id { get; set; }
+            public string Name { get; set; }
             public string EncryptedId { get; set; }
             public string ImageProfile { get; set; }
             public bool IsHere { get; set; }

@@ -784,6 +784,7 @@ namespace DRD.Service
                                            select new RotationDashboard.UserDashboard
                                            {
                                                Id = user.Id,
+                                               Name = user.Name,
                                                ImageProfile = user.ImageProfile
                                            }).FirstOrDefault(),
                                 Workflow = new RotationDashboard.WorkflowDashboard

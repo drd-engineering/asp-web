@@ -173,7 +173,7 @@
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td>
-                                                <span ng-repeat="usr in x.RotationUsers"><img  height="30" width="30" style="padding:2px;border:1px solid black;cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}"/></span>
+                                                <span ng-repeat="usr in x.RotationUsers"><img title="{{usr.Name}}"  height="30" width="30" style="padding:2px;border:1px solid black;cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}"/></span>
                                             </td>
                                             <td><button style="font-size:9px" ng-click="sendEmailNotifikasiRotasi($index)">Notify Latest Person</button></td>
                                         </tr>

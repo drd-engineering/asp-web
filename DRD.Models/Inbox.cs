@@ -15,12 +15,15 @@ namespace DRD.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public bool IsUnread { get; set; }
-        public String Message { get; set; }
+        public string Message { get; set; }
         public long RotationId { get; set; }
 
         [ForeignKey("Activity")]
         public long ActivityId { get; set; }
         public RotationNode Activity { get; set; }
+        public string LastStatus { get; set; }
+        public string prevUserName { get; set; }
+        public string prevUserEmail { get; set; }
 
         [ForeignKey("User")]
         public long UserId { get; set; }

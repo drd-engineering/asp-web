@@ -118,7 +118,7 @@
                     <label class="style-note">{{x.Note}}</label>
                 </div>
             </td>
-            <td class="style-status" rowspan="2" style="padding:10px"><label style="padding: 3px; color:{{x.StatusCode.TextColor}};background-color:{{x.StatusCode.BackColor}}">{{x.Status==0? "Open": (x.Status==1? "In Progress":"Completed")}}</label></td>
+            <td class="style-status" rowspan="2" style="padding:10px"><label style="padding: 3px; color:{{x.StatusCode.TextColor}};background-color:{{x.StatusCode.BackColor}}">{{getStatusName(x.Status)}}</label></td>
         </tr>
         @*<tr>
                 <td class="style-blank">&nbsp;</td>

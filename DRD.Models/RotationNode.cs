@@ -13,6 +13,7 @@ namespace DRD.Models
         public long MemberId { get; set; } // MemberId (Foreign Key)
         public long RotationId { get; set; } // RotationId (Foreign Key)
         public long WorkflowNodeId { get; set; } // WorkflowNodeId (Foreign Key)
+        public long FirstNodeId { get; set; }
         public long? PrevWorkflowNodeId { get; set; } // PrevWorkflowNodeId
         public long? SenderRotationNodeId { get; set; } // SenderRotationNodeId
         public string Value { get; set; } // Value (length: 20)
