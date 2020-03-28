@@ -47,7 +47,7 @@
                             <div class="row">
                                 <div class="col-lg-12" style="width:100% !important;">
                                     <!-- SELECT -->
-                                    <select class="card-filter" ng-model="companySelected" ng-options="x.Name for x in companyOwned"></select>
+                                    <select class="card-filter" ng-model="companySelected" ng-options="x.Name for x in companyOwned" ng-change="getProducts(kriteria, page, row, companySelected.Id)"></select>
                                 </div>
                             </div>
                         </div>
@@ -57,20 +57,19 @@
                 <!-- /page header -->
                 <!-- Content area -->
 
-                <div class="content" ng-show="hasCompany()" ng-init="">
-                    <div style="height:10px"></div>
+                <div class="content" ng-show="hasCompanyAndIsView()">
                     <!-- LIST -->
+                    <div class="row">
+                        <div class="col-1">
+                            <button class="image-container-sm" ng-click="downloadAllDocumentCompany()">
+                                <span class="tooltiptext">download all document</span>
+                                <img src="~/Images/icon/download-icon.png" />
+                            </button>
+                        </div>
+                    </div>
                     <div calss="row">
                         <div class="panel panel-flat">
-                            <div class="table-responsive" ng-show="isView">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <button class="image-container-sm" ng-click="downloadAllDocumentCompany()">
-                                            <span class="tooltiptext">download all document</span>
-                                            <img src="~/Images/icon/download-icon.png" />
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="table-responsive">
                                 <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
@@ -176,6 +175,11 @@
                     return true;
                 } else return false;
             }
+            $scope.hasCompanyAndIsView = function () {
+                if ($scope.companyOwned.length > 0 && $scope.isView) {
+                    return true;
+                } else return false;
+            }
             $scope.noCompanyFound = function () {
                 if ($scope.companyOwned.length <= 0 && $scope.companySearched) {
                     return true;
@@ -187,15 +191,15 @@
             $scope.getProducts = function (kriteria, page, row, companyId) {
                 /*var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();*/
+                console.log(kriteria, page, row, companyId)
                 $scope.products = [];
                 $http.post('@Url.Action("GetCompanyDocument", "document")', { searchKeyword: kriteria, page: page, pageSize: row, companyId: companyId }).then(function (response) {
-                    btn.stop();
                     if (response.data) {
+                        console.log(response.data);
                         $scope.products = response.data;
-                        $scope.isView = true;
+                        if($scope.products != null && $scope.products.length > 0) $scope.isView = true;
                     }
                 }, function (response) {
-                    btn.stop();
                     //error handle\
                     var x = 0;
                 });
@@ -209,15 +213,7 @@
                 return new Date(parseInt(val.substr(6)));
             }
             $scope.downloadAllDocumentCompany = function () {
-                $http.post('@Url.Action("DownloadAllDocumentfromCompany", "updownfile")', { companyId: $scope.companySelected.Id })
-                    .then(function (response) {
-                        if (response.data) {
-                            save(response.data);
-                        }
-                    }, function (response) {
-                        //error handle\
-                        var x = 0;
-                    });
+                window.open("/updownfile/DownloadAllDocumentfromCompany?companyId="+$scope.companySelected.Id)
             }
 
 
