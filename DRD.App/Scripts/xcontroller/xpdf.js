@@ -1765,21 +1765,22 @@
     }
 
     $scope.setMember = function (idx) {
-        $scope.setMemberDetail($scope.members[idx].Id, $scope.members[idx].Number, $scope.members[idx].Name, $scope.members[idx].ImageProfile);
+        $scope.setMemberDetail($scope.members[idx].Id, $scope.members[idx].EncryptedId, $scope.members[idx].Number, $scope.members[idx].Name, $scope.members[idx].ImageProfile);
     }
 
-    $scope.setMemberDetail = function (id, number, name, imageProfile) {
+    $scope.setMemberDetail = function (id, encryptedId, number, name, imageProfile) {
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
         item.ElementId = id;
+        item.ElementEncryptedId = encryptedId;
         item.Annotate.Number = number;
         item.Annotate.Name = name;
         item.Annotate.Foto = imageProfile;
 
         var no = parent.replace('svg', '');
         var foto = document.getElementById("member-foto-" + no);
-        foto.src = "/Images/Member/" + item.Annotate.Foto;
+        foto.src = "/Images/Member/" + item.ElementEncryptedId + "/" + item.Annotate.Foto;
         $("#member-name-" + no).text(item.Annotate.Name + ' | ' + item.Annotate.Number);
     }
     $scope.editMember = function (idx) {
