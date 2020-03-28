@@ -88,7 +88,14 @@ namespace DRD.App.Controllers
         {
             var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
-            var data = rotationService.FindRotations(user.Id, topCriteria, page, pageSize);
+            var data = rotationService.FindRotations(user.Id, topCriteria, page, pageSize, null);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult FindRotationCountAll(string topCriteria)
+        {
+            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
+            InitializeAPI();
+            var data = rotationService.FindRotationCountAll(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
