@@ -406,7 +406,10 @@
                     showInfo("Workflow data can not be changed.");
                     return;
                 }
-                $scope.workflows=[];
+                $scope.workflows = [];
+                $scope.page = "1";
+                $scope.kriteria = "";
+                $scope.paging = [];
                 $("#modal_select_workflow").modal("show");
 
 
@@ -436,17 +439,9 @@
                 $scope.workflows = [];
                 $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data.Items;
-
+                        $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
+                        $scope.findWorkflowsCountAll(kriteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -454,12 +449,26 @@
                     var x = 0;
                 });
             }
-
+            $scope.findWorkflowsCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                        var x = 0;
+                })
+            }
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data.Items;
+                        $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
                     }
                 }, function (response) {
@@ -480,6 +489,7 @@
                 $scope.members = [];
                 $scope.page = "1";
                 $scope.kriteria = "";
+                $scope.paging = [];
                 $("#modal_select_member").modal("show");
             }
 

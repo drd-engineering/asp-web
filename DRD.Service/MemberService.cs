@@ -301,7 +301,7 @@ namespace DRD.Service
                                                         Phone = user.Phone,
                                                         Email = user.Email,
                                                         ImageProfile = user.ImageProfile
-                                                    }).OrderBy(member => member.Name).Count();
+                                                    }).Count();
                 return countContactListAllMatch;
             }
         }

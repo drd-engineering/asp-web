@@ -94,29 +94,37 @@ namespace DRD.App.Controllers
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            var data = srv.FindWorkflows(user.Id, topCriteria, page, pageSize);
+            var data = srv.FindWorkflows(user.Id, topCriteria, page, pageSize, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-/*
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="topCriteria"></param>
-        /// <param name="page"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        public ActionResult GetPopupAll(string topCriteria, int page, int pageSize, string criteria)
+        public ActionResult FindWorkflowsCountAll(string topCriteria)
         {
             LoginController login = new LoginController();
             UserSession user = login.GetUser(this);
             var srv = new WorkflowService();// getUserLogin().AppZone.Code);
-            Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
-            if (!criteria.Equals(""))
-                criteriaUsed = WorkflowItem => criteria == "";
-            var data = srv.GetPopupAll(user.Id, topCriteria, page, pageSize, null, criteriaUsed);
+            var data = srv.FindWorkflowsCountAll(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
-        }*/
+        }
+        /*
+                /// <summary>
+                /// 
+                /// </summary>
+                /// <param name="topCriteria"></param>
+                /// <param name="page"></param>
+                /// <param name="pageSize"></param>
+                /// <param name="criteria"></param>
+                /// <returns></returns>
+                public ActionResult GetPopupAll(string topCriteria, int page, int pageSize, string criteria)
+                {
+                    LoginController login = new LoginController();
+                    UserSession user = login.GetUser(this);
+                    var srv = new WorkflowService();// getUserLogin().AppZone.Code);
+                    Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
+                    if (!criteria.Equals(""))
+                        criteriaUsed = WorkflowItem => criteria == "";
+                    var data = srv.GetPopupAll(user.Id, topCriteria, page, pageSize, null, criteriaUsed);
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }*/
 
         /*/// <summary>
         /// 

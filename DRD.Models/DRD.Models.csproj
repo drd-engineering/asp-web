@@ -196,7 +196,6 @@
     <Compile Include="API\AddMemberResponse.cs" />
     <Compile Include="API\DocUploadResult.cs" />
     <Compile Include="API\ListRotationData.cs" />
-    <Compile Include="API\ListWorkflowItem.cs" />
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
     <Compile Include="Custom\DocumentInboxData.cs" />

@@ -157,36 +157,40 @@
                 return ((val & bitval) == bitval);
             }
             /*--------------------------------------------------------------
-            GET ASSET ITEM
+                POPUP WORKFLOW
             --------------------------------------------------------------*/
             $scope.findWorkflows = function (kriteria, page, row) {
-                var btn = Ladda.create(document.querySelector('.btn-process'));
-                btn.start();
-                $scope.products = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
-                    btn.stop();
+                $scope.workflows = [];
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.products = response.data.Items;
+                        $scope.products = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
+                        $scope.findWorkflowsCountAll(kriteria);
+                        $scope.isView = true;
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            $scope.findWorkflowsCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
                         $scope.page = "1";
-                        $scope.isView = true;
                     }
                 }, function (response) {
-                    btn.stop();
-                    //error handle\
                     var x = 0;
                 });
             }
-
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
@@ -197,7 +201,7 @@
                 });
             }
             /*--------------------------------------------------------------
-            GENERAL FUNCTION
+                END POPUP WORKFLOW
             --------------------------------------------------------------*/
             /*--------------------------------------------------------------
             CONVERT JSON DATE
