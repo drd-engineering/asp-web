@@ -249,7 +249,8 @@ namespace DRD.Service
                  {
                      Id = doc.Id,
                      Title = doc.Title,
-                     FileName = doc.FileName,
+                     FileNameOri = doc.FileName,
+                     FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
                      CreatorId = doc.CreatorId,
                      CreatedAt = doc.CreatedAt,
