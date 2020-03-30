@@ -220,7 +220,7 @@ namespace DRD.Service
                         inboxItem.LastStatus = "REVIEW";
                         UpdatePreviousInbox(activity);
                     }
-                    else
+                    else 
                     {
                         inboxItem.LastStatus = "UPLOAD";
                         inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
@@ -258,7 +258,7 @@ namespace DRD.Service
                         }
                         else if (activity.LastActivityStatus.Equals("REJECT"))
                         {
-                            inbox.DateNote = "This " + activity.RotationName + " has ben rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
+                            inbox.DateNote = "This " + activity.RotationName + " has been rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
                             inbox.LastStatus = "REJECTED";
                         }
                         inbox.CreatedAt = DateTime.Now;
@@ -291,7 +291,7 @@ namespace DRD.Service
                     }
                     else if (activity.LastActivityStatus.Equals("REJECT"))
                     {
-                          inbox.DateNote = "This " + activity.RotationName + " has ben rejected by " + activity.PreviousUserName + "(" +  activity.PreviousEmail + "}";
+                          inbox.DateNote = "This " + activity.RotationName + " has ben rejected by you";
                           inbox.LastStatus = "REJECTED";
                     }
 

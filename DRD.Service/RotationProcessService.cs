@@ -178,8 +178,12 @@ namespace DRD.Service
                 }
                 else if (strbit.Equals("REJECT"))
                 {
+                    var workflowNodeLink = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId).FirstOrDefault();
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
                     updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
+
+                    long userId = (long)workflowNodeLink.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
+                    retvalues.Add(createActivityResult(userId, userId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
                 }
                 else if (strbit.Equals("SUBMIT")) 
                 {

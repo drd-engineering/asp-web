@@ -70,7 +70,7 @@
                                     <tbody>
                                         <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-click="do_edit(x.Id);" ng-repeat="x in products">
                                             <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
-                                            <td><strong class="tag {{x.LastStatus=='REJECT'?'danger':(x.LastStatus=='REVISION'?'warning':'info')}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
+                                            <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                             <td>{{x.RotationName}}</td>
                                             <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
                                         </tr>
@@ -150,6 +150,7 @@
                 });
             }
 
+
             $scope.changePage = function (kriteria, page, row) {
 
                 $http.post('@Url.Action("GetNodeLiteAll", "Rotation")', { status: '00', topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -174,6 +175,20 @@
                 if (val == undefined)
                     return '';
                 return new Date(parseInt(val.substr(6)));
+            }
+
+            $scope.SetItemClass = function (status) {
+                console.log(status);
+                console.log("STATUS");
+                    if (status == "REJECT" || status == "REJECTED") {
+                        return "danger";
+                    } else if (status == "REVISION") {
+                        return "warning";
+                    } else if (status == "INFO") {
+                        return "default";
+                    } 
+                    return "info";
+                    
             }
 
 
