@@ -92,6 +92,7 @@ namespace DRD.Service
                     //rtnode.RotationId = rotId;
                     rtnode.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
                     rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTo;
+                    rtnode.FirstNodeId = workflowNodeLink.FirstNodeId;
                     System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE:: " + rtnode.WorkflowNodeId + " : " + workflowNodeLink.WorkflowNodeToId);
                     //long user = db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rt.Id).UserId.Value;
                     long userNodeId = getUserId(workflowNodeLink.WorkflowNodeToId, rt.Id);
@@ -104,9 +105,7 @@ namespace DRD.Service
                     db.RotationNodes.Add(rtnode);
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: " + rt.WorkflowId);
                     db.SaveChanges();
-                    long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode.RotationId).Max(item => item.Id);
-                    rtnode.FirstNodeId = lastProductId;
-                    db.SaveChanges();
+  
                     retvalues.Add(createActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();

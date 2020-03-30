@@ -290,6 +290,7 @@
                     $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId = product.RotationNodeId;
                     $scope.model.FirstNodeId = product.FirstNodeId;
+                    $scope.model.DefWorkflowNodeId = product.DefWorkflowNodeId;
                     $scope.model.Subject = product.Subject
                     $scope.model.CurrentActivity = product.CurrentActivity;
                     $scope.model.Status=product.Status;
@@ -637,8 +638,8 @@
 
             $scope.checkIsFirstPerson = function () {
                 console.log("FIRST");
-                console.log($scope.model.RotationNodeId == $scope.model.FirstNodeId);
-                return $scope.model.RotationNodeId == $scope.model.FirstNodeId;
+                console.log($scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId);
+                return $scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId;
             }
             $scope.openPrintDocument = function (idx, fileName){
                 var doc=$scope.docs[idx];
