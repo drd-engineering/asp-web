@@ -154,8 +154,8 @@
                                 <br />
                                 <div class="col-md-10" style="display:none" id="action-panel">
                                     <div class="panel panel-body border-top-primary text-center">
-                                        <button type="button" ng-show="true" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                        <button type="button" ng-show="true" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
+                                        <button type="button" ng-show="!checkIsFirstPerson()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
+                                        <button type="button" ng-show="!checkIsFirstPerson()" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
                                         <button type="button" ng-show="validAction(model.FlagAction,8)" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(8)">Alter</span></button>
                                         <button type="button" ng-show="true" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(1)">Submit</span></button>
                                     </div>
@@ -288,7 +288,8 @@
                     console.log("WIZARNO", $scope.wizarno);
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
-                    $scope.model.RotationNodeId=product.RotationNodeId;
+                    $scope.model.RotationNodeId = product.RotationNodeId;
+                    $scope.model.FirstNodeId = product.FirstNodeId;
                     $scope.model.Subject = product.Subject
                     $scope.model.CurrentActivity = product.CurrentActivity;
                     $scope.model.Status=product.Status;
@@ -634,6 +635,11 @@
                 });
             }
 
+            $scope.checkIsFirstPerson = function () {
+                console.log("FIRST");
+                console.log($scope.model.RotationNodeId == $scope.model.FirstNodeId);
+                return $scope.model.RotationNodeId == $scope.model.FirstNodeId;
+            }
             $scope.openPrintDocument = function (idx, fileName){
                 var doc=$scope.docs[idx];
                 doc.FlagAction|=8;
@@ -1409,8 +1415,6 @@
                 $("#modal_select_member").modal("show");
             }
              $scope.SetItemClass = function (status) {
-                console.log(status);
-                console.log("STATUS");
                     if (status == 98 || status == 99 || status == 97 ) {
                         return "danger";
                     } else if (status == 5) {

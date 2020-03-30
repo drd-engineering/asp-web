@@ -126,6 +126,7 @@ namespace DRD.Service
                         Status = c.Status,
                         WorkflowId = c.Rotation.WorkflowId,
                         UserId = c.MemberId,
+                        FirstNodeId = c.FirstNodeId,
                         DateCreated = c.CreatedAt,
                         DateUpdated = c.UpdatedAt,
                         DateStarted = c.DateRead,

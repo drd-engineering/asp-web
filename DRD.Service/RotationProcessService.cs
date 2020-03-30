@@ -92,7 +92,6 @@ namespace DRD.Service
                     //rtnode.RotationId = rotId;
                     rtnode.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
                     rtnode.WorkflowNode = workflowNodeLink.WorkflowNodeTo;
-                    rtnode.FirstNodeId = workflowNodeLink.FirstNodeId;
                     System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE:: " + rtnode.WorkflowNodeId + " : " + workflowNodeLink.WorkflowNodeToId);
                     //long user = db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rt.Id).UserId.Value;
                     long userNodeId = getUserId(workflowNodeLink.WorkflowNodeToId, rt.Id);
@@ -104,6 +103,9 @@ namespace DRD.Service
                     rtnode.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: " + rt.WorkflowId);
+                    db.SaveChanges();
+                    long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode.RotationId).Max(item => item.Id);
+                    rtnode.FirstNodeId = lastProductId;
                     db.SaveChanges();
                     retvalues.Add(createActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
@@ -163,7 +165,7 @@ namespace DRD.Service
 
                     rtnode2.RotationId = rtnode.RotationId;
                     rtnode2.WorkflowNodeId = workflowNodeLink.FirstNodeId;
-                    rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                    rtnode2.FirstNodeId = rtnode.FirstNodeId;
                     rtnode2.SenderRotationNodeId = rtnode.Id;
                     rtnode2.UserId = (long)workflowNodeLink.FirstNode.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.FirstNodeId && c.RotationId == rtnode.RotationId).User.Id;
                     rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
@@ -171,7 +173,7 @@ namespace DRD.Service
                     rtnode2.Value = rtnode.Value;
                     rtnode2.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode2);
-
+                    db.SaveChanges();
                     //TODO change how to get last id inserted
                     long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
                     retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
@@ -209,7 +211,7 @@ namespace DRD.Service
 
                             rtnode2.RotationId = rtnode.RotationId;
                             rtnode2.WorkflowNodeId = workflowNodeLink.WorkflowNodeToId;
-                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                            rtnode2.FirstNodeId = rtnode.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             rtnode2.UserId = (long)workflowNodeLink.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
                             rtnode2.PrevWorkflowNodeId = workflowNodeLink.WorkflowNodeId;// tested OK
@@ -218,7 +220,7 @@ namespace DRD.Service
                             rtnode2.CreatedAt = DateTime.Now;
                             db.RotationNodes.Add(rtnode2);
 
-
+                            db.SaveChanges();
                             //TODO change how to get last id inserted
                             long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
                             retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
@@ -277,7 +279,7 @@ namespace DRD.Service
 
                                     rtnode2.Rotation.Id = rtnode.Rotation.Id;
                                     rtnode2.WorkflowNode.Id = lnk.WorkflowNodeToId;
-                                    rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                                    rtnode2.FirstNodeId = rtnode.FirstNodeId;
                                     rtnode2.SenderRotationNodeId = rtnode.Id;
                                     //rtnode2.UserId = (long)lnk.WorkflowNodeTo.UserId;
                                     rtnode2.UserId = (long)lnk.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == lnk.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -287,6 +289,7 @@ namespace DRD.Service
                                     rtnode2.CreatedAt = DateTime.Now;
                                     db.RotationNodes.Add(rtnode2);
 
+                                    db.SaveChanges();
                                     long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
                                     retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                                 }
@@ -304,7 +307,7 @@ namespace DRD.Service
 
                             rtnode2.Rotation.Id = rtnode.Rotation.Id;
                             rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                            rtnode2.FirstNodeId = rtnode.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                             rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -313,6 +316,7 @@ namespace DRD.Service
                             rtnode2.Value = rtnode.Value;
                             rtnode2.CreatedAt = DateTime.Now;
                             db.RotationNodes.Add(rtnode2);
+                            db.SaveChanges();
 
                             long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
                             retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
@@ -326,7 +330,7 @@ namespace DRD.Service
 
                             rtnode2.Rotation.Id = rtnode.Rotation.Id;
                             rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                            rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                            rtnode2.FirstNodeId = rtnode.FirstNodeId;
                             rtnode2.SenderRotationNodeId = rtnode.Id;
                             //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                             rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -370,7 +374,7 @@ namespace DRD.Service
 
                                 rtnode2.Rotation.Id = rtnode.Rotation.Id;
                                 rtnode2.WorkflowNode.Id = nodeToNext.WorkflowNodeToId;
-                                rtnode2.FirstNodeId = workflowNodeLink.FirstNodeId;
+                                rtnode2.FirstNodeId = rtnode.FirstNodeId;
                                 rtnode2.SenderRotationNodeId = rtnode.Id;
                                 //rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.UserId;
                                 rtnode2.UserId = (long)nodeToNext.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == nodeToNext.WorkflowNodeToId && c.Rotation.Id == rtnode.Rotation.Id).User.Id;
@@ -379,7 +383,7 @@ namespace DRD.Service
                                 rtnode2.Value = rtnode.Value;
                                 rtnode2.CreatedAt = DateTime.Now;
                                 db.RotationNodes.Add(rtnode2);
-                                
+                                db.SaveChanges();
 
                                 //TODO change how to get last id inserted
                                 long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
