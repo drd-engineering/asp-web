@@ -3,63 +3,6 @@
     Layout = null;
 }
 
-<style>
-    .style-foto {
-        width: 40px;
-    }
-
-    .style-blank {
-        width: 141px;
-        /*border-bottom-style: dotted;
-        border-bottom-width: 1px;*/
-    }
-
-    .style-date {
-        width: 120px;
-        font-size: smaller;
-    }
-
-    .style-table {
-        width: 100%;
-    }
-
-    .style-name {
-    }
-
-    .style-status {
-        text-align: center;
-        font-size: smaller;
-        width: 100px;
-        /*border-bottom-style: dotted;
-        border-bottom-width: 1px;*/
-    }
-
-    .style-date-remark {
-        font-size: smaller;
-        color: maroon;
-    }
-
-    .style-remark {
-        /*border-bottom-style: dotted;
-        border-bottom-width: 1px;*/
-        font-size: smaller;
-        color: gray;
-    }
-
-    .style-node {
-        padding: 2px;
-        border-top-right-radius: 25px;
-        border-top-left-radius: 25px;
-        border-bottom-right-radius: 25px;
-        border-bottom-left-radius: 25px;
-        font-size: smaller;
-    }
-
-    .style-note {
-        font-size: smaller;
-        color: red;
-    }
-</style>
 
 <label class="control-label">Rotation Log</label>
 <br />
@@ -71,7 +14,7 @@
             <td class="style-foto" rowspan="2" style="padding:10px">
                 <img alt="" ng-src="/Images/Member/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
             </td>
-            <td class="style-date" style="padding:10px">{{convertJsonDate(x.DateCreated) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+            <td class="style-date" style="padding:10px">{{convertJsonDate(x.CreatedAt) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
             <td class="style-name" style="padding:10px">
                 <span style="color:black;"><b>{{x.User.Name}}</b></span>
                 <span style="font-size:xx-small">in</span>
@@ -118,7 +61,7 @@
                     <label class="style-note">{{x.Note}}</label>
                 </div>
             </td>
-            <td class="style-status" rowspan="2" style="padding:10px"><label style="padding: 3px; color:{{x.StatusCode.TextColor}};background-color:{{x.StatusCode.BackColor}}">{{getStatusName(x.Status)}}</label></td>
+            <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status)}}</label></td>
         </tr>
         @*<tr>
                 <td class="style-blank">&nbsp;</td>

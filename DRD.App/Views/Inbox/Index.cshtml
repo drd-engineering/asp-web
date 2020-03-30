@@ -1408,7 +1408,19 @@
                 $scope.kriteria = "";
                 $("#modal_select_member").modal("show");
             }
-
+             $scope.SetItemClass = function (status) {
+                console.log(status);
+                console.log("STATUS");
+                    if (status == 98 || status == 99 || status == 97 ) {
+                        return "danger";
+                    } else if (status == 5) {
+                        return "warning";
+                    } else if ( status == 1 || status == 2) {
+                        return "default";
+                    } 
+                    return "info";
+                    
+            }
             $scope.findMembers = function (kriteria, page, row) {
                 $scope.page = 1;
                 $scope.members = [];

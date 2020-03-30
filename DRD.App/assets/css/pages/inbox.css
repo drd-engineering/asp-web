@@ -164,3 +164,82 @@
         color: red;
     }
 
+.style-foto {
+    width: 40px;
+}
+
+.style-blank {
+    width: 141px;
+    /*border-bottom-style: dotted;
+        border-bottom-width: 1px;*/
+}
+
+.style-date {
+    width: 120px;
+    font-size: smaller;
+}
+
+.style-table {
+    width: 100%;
+}
+
+.style-name {
+}
+
+.style-status {
+    text-align: center;
+    font-size: smaller;
+    width: 100px;
+    /*border-bottom-style: dotted;
+        border-bottom-width: 1px;*/
+}
+
+.style-date-remark {
+    font-size: smaller;
+    color: maroon;
+}
+
+.style-remark {
+    /*border-bottom-style: dotted;
+        border-bottom-width: 1px;*/
+    font-size: smaller;
+    color: gray;
+}
+
+.style-node {
+    padding: 2px;
+    border-top-right-radius: 25px;
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    font-size: smaller;
+}
+
+.style-note {
+    font-size: smaller;
+    color: red;
+}
+
+.status {
+    padding: 3px;
+}
+
+.info {
+    color: #fff !important;
+    background-color: #2196F3 !important
+}
+
+.warning {
+    color: #fff !important;
+    background-color: #F0D500 !important
+}
+
+.danger {
+    color: #fff !important;
+    background-color: #F32013 !important
+}
+
+.default {
+    color: #666666 !important;
+    background-color: #e6e6e6 !important
+}
