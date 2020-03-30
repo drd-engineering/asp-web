@@ -152,6 +152,7 @@ namespace DRD.Service
                     db.RotationNodeRemarks.Add(rtnoderemark);
                 }
 
+                    System.Diagnostics.Debug.WriteLine("PROCESS SUBMIT::strbit:::"+strbit);
                 if (strbit.Equals("REVISI"))
                 {
                     rtnode.Status = (int)Constant.RotationStatus.Revision;

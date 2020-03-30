@@ -213,12 +213,22 @@ namespace DRD.Service
                         }
                         else { return -1; }
                     }
+
+                    if (activity.LastActivityStatus != null && activity.LastActivityStatus.Equals("SUBMIT"))
+                    {
+                        inboxItem.DateNote = "You need to review " + activity.RotationName;
+                        inboxItem.LastStatus = "REVIEW";
+                        UpdatePreviousInbox(activity);
+                    }
+                    else
+                    {
+                        inboxItem.LastStatus = "UPLOAD";
+                        inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
+                    }
                     inboxItem.prevUserEmail = activity.PreviousEmail;
                     inboxItem.prevUserName = activity.PreviousUserName;
-                    inboxItem.LastStatus = "UPLOAD";
                     inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
-                    inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
                     db.Inboxes.Add(inboxItem);
                     System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + inboxItem.Message);
                     return db.SaveChanges();
@@ -226,7 +236,40 @@ namespace DRD.Service
             }
             return returnItem;
         }
+        public int UpdatePreviousInbox(ActivityItem activity)
+        {
+            using (var db = new ServiceContext())
+            {
+                var prevInbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId != activity.UserId).ToList();
+                if (prevInbox != null)
+                {
+                    foreach (Inbox inbox in prevInbox)
+                    {
+                        if (activity.LastActivityStatus.Equals("SUBMIT"))
+                        {
+                            inbox.DateNote = activity.UserName + "(" + activity.Email + ")" + " is reviewing " + activity.RotationName;
+                            inbox.LastStatus = "INFO";
 
+                        }
+                        else if (activity.LastActivityStatus.Equals("REVISI"))
+                        {
+                            inbox.DateNote = activity.UserName + "(" + activity.Email + ")" + " is revising " + activity.RotationName;
+                            inbox.LastStatus = "INFO";
+                        }
+                        else if (activity.LastActivityStatus.Equals("REJECT"))
+                        {
+                            inbox.DateNote = "This " + activity.RotationName + " has ben rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
+                            inbox.LastStatus = "REJECTED";
+                        }
+                        inbox.CreatedAt = DateTime.Now;
+                        inbox.prevUserEmail = activity.PreviousEmail;
+                        inbox.prevUserName = activity.PreviousUserName;
+                    }
+                    return db.SaveChanges();
+                }
+                return -1;
+            }
+        }
         public int GenerateNewInbox(ActivityItem activity)
         {
             using (var db = new ServiceContext())
@@ -234,11 +277,12 @@ namespace DRD.Service
                 var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId == activity.UserId).FirstOrDefault();
                 if (inbox != null)
                 {
-                System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId);
+                System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.LastActivityStatus);
                     if (activity.LastActivityStatus.Equals("SUBMIT"))
                     {
                           inbox.DateNote = "You need to review " + activity.RotationName;
                           inbox.LastStatus = "REVIEW";
+
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
@@ -255,7 +299,7 @@ namespace DRD.Service
                     inbox.CreatedAt = DateTime.Now;
                     inbox.prevUserEmail = activity.PreviousEmail;
                     inbox.prevUserName = activity.PreviousUserName;
-                    
+                    UpdatePreviousInbox(activity);
                     return db.SaveChanges();
                 }
                 else
