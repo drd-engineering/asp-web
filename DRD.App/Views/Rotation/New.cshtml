@@ -44,8 +44,8 @@
             <h3>@ViewBag.Title</h3>
         </div>
         <!-- ROTATION FORM-->
-        <form name="myForm" class="form-horizontal" autocomplete="off">
-            <div ng-show="wizarno=='product'">
+        <div ng-show="wizarno=='product'">
+            <form name="myForm" class="form-horizontal" autocomplete="off">
                 <fieldset>
                     <div class="row">
                         <div class="col-md-6">
@@ -74,8 +74,7 @@
                     </div>
 
                     <div class="row">
-
-                        <div class="col-md-8">
+                        <!--<div class="col-md-8">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <label class="control-label">Important Notes</label>
@@ -91,14 +90,14 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <label class="control-label">Tags</label>
                                 </div>
                                 <div class="col-sm-12">
-                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="$event.keyCode == 188 && addTagList()"/>
+                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="$event.keyCode == 188 && addTagList()" />
                                 </div>
                                 <div class="col-sm-12">
                                     <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
@@ -133,7 +132,7 @@
                                                 <table style="width:100%;">
                                                     <tr>
                                                         <td style="width:50px;">
-                                                            <img ng-src={{(x.Picture==null?"/Images/Member/user.png":"/Images/Member/"+x.Picture)}} height="40" width="40" style="cursor:pointer;border-radius:50%;" ng-click="editMember($index)" />
+                                                            <img ng-src={{(x.Picture==null?"/Images/Member/user.png":"/Images/Member/"+x.EncryptedId+"/"+x.Picture)}} height="40" width="40" style="cursor:pointer;border-radius:50%;" ng-click="editMember($index)" />
                                                         </td>
                                                         <td style="font-size:xx-small">
                                                             <span class="text-format">{{x.Name +" "+ x.encrypteid}}</span><br />
@@ -148,9 +147,9 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission :&ensp;</span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
+                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -168,16 +167,14 @@
                     </button>
                 </div>
                 <!-- end of SUBMIT BUTTON -->
-            </div>
-        </form>
+
+            </form>
+        </div>
         <!--end of ROTATION FORM-->
         <!--CONFIRMATION THANK YOU-->
         <div ng-show="wizarno=='success'">
-            <div class="col-md-12">
-
-                <div class="alert alert-success alert-styled-left">
-                    Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
-                </div>
+            <div class="alert alert-success alert-styled-left">
+                Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
             </div>
         </div>
 
@@ -391,10 +388,11 @@
                     showInfo("Workflow data can not be changed.");
                     return;
                 }
-                $scope.workflows=[];
+                $scope.workflows = [];
+                $scope.page = "1";
+                $scope.kriteria = "";
+                $scope.paging = [];
                 $("#modal_select_workflow").modal("show");
-
-
             }
             $scope.setWorkflow = function (idx) {
                 $scope.workflow=$scope.workflows[idx];
@@ -421,17 +419,9 @@
                 $scope.workflows = [];
                 $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data.Items;
-
+                        $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
+                        $scope.findWorkflowsCountAll(kriteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -439,12 +429,26 @@
                     var x = 0;
                 });
             }
-
+            $scope.findWorkflowsCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                        var x = 0;
+                })
+            }
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
-                        $scope.workflows = response.data.Items;
+                        $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
                     }
                 }, function (response) {
@@ -463,29 +467,20 @@
             $scope.editMember = function (idx) {
                 $scope.memberIdx=idx;
                 $scope.members = [];
+                $scope.page = "1";
+                $scope.paging = [];
+                $scope.kriteria = "";
                 $("#modal_select_member").modal("show");
             }
 
-            $scope.setMember = function (idx) {
-                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
-                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
-                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
-                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
-            }
-
             $scope.findMembers = function (kriteria, page, row) {
+                $scope.page = 1;
                 $scope.members = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
-                        $scope.members = response.data.Items;
+                        $scope.members = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
+                        $scope.findMembersCountAll(kriteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -493,7 +488,22 @@
                     var x = 0;
                 });
             }
-
+            $scope.findMembersCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
             $scope.changePageMember = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -505,6 +515,14 @@
                     //error handle\
                     var x = 0;
                 });
+            }
+
+            $scope.setMember = function (idx) {
+                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
+                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
+                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
+                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
+                $scope.users[$scope.memberIdx].EncryptedId = $scope.members[idx].EncryptedId;
             }
             $scope.removeMember = function (idx) {
                 $scope.users.splice(idx,1);

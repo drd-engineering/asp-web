@@ -76,7 +76,7 @@
                                 <div class="col-lg-6">
                                     <div class="pull-right">
 
-                                        <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                        <select ng-model="page" class="form-control" ng-change="changePageRotations(kriteria, page, row)">
                                             <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                         </select>
                                     </div>
@@ -265,22 +265,18 @@
                 $http.post('@Url.Action("findRotations", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {
-                        console.log("ROTATION  :: "+response.data);
-                        $scope.products = response.data.Items;
+                        $scope.products = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
                         $scope.page = "1";
                         $scope.isView = true;
-                        $scope.products.forEach(function(item){
-                            console.log("THIS IS CREATED :: "+item.CreatedAt);
-                            item.CreatedAt = moment(item.CreatedAt).fromNow();
-                            console.log("THIS IS CREATED :: "+item.CreatedAt);
-                        });
+                        $scope.findRotationsCountAll(kriteria);
+                        $scope.products.forEach(
+                            function (item) {
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                                item.CreatedAt = moment(item.CreatedAt).fromNow();
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                            }
+                        );
                     }
                 }, function (response) {
                     //error handle\
@@ -288,15 +284,27 @@
                     var x = 0;
                 });
             }
-
-            $scope.changePageRotation = function (kriteria, page, row) {
+            $scope.findRotationsCountAll = function (kriteria) {
+                $http.post('@Url.Action("FindRotationCountAll", "Rotation")', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            $scope.changePageRotations = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("FindRotations", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
-                        
-
                     }
                 }, function (response) {
                     //error handle\

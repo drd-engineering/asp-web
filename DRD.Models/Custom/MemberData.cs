@@ -9,6 +9,7 @@ namespace DRD.Models.Custom
     public class MemberData
     {
         public long Id { get; set; } // Id (Primary key)
+        public string EncryptedId { get; set; } // generate use Generator encryption
         public string Name { get; set; } // Name (length: 50)
         public string Phone { get; set; } // Phone (length: 20)
         public string Email { get; set; } // Email (length: 50)
@@ -17,9 +18,6 @@ namespace DRD.Models.Custom
         //public string UserGroup { get; set; }
         public string CompanyName { get; set; }
 
-        public MemberData()
-        {
-
-        }
+        public MemberData() { }
     }
 }

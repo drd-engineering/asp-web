@@ -208,7 +208,8 @@ namespace DRD.Service
                  {
                      Id = doc.Id,
                      Title = doc.Title,
-                     FileName = doc.FileName,
+                     FileName = doc.FileUrl,
+                     FileNameOri = doc.FileName,
                      FileSize = doc.FileSize,
                      CreatorId = doc.CreatorId,
                      CreatedAt = doc.CreatedAt,
@@ -248,7 +249,8 @@ namespace DRD.Service
                  {
                      Id = doc.Id,
                      Title = doc.Title,
-                     FileName = doc.FileName,
+                     FileNameOri = doc.FileName,
+                     FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
                      CreatorId = doc.CreatorId,
                      CreatedAt = doc.CreatedAt,
@@ -604,7 +606,7 @@ namespace DRD.Service
         {
             return GetAnnotateDocs(memberId, topCriteria, page, pageSize, null, null);
         }
-        public long Save(DocumentInboxData prod, long companyId, long rotationId)
+        public DocumentInboxData Save(DocumentInboxData prod, long companyId, long rotationId)
         {
             long result = 0;
             DocumentInboxData document;
@@ -615,10 +617,9 @@ namespace DRD.Service
                 else document = Update(prod, companyId, rotationId);
                 if (document.Id != 0)
                     result = document.Id;
+                document.DocumentElements= SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
             }
-
-            SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
-            return result;
+            return document;
 
         }
 
@@ -790,7 +791,7 @@ namespace DRD.Service
             }
         }
 
-        public int SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
+        public ICollection<DocumentElementInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
         {
             using (var db = new ServiceContext())
             {
@@ -832,6 +833,7 @@ namespace DRD.Service
                 var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
                 System.Diagnostics.Debug.WriteLine("[count data want to save] " + dnew.Count());
                 int v = 0;
+                var retval = new List<DocumentElementInboxData>();
                 foreach (DocumentElement da in dnew)
                 {
                     var epos = annos.ElementAt(v);
@@ -864,8 +866,12 @@ namespace DRD.Service
                     da.CreatedAt = DateTime.Now;
                     v++;
                 }
-                return db.SaveChanges();
-
+                db.SaveChanges();
+                foreach (DocumentElement da in dnew)
+                {
+                    retval.Add(new DocumentElementInboxData(da));
+                }
+                return retval;
             }
         }
 

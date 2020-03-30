@@ -10,7 +10,7 @@ namespace DRD.Models
         [Key]
         public long Id { get; set; } // Id (Primary key)
         public int FlagAction { get; set; } // FlagAction
-
+        public long RotationId { get; set; }
         public long DocumentId{get; set;}
         public long RotationNodeId{get; set;}
         // Foreign keys
@@ -18,6 +18,8 @@ namespace DRD.Models
         public virtual Document Document { get; set; } // FK_RotationNodeDoc_Document
         [ForeignKey("RotationNodeId")]
         public virtual RotationNode RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
+        [ForeignKey("RotationId")]
+        public virtual Rotation Rotation { get; set; }
 
         public RotationNodeDoc()
         {

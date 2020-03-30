@@ -224,7 +224,7 @@ namespace DRD.App.Controllers
                             byte[] pdfByte = new byte[] { };
                             if (doc.Id != 0)
                             {
-                                string filepath = Server.MapPath(pathTarget) + doc.FileName + "/";
+                                string filepath = Server.MapPath(pathTarget) + doc.FileName;
 
                                 XFEncryptionHelper xf = new XFEncryptionHelper();
                                 var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
@@ -233,7 +233,7 @@ namespace DRD.App.Controllers
                             using (var entryStream = inerFile.Open())
                             using (var streamWriter = new StreamWriter(entryStream))
                             {
-                                streamWriter.Write(pdfByte);
+                                streamWriter.BaseStream.Write(pdfByte, 0, pdfByte.Length);
                             }
                         }
                     }

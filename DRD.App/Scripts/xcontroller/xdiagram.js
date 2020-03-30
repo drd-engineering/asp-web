@@ -1494,34 +1494,24 @@
 
     /*--------------------------------------------------------------
                 POPUP MEMBER
-    --------------------------------------------------------------*/
+            --------------------------------------------------------------*/
     $scope.memberIdx = -1;
     $scope.editMember = function (idx) {
         $scope.memberIdx = idx;
         $scope.members = [];
+        $scope.page = "1";
+        $scope.kriteria = "";
         $("#modal_select_member").modal("show");
     }
 
-    $scope.setMember = function (idx) {
-        $scope.users[$scope.memberIdx].UserId = $scope.members[idx].Id;
-        $scope.users[$scope.memberIdx].Name = $scope.members[idx].Name;
-        $scope.users[$scope.memberIdx].Email = $scope.members[idx].Email;
-        $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
-    }
-
     $scope.findMembers = function (kriteria, page, row) {
+        $scope.page = 1;
         $scope.members = [];
         $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
-                $scope.members = response.data.Items;
+                $scope.members = response.data;
                 $scope.index = row * (page - 1);
-                $scope.paging = [];
-                var jumlahData = response.data.Count;
-                var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                for (var i = 1; i <= jumlahPage; i++) {
-                    $scope.paging.push({ value: i, text: i });
-                }
-                $scope.page = "1";
+                $scope.findMembersCountAll(kriteria);
                 $scope.isView = true;
             }
         }, function (response) {
@@ -1529,7 +1519,22 @@
             var x = 0;
         });
     }
-
+    $scope.findMembersCountAll = function (kriteria) {
+        $scope.paging = [];
+        $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+            if (response.data) {
+                var jumlahData = response.data;
+                var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                for (var i = 1; i <= jumlahPage; i++) {
+                    $scope.paging.push({ value: i, text: i });
+                }
+                $scope.page = "1";
+            }
+        }, function (response) {
+            //error handle\
+            var x = 0;
+        });
+    }
     $scope.changePageMember = function (kriteria, page, row) {
         $scope.products = [];
         $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -1542,6 +1547,14 @@
             var x = 0;
         });
     }
+
+    $scope.setMember = function (idx) {
+        $scope.users[$scope.memberIdx].UserId = $scope.members[idx].Id;
+        $scope.users[$scope.memberIdx].Name = $scope.members[idx].Name;
+        $scope.users[$scope.memberIdx].Email = $scope.members[idx].Email;
+        $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
+        $scope.users[$scope.memberIdx].EncryptedId = $scope.members[idx].EncryptedId;
+    }
     $scope.removeMember = function (idx) {
         $scope.users.splice(idx, 1);
     }
@@ -1549,9 +1562,9 @@
         $scope.memberIdx = -1;
         $scope.members = [];
     }
-    /*--------------------------------------------------------------
+            /*--------------------------------------------------------------
     END POPUP MEMBER
-    --------------------------------------------------------------*/
+--------------------------------------------------------------*/
 
 });
 

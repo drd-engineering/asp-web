@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DRD.Models
 {
+    [Table("DocumentUsers", Schema = "public")]
     public class DocumentUser
     {
         [Key]

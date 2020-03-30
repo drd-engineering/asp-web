@@ -134,10 +134,12 @@
                                                             <td class="text-top">
                                                                 <a ng-click="editDocument($index);">
                                                                     <img ng-src="/Images/FileType/{{x.Document.ExtFile}}.png" width="16" />
-                                                                    {{x.Document.FileNameOri}}
+                                                                    {{x.Document.FileName}}
                                                                 </a><br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
+                                                                    <!-- <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
+                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span> -->
                                                                 </span>
                                                             </td>
                                                             <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
@@ -299,7 +301,8 @@
                     $scope.workflow=product.Workflow;
                     $scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.sumDocuments=product.SumRotationNodeDocs;
-                    $scope.sumAttachments=product.SumRotationNodeUpDocs;
+                    $scope.sumAttachments = product.SumRotationNodeUpDocs;
+                    console.log($scope.model);
 
                     if ($scope.model.Status==0){
                        if ($scope.currentRotationNode.SenderRotationNodeId!=null){
@@ -385,9 +388,7 @@
                     }
 
                 }
-
                 //$('#checkbox1').bootstrapSwitch.defaults.size='mini';
-
             }
 
             $scope.gotoAddDoc = function () {
@@ -776,14 +777,12 @@
                     closeOnConfirm: false,
                     confirmButtonColor: "#2196F3",
                     showLoaderOnConfirm: true,
-                    confirmButtonText: "Yes, sign it!",
+                    confirmButtonText: "Yes, "+eventString+" it!",
                     cancelButtonText: "No, cancel please!",
                 },
                 function (isConfirm) {
                     setTimeout(function () {
                         if (isConfirm) {
-
-
                             $scope.submitActivityProcess(bit);
                         }
                         swal.close();
@@ -793,25 +792,23 @@
             }
 
             $scope.submitActivityProcess = function (bit) {
-
-                var rotNodeDocs=[];
-                for(i=0;i<$scope.docs.length;i++){
-                    var doc={};
-                    doc.DocumentId=$scope.docs[i].DocumentId;
+                var rotNodeDocs = [];
+                for(var i=0; i<$scope.docs.length; i++){
+                    var doc = {};
+                    console.log(i);
+                    doc.DocumentId = $scope.docs[i].DocumentId;
                     doc.FlagAction = $scope.docs[i].FlagAction;
-
-                    if (bit == 1 && $scope.validAction(doc.FlagAction1, 1)) {
+                    if (bit == 1 && $scope.validAction(doc.FlagAction, 1)) {
                         $scope.signDocument(i);
                     }
 
-                    if (bit == 1 && $scope.validAction(doc.FlagAction1, 32)) {
+                    if (bit == 1 && $scope.validAction(doc.FlagAction, 32)) {
                         $scope.stampDocument(i);
                     }
-
-                    doc.Document={};
-                    var annos=[];
-                    for(x=0;x<$scope.docs[i].Document.DocumentAnnotates.length;x++){
-                        var ix=$scope.docs[i].Document.DocumentAnnotates[x];
+                    doc.Document=$scope.docs[i].Document;
+                    var annos = [];
+                    for (x = 0; x < $scope.docs[i].Document.DocumentElements.length; x++){
+                        var ix=$scope.docs[i].Document.DocumentElements[x];
                         if (ix.IsDeleted) continue;
                         var item={};
                         item.Page=ix.Page;
@@ -839,7 +836,7 @@
                         item.ElementId=ix.ElementId;
                         annos.push(item);
                     }
-                    doc.Document.DocumentAnnotates = annos;
+                    doc.Document.DocumentElements = annos;
                     rotNodeDocs.push(doc);
                 }
                 var rotNodeUpDocs=[];
@@ -852,6 +849,7 @@
                     doc.DocumentUpload.FileSize=$scope.updocs[i].DocumentUpload.FileSize;
                     rotNodeUpDocs.push(doc);
                 }
+                console.log(rotNodeDocs);
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
                 $http.post('@Url.Action("ProcessActivity", "Rotation")',
@@ -887,7 +885,6 @@
                 //iframeView.src=data;
                 //return;
 
-
                 if (!$scope.isValidForm($scope.myForm)){
                     showInfo("There is a problem, please press submit again.");
                     return;
@@ -919,7 +916,7 @@
 
             $scope.validAction = function (val, ...bits) {
                 var ret=false;
-                for(i=0;i<bits.length;i++){
+                for(i=0; i<bits.length; i++){
                     if ((val & bits[i])==bits[i]){
                         ret=true;
                         break;
@@ -1338,11 +1335,14 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            $scope.tempDoc.Document.DocumentId = response.data;
+                            response.data.ExtFile = $scope.tempDoc.Document.ExtFile;
+                            $scope.tempDoc.Document = response.data;
+                            $scope.tempDoc.DocumentId = response.data.Id;
                             $scope.docs.push($scope.tempDoc);
                             $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
+                            console.log($scope.docs);
                         }
                     }, function (response) {
                         //error handle\
@@ -1404,29 +1404,19 @@
             $scope.editMember = function (idx) {
                 $scope.memberIdx=idx;
                 $scope.members = [];
+                $scope.page = "1";
+                $scope.kriteria = "";
                 $("#modal_select_member").modal("show");
             }
 
-            $scope.setMember = function (idx) {
-                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
-                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
-                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
-                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
-            }
-
             $scope.findMembers = function (kriteria, page, row) {
+                $scope.page = 1;
                 $scope.members = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
-                        $scope.members = response.data.Items;
+                        $scope.members = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
+                        $scope.findMembersCountAll(kriteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -1434,7 +1424,22 @@
                     var x = 0;
                 });
             }
-
+            $scope.findMembersCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
             $scope.changePageMember = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -1446,6 +1451,14 @@
                     //error handle\
                     var x = 0;
                 });
+            }
+
+            $scope.setMember = function (idx) {
+                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
+                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
+                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
+                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
+                $scope.users[$scope.memberIdx].EncryptedId = $scope.members[idx].EncryptedId;
             }
             $scope.removeMember = function (idx) {
                 $scope.users.splice(idx,1);

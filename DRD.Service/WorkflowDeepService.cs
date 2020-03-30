@@ -277,6 +277,7 @@ namespace DRD.Service
                 }
                 // Tags
                 var tagItemListInDb = db.TagItems.Where(tagitemdb => tagitemdb.RotationId == product.Id).ToList();
+                if(prod.Tags != null)
                 foreach (string tag in prod.Tags)
                 {
                     var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));

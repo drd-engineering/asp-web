@@ -364,20 +364,15 @@ namespace DRD.Service
         /// <parameter name="page"></parameter>
         /// <parameter name="pageSize"></parameter>
         /// <returns></returns>
-        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize)
-        {
-            Expression<Func<RotationData, bool>> criteriaUsed = WorkflowData => true;
-            return FindRotations(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
-        }
-        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
+        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
         {
             Expression<Func<RotationData, bool>> criteriaUsed = WorkflowData => true;
             return FindRotations(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
-        public ListRotationData FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
+        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "Name";
+            Expression<Func<RotationData, string>> ordering = rotation => "Name";
 
             if (order != null)
                 ordering = order;
@@ -394,43 +389,71 @@ namespace DRD.Service
                 if(db.Rotations != null)
                 {
                     
-                    var result =
-                    (from rotation in db.Rotations
-                     where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     orderby rotation.DateCreated descending, rotation.Subject descending
-                     select new RotationData
-                     {
-                         Id = rotation.Id,
-                         Subject = rotation.Subject,
-                         Status = rotation.Status,
-                         WorkflowId = rotation.Workflow.Id,
-                         WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.UserId,
-                         CreatedAt = rotation.DateCreated,
-                         UpdatedAt = rotation.DateUpdated,
-                         DateStarted = rotation.DateUpdated,
-                     }).Where(criteria).Skip(skip).Take(pageSize).ToList();
-
+                    var result =(from rotation in db.Rotations
+                                where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
+                                orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
+                                select new RotationData
+                                {
+                                    Id = rotation.Id,
+                                    Subject = rotation.Subject,
+                                    Status = rotation.Status,
+                                    WorkflowId = rotation.Workflow.Id,
+                                    WorkflowName = rotation.Workflow.Name,
+                                    UserId = rotation.UserId,
+                                    CreatedAt = rotation.DateCreated,
+                                    UpdatedAt = rotation.DateUpdated,
+                                    DateStarted = rotation.DateUpdated,
+                                }).Where(criteria).Skip(skip).Take(pageSize).ToList();
                     foreach (RotationData resultItem in result){
                         resultItem.StatusDescription = constant.getRotationStatusName(resultItem.Status);
                     }
-
-                    ListRotationData returnValue = new ListRotationData();
                     if (result != null)
                     {
-                        int counterRotation = 0;
                         MenuService menuService = new MenuService();
-                        foreach (RotationData rotationItem in result)
+                        for (var i = 0; i<result.Count(); i++)
                         {
-                            counterRotation += 1;
-                            rotationItem.Key = menuService.EncryptData(rotationItem.Id);
-                            returnValue.Items.Add(rotationItem);
+                            var item = result.ElementAt(i);
+                            item.Key = menuService.EncryptData(item.Id);
+                            result[i] = item;
                         }
-                        returnValue.Count = counterRotation;
                     }
-                    return returnValue;
+                    return result;
                 }
                 return null;
+            }
+        }
+        public int FindRotationCountAll(long creatorId, string topCriteria)
+        {
+            // top criteria
+            string[] tops = new string[] { };
+            if (!string.IsNullOrEmpty(topCriteria))
+                tops = topCriteria.Split(' ');
+            else
+                topCriteria = "";
+
+            using (var db = new ServiceContext())
+            {
+                if (db.Rotations != null)
+                {
+
+                    var result = (from rotation in db.Rotations
+                                  where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
+                                  orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
+                                  select new RotationData
+                                  {
+                                      Id = rotation.Id,
+                                      Subject = rotation.Subject,
+                                      Status = rotation.Status,
+                                      WorkflowId = rotation.Workflow.Id,
+                                      WorkflowName = rotation.Workflow.Name,
+                                      UserId = rotation.UserId,
+                                      CreatedAt = rotation.DateCreated,
+                                      UpdatedAt = rotation.DateUpdated,
+                                      DateStarted = rotation.DateUpdated,
+                                  }).Count();
+                    return result;
+                }
+                return 0;
             }
         }
 
@@ -761,7 +784,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.Status descending, rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
@@ -773,11 +796,11 @@ namespace DRD.Service
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from user in rotation.RotationUsers
+                                RotationUsers = (from rtuser in rotation.RotationUsers
                                                  select new RotationDashboard.UserDashboard
                                                  {
-                                                     Id = user.Id,
-                                                     ImageProfile = user.User.ImageProfile
+                                                     Id = rtuser.User.Id,
+                                                     ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -798,7 +821,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.Status descending, rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
@@ -810,11 +833,11 @@ namespace DRD.Service
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from user in rotation.RotationUsers
+                                RotationUsers = (from rtuser in rotation.RotationUsers
                                                  select new RotationDashboard.UserDashboard
                                                  {
-                                                     Id = user.Id,
-                                                     ImageProfile = user.User.ImageProfile
+                                                     Id = rtuser.User.Id,
+                                                     ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -1015,8 +1038,6 @@ namespace DRD.Service
                 //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
                 //}
             }
-
-
             return rotation;
         }
 

@@ -13,14 +13,14 @@
 
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && findMembers(kriteria, page, row)" class="form-control" ng-model="kriteria" placeholder="Enter nomor/name/email/phone" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && findMembers($parent.kriteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.kriteria" placeholder="Enter nomor/name/email/phone" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findMembers(kriteria, page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="findMembers($parent.kriteria, $parent.page, $parent.row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="page" class="form-control" ng-change="changePageMember(kriteria, page, row)">
+                    <select ng-model="$parent.page" class="form-control" ng-change="changePageMember($parent.kriteria, $parent.page, $parent.row)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>
@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in members" style="vertical-align:top" data-dismiss="modal" ng-click="setMember($index);">
+                        <tr ng-repeat="x in $parent.members" style="vertical-align:top" data-dismiss="modal" ng-click="setMember($index);">
                             <td width="25px">{{$index+1 + index}}</td>
                             <td>{{x.Name}}</td>
                             <td>{{x.Phone}}</td>

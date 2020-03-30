@@ -368,6 +368,7 @@
     <Content Include="assets\css\icons\icomoon\styles.css" />
     <Content Include="assets\css\pages\company-member.css" />
     <Content Include="assets\css\pages\company.css" />
+    <Content Include="assets\css\pages\document-list.css" />
     <Content Include="assets\css\pages\dashboard.css" />
     <Content Include="assets\css\pages\inbox-list.css" />
     <Content Include="assets\css\pages\inbox.css" />

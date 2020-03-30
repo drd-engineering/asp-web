@@ -203,11 +203,11 @@
                     <table style="width:100%;">
                         <tr>
                             <td class="default-user">
-                                <img ng-src="/Images/Member/{{user.ImageProfile}}" />
+                                <img ng-src={{(user.Picture==null?"/Images/Member/user.png":"/Images/Member/"+user.EncryptedId+"/"+user.Picture)}}/>
                                 &ensp;&ensp;CHAT
                             </td>
                             <td class="user-selected">
-                                <img ng-src="/Images/Member/{{selectedUser.SenderFoto}}" />
+                                <img ng-src={{(x.Picture==null?"/Images/Member/user.png":"/Images/Member/"+selectedUser.EncryptedId+"/"+selectedUser.Picture)}} />
                                 &ensp;&ensp;{{selectedUser.SenderName}}<span style="font-size:xx-small;color:brown">&ensp;&ensp;{{selectedUser.SenderProfession}}</span>
                             </td>
                         </tr>
@@ -215,7 +215,7 @@
                             <td class="list-user">
                                 <div class="content">
                                     <div class="user" ng-repeat="x in users" ng-click="clickUser(x.SenderId)">
-                                        <img ng-src="/Images/Member/{{x.SenderFoto}}" />
+                                        <img ng-src={{(user.Picture==null?"/Images/Member/user.png":"/Images/Member/"+x.SenderEncryptedId+"/"+x.SenderFoto)}} />
                                         &ensp;&ensp;{{x.SenderName}}<span class="detail">&ensp;&ensp;{{x.SenderProfession}}</span>
                                         <span class="badge bg-warning-400" ng-hide="x.Unread==0">{{x.Unread}}</span>
                                     </div>
@@ -386,29 +386,19 @@
             $scope.editMember = function (idx) {
                 $scope.memberIdx=idx;
                 $scope.members = [];
+                $scope.page = "1";
+                $scope.kriteria = "";
                 $("#modal_select_member").modal("show");
             }
 
-            $scope.setMember = function (idx) {
-                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
-                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
-                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
-                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
-            }
-
             $scope.findMembers = function (kriteria, page, row) {
+                $scope.page = 1;
                 $scope.members = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
-                        $scope.members = response.data.Items;
+                        $scope.members = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.paging = [];
-                        var jumlahData = response.data.Count;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
+                        $scope.findMembersCountAll(kriteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -416,7 +406,22 @@
                     var x = 0;
                 });
             }
-
+            $scope.findMembersCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
             $scope.changePageMember = function (kriteria, page, row) {
                 $scope.products = [];
                 $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -428,6 +433,14 @@
                     //error handle\
                     var x = 0;
                 });
+            }
+
+            $scope.setMember = function (idx) {
+                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
+                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
+                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
+                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
+                $scope.users[$scope.memberIdx].EncryptedId = $scope.members[idx].EncryptedId;
             }
             $scope.removeMember = function (idx) {
                 $scope.users.splice(idx,1);

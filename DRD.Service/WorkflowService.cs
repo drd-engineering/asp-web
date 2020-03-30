@@ -136,20 +136,15 @@ namespace DRD.Service
         /// <param name="topCriteria"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
+        /// <param name="order"></param>
         /// <returns></returns>
-        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize)
-        {
-            Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
-            return FindWorkflows(creatorId, topCriteria, page, pageSize, null, criteriaUsed);
-        }
-
-        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order)
+        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order)
         {
             Expression<Func<WorkflowItem, bool>> criteriaUsed = WorkflowItem => true;
             return FindWorkflows(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public ListWorkflowItem FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem ,bool>> criteria)
+        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem ,bool>> criteria)
         {
             int skip = pageSize * (page - 1);
             Expression<Func<WorkflowItem, string>> ordering = WorkflowItem => "DateCreated desc, IsTemplate desc, Name";
@@ -182,20 +177,47 @@ namespace DRD.Service
                          DateCreated = workflow.DateCreated,
                          DateUpdated = workflow.DateUpdated,
                      }).Where(criteria).Skip(skip).Take(pageSize).ToList();
-                ListWorkflowItem returnValue = new ListWorkflowItem();
                 if (result != null)
                 {
-                    int CounterItem = 0;
                     MenuService menuService = new MenuService();
-                    foreach (WorkflowItem workflow in result)
+                    for (var i = 0; i<result.Count(); i++)
                     {
-                        CounterItem+=1;
-                        workflow.Key = menuService.EncryptData(workflow.Id);
-                        returnValue.Items.Add(workflow);
+                        var item = result.ElementAt(i);
+                        item.Key = menuService.EncryptData(item.Id);
+                        result[i] = item;
                     }
-                    returnValue.Count = CounterItem;
                 }
-                return returnValue;
+                return result;
+            }
+        }
+        public int FindWorkflowsCountAll(long creatorId, string topCriteria)
+        {
+            // top criteria
+            string[] tops = new string[] { };
+            if (!string.IsNullOrEmpty(topCriteria))
+                tops = topCriteria.Split(' ');
+            else
+                topCriteria = "";
+
+            using (var db = new ServiceContext())
+            {
+                var result =
+                    (from workflow in db.Workflows
+                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
+                     orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
+                     select new WorkflowItem
+                     {
+                         Id = workflow.Id,
+                         Name = workflow.Name,
+                         Description = workflow.Description,
+                         IsActive = workflow.IsActive,
+                         IsTemplate = workflow.IsTemplate,
+                         Type = workflow.Type,
+                         UserEmail = workflow.UserEmail,
+                         DateCreated = workflow.DateCreated,
+                         DateUpdated = workflow.DateUpdated,
+                     }).Count();
+                return result;
             }
         }
 

@@ -13,14 +13,14 @@
 
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && findWorkflows(kriteria, page, row)" class="form-control" ng-model="kriteria" placeholder="Enter workflow name" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && findWorkflows($parent.kriteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.kriteria" placeholder="Enter workflow name" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findWorkflows(kriteria, page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="findWorkflows($parent.kriteria, $parent.page, $parent.row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="page" class="form-control" ng-change="changePageWorkflows(kriteria, page, row)">
+                    <select ng-model="$parent.page" class="form-control" ng-change="changePageWorkflows($parent.kriteria, $parent.page, $parent.row)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>
@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in workflows" style="vertical-align:top;background-color:{{(x.IsTemplate?'#fff9c4':'')}}" data-dismiss="modal" ng-click="setWorkflow($index);">
+                        <tr ng-repeat="x in $parent.workflows" style="vertical-align:top;background-color:{{(x.IsTemplate?'#fff9c4':'')}}" data-dismiss="modal" ng-click="setWorkflow($index);">
                             <td width="25px">{{$index+1 + index}}</td>
                             <td>{{x.Name}}</td>
                             <td width="150px">{{(x.IsTemplate?"Template":"My workflow")}}</td>
