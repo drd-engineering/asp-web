@@ -134,7 +134,6 @@ namespace DRD.App.Controllers
             bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
             if (!exists)
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
-
             try
             {
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
@@ -455,9 +454,12 @@ namespace DRD.App.Controllers
             DocumentItem doc = docsvr.GetByUniqFileName(keyf, true, isNew);
 
             byte[] pdfByte = new byte[] { };
-
-            string filepath = Server.MapPath("/doc/company/temp/" + doc.FileName);
-
+            string filepath = "";
+            if (isNew)
+                filepath = Server.MapPath("/doc/company/temp/" + doc.FileName);
+            else
+                filepath = Server.MapPath("/doc/company/" + doc.EncryptedId + "/" + doc.FileName);
+            
             XFEncryptionHelper xf = new XFEncryptionHelper();
             var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
             if (xresult.Equals("OK"))

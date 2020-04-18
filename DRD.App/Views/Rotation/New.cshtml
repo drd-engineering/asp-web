@@ -299,7 +299,7 @@
             $scope.saveProduct = function () {
                 for(i = 0; i < $scope.users.length; i++){
                     var bit = 1;
-                    var flag = 39; ///artinya sudah bisa view, sign, stamp, add annotation
+                    var flag = 6; ///artinya sudah bisa view, add annotation
                     for (x = 1; x < 6; x++) {
                         var cb = $('#checkboxmt' + $scope.users[i].WorkflowNodeId + "-" + bit)[0];
                         if (typeof cb !== 'undefined') {

@@ -1,5 +1,5 @@
 ﻿myApp.controller("xpdfController", function ($scope, $location, $http, $filter) {
-    var annotationType = {
+    var elementType = {
         POINTER: 0,
         PEN: 1,
         HIGHLIGHTER: 2,
@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, AnnotateType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Annotate: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = {Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -274,7 +274,7 @@
         }
         
         var anno = $scope.annoItems[i];
-        if (anno.IsDeleted || !(anno.AnnotateType == annotationType.PEN || anno.AnnotateType == annotationType.HIGHLIGHTER)) {
+        if (anno.IsDeleted || !(anno.ElementType == elementType.PEN || anno.ElementType == elementType.HIGHLIGHTER)) {
             insertImgNo++;
             $scope.insertPngToSvg();
             return;
@@ -314,51 +314,51 @@
     var bindAnnoDataMember = function(i)
     {
         var item = $scope.annoItems[i];
-        if (item.ElementId == null || !(item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL || item.AnnotateType == annotationType.PRIVATESTAMP))
+        if (item.ElementId == null || !(item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL || item.ElementType == elementType.PRIVATESTAMP))
             return;
 
         var no = item.SvgId.replace('svg', '');
         if ((item.Flag & 1) == 1) {
             var foto = document.getElementById("signed-" + no);
-            foto.src = "/Images/Member/" + item.FlagImage;
-            if (item.AnnotateType == annotationType.SIGNATURE || item.AnnotateType == annotationType.INITIAL)
-                $("#signed-name-" + no).text(item.Annotate.Name);
+            foto.src = "/Images/Member/" + item.Element.ElementEncryptedId + "/" + item.FlagImage;
+            if (item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL)
+                $("#signed-name-" + no).text(item.Element.Name);
             $("#signed-code-" + no).text(item.FlagCode);
         } else {
             var foto = document.getElementById("member-foto-" + no);
-            foto.src = "/Images/Member/" + item.Annotate.Foto;
-            $("#member-name-" + no).text(item.Annotate.Name+' | '+item.Annotate.Number);
+            foto.src = "/Images/Member/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
+            $("#member-name-" + no).text(item.Element.Name+' | '+item.Element.Number);
         }
     }
     var bindAnnoDataStamp = function (i) {
         var item = $scope.annoItems[i];
-        if (item.ElementId == null || item.AnnotateType != annotationType.STAMP)
+        if (item.ElementId == null || item.ElementType != elementType.STAMP)
             return;
 
         var no = item.SvgId.replace('svg', '');
         var foto = document.getElementById("stamp" + no);
-        foto.src = "/Images/stamp/" + item.Annotate.Foto;
+        foto.src = "/Images/stamp/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
     }
     $scope.bindAnnotation = function (page) {
         dropedToCenter = false;
         for (i = 0; i < $scope.annoItems.length; i++) {
             var item = $scope.annoItems[i];
             if (item.Page == page && !item.IsDeleted) {
-                if (item.AnnotateType == annotationType.PEN) {
+                if (item.ElementType == elementType.PEN) {
                     $scope.addAnnoPen(i);
-                } else if (item.AnnotateType == annotationType.SIGNATURE) {
+                } else if (item.ElementType == elementType.SIGNATURE) {
                     $scope.addAnnoSignature(i);
                     bindAnnoDataMember(i);
-                } else if (item.AnnotateType == annotationType.INITIAL) {
+                } else if (item.ElementType == elementType.INITIAL) {
                     $scope.addAnnoInitial(i);
                     bindAnnoDataMember(i);
-                } else if (item.AnnotateType == annotationType.PRIVATESTAMP) {
+                } else if (item.ElementType == elementType.PRIVATESTAMP) {
                     $scope.addAnnoPrivateStamp(i);
                     bindAnnoDataMember(i);
-                } else if (item.AnnotateType == annotationType.STAMP) {
+                } else if (item.ElementType == elementType.STAMP) {
                     $scope.addAnnoStamp(i);
                     bindAnnoDataStamp(i);
-                } else if (item.AnnotateType == annotationType.TEXT) {
+                } else if (item.ElementType == elementType.TEXT) {
                     $scope.addAnnoText(i);
                 }
             }
@@ -378,56 +378,56 @@
             enableAnnoLayer(false);
             return;
         }
-        if (toolType == annotationType.PEN)
+        if (toolType == elementType.PEN)
             penMouseDown(e, page);
-        else if (toolType == annotationType.HIGHLIGHTER)
+        else if (toolType == elementType.HIGHLIGHTER)
             penMouseDown(e, page);
-        else if (toolType == annotationType.TEXT)
+        else if (toolType == elementType.TEXT)
             textMouseClick(e, page);
-        else if (toolType == annotationType.SIGNATURE)
+        else if (toolType == elementType.SIGNATURE)
             signatureMouseClick(e, page);
-        else if (toolType == annotationType.INITIAL)
+        else if (toolType == elementType.INITIAL)
             initialMouseClick(e, page);
-        else if (toolType == annotationType.PRIVATESTAMP)
+        else if (toolType == elementType.PRIVATESTAMP)
             privateStampMouseClick(e, page);
-        else if (toolType == annotationType.STAMP)
+        else if (toolType == elementType.STAMP)
             stampMouseClick(e, page);
     }
 
     $scope.clickObjectButtonFromAndroid = function (tbtype) {
         if (tbtype == "pen") {
-            toolType = annotationType.PEN;
+            toolType = elementType.PEN;
             $scope.clickPen(false);
         } else if (tbtype == "penx") {
-            toolType = annotationType.PEN;
+            toolType = elementType.PEN;
             $scope.clickPen(true);
         } else if (tbtype == "highlighter") {
-            toolType = annotationType.HIGHLIGHTER;
+            toolType = elementType.HIGHLIGHTER;
             $scope.clickHighlight(false);
         } else if (tbtype == "highlighterx") {
-            toolType = annotationType.HIGHLIGHTER;
+            toolType = elementType.HIGHLIGHTER;
             $scope.clickHighlight(true);
         } else if (tbtype == "text") {
-            toolType = annotationType.TEXT;
+            toolType = elementType.TEXT;
             $scope.clickText();
         } else if (tbtype == "signature") {
-            toolType = annotationType.SIGNATURE;
+            toolType = elementType.SIGNATURE;
             $scope.clickSignature();
         } else if (tbtype == "initial") {
-            toolType = annotationType.INITIAL;
+            toolType = elementType.INITIAL;
             $scope.clickInitial();
         } else if (tbtype == "pstamp") {
-            toolType = annotationType.PRIVATESTAMP;
+            toolType = elementType.PRIVATESTAMP;
             $scope.clickPrivateStamp();
         } else if (tbtype == "stamp") {
-            toolType = annotationType.STAMP;
+            toolType = elementType.STAMP;
             $scope.clickStamp();
         } else {
-            toolType = annotationType.POINTER;
+            toolType = elementType.POINTER;
             $scope.clickObjectButtonPointer();
         }
 
-        if (toolType == annotationType.POINTER) {
+        if (toolType == elementType.POINTER) {
             //$("#viewerContainer").css('overflow', 'auto');
             ////$('#html').css('overflow', 'auto');
             //$('body').css('overflow', 'auto');
@@ -448,7 +448,7 @@
 
         $(".btn-anno").removeClass("btn-active");
         $("#pointer").addClass("btn-active");
-        toolType = annotationType.POINTER;
+        toolType = elementType.POINTER;
         setScrollStatus('auto');
     }
     $scope.clickObjectButton = function (obj) {
@@ -457,26 +457,26 @@
 
         $(".btn-anno").removeClass("btn-active");
 
-        var type = annotationType.POINTER;
+        var type = elementType.POINTER;
 
         if (obj.currentTarget.id == "pen" || obj.currentTarget.id == "penx")
-            type = annotationType.PEN;
+            type = elementType.PEN;
         else if (obj.currentTarget.id == "highlighter" || obj.currentTarget.id == "highlighterx")
-            type = annotationType.HIGHLIGHTER;
+            type = elementType.HIGHLIGHTER;
         else if (obj.currentTarget.id == "text")
-            type = annotationType.TEXT;
+            type = elementType.TEXT;
         else if (obj.currentTarget.id == "signature")
-            type = annotationType.SIGNATURE;
+            type = elementType.SIGNATURE;
         else if (obj.currentTarget.id == "initial")
-            type = annotationType.INITIAL;
+            type = elementType.INITIAL;
         else if (obj.currentTarget.id == "pstamp")
-            type = annotationType.PRIVATESTAMP;
+            type = elementType.PRIVATESTAMP;
         else if (obj.currentTarget.id == "stamp")
-            type = annotationType.STAMP;
+            type = elementType.STAMP;
         $("#" + obj.currentTarget.id).addClass("btn-active");
         toolType = type;
 
-        if (toolType == annotationType.POINTER) {
+        if (toolType == elementType.POINTER) {
             //$("#viewerContainer").css('overflow', 'auto');
             ////$('#html').css('overflow', 'auto');
             //$('body').css('overflow', 'auto');
@@ -968,7 +968,7 @@
     var delKeyDownAction = function (e) {
         swal({
             title: "Confirmation",
-            text: "This annotate will be deleted, are you sure?",
+            text: "This Element will be deleted, are you sure?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -1158,7 +1158,7 @@
         var out = recoverOffset2Values(e);
         var item = angular.copy(annoItem);
         item.Page = page;
-        item.AnnotateType = annotationType.SIGNATURE;
+        item.ElementType = elementType.SIGNATURE;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
         item.ScaleX = 1;
@@ -1174,7 +1174,7 @@
         var out = recoverOffset2Values(e);
         var item = angular.copy(annoItem);
         item.Page = page;
-        item.AnnotateType = annotationType.INITIAL;
+        item.ElementType = elementType.INITIAL;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
         item.ScaleX = 1;
@@ -1190,7 +1190,7 @@
         var out = recoverOffset2Values(e);
         var item = angular.copy(annoItem);
         item.Page = page;
-        item.AnnotateType = annotationType.PRIVATESTAMP;
+        item.ElementType = elementType.PRIVATESTAMP;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
         item.ScaleX = 1;
@@ -1206,7 +1206,7 @@
         var out = recoverOffset2Values(e);
         var item = angular.copy(annoItem);
         item.Page = page;
-        item.AnnotateType = annotationType.STAMP;
+        item.ElementType = elementType.STAMP;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
         item.ScaleX = 1;
@@ -1222,7 +1222,7 @@
         var out = recoverOffset2Values(e);
         var item = angular.copy(annoItem);
         item.Page = page;
-        item.AnnotateType = annotationType.TEXT;
+        item.ElementType = elementType.TEXT;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
         item.Data = defaultText;
@@ -1411,7 +1411,7 @@
         if (isTouchEvent(e)) e.preventDefault();
     };
     var penMouseMove = function (e) {
-        if (toolType == annotationType.POINTER)
+        if (toolType == elementType.POINTER)
             return;
         if (path) {
             var pt = {};
@@ -1438,7 +1438,7 @@
         document.removeEventListener("touchmove", penMouseMove);
         document.removeEventListener("touchend", penMouseUp);
 
-        if (toolType == annotationType.POINTER)
+        if (toolType == elementType.POINTER)
             return;
         $scope.clickObjectButtonPointer();
         if (path) {
@@ -1486,7 +1486,7 @@
 
             var item = angular.copy(annoItem);
             item.Page = tmpPenAnnoItem.Page;
-            item.AnnotateType = annotationType.PEN;
+            item.ElementType = elementType.PEN;
             item.TopPosition = t;
             item.LeftPosition = l;
             item.WidthPosition = w;
@@ -1760,7 +1760,7 @@
     // modal member
 
     $scope.popupMember = function (id) {
-        //$scope.members = [];
+        // modal member
         $("#modal_select_member").modal("show");
     }
 
@@ -1774,14 +1774,14 @@
         var item = $scope.annoItems[i];
         item.ElementId = id;
         item.ElementEncryptedId = encryptedId;
-        item.Annotate.Number = number;
-        item.Annotate.Name = name;
-        item.Annotate.Foto = imageProfile;
+        item.Element.Number = number;
+        item.Element.Name = name;
+        item.Element.Foto = imageProfile;
 
         var no = parent.replace('svg', '');
         var foto = document.getElementById("member-foto-" + no);
-        foto.src = "/Images/Member/" + item.ElementEncryptedId + "/" + item.Annotate.Foto;
-        $("#member-name-" + no).text(item.Annotate.Name + ' | ' + item.Annotate.Number);
+        foto.src = "/Images/Member/" + item.ElementEncryptedId + "/" + item.Element.Foto;
+        $("#member-name-" + no).text(item.Element.Name + ' | ' + item.Element.Number);
     }
     $scope.editMember = function (idx) {
         $scope.memberIdx = idx;
@@ -1790,18 +1790,13 @@
     }
 
     $scope.findMembers = function (kriteria, page, row) {
+        $scope.page = 1;
         $scope.members = [];
         $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
-                $scope.members = response.data.Items;
+                $scope.members = response.data;
                 $scope.index = row * (page - 1);
-                $scope.paging = [];
-                var jumlahData = response.data.Count;
-                var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                for (var i = 1; i <= jumlahPage; i++) {
-                    $scope.paging.push({ value: i, text: i });
-                }
-                $scope.page = "1";
+                $scope.findMembersCountAll(kriteria);
                 $scope.isView = true;
             }
         }, function (response) {
@@ -1809,7 +1804,22 @@
             var x = 0;
         });
     }
-
+    $scope.findMembersCountAll = function (kriteria) {
+        $scope.paging = [];
+        $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+            if (response.data) {
+                var jumlahData = response.data;
+                var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                for (var i = 1; i <= jumlahPage; i++) {
+                    $scope.paging.push({ value: i, text: i });
+                }
+                $scope.page = "1";
+            }
+        }, function (response) {
+            //error handle\
+            var x = 0;
+        });
+    }
     $scope.changePageMember = function (kriteria, page, row) {
         $scope.products = [];
         $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
@@ -1858,11 +1868,11 @@
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
         item.ElementId = id;
-        item.Annotate.Name = descr;
-        item.Annotate.Foto = stampFile;
+        item.Element.Name = descr;
+        item.Element.Foto = stampFile;
 
         var foto = document.getElementById(selectedNodeId);
-        foto.src = "/Images/Stamp/" + item.Annotate.Foto;
+        foto.src = "/Images/Stamp/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
     }
 
     $scope.getLiteStamps = function (kriteria, page, row) {

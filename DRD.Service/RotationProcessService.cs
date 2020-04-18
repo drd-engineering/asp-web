@@ -196,11 +196,8 @@ namespace DRD.Service
                     int x = 0;
                     foreach (WorkflowNodeLink workflowNodeLink in wfnodes)
                     {
-
                         System.Diagnostics.Debug.WriteLine("TEST SYMBOL ACTIVITY::" + symbolService.getSymbolId("ACTIVITY"));
                         var nodeto = workflowNodeLink.WorkflowNodeTo;
-
-
 
                         if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
                         {
@@ -469,6 +466,7 @@ namespace DRD.Service
                         docmem.DocumentId = rnc.Document.Id;
                         docmem.UserId = memberId;
                         docmem.FlagAction = rnc.FlagAction;
+                        docmem.FlagPermission = 6; // default view,
                         db.DocumentUsers.Add(docmem);
                     }
 
@@ -480,7 +478,7 @@ namespace DRD.Service
                         {
                             docElement.Add(new DocumentElementInboxData(x));
                         }
-                        docSvr.SaveAnnos((long)rnc.Document.Id, memberId, "CALLER", docElement);
+                        docElement = docSvr.SaveAnnos(rnc.Document.Id, memberId, "CALLER", docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
                         docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);

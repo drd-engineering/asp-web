@@ -29,9 +29,10 @@ namespace DRD.Models
 
         public System.DateTime CreatedAt { get; set; }
         public System.DateTime UpdatedAt { get; set; }
-
+        
         public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
+        public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } //DocumentUser.FK_document
 
         // FK
         [ForeignKey("CompanyId")]

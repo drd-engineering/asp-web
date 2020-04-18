@@ -783,7 +783,7 @@ namespace DRD.Service
                 if (tags.Count > 0)
                 {
                     data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId || rotation.CreatorId == userId
+                            where rotation.CompanyId == companyId
                             orderby rotation.Status descending, rotation.DateUpdated descending
                             select new RotationDashboard
                             {
@@ -976,7 +976,6 @@ namespace DRD.Service
                                 var ud = assignNodeUpDocs(db, rnx.Id);
                                 if (ud.Count > 0)
                                     listUpDoc.AddRange(ud);
-
                             }
                             if (listDoc.Count > 0)
                                 rotationNode.RotationNodeDocs = listDoc;
@@ -1007,13 +1006,21 @@ namespace DRD.Service
                         if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("SIGNATURE").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("INITIAL").Id || documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
-                            documentElement.Element.UserId = user.Id;
-                            documentElement.Element.Name = user.Name;
-                            documentElement.Element.Foto = user.ImageProfile;
+                            // Element disini ternyata berisi detail dari user atau stamp yang digunakan.
+                            System.Diagnostics.Debug.WriteLine(documentElement.ElementId);
+                            System.Diagnostics.Debug.WriteLine(user.Id);
+                            Element newElement = new Element();
+                            newElement.EncryptedUserId = XEncryptionHelper.Encrypt(user.Id.ToString());
+                            newElement.UserId = user.Id;
+                            newElement.Name = user.Name;
+                            newElement.Foto = user.ImageProfile;
+                            documentElement.Element = newElement;
                         }
                         else if (documentElement.ElementTypeId == DocumentService.getElementTypeFromCsvByCode("STAMP").Id)
                         {
+                            // Stamp Masih Perlu perbaikan nantinya
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
+                            documentElement.Element.EncryptedUserId = XEncryptionHelper.Encrypt(documentElement.ElementId.ToString());
                             documentElement.Element.Name = stmp.Descr;
                             documentElement.Element.Foto = stmp.StampFile;
                         }
@@ -1052,8 +1059,6 @@ namespace DRD.Service
         private List<RotationNodeDocInboxData> assignNodeDocs(ServiceContext db, long rnId, long memId, long? curRnId, IDocumentService docSvr)
         {
             //rotationNode.RotationNodeDocs =
-            
-            
             var result =
                 (from d in db.RotationNodeDocs
                  where d.RotationNode.Id == rnId
@@ -1061,6 +1066,7 @@ namespace DRD.Service
                  {
                      Id = d.Id,
                      FlagAction = d.FlagAction,
+                     DocumentId = d.Document.Id,
                      RotationNode = new RotationNodeInboxData
                      {  
                          //this line error bcs of extent5.rotation_id does not exist
@@ -1068,21 +1074,23 @@ namespace DRD.Service
                      },
                      Document = new DocumentInboxData
                      {
+                         Id = d.Document.Id,
                          Title = d.Document.Title,
+                         FileUrl = d.Document.FileUrl,
                          FileName = d.Document.FileName,
                          FileSize = d.Document.FileSize,
                          // The original documentusers is also commented
-                     //    //DocumentUser =
-                     //    //    (from dm in d.Document.DocumentUsers
-                     //    //     where dm.UserId == memId // default inbox member
-                     //    //     select new DocumentUser
-                     //    //     {
-                     //    //         Id = dm.Id,
-                     //    //         DocumentId = dm.DocumentId,
-                     //    //         UserId = dm.UserId,
-                     //    //         FlagAction = dm.FlagAction,
-                     //    //     }).FirstOrDefault(),
-
+                         DocumentUser =
+                             (from dm in d.Document.DocumentUsers
+                              where dm.UserId == memId // default inbox member
+                              select new DocumentUserInboxData
+                              {
+                                  Id = dm.Id,
+                                  DocumentId = dm.DocumentId,
+                                  UserId = dm.UserId,
+                                  FlagAction = dm.FlagAction,
+                                  FlagPermission = dm.FlagPermission,
+                              }).FirstOrDefault(),
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
                               select new DocumentElementInboxData
@@ -1114,11 +1122,12 @@ namespace DRD.Service
                                   UserId = documentElement.UserId,
                                   CreatedAt = documentElement.CreatedAt,
                                   UpdatedAt = documentElement.UpdatedAt,
-                     //             //ElementType = new ElementTypeInboxData
-                     //             //{
-                     //             //    Id = documentElement.ElementType.Id,
-                     //             //    Code = documentElement.ElementType.Code,
-                     //             //}
+                                  ElementTypeId = documentElement.ElementTypeId
+                                  //ElementType = new ElementTypeInboxData
+                                  //{
+                                  //    Id = documentElement.ElementType.Id,
+                                  //    Code = documentElement.ElementType.Code,
+                                  //}
                               }).ToList(),
                      }
                  }).ToList();
@@ -1129,18 +1138,18 @@ namespace DRD.Service
                 //DocumentService docSvr = new DocumentService();
                 foreach (RotationNodeDocInboxData rnd in result)
                 {
-                    //if (rnd.Document.DocumentUser == null)
-                    //{
-                    //    rnd.Document.DocumentUser = new DocumentUser();
-                    //    rnd.Document.DocumentUser.UserId = memId;
-                    //    rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
-                    //}
-                    //if (curRnId == 0)
-                    //    curRnId = -rnd.RotationNode.Rotation.Id;
-                    //rnd.Document.DocumentUser.FlagPermission = docSvr.GetPermission(memId, curRnId, (long)rnd.Document.Id);
+                    if (rnd.Document.DocumentUser == null)
+                    {
+                        rnd.Document.DocumentUser = new DocumentUserInboxData();
+                        rnd.Document.DocumentUser.UserId = memId;
+                        rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
+                        rnd.Document.DocumentUser.FlagPermission = 6; //default permission read document
+                    }
+                    if (curRnId == 0)
+                        curRnId = -rnd.RotationNode.Rotation.Id;
+                    rnd.Document.DocumentUser.FlagPermission |= docSvr.GetPermission(memId, curRnId.Value, (long)rnd.Document.Id);
                 }
             }
-
             return result;// rotationNode.RotationNodeDocs;
         }
         private List<RotationNodeUpDocInboxData> assignNodeUpDocs(ServiceContext db, long rnId)

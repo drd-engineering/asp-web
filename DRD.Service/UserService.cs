@@ -348,7 +348,11 @@ namespace DRD.Service
                 return 1;
             }
         }
-
+        /// <summary>
+        /// User for reset user password, the password will be sent to user email
+        /// </summary>
+        /// <param name="emailUser"></param>
+        /// <returns></returns>
         public int ResetPassword(string emailUser)
         {
             using (var db = new ServiceContext())
@@ -380,6 +384,33 @@ namespace DRD.Service
                 var task = emailService.Send(emailfrom, emailfromdisplay + " Administrator", emailUser, "DRD Member Reset Password", body, false, new string[] { });
                 System.Diagnostics.Debug.WriteLine("[[ DEBUG CHANGE PASSWORD ]] sending email complete");
                 return 1;
+            }
+        }
+
+        /// <summary>
+        /// Validate the password provided is the user's password
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public bool ValidationPassword(long id, string password)
+        {
+            var equals = false;
+            using (var db = new ServiceContext())
+            {
+                var User = db.Users.FirstOrDefault(c => c.Id == id);
+                if (User == null)
+                    return equals;  // invalid User
+                
+                // for test case, can be deprecated if needed
+                if (User.Id < 0)
+                    if (User.Password.Equals(password))
+                        equals = true;
+                else
+                    if (User.Password.Equals(XEncryptionHelper.Encrypt(password)))
+                        equals = true;
+                
+                return equals;
             }
         }
     }

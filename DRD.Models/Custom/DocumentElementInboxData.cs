@@ -74,6 +74,7 @@ namespace DRD.Models
             this.StrokeWidth = item.StrokeWidth;
             this.Opacity = item.Opacity;
             this.CreatorId = item.CreatorId;
+            this.ElementId = item.ElementId;
             this.Flag = item.Flag;
             this.FlagCode = item.FlagCode;
             this.FlagDate = item.FlagDate;

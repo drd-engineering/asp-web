@@ -21,7 +21,7 @@ namespace DRD.Models.View
             ElementType elementTypeItem = new ElementType();
             elementTypeItem.Id = Convert.ToInt32(values[0]);
             elementTypeItem.Code = Convert.ToString(values[1]);
-            elementTypeItem.Description = Convert.ToString(values[3]);
+            elementTypeItem.Description = Convert.ToString(values[2]);
             return elementTypeItem;
         }
     }

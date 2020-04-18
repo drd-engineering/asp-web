@@ -202,6 +202,7 @@
     <Compile Include="Custom\MemberData.cs" />
     <Compile Include="Custom\RotationInboxData.cs" />
     <Compile Include="Custom\RotationNodeDocInboxData.cs" />
+    <Compile Include="Custom\DocumentUserInboxData.cs" />
     <Compile Include="Custom\RotationNodeInboxData.cs" />
     <Compile Include="Custom\RotationNodeUpDocInboxData.cs" />
     <Compile Include="Custom\UserInboxData.cs" />

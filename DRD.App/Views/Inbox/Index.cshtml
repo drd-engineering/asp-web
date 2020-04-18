@@ -87,7 +87,6 @@
                                             <div class="row">
                                                 <div class="col-md-10">
                                                     <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
-
                                                 </div>
                                             </div>
                                             <br />
@@ -138,8 +137,9 @@
                                                                 </a><br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
-                                                                    <!-- <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
-                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,4)?' action-processed':'')}}" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span> -->
+                                                                    <!-- <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
+                                                                    <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span> -->
+                                                                    <span ng-show="true" class="btn-permission" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
                                                                 </span>
                                                             </td>
                                                             <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
@@ -149,7 +149,6 @@
                                                 </div>
                                             </div>
                                             <hr />
-                                        </div>
                                     </fieldset>
                                 <br />
                                 <div class="col-md-10" style="display:none" id="action-panel">
@@ -316,6 +315,7 @@
                                 for(i=0;i<$scope.docs.length;i++){
                                     $scope.docs[i].FlagAction=0;
                                 }
+                                console.log($scope.docs);
                             }
                             if (sender.RotationNodeUpDocs.length>0)
                                 $scope.updocs=sender.RotationNodeUpDocs;
@@ -411,10 +411,13 @@
                     if (response.data) {
                         if (response.data==-1){
                             showError("Check your registration form. Completed your field ( Id Number/foto ID) or signature/initial.");
-                            return;
+                            return false;
                         }
-
-                        swal({
+                        console.log("Sign document is able do to, add password to do it");
+                        var valid = $scope.signDocumentValidation(idx);
+                        if (valid) return true;
+                        else return false;
+                        /*swal({
                             title: "Confirmation",
                             text: "This document will be signed after this form is submitted, continue?",
                             type: "warning",
@@ -434,9 +437,7 @@
                             }
                             swal.close();
                             //}, 500);
-
-                        });
-
+                        });*/
                     }
                 }, function (response) {
                     //error handle\
@@ -455,7 +456,7 @@
             $scope.setPassword = function (){
                 var val = document.getElementById("thePassword");
                 var thePassword = val.value;
-                $http.post('/member/ValidationPassword', { memberId: 0, password: thePassword }).then(function (response) {
+                $http.post('/user/ValidationPassword', { memberId: 0, password: thePassword }).then(function (response) {
                     if (response.data==true) {
                         var doc=$scope.docs[$scope.docIdx];
                         if ($scope.passwordType==0) // sign
@@ -500,14 +501,14 @@
 
             var setAnnos = function(idx){
                 var doc=$scope.docs[idx];
-                $scope.annos=[];
-                for(i=0;i<doc.Document.DocumentAnnotates.length;i++){
-                    var ix=doc.Document.DocumentAnnotates[i];
+                $scope.annos = [];
+                for(i=0;i<doc.Document.DocumentElements.length;i++){
+                    var ix=doc.Document.DocumentElements[i];
                     //if (ix.IsDeleted) continue;
                     var item={};
                     item.SvgId='svg'+i;
                     item.Page=ix.Page;
-                    item.AnnotateType=(ix.AnnotateTypeId==undefined?ix.AnnotateType:ix.AnnotateTypeId);
+                    item.ElementType=(ix.ElementTypeId==undefined?ix.ElementType:ix.ElementTypeId);
                     item.LeftPosition=ix.LeftPosition;
                     item.TopPosition=ix.TopPosition;
                     item.WidthPosition=ix.WidthPosition;
@@ -529,7 +530,7 @@
                     item.FlagImage=ix.FlagImage;
                     item.CreatorId=ix.CreatorId;
                     item.ElementId=ix.ElementId;
-                    item.Annotate=ix.Annotate;
+                    item.Element=ix.Element;
                     item.IsDeleted=ix.IsDeleted;
                     $scope.annos.push(item);
                 }
@@ -538,7 +539,8 @@
                 var doc=$scope.docs[idx];
                 var iframe=document.getElementById('xpdfIFrame');
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
-                $http.post('/document/openfile', { fileName: doc.Document.FileName }).then(function (response) {
+                console.log(doc)
+                $http.post('/document/openfile', { fileName: doc.Document.FileUrl }).then(function (response) {
                     if (response.data) {
                         $scope.openViewerDocument(idx, response.data);
                     }
@@ -552,15 +554,22 @@
                 var doc=$scope.docs[idx];
                 doc.FlagAction|=4;
                 setAnnos(idx);
-                var iframe=document.getElementById('xpdfIFrame');
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//doc.Document.FileName);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
-                var flagDownload=doc.Document.DocumentMember.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((flagDownload & 8)==8);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileNameOri);
+                var iframe = document.getElementById('xpdfIFrame');
+                if (iframe.contentWindow==null)
+                    return;
+                if ($scope.annos.length>0)
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//doc.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
+                var flagDownload = 0; //doc.Document.DocumentMember.FlagPermission; nanti harus dikerjain
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
+                isdefineiframe=true;
                 $("#modal_pdf_viewer").modal("show");
+                //if (!isdefineiframe){
+
             }
             $scope.revisiDocument = function (idx) {
                 var doc=$scope.docs[idx];
@@ -794,7 +803,6 @@
                         }
                         swal.close();
                     }, 500);
-
                 });
             }
 
@@ -802,24 +810,29 @@
                 var rotNodeDocs = [];
                 for(var i=0; i<$scope.docs.length; i++){
                     var doc = {};
-                    console.log(i);
+                    doc.Document=$scope.docs[i].Document;
+
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    doc.FlagAction = $scope.docs[i].FlagAction;
-                    if (bit == 1 && $scope.validAction(doc.FlagAction, 1)) {
-                        $scope.signDocument(i);
+                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
+                        var valid = $scope.signDocument(i);
+                        if (!valid) return;
+                    }
+                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
+                        var valid = $scope.stampDocument(i);
+                        if (!valid) return;
                     }
 
-                    if (bit == 1 && $scope.validAction(doc.FlagAction, 32)) {
-                        $scope.stampDocument(i);
-                    }
-                    doc.Document=$scope.docs[i].Document;
+                    doc.FlagAction = $scope.docs[i].FlagAction;
                     var annos = [];
                     for (x = 0; x < $scope.docs[i].Document.DocumentElements.length; x++){
                         var ix=$scope.docs[i].Document.DocumentElements[x];
                         if (ix.IsDeleted) continue;
-                        var item={};
-                        item.Page=ix.Page;
-                        item.AnnotateTypeId=(ix.AnnotateTypeId==undefined?ix.AnnotateType:ix.AnnotateTypeId);
+                        var item = {};
+                        item.id = ix.id;
+                        item.Page = ix.Page;
+                        item.DocumentId = ix.DocumentId;
+                        item.Document = ix.Document;
+                        item.ElementTypeId=(ix.ElementTypeId==undefined?ix.ElementType:ix.ElementTypeId);
                         item.LeftPosition=ix.LeftPosition;
                         item.TopPosition=ix.TopPosition;
                         item.WidthPosition=ix.WidthPosition;
@@ -828,7 +841,8 @@
                         item.BackColor=ix.BackColor;
                         item.Data=ix.Data;
                         item.Data2=ix.Data2;
-                        item.Rotation=ix.Rotation;
+                        item.Rotation = ix.Rotation;
+                        item.RotationId = ix.RotationId;
                         item.ScaleX=ix.ScaleX;
                         item.ScaleY=ix.ScaleY;
                         item.TransitionX=ix.TransitionX;
@@ -845,6 +859,7 @@
                     }
                     doc.Document.DocumentElements = annos;
                     rotNodeDocs.push(doc);
+                    console.log(rotNodeDocs);
                 }
                 var rotNodeUpDocs=[];
                 for(i=0;i<$scope.updocs.length;i++){
@@ -1269,7 +1284,7 @@
                     var item={};
                     item.Id=ix.Id;
                     item.Page=ix.Page;
-                    item.AnnotateTypeId=ix.AnnotateType;
+                    item.ElementTypeId=ix.ElementType;
                     item.LeftPosition=ix.LeftPosition;
                     item.TopPosition=ix.TopPosition;
                     item.WidthPosition=ix.WidthPosition;
@@ -1293,6 +1308,8 @@
                     item.ElementId=ix.ElementId;
                     $scope.annos.push(item);
                 }
+                console.log("PRINT INI SEBELUM SAVE");
+                console.log($scope.annos);
                 $scope.saveProduct();
             }
 
@@ -1334,9 +1351,9 @@
                             MaxDownloadPerActivity: $scope.model.MaxDownload,
                             ExpiryDay: $scope.model.ExpiryDay,
                             Version: $scope.model.Version,
+                            DocumentElements: $scope.annos,
                             /*UserId: 'SYST',*/
                             //DocumentMembers:$scope.users,
-                            DocumentElements: $scope.annos,
                         }, companyId: $scope.companyId,
                         rotationId: $scope.rotationId
                     }).then(function (response) {
@@ -1397,10 +1414,9 @@
             }
 
             var revisiFinished = function(e){
-                $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
+                $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos = items;
-                console.log($scope.annos);
             }
 
 

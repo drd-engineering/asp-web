@@ -125,7 +125,7 @@ namespace DRD.Service
                         Subject = c.Rotation.Subject,
                         Status = c.Status,
                         WorkflowId = c.Rotation.WorkflowId,
-                        UserId = c.MemberId,
+                        UserId = c.UserId,
                         FirstNodeId = c.FirstNodeId,
                         DateCreated = c.CreatedAt,
                         DateUpdated = c.UpdatedAt,
@@ -134,7 +134,6 @@ namespace DRD.Service
                         FlagAction = 0,
                         DecissionInfo = "",
                         RotationNodeId = c.Id,
-
                     }).FirstOrDefault();
                 result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
