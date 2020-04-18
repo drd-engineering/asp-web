@@ -183,8 +183,7 @@ namespace DRD.Service
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
                     updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
 
-                    long userId = (long)workflowNodeLink.WorkflowNodeTo.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rtnode.RotationId).User.Id;
-                    retvalues.Add(createActivityResult(userId, userId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
+                    retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
                 }
                 else if (strbit.Equals("SUBMIT")) 
                 {
