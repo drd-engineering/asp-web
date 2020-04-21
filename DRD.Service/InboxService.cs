@@ -261,6 +261,11 @@ namespace DRD.Service
                             inbox.DateNote = "This " + activity.RotationName + " has been rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
                             inbox.LastStatus = "REJECTED";
                         }
+                        else if (activity.LastActivityStatus.Equals("END"))
+                        {
+                            inbox.DateNote = "This " + activity.RotationName + " has been completed";
+                            inbox.LastStatus = "COMPLETED";
+                        }
                         inbox.CreatedAt = DateTime.Now;
                         inbox.prevUserEmail = activity.PreviousEmail;
                         inbox.prevUserName = activity.PreviousUserName;
@@ -293,6 +298,10 @@ namespace DRD.Service
                     {
                           inbox.DateNote = "This " + activity.RotationName + " has ben rejected by you";
                           inbox.LastStatus = "REJECTED";
+                    }else if (activity.LastActivityStatus.Equals("END"))
+                    {
+                          inbox.DateNote = "This " + activity.RotationName + " has been completed";
+                          inbox.LastStatus = "COMPLETED";
                     }
 
                     inbox.ActivityId = activity.RotationNodeId;

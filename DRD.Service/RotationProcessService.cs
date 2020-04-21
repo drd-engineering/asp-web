@@ -392,6 +392,7 @@ namespace DRD.Service
                                 updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
                             else
                                 updateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Completed);
+                            retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, "END"));
                         }
 
                     }

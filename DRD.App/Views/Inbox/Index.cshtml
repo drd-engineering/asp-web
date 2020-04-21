@@ -153,10 +153,10 @@
                                 <br />
                                 <div class="col-md-10" style="display:none" id="action-panel">
                                     <div class="panel panel-body border-top-primary text-center">
-                                        <button type="button" ng-show="!checkIsFirstPerson()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                        <button type="button" ng-show="!checkIsFirstPerson()" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
-                                        <button type="button" ng-show="validAction(model.FlagAction,8)" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(8)">Alter</span></button>
-                                        <button type="button" ng-show="true" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(1)">Submit</span></button>
+                                        <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
+                                        <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
+                                        <button type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive()" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(8)">Alter</span></button>
+                                        <button type="button" ng-show="checkIsActive()" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(1)">Submit</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -293,11 +293,11 @@
                     $scope.model.Subject = product.Subject
                     $scope.model.CurrentActivity = product.CurrentActivity;
                     $scope.model.Status=product.Status;
-                    $scope.model.Status=0;
                     $scope.model.Remark= product.Remark;
                     $scope.model.Value= product.RotationNodes[product.RotationNodes.length-1].Value;
                     $scope.model.FlagAction=product.FlagAction;
-                    $scope.model.DecissionInfo=product.DecissionInfo;
+                    $scope.model.DecissionInfo = product.DecissionInfo;
+                    $scope.model.UserId=product.UserId;
                     $scope.rotationNodes=product.RotationNodes;
                     $scope.workflow=product.Workflow;
                     $scope.currentRotationNode=product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
@@ -456,7 +456,10 @@
             $scope.setPassword = function (){
                 var val = document.getElementById("thePassword");
                 var thePassword = val.value;
-                $http.post('/user/ValidationPassword', { memberId: 0, password: thePassword }).then(function (response) {
+
+                console.log(thePassword);
+                console.log($scope.model.UserId);
+                $http.post('/user/ValidationPassword', { memberId: $scope.model.UserId, password: thePassword }).then(function (response) {
                     if (response.data==true) {
                         var doc=$scope.docs[$scope.docIdx];
                         if ($scope.passwordType==0) // sign
@@ -646,10 +649,13 @@
             }
 
             $scope.checkIsFirstPerson = function () {
-                console.log("FIRST");
-                console.log($scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId);
                 return $scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId;
             }
+
+            $scope.checkIsActive = function () {
+                return $scope.model.Status == '00';
+            }
+
             $scope.openPrintDocument = function (idx, fileName){
                 var doc=$scope.docs[idx];
                 doc.FlagAction|=8;
@@ -813,11 +819,12 @@
                     doc.Document=$scope.docs[i].Document;
 
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
+                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1) && $scope.passwordType!=0) {
                         var valid = $scope.signDocument(i);
+                        alert(valid);
                         if (!valid) return;
                     }
-                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
+                    if (bit == 1 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32) && $scope.passwordType!=1) {
                         var valid = $scope.stampDocument(i);
                         if (!valid) return;
                     }
@@ -912,10 +919,10 @@
                     return;
                 }
 
-                if ($scope.model.Status!='00') {
-                    showInfo("The inbox has expired to be processed");
-                    return;
-                }
+                //if ($scope.model.Status!='00') {
+                //    showInfo("The inbox has expired to be processed");
+                //    return;
+                //}
 
                 if ($scope.model.Value==undefined && $scope.model.DecissionInfo!='') {
                     showInfo("Required value for decission");

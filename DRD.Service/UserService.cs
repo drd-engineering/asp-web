@@ -395,7 +395,8 @@ namespace DRD.Service
         /// <returns></returns>
         public bool ValidationPassword(long id, string password)
         {
-            var equals = false;
+            System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD :: "+ id+" :: "+password);
+           var equals = false;
             using (var db = new ServiceContext())
             {
                 var User = db.Users.FirstOrDefault(c => c.Id == id);
@@ -404,6 +405,7 @@ namespace DRD.Service
                 
                 // for test case, can be deprecated if needed
                 if (User.Id < 0)
+                    System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD DB :: "+ User.Password);
                     if (User.Password.Equals(password))
                         equals = true;
                 else
