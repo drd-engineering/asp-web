@@ -104,10 +104,10 @@ p.card-title, p.sub-card-title {
 }
 
 .highlight-card h1 {
-    font-size: 96px;
+    font-size: 60px;
     color: black;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 ..highlight-card .card-image-lg {
@@ -120,8 +120,8 @@ p.card-title, p.sub-card-title {
 }
 
 .highlight-card .card-image-lg img {
-    height: 80px;
-    width: 80px;
+    height: 40px;
+    width: 40px;
 }
 
 .highlight-card .card-image img {
