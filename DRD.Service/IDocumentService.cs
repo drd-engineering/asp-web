@@ -35,6 +35,7 @@ namespace DRD.Service
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);
         DocumentInboxData Save(DocumentInboxData prod, long companyId, long rotationId);
         ICollection<DocumentElementInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos);
+        ICollection<DocumentUserInboxData> CreateDocumentUser(long documentId);
         int SaveCxDownload(string docName, long memberId);
         int SaveCxPrint(string docName, long memberId);
         void sendEmailSignature(Member member, string rotName, string docName, string numbers);

@@ -28,20 +28,22 @@ namespace DRD.Service
                 }
                 else if (isDocument)
                 {
-                    var result = db.Documents.FirstOrDefault(c => c.FileName.Contains(uniqFileName));
+                    var result = db.Documents.FirstOrDefault(c => c.FileUrl.Contains(uniqFileName));
                     if (result != null)
                     {
                         doc.Id = result.Id;
-                        doc.FileName = result.FileName;
+                        doc.FileName = result.FileUrl;
+                        doc.EncryptedId = Utilities.Encrypt(result.CompanyId.ToString());
                     }
                 }
                 else
                 {
-                    var result = db.RotationNodeUpDocs.FirstOrDefault(c => c.Document.FileName.Contains(uniqFileName));
+                    var result = db.RotationNodeUpDocs.FirstOrDefault(c => c.Document.FileUrl.Contains(uniqFileName));
                     if (result != null)
                     {
                         doc.Id = result.Id;
-                        doc.FileName = result.Document.FileName;
+                        doc.FileName = result.Document.FileUrl;
+                        doc.EncryptedId = Utilities.Encrypt(result.Document.CompanyId.ToString());
                     }
                 }
             }
@@ -618,9 +620,11 @@ namespace DRD.Service
                 if (document.Id != 0)
                     result = document.Id;
                 document.DocumentElements= SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
+                document.DocumentUsers= CreateDocumentUser(document.Id);
+                document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id };
             }
             return document;
-
         }
 
         public DocumentInboxData Create(DocumentInboxData newDocument, long companyId, long rotationId)
@@ -670,8 +674,6 @@ namespace DRD.Service
 
         public DocumentInboxData Update(DocumentInboxData newDocument, long companyId, long rotationId)
         {
-
-
             using (var db = new ServiceContext())
             {
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
@@ -797,10 +799,10 @@ namespace DRD.Service
             {
                 //
                 // prepare data 
-                //
-                var cxold = db.DocumentElements.Count(c => c.Document.Id == documentId);
+                System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + documentId.ToString());
+                var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
                 var cxnew = annos.Count();
-                System.Diagnostics.Debug.WriteLine("[count ] " + cxnew);
+                System.Diagnostics.Debug.WriteLine("[count ] " + cxnew + "," + cxold);
                 //nambah old document
                 if (cxold < cxnew)
                 {
@@ -837,7 +839,6 @@ namespace DRD.Service
                 foreach (DocumentElement da in dnew)
                 {
                     var epos = annos.ElementAt(v);
-                    System.Diagnostics.Debug.WriteLine("[count data want to save] " + epos.ElementTypeId+ epos.LeftPosition+ epos.TopPosition+ epos.WidthPosition+ epos.HeightPosition);
                     da.DocumentId = documentId;
                     da.Page = epos.Page;
                     da.ElementTypeId = epos.ElementTypeId;
@@ -862,7 +863,6 @@ namespace DRD.Service
                     da.FlagImage = epos.FlagImage;
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
-                    //da.UserId = userEmail;
                     da.CreatedAt = DateTime.Now;
                     v++;
                 }
@@ -872,6 +872,54 @@ namespace DRD.Service
                     retval.Add(new DocumentElementInboxData(da));
                 }
                 return retval;
+            }
+        }
+
+        /// <summary>
+        /// Create Document User (who is responsible for the document) based on document elements
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        public ICollection<DocumentUserInboxData> CreateDocumentUser(long documentId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var returnValue = new List<DocumentUserInboxData>();
+                var createdOrUpdated = new List<DocumentUser>();
+                var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
+                if (docs == null) return null;
+                System.Diagnostics.Debug.WriteLine("Document found " + docs.Id);
+                foreach(DocumentElement el in docs.DocumentElements)
+                {
+                    if (el.ElementId == null) continue;
+                    System.Diagnostics.Debug.WriteLine("Document element has person to sign or stamp or any " + el.ElementId.Value);
+                    var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
+                    if (docUser != null) continue;
+                    System.Diagnostics.Debug.WriteLine("create new docuser");
+                    docUser = new DocumentUser();
+                    docUser.UserId = el.ElementId.Value;
+                    docUser.DocumentId = el.DocumentId;
+                    docUser.FlagPermission = 6; // view, add annotate
+                    if (("SIGNATURE,INITIAL").Contains(getElementTypeFromCsvById(el.ElementTypeId).Code)) docUser.FlagPermission |= 1;
+                    if (("PRIVATESTAMP").Contains(getElementTypeFromCsvById(el.ElementTypeId).Code)) docUser.FlagPermission |= 32;
+                    db.DocumentUsers.Add(docUser);
+                }
+                db.SaveChanges();
+
+                // after save the value, then return value as api response data
+                foreach(DocumentUser du in createdOrUpdated)
+                {
+                    var item = new DocumentUserInboxData();
+                    item.DocumentId = du.DocumentId;
+                    item.Document = du.Document;
+                    item.FlagAction = du.FlagAction;
+                    item.FlagPermission = du.FlagPermission;
+                    item.UserId = du.UserId;
+                    item.User = du.User;
+                    item.UserName = du.User.Name;
+                    returnValue.Add(item);
+                }
+                return returnValue;
             }
         }
 
@@ -906,7 +954,7 @@ namespace DRD.Service
                 var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && ("SIGNATURE, INITIAL").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
-                var member = db.Users.FirstOrDefault(c => c.Id == memberId);
+                var user = db.Users.FirstOrDefault(c => c.Id == memberId);
                 var rotnod = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
                 var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
                 int cx = 0;
@@ -917,7 +965,7 @@ namespace DRD.Service
                     da.Flag = 1;
                     da.FlagDate = dt;
                     da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = (da.ElementTypeId == getElementTypeFromCsvByCode("SIGNATURE").Id ? member.ImageSignature : member.ImageInitials);
+                    da.FlagImage = (da.ElementTypeId == getElementTypeFromCsvByCode("SIGNATURE").Id ? user.ImageSignature : user.ImageInitials);
                     if (!numbers.Equals(""))
                         numbers += ", ";
                     numbers += da.FlagCode;
@@ -927,9 +975,9 @@ namespace DRD.Service
                 {
                     db.SaveChanges();
                     User xmem = new User();
-                    xmem.Id = member.Id;
-                    xmem.Name = member.Name;
-                    xmem.Email = member.Email;
+                    xmem.Id = user.Id;
+                    xmem.Name = user.Name;
+                    xmem.Email = user.Email;
                     sendEmailSignature(xmem, rotnod.Subject, doc.Title, numbers);
                 }
                 return cx;
@@ -1088,16 +1136,6 @@ namespace DRD.Service
                 if (rm != null)
                 {
                     ret = rm.FlagPermission;
-
-                    var docs = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementId == memberId 
-                            && ("SIGNATURE,INITIAL,PRIVATESTAMP").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code)).ToList();
-                    foreach (DocumentElement doc in docs)
-                    {
-                        if (("SIGNATURE,INITIAL").Contains(getElementTypeFromCsvById(doc.ElementTypeId).Code))
-                            ret |= 1;
-                        else if (doc.ElementTypeId == getElementTypeFromCsvByCode("PRIVATESTAMP").Id)
-                            ret |= 32;
-                    }
                 }
             }
             return ret;

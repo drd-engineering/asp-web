@@ -32,19 +32,14 @@ namespace DRD.Models
 
         public virtual System.Collections.Generic.ICollection<DocumentElementInboxData> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
-
+        public virtual System.Collections.Generic.ICollection<DocumentUserInboxData> DocumentUsers { get; set; }
+        public DocumentUserInboxData DocumentUser { get; set; }
         public Rotation Rotations { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
 
         // FK
-
         public Company Company { get; set; } //FK to Company
-
-
         public User User { get; set; } //FK to User
-
-
         public Rotation Rotation { get; set; }
-
 
         public DocumentInboxData()
         {

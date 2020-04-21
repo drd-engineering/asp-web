@@ -35,7 +35,7 @@ namespace DRD.App.Controllers
             Initialize();
             InboxService inboxService = new InboxService();
 
-            RotationInboxData product = inboxService.GetInboxItem(id,user.Id);
+            RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
             layout.obj = product;
             
             return View(layout);

@@ -25,5 +25,18 @@ namespace DRD.App.Controllers
             var data = service.getAllSubscription(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult ValidationPassword(long userId, string password)
+        {
+            var srv = new UserService();
+            if (userId == 0)
+            {
+                var logincontroller = new LoginController();
+                UserSession user = logincontroller.GetUser(this);
+                userId = user.Id;
+            }
+            var data = srv.ValidationPassword(userId, password);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }
