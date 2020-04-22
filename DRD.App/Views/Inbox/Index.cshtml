@@ -823,13 +823,12 @@
                     if (bit == 1 && $scope.papasswordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
                         var doc = $scope.docs[i];
                         doc.FlagAction |= 1;
-                    } else {
-                        doc.FlagAction = $scope.docs[i].FlagAction;
                     }
                     if (bit == 1 && $scope.papasswordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
                         var doc = $scope.docs[i];
                         doc.FlagAction |= 32;
-                    } else {
+                    }
+                    if ((bit != 1 || $scope.papasswordType != 5) {
                         doc.FlagAction = $scope.docs[i].FlagAction;
                     }
                     
