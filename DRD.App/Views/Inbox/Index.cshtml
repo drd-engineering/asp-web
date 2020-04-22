@@ -217,6 +217,7 @@
         });
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
             // modal document
+            $scope.fromSelectDoc = false;
             $scope.companyId = -1 ;
             $scope.document = {};
             $scope.documents = [];
@@ -384,7 +385,8 @@
                         item.FlagDate=convertJsonDate(ix.FlagDate);
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.ElementId=ix.ElementId;
+                        item.ElementId = ix.ElementId;
+                        item.Element = ix.Element;
                         item.Annotate=ix.Annotate;
                         $scope.annos.push(item);
                     }
@@ -403,8 +405,6 @@
             $scope.docAlert = function (text) {
                 showInfo("Click on "+text);
             }
-
-
 
             $scope.signDocument = function (idx) {
                 $http.post('/document/CheckingSignature', { memberId: 0 }).then(function (response) {
@@ -569,7 +569,8 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
                 iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
-                isdefineiframe=true;
+                isdefineiframe = true;
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 //if (!isdefineiframe){
 
@@ -599,6 +600,7 @@
                 var flagDownload=doc.Document.DocumentMember.FlagPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileNameOri);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
                 $scope.selectedIdx=idx;
@@ -630,7 +632,10 @@
 
                 doc.Document.DocumentMember.FlagPermission=newPermission;
                 $scope.$apply();
-
+                if ($scope.fromSelectDoc) {
+                    $("#modal_select_document").modal("show");
+                    $scope.fromSelectDoc = false;
+                }
             }
 
             var isok=false;
@@ -705,7 +710,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
-
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
 
             }
@@ -764,7 +769,8 @@
                         item.FlagDate = convertJsonDate(ix.FlagDate);
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.ElementId=ix.ElementId;
+                        item.ElementId = ix.ElementId;
+                        item.Element = ix.Element;
                         item.Annotate=ix.Annotate;
                         $scope.annos.push(item);
                     }
@@ -776,6 +782,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
                 iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((flagDownload & 8)==8);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileNameOri);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
             }
             /*--------------------------------------------------------------
@@ -861,7 +868,8 @@
                         item.FlagDate=ix.FlagDate;
                         item.FlagImage=ix.FlagImage;
                         item.CreatorId=ix.CreatorId;
-                        item.ElementId=ix.ElementId;
+                        item.ElementId = ix.ElementId;
+                        item.Element = ix.Element;
                         annos.push(item);
                     }
                     doc.Document.DocumentElements = annos;
@@ -1002,6 +1010,7 @@
                 $('#kriteria').val("");
                 $scope.documentIdx=-1;
                 $scope.documents = [];
+                $scope.fromSelectDoc = true;
                 $("#modal_select_document").modal("show");
             }
             $scope.setDocument = function (idx) {
@@ -1312,7 +1321,8 @@
                     item.FlagDate = ix.FlagDate;
                     item.FlagImage = ix.FlagImage;
                     item.CreatorId=ix.CreatorId;
-                    item.ElementId=ix.ElementId;
+                    item.ElementId = ix.ElementId;
+                    item.Element = ix.Element;
                     $scope.annos.push(item);
                 }
                 console.log("PRINT INI SEBELUM SAVE");
@@ -1416,6 +1426,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
                 isdefineiframe=true;
                 //}
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
             }
@@ -1424,6 +1435,10 @@
                 $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos = items;
+                if ($scope.fromSelectDoc) {
+                    $("#modal_select_document").modal("show");
+                    $scope.fromSelectDoc = false;
+                }
             }
 
 

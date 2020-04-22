@@ -3887,6 +3887,7 @@
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <None Include="Views\Company\Member.cshtml" />
     <Content Include="Views\Inbox\Index.cshtml" />
+    <Content Include="Views\Include\PopupMemberRotation.cshtml" />
     <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="WebForm1.aspx" />
     <Content Include="doc\json.json" />

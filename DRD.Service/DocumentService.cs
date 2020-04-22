@@ -863,6 +863,7 @@ namespace DRD.Service
                     da.FlagImage = epos.FlagImage;
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
+                    da.Element = epos.Element;
                     da.CreatedAt = DateTime.Now;
                     v++;
                 }

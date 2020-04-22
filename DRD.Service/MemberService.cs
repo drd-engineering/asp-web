@@ -205,7 +205,15 @@ namespace DRD.Service
                 return result;
             }
         }
-
+        /// <summary>
+        /// Search some member data based on search query as many as one page requested
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="topCriteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public ICollection<MemberData> FindMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
         {
             Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true;
@@ -265,6 +273,12 @@ namespace DRD.Service
                 return contactListAllMatch;
             }
         }
+        /// <summary>
+        /// Find how many userd that is related to the query
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="topCriteria"></param>
+        /// <returns></returns>
         public int FindMembersCountAll(long userId, string topCriteria)
         {
             // top criteria
@@ -305,7 +319,84 @@ namespace DRD.Service
                 return countContactListAllMatch;
             }
         }
+        /// <summary>
+        /// Search some members that is participate in rotation that related to query requested
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="topCriteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="rotationId"></param>
+        /// <returns></returns>
+        public ICollection<MemberData> FindMembersRotation(long userId, string topCriteria, int page, int pageSize, long rotationId)
+        {
+            Expression<Func<MemberData, bool>> criteria = MemberData => true;
+            int skip = pageSize * (page - 1);
+            Expression<Func<MemberData, string>> ordering = MemberData => "Name";
+            // top criteria
+            string[] tops = new string[] { };
+            if (!string.IsNullOrEmpty(topCriteria))
+                tops = topCriteria.Split(' ');
+            else
+                topCriteria = "";
 
+            using (var db = new ServiceContext())
+            {
+                var contactListAllMatch = (from RotationUser in db.RotationUsers
+                                           join User in db.Users on RotationUser.UserId equals User.Id
+                                           where User.Id != userId && RotationUser.RotationId == rotationId 
+                                           && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                           select new MemberData
+                                           {
+                                               Id = User.Id,
+                                               Name = User.Name,
+                                               Phone = User.Phone,
+                                               Email = User.Email,
+                                               ImageProfile = User.ImageProfile
+                                           }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
+                if (contactListAllMatch != null)
+                    for (var i = 0; i < contactListAllMatch.Count(); i++)
+                    {
+                        var item = contactListAllMatch.ElementAt(i);
+                        item.EncryptedId = XEncryptionHelper.Encrypt(item.Id.ToString());
+                        contactListAllMatch[i] = item;
+                    }
+                return contactListAllMatch;
+            }
+        }
+        /// <summary>
+        /// Find how many User that participate in the Rotation requested
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="topCriteria"></param>
+        /// <param name="rotationId"></param>
+        /// <returns></returns>
+        public int FindMembersRotationCountAll(long userId, string topCriteria, long rotationId)
+        {
+            // top criteria
+            string[] tops = new string[] { };
+            if (!string.IsNullOrEmpty(topCriteria))
+                tops = topCriteria.Split(' ');
+            else
+                topCriteria = "";
+
+            using (var db = new ServiceContext())
+            {
+                var countContactListAllMatch = (from RotationUser in db.RotationUsers
+                                                join User in db.Users on RotationUser.UserId equals User.Id
+                                                where User.Id != userId && RotationUser.RotationId == rotationId 
+                                                && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                                select new MemberData
+                                                {
+                                                    Id = User.Id,
+                                                    Name = User.Name,
+                                                    Phone = User.Phone,
+                                                    Email = User.Email,
+                                                    ImageProfile = User.ImageProfile
+                                                }).Count();
+                return countContactListAllMatch;
+            }
+        }
         public MemberList BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
         {
             MemberList data = new MemberList();
