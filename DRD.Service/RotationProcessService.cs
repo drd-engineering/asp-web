@@ -481,6 +481,7 @@ namespace DRD.Service
                         docElement = docSvr.SaveAnnos(rnc.Document.Id, memberId, "CALLER", docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
+                        System.Diagnostics.Debug.WriteLine("[[DEBUG SIGNATURE BERHASIL MASUK FUNGSI PENERUS]]");
                         docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
                         docSvr.Stamp((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
