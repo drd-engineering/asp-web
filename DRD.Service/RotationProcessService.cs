@@ -153,7 +153,7 @@ namespace DRD.Service
                     db.RotationNodeRemarks.Add(rtnoderemark);
                 }
 
-                    System.Diagnostics.Debug.WriteLine("PROCESS SUBMIT::strbit:::"+strbit);
+                System.Diagnostics.Debug.WriteLine("PROCESS SUBMIT::strbit:::"+strbit);
                 if (strbit.Equals("REVISI"))
                 {
                     rtnode.Status = (int)Constant.RotationStatus.Revision;
@@ -466,11 +466,10 @@ namespace DRD.Service
                         docmem.DocumentId = rnc.Document.Id;
                         docmem.UserId = memberId;
                         docmem.FlagAction = rnc.FlagAction;
-                        docmem.FlagPermission = 6; // default view,
+                        docmem.FlagPermission = 6; // default view, add annotate
                         db.DocumentUsers.Add(docmem);
                     }
 
-                    //DocumentService docSvr = new DocumentService();
                     if (rnc.Document != null)
                     { // save annos first before set sign/initial/stamp
                         ICollection<DocumentElementInboxData> docElement = new List<DocumentElementInboxData>();
@@ -481,7 +480,7 @@ namespace DRD.Service
                         docElement = docSvr.SaveAnnos(rnc.Document.Id, memberId, "CALLER", docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
-                        System.Diagnostics.Debug.WriteLine("[[DEBUG SIGNATURE BERHASIL MASUK FUNGSI PENERUS]]");
+                        System.Diagnostics.Debug.WriteLine("[[DEBUG SIGNATURE BERHASIL MASUK FUNGSI PENERUS]] " + rnc.FlagAction);
                         docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
                         docSvr.Stamp((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);

@@ -910,6 +910,8 @@ namespace DRD.Service
 
             foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
             {
+                // user encrypted id 
+                rotationNode.User.EncryptedUserId = XEncryptionHelper.Encrypt(rotationNode.User.Id.ToString());
                 // set note for waiting pending member
                 if (rotationNode.Status.Equals(Constant.RotationStatus.Pending))
                 {

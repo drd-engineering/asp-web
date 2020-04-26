@@ -123,7 +123,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="25px">#</th>
-                                                            <th width="150px">Original File Name</th>
+                                                            <th width="150px">File Name</th>
                                                             <th width="100px">Action</th>
                                                         </tr>
                                                     </thead>
@@ -139,7 +139,8 @@
                                                                 <span style="font-size:xx-small;">
                                                                     <!-- <span class="btn-permission{{(validAction(x.FlagAction,1)?' action-processed':'')}}" ng-show="validAction(x.Document.DocumentMember.FlagPermission,1)" ng-click="signDocument($index);">{{(validAction(x.FlagAction,1)?'Signed':'Sign')}}</span>
                                                                     <span ng-show={{(validAction(x.FlagAction,2)}} class="btn-permission{{(validAction(x.FlagAction,2)?' action-processed':'')}}" ng-click="revisiDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span> -->
-                                                                    <span ng-show="true" class="btn-permission" ng-click="viewerDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
+                                                                    <span ng-show="true" class="btn-permission" ng-click="viewDocument($index);">{{(validAction(x.FlagAction,4)?'Viewed':'View')}}</span>
+                                                                    <span ng-show="(validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn-permission" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span>
                                                                 </span>
                                                             </td>
                                                             <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
@@ -154,9 +155,9 @@
                                 <div class="col-md-10" style="display:none" id="action-panel">
                                     <div class="panel panel-body border-top-primary text-center">
                                         <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                        <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(2)">Reject</span></button>
-                                        <button type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive()" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(8)">Alter</span></button>
-                                        <button type="button" ng-show="checkIsActive()" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in"><span class="ladda-label" ng-click="processActivity(1)">Submit</span></button>
+                                        <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"  ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
+                                        <button type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
+                                        <button type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -303,6 +304,7 @@
                     $scope.workflow = product.Workflow;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.sumDocuments = product.SumRotationNodeDocs;
+                    console.log($scope.sumDocuments);
                     $scope.sumAttachments = product.SumRotationNodeUpDocs;
 
                     if ($scope.model.Status == 0) {
@@ -530,14 +532,137 @@
                     $scope.annos.push(item);
                 }
             };
-            $scope.viewerDocument = function (idx) {
+            
+            /*--------------------------------------------------------------
+                DOCUMENT VIEW FUNCTION FOR SUMMARY DOCUMENT
+            --------------------------------------------------------------*/
+            $scope.viewDocumentSummary = function (arg) {
+                if (arg.Document.DocumentUser == undefined) {
+                    showInfo("You don't have permission le.");
+                    return;
+                }
+                if (arg.Document.DocumentUser == null) {
+                    showInfo("You don't have permission to his file.");
+                    return;
+                }
+                if ((arg.Document.DocumentUser.FlagPermission & 4) != 4 ) {
+                    showInfo("You rmission to open this file.");
+                    return;
+                }
+                var iframe = document.getElementById('xpdfIFrame');
+                if (iframe.contentWindow == null)
+                    return;
+
+                var iframe = document.getElementById('xpdfIFrame');
+                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
+                $http.post('/document/openfile', { fileName: arg.Document.FileUrl }).then(function (response) {
+                    if (response.data) {
+                        $scope.openDocumentSumarryViewer(arg.Document.DocumentUser, iframe, arg, response.data);
+                        console.log("Success in this function return : " + response.data);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            };
+            $scope.openDocumentSumarryViewer = function (member, iframe, arg, fileName) {
+                console.log("in this function");
+                if (arg.Document.DocumentElements.length > 0) {
+                    $scope.annos = [];
+                    for (i = 0; i < arg.Document.DocumentElements.length; i++) {
+                        var ix = arg.Document.DocumentElements[i];
+                        //if (ix.IsDeleted) continue;
+                        var item = {};
+                        item.SvgId = 'svg' + i;
+                        item.Page = ix.Page;
+                        item.ElementType = (ix.ElementTypeId == undefined ? ix.ElementType : ix.ElementTypeId);
+                        item.LeftPosition = ix.LeftPosition;
+                        item.TopPosition = ix.TopPosition;
+                        item.WidthPosition = ix.WidthPosition;
+                        item.HeightPosition = ix.HeightPosition;
+                        item.Color = ix.Color;
+                        item.BackColor = ix.BackColor;
+                        item.Data = ix.Data;
+                        item.Data2 = ix.Data2;
+                        item.Rotation = ix.Rotation;
+                        item.ScaleX = ix.ScaleX;
+                        item.ScaleY = ix.ScaleY;
+                        item.TransitionX = ix.TransitionX;
+                        item.TransitionY = ix.TransitionY;
+                        item.StrokeWidth = ix.StrokeWidth;
+                        item.Opacity = ix.Opacity;
+                        item.Flag = ix.Flag;
+                        item.FlagCode = ix.FlagCode;
+                        item.FlagDate = convertJsonDate(ix.FlagDate);
+                        item.FlagImage = ix.FlagImage;
+                        item.CreatorId = ix.CreatorId;
+                        item.ElementId = ix.ElementId;
+                        item.Element = ix.Element;
+                        item.IsDeleted = ix.IsDeleted;
+                        $scope.annos.push(item);
+                    }
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                }
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
+                var permission = member.FlagPermission;
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((permission & 16) == 16);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission & 8) == 8);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
+                $("#modal_pdf_viewer").modal("show");
+            };
+            
+            /*--------------------------------------------------------------
+                DOCUMENT VIEW FUNCTION
+            --------------------------------------------------------------*/
+            $scope.viewDocument = function (idx) {
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
                 console.log(doc);
                 $http.post('/document/openfile', { fileName: doc.Document.FileUrl }).then(function (response) {
                     if (response.data) {
-                        $scope.openViewerDocument(idx, response.data);
+                        $scope.openDocumentViewer(idx, response.data);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            };
+            $scope.openDocumentViewer = function (idx, fileName) {
+                var doc = $scope.docs[idx];
+                $scope.model.FlagAction |= 4;
+                doc.FlagAction |= 4;
+                setAnnos(idx);
+                var iframe = document.getElementById('xpdfIFrame');
+                if (iframe.contentWindow == null)
+                    return;
+                if ($scope.annos.length > 0)
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//arg.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
+                var permission = doc.Document.DocumentUser.FlagPermission;
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((permission & 16) == 16);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission& 8) == 8);
+                isdefineiframe = true;
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileName);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
+                $("#modal_pdf_viewer").modal("show");
+                $scope.selectedIdx=idx;
+            };
+            /*--------------------------------------------------------------
+                DOCUMENT REVISED FUNCTION
+            --------------------------------------------------------------*/
+            $scope.revisedDocument = function (idx) {
+                var doc = $scope.docs[idx];
+                var iframe = document.getElementById('xpdfIFrame');
+                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
+                console.log(doc);
+                $http.post('/document/openfile', { fileName: doc.Document.FileUrl }).then(function (response) {
+                    if (response.data) {
+                        $scope.openDocumentRevision(idx, response.data);
                     }
                 }, function (response) {
                     //error handle\
@@ -545,9 +670,10 @@
                 });
             };
 
-            $scope.openViewerDocument = function (idx, fileName) {
+            $scope.openDocumentRevision = function (idx, fileName) {
                 var doc = $scope.docs[idx];
-                doc.FlagAction |= 4;
+                $scope.model.FlagAction |= 2;
+                doc.FlagAction |= 2;
                 setAnnos(idx);
                 var iframe = document.getElementById('xpdfIFrame');
                 if (iframe.contentWindow == null)
@@ -557,52 +683,24 @@
 
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//doc.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
-                var flagDownload = 0; //doc.Document.DocumentMember.FlagPermission; nanti harus dikerjain
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setFirstPersonToolbar($scope.checkIsFirstPerson());
+                var permission = doc.Document.DocumentUser.FlagPermission; 
+                /*iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((permission & 16) == 16);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission & 8) == 8);*/ // Ga perlu ada download dan print kalau lagi revisi
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileName);
                 isdefineiframe = true;
-                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
-                $("#modal_pdf_viewer").modal("show");
-                //if (!isdefineiframe){
-
-            };
-            $scope.revisiDocument = function (idx) {
-                var doc = $scope.docs[idx];
-                var iframe = document.getElementById('xpdfIFrame');
-                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
-                $http.post('/document/openfile', { fileName: doc.Document.FileName }).then(function (response) {
-                    if (response.data) {
-                        $scope.openRevisiDocument(idx, response.data);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-
-            $scope.openRevisiDocument = function (idx, fileName){
-                var doc=$scope.docs[idx];
-                doc.FlagAction|=2;
-                setAnnos(idx);
-                var iframe=document.getElementById('xpdfIFrame');
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//doc.Document.FileName);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
-                var flagDownload=doc.Document.DocumentMember.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16)==16);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileNameOri);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
                 $scope.selectedIdx=idx;
-            }
+            };
+
             var revisiFinished = function(e){
                 $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
                 var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.docs[$scope.selectedIdx].Document.DocumentAnnotates=items;
 
-                var doc=$scope.docs[$scope.selectedIdx];
+                /*var doc=$scope.docs[$scope.selectedIdx];
                 var defPermission=doc.Document.DocumentMember.FlagPermission;
                 var newPermission=defPermission;
                 if ((defPermission & 1) == 1 )
@@ -615,14 +713,13 @@
 
                     if (anno.ElementId==null || anno.ElementId!= $scope.curentUser.Id || anno.IsDeleted)
                         continue;
-
                     if (anno.AnnotateType==4 || anno.AnnotateType==5)
                         newPermission|=1;
                     else if (anno.AnnotateType==7)
                         newPermission|=32;
                 }
 
-                doc.Document.DocumentMember.FlagPermission=newPermission;
+                doc.Document.DocumentMember.FlagPermission=newPermission;*/
                 $scope.$apply();
                 if ($scope.fromSelectDoc) {
                     $("#modal_select_document").modal("show");
@@ -709,72 +806,7 @@
             $scope.downloadAttchment = function (atth) {
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName + "&isDocument=false";
             };
-            $scope.viewDocument = function (arg) {
-                var member = arg.Document.DocumentMember;//s.filter((subject) => subject.MemberId == $scope.curentUser.Id)[0];
-                if (member == undefined || arg.Document.DocumentMember == null || arg.Document.DocumentMember.FlagPermission <= 1) {
-                    showInfo("You don't have permission to open this file.");
-                    return;
-                }
-                var iframe = document.getElementById('xpdfIFrame');
-                if (iframe.contentWindow == null)
-                    return;
 
-                var iframe = document.getElementById('xpdfIFrame');
-                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
-                $http.post('/document/openfile', { fileName: arg.Document.FileName }).then(function (response) {
-                    if (response.data) {
-                        $scope.openDocument(member, iframe, arg, response.data);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-            $scope.openDocument = function (member, iframe, arg, fileName) {
-                if (arg.Document.DocumentAnnotates.length > 0) {
-                    $scope.annos = [];
-                    for (i = 0; i < arg.Document.DocumentAnnotates.length; i++) {
-                        var ix = arg.Document.DocumentAnnotates[i];
-                        var item = {};
-                        item.SvgId = 'svg' + i;
-                        item.Page = ix.Page;
-                        item.AnnotateType = ix.AnnotateTypeId;
-                        item.LeftPosition = ix.LeftPosition;
-                        item.TopPosition = ix.TopPosition;
-                        item.WidthPosition = ix.WidthPosition;
-                        item.HeightPosition = ix.HeightPosition;
-                        item.Color = ix.Color;
-                        item.BackColor = ix.BackColor;
-                        item.Data = ix.Data;
-                        item.Data2 = ix.Data2;
-                        item.Rotation = ix.Rotation;
-                        item.ScaleX = ix.ScaleX;
-                        item.ScaleY = ix.ScaleY;
-                        item.TransitionX = ix.TransitionX;
-                        item.TransitionY = ix.TransitionY;
-                        item.StrokeWidth = ix.StrokeWidth;
-                        item.Opacity = ix.Opacity;
-                        item.Flag = ix.Flag;
-                        item.FlagCode = ix.FlagCode;
-                        item.FlagDate = convertJsonDate(ix.FlagDate);
-                        item.FlagImage = ix.FlagImage;
-                        item.CreatorId = ix.CreatorId;
-                        item.ElementId = ix.ElementId;
-                        item.Element = ix.Element;
-                        item.Annotate = ix.Annotate;
-                        $scope.annos.push(item);
-                    }
-                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
-                }
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//arg.Document.FileName);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
-                var flagDownload = member.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((flagDownload & 16) == 16);
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((flagDownload & 8) == 8);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileNameOri);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
-                $("#modal_pdf_viewer").modal("show");
-            };
             /*--------------------------------------------------------------
             submitActivity
             --------------------------------------------------------------*/
@@ -805,7 +837,7 @@
                     function (isConfirm) {
                         setTimeout(function () {
                             if (isConfirm) {
-                                if ($scope.passwordType == 5) {
+                                if ($scope.passwordType == 5 && bit == 1) {
                                     $scope.showPasswordModal();
                                 } else {
                                     $scope.submitActivityProcess(bit);
@@ -825,15 +857,17 @@
                     doc.Document = $scope.docs[i].Document;
 
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    if (bit == 1 && $scope.papasswordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
+                    if ((bit == 1) && ($scope.passwordType == 5) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
+                        console.log("user is signing doc");
                         var doc = $scope.docs[i];
                         doc.FlagAction |= 1;
                     }
-                    if (bit == 1 && $scope.papasswordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
+                    if (bit == 1 && $scope.passwordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
+                        console.log("user is initialing");
                         var doc = $scope.docs[i];
                         doc.FlagAction |= 32;
                     }
-                    if ((bit != 1 || $scope.papasswordType != 5)) {
+                    if ((bit != 1 || $scope.passwordType != 5)) {
                         doc.FlagAction = $scope.docs[i].FlagAction;
                     }
 
@@ -1221,7 +1255,7 @@
                 if (file) {
                     $scope.docFileName = file.name;
                     $scope.model.FileUrl = file.name;
-                    $scope.model.FileSize = $scope.humanFileSize(file.size, true);
+                    $scope.model.FileSize = file.size;
                     //var obUrl = URL.createObjectURL(file);
                     //document.getElementById('audio').setAttribute('src', obUrl);
 
@@ -1397,6 +1431,7 @@
            --------------------------------------------------------------*/
             var isdefineiframe=false;
             $scope.annoDocument = function () {
+                $scope.fromSelectDoc = true;
                 var iframe = document.getElementById('xpdfIFrame');
                 $("#modal_select_document").modal("hide");
 
@@ -1421,11 +1456,10 @@
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
 
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();
+                /*iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();*/
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
                 isdefineiframe = true;
-                //}
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);

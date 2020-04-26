@@ -12,7 +12,7 @@
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId?(x.Id==model.RotationNodeId?'#b2ebf2': '#eceff1'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
-                <img alt="" ng-src="/Images/Member/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
+                <img alt="" ng-src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
             </td>
             <td class="style-date" style="padding:10px">{{convertJsonDate(x.CreatedAt) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
             <td class="style-name" style="padding:10px">
@@ -25,7 +25,7 @@
                     <span><u>Documents:</u></span> <br />
                     <span ng-repeat="d in x.RotationNodeDocs">
                         <span>
-                            <b><span ng-show="$index>0">| </span>{{d.Document.Title}}</b>
+                            <b>{{d.Document.FileName}}</b>
                             <span style="font-size:xx-small;color:darkgrey">
                                 <span ng-show="validAction(d.FlagAction,1)">signed</span>
                                 <span ng-show="validAction(d.FlagAction,32)">stamped</span>
@@ -90,8 +90,7 @@
         <tbody>
             <tr ng-repeat="x in sumDocuments" style="vertical-align:top;font-size:small">
                 <td width="25px">{{$index+1 + index}}</td>
-                <td><a ng-click="viewDocument(x)">{{x.Document.Title}} | {{x.Document.FileNameOri}}</a></td>
-
+                <td><a ng-click="viewDocumentSummary(x)">{{x.Document.FileName}}</a></td>
                 <td>
                     <span style="font-size:small;color:darkgrey">
                         <span ng-show="validAction(x.FlagAction,1)">signed</span>
@@ -102,7 +101,7 @@
                         <span ng-show="validAction(x.FlagAction,16)">downloaded</span>
                     </span>
                 </td>
-                <td width="125px" style="text-align:right">{{x.Document.FileSize | number}}</td>
+                <td width="125px" style="text-align:right">{{$parent.humanFileSize(x.Document.FileSize, true)}}</td>
             </tr>
         </tbody>
     </table>

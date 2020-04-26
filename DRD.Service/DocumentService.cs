@@ -622,7 +622,7 @@ namespace DRD.Service
                 document.DocumentElements= SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
                 document.DocumentUsers= CreateDocumentUser(document.Id);
                 document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
-                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id };
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id , FlagPermission = 6};
             }
             return document;
         }
@@ -728,7 +728,7 @@ namespace DRD.Service
             //if (plan.SubscriptionName != "Business") throw new NotImplementedException();
 
             // reach out the storage limit
-            if (plan.StorageUsedinByte < (newDocument.FileSize - oldDocument.FileSize))
+            if (plan.StorageSize < (newDocument.FileSize - oldDocument.FileSize))
                 throw new NotImplementedException();
             return true;
         }

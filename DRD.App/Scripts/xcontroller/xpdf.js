@@ -1703,6 +1703,14 @@
         //var ax = PDFJS.PDFViewer();
         //var ac=PDFJS.PDFPageView();
     }
+    $scope.setFirstPersonToolbar = function (isFirstPerson) {
+        if (!isFirstPerson) {
+            $('#signature').hide();
+            $('#initial').hide();
+            $('#pstamp').hide();
+            $('#stamp').hide();
+        }
+    }
     //$scope.setAnnoElementVisible = function (flag) {
     //    isAnnoElementVisible = flag;
     //}
