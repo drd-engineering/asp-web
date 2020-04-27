@@ -36,7 +36,11 @@ namespace DRD.App.Controllers
             layout.menus = login.GetMenus(this, 0);
             layout.user = user;
             layout.activeId = 0;
-            return View(layout);
+
+            CompanyService companyService = new CompanyService();
+            CompanyList companyList = companyService.GetAllCompanyOwnedbyUser(user.Id);
+            if (companyList.companies.Count > 0 ) return View(layout);
+            return RedirectToAction("List", "Inbox");
         }
 
         public ActionResult GetRotationFromAllCompany()

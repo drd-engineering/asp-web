@@ -12,7 +12,7 @@
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId?(x.Id==model.RotationNodeId?'#b2ebf2': '#eceff1'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
-                <img alt="" ng-src="/Images/Member/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
+                <img alt="" src="/Images/Member/{{x.User.EncryptedId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
             </td>
             <td class="style-date" style="padding:10px">{{convertJsonDate(x.CreatedAt) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
             <td class="style-name" style="padding:10px">

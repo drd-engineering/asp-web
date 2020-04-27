@@ -124,8 +124,8 @@
 
                                     <ul class="navigation navigation-main navigation-accordion">
                                         <!-- Main -->
-                                        <li class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
-                                            <a href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")"><i class="icon-home4"></i> <span>Dashboard</span></a>
+                                        <li ng-show="isCompany" class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
+                                            <a href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")"><i class="icon-home4"></i> <span>DASHBOARD</span></a>
                                         </li>
                                         @foreach (var submenu in Model.menus)
                                         {
@@ -177,12 +177,16 @@
         };
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
+        $scope.isCompany = false;
 
+        $scope.companies = [];
         $scope.startCounting = function () {
             $scope.xtimer = setInterval(() => {
+                $scope.getCompaniesOwned();
                 $scope.getActivityCounter();
+                
+            alert($scope);
             }, 5000);
-
         };
 
         /*--------------------------------------------------------------
@@ -217,7 +221,23 @@
                     //error handle\
                     var x = 0;
                 });
-            }
+        }
+
+        $scope.getCompaniesOwned = function () {
+                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                    if (response.data) {
+                        $scope.companies = response.data;
+                        $scope.isCompany = $scope.companies.length != 0;
+                    }
+                    else {
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+        }
+
 /*
         $scope.resetCounter = function () {
             $scope.counter.New.Rotation = 0;
