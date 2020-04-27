@@ -11,7 +11,7 @@ namespace DRD.Models
 
     public class UserInboxData
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string EncryptedUserId { get; set; }
         public long Id { get; set; } // Id (Primary key)
         public string EncryptedId { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 50)

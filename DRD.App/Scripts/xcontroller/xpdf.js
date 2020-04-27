@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = {Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: {Number: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -320,13 +320,13 @@
         var no = item.SvgId.replace('svg', '');
         if ((item.Flag & 1) == 1) {
             var foto = document.getElementById("signed-" + no);
-            foto.src = "/Images/Member/" + item.Element.ElementEncryptedId + "/" + item.FlagImage;
+            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.FlagImage;
             if (item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL)
                 $("#signed-name-" + no).text(item.Element.Name);
             $("#signed-code-" + no).text(item.FlagCode);
         } else {
             var foto = document.getElementById("member-foto-" + no);
-            foto.src = "/Images/Member/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
+            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
             $("#member-name-" + no).text(item.Element.Name+' | '+item.Element.Number);
         }
     }
@@ -337,7 +337,7 @@
 
         var no = item.SvgId.replace('svg', '');
         var foto = document.getElementById("stamp" + no);
-        foto.src = "/Images/stamp/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
+        foto.src = "/Images/stamp/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
     }
     $scope.bindAnnotation = function (page) {
         dropedToCenter = false;
@@ -1703,6 +1703,14 @@
         //var ax = PDFJS.PDFViewer();
         //var ac=PDFJS.PDFPageView();
     }
+    $scope.setFirstPersonToolbar = function (isFirstPerson) {
+        if (!isFirstPerson) {
+            $('#signature').hide();
+            $('#initial').hide();
+            $('#pstamp').hide();
+            $('#stamp').hide();
+        }
+    }
     //$scope.setAnnoElementVisible = function (flag) {
     //    isAnnoElementVisible = flag;
     //}
@@ -1748,6 +1756,10 @@
                 POPUP MEMBER
     --------------------------------------------------------------*/
     // modal member
+    $scope.rotationId = 0;
+    $scope.setRotationId = function (rotationId) {
+        $scope.rotationId = rotationId;
+    }
     $scope.member = {};
     $scope.members = [];
     $scope.memberCount = [];
@@ -1761,10 +1773,10 @@
 
     $scope.popupMember = function (id) {
         // modal member
-        $("#modal_select_member").modal("show");
+        $("#modal_select_member_rotation").modal("show");
     }
 
-    $scope.setMember = function (idx) {
+    $scope.setMemberFromRotation = function (idx) {
         $scope.setMemberDetail($scope.members[idx].Id, $scope.members[idx].EncryptedId, $scope.members[idx].Number, $scope.members[idx].Name, $scope.members[idx].ImageProfile);
     }
 
@@ -1773,30 +1785,31 @@
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
         item.ElementId = id;
-        item.ElementEncryptedId = encryptedId;
-        item.Element.Number = number;
+        item.Element.EncryptedUserId = encryptedId;
+        item.Element.UserId = id;
         item.Element.Name = name;
         item.Element.Foto = imageProfile;
 
         var no = parent.replace('svg', '');
         var foto = document.getElementById("member-foto-" + no);
-        foto.src = "/Images/Member/" + item.ElementEncryptedId + "/" + item.Element.Foto;
+        foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
         $("#member-name-" + no).text(item.Element.Name + ' | ' + item.Element.Number);
     }
-    $scope.editMember = function (idx) {
+    $scope.editMemberFromRotation = function (idx) {
         $scope.memberIdx = idx;
         $scope.members = [];
-        $("#modal_select_member").modal("show");
+        $("#modal_select_member_rotation").modal("show");
     }
 
-    $scope.findMembers = function (kriteria, page, row) {
+    $scope.findMembersRotation = function (kriteria, page, row, rotationId) {
         $scope.page = 1;
         $scope.members = [];
-        $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        console.log(kriteria, page, row, rotationId);
+        $http.post('/Member/FindMembersRotation', { topCriteria: kriteria, page: page, pageSize: row , rotationId : rotationId }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
-                $scope.findMembersCountAll(kriteria);
+                $scope.findMembersRotationCountAll(kriteria, rotationId);
                 $scope.isView = true;
             }
         }, function (response) {
@@ -1804,9 +1817,9 @@
             var x = 0;
         });
     }
-    $scope.findMembersCountAll = function (kriteria) {
+    $scope.findMembersRotationCountAll = function (kriteria, rotationId) {
         $scope.paging = [];
-        $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+        $http.post('/Member/FindMembersRotationCountAll', { topCriteria: kriteria, rotationId : rotationId }).then(function (response) {
             if (response.data) {
                 var jumlahData = response.data;
                 var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -1820,9 +1833,9 @@
             var x = 0;
         });
     }
-    $scope.changePageMember = function (kriteria, page, row) {
+    $scope.changePageMemberRotation = function (kriteria, page, row, rotationId) {
         $scope.products = [];
-        $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Member/FindMembersRotation', { topCriteria: kriteria, page: page, pageSize: row , rotationId:rotationId}).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
@@ -1872,7 +1885,7 @@
         item.Element.Foto = stampFile;
 
         var foto = document.getElementById(selectedNodeId);
-        foto.src = "/Images/Stamp/" + item.Element.ElementEncryptedId + "/" + item.Element.Foto;
+        foto.src = "/Images/Stamp/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
     }
 
     $scope.getLiteStamps = function (kriteria, page, row) {

@@ -84,6 +84,7 @@ namespace DRD.Models
             this.UpdatedAt = item.UpdatedAt;
             this.DocumentId = item.DocumentId;
             this.ElementTypeId = item.ElementTypeId;
+            this.Element = item.Element;
         }
     }
 }

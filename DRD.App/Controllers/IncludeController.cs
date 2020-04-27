@@ -26,6 +26,10 @@ namespace DRD.Web.Controllers
         {
             return View();
         }
+        public ActionResult PopupMemberRotation()
+        {
+            return View();
+        }
         public ActionResult RotationLog()
         {
             return View();

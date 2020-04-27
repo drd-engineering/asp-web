@@ -622,7 +622,7 @@ namespace DRD.Service
                 document.DocumentElements= SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
                 document.DocumentUsers= CreateDocumentUser(document.Id);
                 document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
-                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id };
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id , FlagPermission = 6};
             }
             return document;
         }
@@ -728,7 +728,7 @@ namespace DRD.Service
             //if (plan.SubscriptionName != "Business") throw new NotImplementedException();
 
             // reach out the storage limit
-            if (plan.StorageUsedinByte < (newDocument.FileSize - oldDocument.FileSize))
+            if (plan.StorageSize < (newDocument.FileSize - oldDocument.FileSize))
                 throw new NotImplementedException();
             return true;
         }
@@ -863,6 +863,7 @@ namespace DRD.Service
                     da.FlagImage = epos.FlagImage;
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
+                    da.Element = epos.Element;
                     da.CreatedAt = DateTime.Now;
                     v++;
                 }
@@ -951,7 +952,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && ("SIGNATURE, INITIAL").Contains(getElementTypeFromCsvById(c.ElementTypeId).Code) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
+                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && (c.ElementTypeId == 4 || c.ElementTypeId == 5) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
                 var user = db.Users.FirstOrDefault(c => c.Id == memberId);
@@ -987,8 +988,8 @@ namespace DRD.Service
         public void sendEmailSignature(User member, string rotName, string docName, string numbers)
         {
             AppConfigGenerator appsvr = new AppConfigGenerator();
-            var topaz = appsvr.GetConstant("APPL_NAME")["value"];
-            var admName = appsvr.GetConstant("EMAILUSERDISPLAY")["value"];
+            var topaz = appsvr.GetConstant("APPLICATION_NAME")["value"];
+            var admName = appsvr.GetConstant("EMAIL_USER_DISPLAY")["value"];
             EmailService emailtools = new EmailService();
             string body =
                 "Dear " + member.Name + ",<br/><br/>" +

@@ -31,20 +31,54 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
-        
+        /// <summary>
+        /// Request to get member data based on search query and page list requested
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public ActionResult FindMembers(string topCriteria, int page, int pageSize)
         {
             InitializeAPI();
             var data = memberService.FindMembers(user.Id, topCriteria, page, pageSize, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// Request to get all the member listed in search query, to help paging for searching member
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <returns></returns>
         public ActionResult FindMembersCountAll(string topCriteria)
         {
             InitializeAPI();
             var data = memberService.FindMembersCountAll(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// Request to get member data that are participate in Rotation based on search query and page list requested
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public ActionResult FindMembersRotation(string topCriteria, int page, int pageSize, long rotationId)
+        {
+            InitializeAPI();
+            var data = memberService.FindMembersRotation(user.Id, topCriteria, page, pageSize, rotationId);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// Request to get count of all the member that are participate in Rotation listed in search query, to help paging for searching member
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <returns></returns>
+        public ActionResult FindMembersRotationCountAll(string topCriteria, long rotationId)
+        {
+            InitializeAPI();
+            var data = memberService.FindMembersRotationCountAll(user.Id, topCriteria, rotationId);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult GetAcceptedMember(long companyId)
         {
             InitializeAPI();
