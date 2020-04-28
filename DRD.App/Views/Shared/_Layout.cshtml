@@ -164,7 +164,7 @@
         <script type="text/javascript">
 
 
-
+       //var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
     myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
 
         $scope.$on("$destroy", function (event) {
@@ -182,9 +182,7 @@
         $scope.companies = [];
         $scope.startCounting = function () {
             $scope.xtimer = setInterval(() => {
-                $scope.getCompaniesOwned();
-                $scope.getActivityCounter();
-                
+                $scope.getCompaniesOwned();                
             alert($scope);
             }, 5000);
         };
@@ -207,7 +205,7 @@
 
         /*--------------------------------------------------------------
         GET ASSET ITEM
-        --------------------------------------------------------------*/
+        ------------------------------------- -------------------------*/
         $scope.getActivityCounter = function () {
                 $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                     if (response.data) {
