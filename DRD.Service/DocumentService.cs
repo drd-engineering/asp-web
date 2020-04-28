@@ -861,6 +861,7 @@ namespace DRD.Service
                     da.FlagCode = epos.FlagCode;
                     da.FlagDate = epos.FlagDate;
                     da.FlagImage = epos.FlagImage;
+                    System.Diagnostics.Debug.WriteLine(" Flag Code disini : " + epos.FlagCode);
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
                     da.Element = epos.Element;
@@ -1004,55 +1005,73 @@ namespace DRD.Service
             var task = emailtools.Send(emailfrom, admName + " Administrator", member.Email, admName + " User Signature", body, false, new string[] { });
         }
 
-        public int SaveCxPrint(string docName, long memberId)
+        /// <summary>
+        /// Requesting to print document, if user have permission and not out of limit, so the request return int 1 as status OK, also will save print counter
+        /// </summary>
+        /// <param name="docName"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public int RequestPrintDocument(string docName, long userId)
         {
             using (var db = new ServiceContext())
             {
-                var doc = db.Documents.FirstOrDefault(c => c.FileName.Equals(docName));
-                var rot = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == doc.Id);
-                var docmem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == memberId);
-                if (docmem == null)
+                var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
+                if (doc == null)
                     return -4;
-
+                System.Diagnostics.Debug.WriteLine("[[DEBUG Document found]] " + doc.Id);
+                // Harus di improve lagi untuk tau status saat ini
+                // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
+                var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
+                if (docMem == null)
+                    return -4;
+                System.Diagnostics.Debug.WriteLine("[[DEBUG DocumentUser found]] " + docMem.Id);
                 // calc from rotation is completed
-                if (!rot.RotationNode.Rotation.Status.Equals("90"))
+                // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
+                //    return -3;
+                if ((docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                     return -3;
 
+                // out of max // There may be a race condition
+                if (docMem.PrintCount + 1 > doc.MaxPrintPerActivity)
+                    return -1;
 
-                // out of max
-                //if (docmem.CxPrint + 1 > doc.MaxPrint)
-                //    return -1;
-
-                //docmem.CxPrint++;
+                docMem.PrintCount++;
                 db.SaveChanges();
 
                 return 1;
             }
         }
-
-        public int SaveCxDownload(string docName, long memberId)
+        /// <summary>
+        /// Requesting to download document, if user have permission and not out of limit, so the request return int 1 as status OK, also will save download counter
+        /// </summary>
+        /// <param name="docName"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public int RequestDownloadDocument(string docName, long userId)
         {
             using (var db = new ServiceContext())
             {
-                var doc = db.Documents.FirstOrDefault(c => c.FileName.Equals(docName));
-                var rot = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == doc.Id);
-                //var docmem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.MemberId == memberId);
-                //if (docmem == null)
-                //    return -4;
-
-                //// calc from rotation is completed
-                //if (!rot.RotationNode.Rotation.Status.Equals("90"))
+                var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
+                if (doc == null)
+                    return -4;
+                System.Diagnostics.Debug.WriteLine("[[DEBUG Document found]] " + doc.Id);
+                // Harus di improve lagi untuk tau status saat ini
+                // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
+                var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
+                if (docMem == null)
+                    return -4;
+                System.Diagnostics.Debug.WriteLine("[[DEBUG DocumentUser found]] " + docMem.Id);
+                // calc from rotation is completed
+                // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                 //    return -3;
+                if ((docMem.FlagPermission & (int)Constant.EnumDocumentAction.DOWNLOAD) == (int)Constant.EnumDocumentAction.DOWNLOAD)
+                    return -3;
 
-                //// expired
-                //if (rot.RotationNode.Rotation.DateUpdated.Value.AddDays(doc.ExpiryDay) < DateTime.Now)
-                //    return -2;
+                // out of max // There may be a race condition
+                if (docMem.PrintCount + 1 > doc.MaxPrintPerActivity)
+                    return -1;
 
-                //// out of max
-                //if (docmem.CxDownload + 1 > doc.MaxDownload)
-                //    return -1;
-
-                //docmem.CxDownload++;
+                docMem.PrintCount++;
                 db.SaveChanges();
 
                 return 1;

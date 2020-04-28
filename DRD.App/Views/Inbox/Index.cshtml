@@ -89,7 +89,7 @@
                                                     <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
                                                 </div>
                                             </div>
-                                            <br />
+                                            <br />  
                                             <div class="row" ng-show="model.DecissionInfo!=''">
                                                 @*<div class="col-md-10">
                                                     <label class="control-label">Value to decision ({{model.DecissionInfo}})</label>
@@ -108,7 +108,7 @@
 
                                         <hr />
 
-                                        <div class="row">
+                                        <div class="row" ng-show="!isCompleteRotation()">
                                             <div class="col-md-5">
                                                 <span style="font-size:medium"><b>Document</b></span>
                                             </div>
@@ -116,7 +116,7 @@
                                                 <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-show="checkIsFirstPerson() && checkIsActive()" ng-click="popupDocument()">Add</button>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row" ng-show="!isCompleteRotation()">
                                             <div class="col-lg-10">
                                                 <div style="height:5px"></div>
                                                 <table class="table-xs table-bordered table-striped" style="font-size:small;width:100%">
@@ -152,7 +152,7 @@
                                             <hr />
                                     </fieldset>
                                 <br />
-                                <div class="col-md-10" style="display:none" id="action-panel">
+                                <div class="col-md-10" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
                                     <div class="panel panel-body border-top-primary text-center">
                                         <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
                                         <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in"  ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
@@ -334,22 +334,6 @@
 
             }
 
-            $scope.checkSignOrStamp = function () {
-                for (var i = 0; i < $scope.docs.length; i++) {
-                    var doc = {};
-                    doc.Document = $scope.docs[i].Document;
-                    doc.DocumentId = $scope.docs[i].DocumentId;
-                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 1) || $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32))) {
-                        //passwordtype = 5 ==> there is any document to be signed or stamped
-                        $scope.passwordType = 5;
-                        $scope.checkUserSignatureData();
-                        console.log("password type inside check signature: " + $scope.passwordType);
-                        return true;
-                    }
-                }
-                return false;
-            };
-
             function initDocumentValues() {
 
                 var product = @Html.Raw(Json.Encode(Model.obj));
@@ -412,35 +396,16 @@
                 }
                 //$('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
+            $scope.initData = function () {
 
+            };
             $scope.gotoAddDoc = function () {
                 var url = $filter('filter')($scope.dbmenus, { SecondaryKey: 'DOCUMENT' })[0].UrlPage.replace('list?', '?');
                 location.href = url;
             };
-            $scope.initData = function () {
-
-            };
             $scope.docAlert = function (text) {
                 showInfo("Click on " + text);
             };
-
-            $scope.checkUserSignatureData = function () {
-                $http.post('/document/CheckingSignature', { memberId: 0 }).then(function (response) {
-                    if (response.data) {
-                        if (response.data == -1) {
-                            showError("Complete your user profiles to continue to sign this document. (KTP, initial, signature, and stamp)");
-                            return false;
-                        }
-                        console.log("Sign document is able do to, add password to do it");
-                        return true;
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-
             $scope.showPasswordModal = function () {
                 var val = document.getElementById("thePassword");
                 val.value = "";
@@ -468,8 +433,6 @@
                     var x = 0;
                 });
             };
-
-
             $scope.stampDocument = function (idx) {
                 $http.post('/document/CheckingPrivateStamp', { memberId: 0 }).then(function (response) {
                     if (response.data) {
@@ -606,8 +569,8 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//arg.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var permission = member.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((permission & 16) == 16);
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission & 8) == 8);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16));
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8));
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
@@ -616,7 +579,7 @@
             /*--------------------------------------------------------------
                 DOCUMENT VIEW FUNCTION
             --------------------------------------------------------------*/
-            $scope.viewDocument = function (idx) {
+            $scope.viewDocuviewDocument = function (idx) {
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
@@ -643,9 +606,9 @@
 
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);//arg.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
-                var permission = doc.Document.DocumentUser.FlagPermission;
+                /*var permission = doc.Document.DocumentUser.FlagPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload((permission & 16) == 16);
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission& 8) == 8);
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission& 8) == 8);*/
                 isdefineiframe = true;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
@@ -689,16 +652,17 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().showPrint((permission & 8) == 8);*/ // Ga perlu ada download dan print kalau lagi revisi
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileName);
                 isdefineiframe = true;
+                $scope.selectedIdx=idx;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
                 $('#modal_pdf_viewer').on('hidden.bs.modal',revisiFinished);
-                $scope.selectedIdx=idx;
             };
 
             var revisiFinished = function(e){
-                $('#modal_pdf_viewer').off('hidden.bs.modal',revisiFinished);
-                var items=document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                $scope.docs[$scope.selectedIdx].Document.DocumentAnnotates=items;
+                var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
+                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().resetAnnoItems();
+                $scope.resetFileUploadDetails();
 
                 /*var doc=$scope.docs[$scope.selectedIdx];
                 var defPermission=doc.Document.DocumentMember.FlagPermission;
@@ -806,9 +770,42 @@
             $scope.downloadAttchment = function (atth) {
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName + "&isDocument=false";
             };
-
             /*--------------------------------------------------------------
-            submitActivity
+                User Signature Function
+            --------------------------------------------------------------*/
+            $scope.checkUserSignatureData = function () {
+                $http.post('/document/CheckingSignature', { memberId: 0 }).then(function (response) {
+                    if (response.data) {
+                        if (response.data == -1) {
+                            showError("Complete your user profiles to continue to sign this document. (KTP, initial, signature, and stamp)");
+                            return false;
+                        }
+                        console.log("Sign document is able do to, add password to do it");
+                        return true;
+
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            };
+            $scope.checkSignOrStamp = function () {
+                for (var i = 0; i < $scope.docs.length; i++) {
+                    var doc = {};
+                    doc.Document = $scope.docs[i].Document;
+                    doc.DocumentId = $scope.docs[i].DocumentId;
+                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 1) || $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32))) {
+                        //passwordtype = 5 ==> there is any document to be signed or stamped
+                        $scope.passwordType = 5;
+                        $scope.checkUserSignatureData();
+                        console.log("password type inside check signature: " + $scope.passwordType);
+                        return true;
+                    }
+                }
+                return false;
+            };
+            /*--------------------------------------------------------------
+                Submit Button Activity Function
             --------------------------------------------------------------*/
             $scope.submitActivity = function (bit) {
                 $scope.checkSignOrStamp();
@@ -847,9 +844,6 @@
                         }, 500);
                     });
             };
-
-
-
             $scope.submitActivityProcess = function (bit) {
                 var rotNodeDocs = [];
                 for (var i = 0; i < $scope.docs.length; i++) {
@@ -948,7 +942,6 @@
                         var x = 0;
                     });
             };
-
             $scope.processActivity = function (bit) {
                 //var iframe=document.getElementById('xpdfIFrame');
                 //var iframeView=document.getElementById('xpdfIFrameView');
@@ -995,13 +988,11 @@
                 }
                 return ret;
             };
-            //$scope.validActionx = function (val, bit) {
-            //    return ((val & bit)==bit);
-            //}
 
             $scope.finishLoading = function () {
                 $scope.loadingLog = 0;
             };
+
             $scope.showIdentityImage = function (member) {
                 $scope.identities = [];
                 //if (member.ImageProfile!=null) {
@@ -1247,6 +1238,46 @@
 
                 }
             };
+            $scope.isCompleteRotation = function () {
+                switch ($scope.model.Status) {
+                    case 0:
+                        return false;
+                        break;
+                    case 1:
+                        return false;
+                        break;
+                    case 2:
+                        return false;
+                        break;
+                    case 3:
+                        return false;
+                        break;
+                    case 5:
+                        return false;
+                        break;
+                    case 6:
+                        return false;
+                        break;
+                    case 90:
+                        return true;
+                        break;
+                    case 98:
+                        return true;
+                        break;
+                    case 99:
+                        return true;
+                        break;
+                    case 10:
+                        return false;
+                        break;
+                    case 11:
+                        return false;
+                        break;
+                    case 97:
+                        return true;
+                        break;
+                }
+            }
 
             $scope.uploadDocFile = function (idx, file, errFiles) {
                 $scope.finit = $scope.f;
@@ -1462,10 +1493,10 @@
                 isdefineiframe = true;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
+                $('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);
             };
 
-            var revisiFinished = function (e) {
+            var annoFinished = function (e) {
                 $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
                 var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                 $scope.annos = items;
