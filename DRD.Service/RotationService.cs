@@ -784,7 +784,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId
-                            orderby rotation.Status descending, rotation.DateUpdated descending
+                            orderby rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
@@ -800,6 +800,7 @@ namespace DRD.Service
                                                  select new RotationDashboard.UserDashboard
                                                  {
                                                      Id = rtuser.User.Id,
+                                                     Name = rtuser.User.Name,
                                                      ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
@@ -821,7 +822,7 @@ namespace DRD.Service
                 {
                     data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.Status descending, rotation.DateUpdated descending
+                            orderby rotation.DateUpdated descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
@@ -837,6 +838,7 @@ namespace DRD.Service
                                                  select new RotationDashboard.UserDashboard
                                                  {
                                                      Id = rtuser.User.Id,
+                                                     Name = rtuser.User.Name,
                                                      ImageProfile = rtuser.User.ImageProfile
                                                  }).ToList(),
                                 Creator = (from user in db.Users
@@ -844,6 +846,7 @@ namespace DRD.Service
                                            select new RotationDashboard.UserDashboard
                                            {
                                                Id = user.Id,
+                                               Name = user.Name,
                                                ImageProfile = user.ImageProfile
                                            }).FirstOrDefault(),
                                 Workflow = new RotationDashboard.WorkflowDashboard
@@ -858,8 +861,26 @@ namespace DRD.Service
                     x.Creator.EncryptedId = XEncryptionHelper.Encrypt(x.Creator.Id.ToString());
                     foreach(RotationDashboard.UserDashboard y in x.RotationUsers)
                     {
+                        var user = (from rotationNode in db.RotationNodes
+                                    where rotationNode.Rotation.Id == x.Id && rotationNode.UserId == y.Id
+                                    select new RotationNodeInboxData
+                                    {
+                                        CreatedAt = rotationNode.CreatedAt,
+                                        Status = rotationNode.Status
+                                    }).FirstOrDefault();
+                        if (user != null)
+                        {
+                            y.Status = user.Status;
+                            y.CreatedAt = user.CreatedAt;
+                        }
+                        else
+                        {
+                            y.CreatedAt = DateTime.MaxValue;
+                            y.Status = -99;
+                        }
                         y.EncryptedId = XEncryptionHelper.Encrypt(y.Id.ToString());
                     }
+                    x.RotationUsers = x.RotationUsers.OrderBy(i => i.CreatedAt).ToList();
                 }
                 return data;
             }

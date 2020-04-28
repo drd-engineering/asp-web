@@ -13,6 +13,7 @@ namespace DRD.Models
     {
         public string EncryptedUserId { get; set; }
         public long Id { get; set; } // Id (Primary key)
+        public string EncryptedId { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 50)
         public string Phone { get; set; } // Phone (length: 20)
         public string Email { get; set; } // Email (length: 50)

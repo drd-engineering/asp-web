@@ -35,6 +35,9 @@ namespace DRD.Models.View
             public string Name { get; set; }
             public string EncryptedId { get; set; }
             public string ImageProfile { get; set; }
+
+            public System.DateTime CreatedAt { get; set; } // DateCreated
+            public int Status { get; set; } // string
             public bool IsHere { get; set; }
         }
     }
