@@ -579,7 +579,7 @@
             /*--------------------------------------------------------------
                 DOCUMENT VIEW FUNCTION
             --------------------------------------------------------------*/
-            $scope.viewDocuviewDocument = function (idx) {
+            $scope.viewDocument = function (idx) {
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
