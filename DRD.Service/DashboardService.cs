@@ -82,9 +82,13 @@ namespace DRD.Service
         // untuk tampilan front dari dashboard.
         public ICollection<RotationDashboard> GetDashboardRotationStatus(long companyId, long userId, ICollection<string> Tags, int skip, int pageSize)
         {
+            ICollection<RotationDashboard> data;
             RotationService rotationService = new RotationService();
-            ICollection<RotationDashboard> data = rotationService.GetRelatedToCompany(companyId, userId, Tags, skip, pageSize);
-            return data;
+            if (userId==-99) {
+                return rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
+            }
+            return rotationService.GetRelatedToCompany(companyId, userId, Tags, skip, pageSize);
+
         }
 
         public int sendEmailNotifikasiRotasi(long rotationId, long userId)
