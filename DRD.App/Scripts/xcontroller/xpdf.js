@@ -269,7 +269,6 @@
                 $scope.doDownload();
             else if ($scope.command == "PRINT")
                 $scope.doPrint();
-
             return;
         }
         
@@ -305,10 +304,125 @@
             insertImgNo++;
             $scope.insertPngToSvg();
         };
-
     }
     $scope.removePngInSvg = function () {
 
+    }
+    $scope.doPrint = function () {
+
+        $("#viewer").printThis({
+            //debug: false,               // show the iframe for debugging
+            //importCSS: true,            // import page CSS
+            //importStyle: false,         // import style tags
+            //printContainer: true,       // grab outer container as well as the contents of the selector
+            //loadCSS: "/Scripts/pdf.js/web/viewer.css",  // path to additional css file - use an array [] for multiple
+            ////pageTitle: "",              // add title to print page
+            //removeInline: false,        // remove all inline styles from print elements
+            //printDelay: 333,            // variable print delay
+            ////header: null,               // prefix to html
+            ////footer: null,               // postfix to html
+            //base: false,               // preserve the BASE tag, or accept a string for the URL
+            //formValues: true,           // preserve input/form values
+            canvas: true,              // copy canvas elements (experimental)
+            //doctypeString: "...",       // enter a different doctype for older markup
+            //removeScripts: false,       // remove script tags from print content
+            //copyTagClasses: false       // copy classes from the html & body tag
+        });
+        return;
+
+        /*
+        <select id="mode">
+          <option value="avoid-all">Avoid-all</option>
+          <option value="css">CSS</option>
+          <option value="legacy">Legacy</option>
+          <option value="specify">Specified elements (using before/after/avoid)</option>
+        </select>
+        */
+        // Get the element.
+        var element = document.getElementById('viewer');
+
+        // Choose pagebreak options based on mode.
+        var mode = 'specify'; //document.getElementById('xannoLayer1').value;
+        var pagebreak = (mode === 'specify') ?
+            { mode: '', before: '.before', after: '.after', avoid: '.avoid' } :
+            { mode: mode };
+
+        var annolay = document.getElementById("xannoLayer1");
+        var w = pos2Float(annolay.style.width);
+        var h = pos2Float(annolay.style.height);
+
+        // open property page and close for set value.
+        var prop = PDFViewerApplication.pdfDocumentProperties.open();
+        PDFViewerApplication.pdfDocumentProperties.close();
+        setTimeout(function () {
+            var pageSize = $("#pageSizeField").text();
+            var pos1 = pageSize.indexOf("(");
+            var pos2 = pageSize.indexOf(")");
+            var paper = pageSize.substr(pos1 + 1, pos2 - pos1 - 1);
+            var papers = paper.split(',');
+            if (papers.length == 1) {
+                papers[1] = papers[0];
+                papers[0] = 'a4';
+            }
+            html2pdf().from(element).set({
+                filename: downloadFileName,
+                pagebreak: pagebreak,
+                jsPDF: {
+                    orientation: papers[1].trim(),
+                    unit: 'in',
+                    format: papers[0].trim(),
+                    compressPDF: false
+                }
+            }).save().then(function (e) { $(".xtmpimg").remove(); });
+        }, 1000);
+    }
+    $scope.doDownload = function () {
+
+        /*
+        <select id="mode">
+          <option value="avoid-all">Avoid-all</option>
+          <option value="css">CSS</option>
+          <option value="legacy">Legacy</option>
+          <option value="specify">Specified elements (using before/after/avoid)</option>
+        </select>
+        */
+        // Get the element.
+        var element = document.getElementById('viewer');
+
+        // Choose pagebreak options based on mode.
+        var mode = 'specify'; //document.getElementById('xannoLayer1').value;
+        var pagebreak = (mode === 'specify') ?
+            { mode: '', before: '.before', after: '.after', avoid: '.avoid' } :
+            { mode: mode };
+
+        var annolay = document.getElementById("xannoLayer1");
+        var w = pos2Float(annolay.style.width);
+        var h = pos2Float(annolay.style.height);
+
+        // open property page and close for set value.
+        var prop = PDFViewerApplication.pdfDocumentProperties.open();
+        PDFViewerApplication.pdfDocumentProperties.close();
+        setTimeout(function () {
+            var pageSize = $("#pageSizeField").text();
+            var pos1 = pageSize.indexOf("(");
+            var pos2 = pageSize.indexOf(")");
+            var paper = pageSize.substr(pos1 + 1, pos2 - pos1 - 1);
+            var papers = paper.split(',');
+            if (papers.length == 1) {
+                papers[1] = papers[0];
+                papers[0] = 'a4';
+            }
+            html2pdf().from(element).set({
+                filename: downloadFileName,
+                pagebreak: pagebreak,
+                jsPDF: {
+                    orientation: papers[1].trim(),
+                    unit: 'in',
+                    format: papers[0].trim(),
+                    compressPDF: false
+                }
+            }).save().then(function (e) { $(".xtmpimg").remove(); });
+        }, 1000);
     }
 
     var bindAnnoDataMember = function(i)
@@ -551,7 +665,7 @@
         downloadFileName = fname;
     }
     $scope.clickDownload = function () {
-        $http.post('/document/SaveCxDownload', { docName: $scope.defaultDocumentName }).then(function (response) {
+        $http.post('/document/RequestDownloadDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
             if (response.data) {
                 var val = response.data;
                 if (val == -1) {
@@ -574,7 +688,7 @@
         });        
     }
     $scope.clickPrint = function () {
-        $http.post('/document/SaveCxPrint', { docName: $scope.defaultDocumentName }).then(function (response) {
+        $http.post('/document/RequestPrintDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
             if (response.data) {
                 var val = response.data;
                 if (val == -1) {
@@ -596,123 +710,6 @@
             var x = 0;
         });
     }
-    $scope.doDownload = function () {
-        
-        /*
-        <select id="mode">
-          <option value="avoid-all">Avoid-all</option>
-          <option value="css">CSS</option>
-          <option value="legacy">Legacy</option>
-          <option value="specify">Specified elements (using before/after/avoid)</option>
-        </select>
-        */
-        // Get the element.
-        var element = document.getElementById('viewer');
-
-        // Choose pagebreak options based on mode.
-        var mode = 'specify'; //document.getElementById('xannoLayer1').value;
-        var pagebreak = (mode === 'specify') ?
-            { mode: '', before: '.before', after: '.after', avoid: '.avoid' } :
-            { mode: mode };
-
-        var annolay = document.getElementById("xannoLayer1");
-        var w = pos2Float(annolay.style.width);
-        var h = pos2Float(annolay.style.height);
-
-        // open property page and close for set value.
-        var prop = PDFViewerApplication.pdfDocumentProperties.open();
-        PDFViewerApplication.pdfDocumentProperties.close();
-        setTimeout(function () {
-            var pageSize = $("#pageSizeField").text();
-            var pos1 = pageSize.indexOf("(");
-            var pos2 = pageSize.indexOf(")");
-            var paper = pageSize.substr(pos1 + 1, pos2 - pos1 - 1);
-            var papers = paper.split(',');
-            if (papers.length == 1) {
-                papers[1] = papers[0];
-                papers[0] = 'a4';
-            }
-            html2pdf().from(element).set({
-                filename: downloadFileName,
-                pagebreak: pagebreak,
-                jsPDF: {
-                    orientation: papers[1].trim(),
-                    unit: 'in',
-                    format: papers[0].trim(),
-                    compressPDF: false
-                }
-            }).save().then(function (e) { $(".xtmpimg").remove(); });
-        },1000);
-    }
-    $scope.doPrint = function () {
-
-        $("#viewer").printThis({
-            //debug: false,               // show the iframe for debugging
-            //importCSS: true,            // import page CSS
-            //importStyle: false,         // import style tags
-            //printContainer: true,       // grab outer container as well as the contents of the selector
-            //loadCSS: "/Scripts/pdf.js/web/viewer.css",  // path to additional css file - use an array [] for multiple
-            ////pageTitle: "",              // add title to print page
-            //removeInline: false,        // remove all inline styles from print elements
-            //printDelay: 333,            // variable print delay
-            ////header: null,               // prefix to html
-            ////footer: null,               // postfix to html
-            //base: false,               // preserve the BASE tag, or accept a string for the URL
-            //formValues: true,           // preserve input/form values
-            canvas: true,              // copy canvas elements (experimental)
-            //doctypeString: "...",       // enter a different doctype for older markup
-            //removeScripts: false,       // remove script tags from print content
-            //copyTagClasses: false       // copy classes from the html & body tag
-        });
-        return;
-
-        /*
-        <select id="mode">
-          <option value="avoid-all">Avoid-all</option>
-          <option value="css">CSS</option>
-          <option value="legacy">Legacy</option>
-          <option value="specify">Specified elements (using before/after/avoid)</option>
-        </select>
-        */
-        // Get the element.
-        var element = document.getElementById('viewer');
-
-        // Choose pagebreak options based on mode.
-        var mode = 'specify'; //document.getElementById('xannoLayer1').value;
-        var pagebreak = (mode === 'specify') ?
-            { mode: '', before: '.before', after: '.after', avoid: '.avoid' } :
-            { mode: mode };
-
-        var annolay = document.getElementById("xannoLayer1");
-        var w = pos2Float(annolay.style.width);
-        var h = pos2Float(annolay.style.height);
-
-        // open property page and close for set value.
-        var prop = PDFViewerApplication.pdfDocumentProperties.open();
-        PDFViewerApplication.pdfDocumentProperties.close();
-        setTimeout(function () {
-            var pageSize = $("#pageSizeField").text();
-            var pos1 = pageSize.indexOf("(");
-            var pos2 = pageSize.indexOf(")");
-            var paper = pageSize.substr(pos1 + 1, pos2 - pos1 - 1);
-            var papers = paper.split(',');
-            if (papers.length == 1) {
-                papers[1] = papers[0];
-                papers[0] = 'a4';
-            }
-            html2pdf().from(element).set({
-                filename: downloadFileName,
-                pagebreak: pagebreak,
-                jsPDF: {
-                    orientation: papers[1].trim(),
-                    unit: 'in',
-                    format: papers[0].trim(),
-                    compressPDF: false
-                }
-            }).save().then(function (e) { $(".xtmpimg").remove(); });
-        }, 1000);
-    }
-
     $scope.setFromAndroid = function () {
         fromAndroid = true;
     }
@@ -1682,6 +1679,11 @@
     $scope.setAnnoItems = function (items) {
         $scope.annoItems = items;
         svgNo = items.length;
+    }
+    //setdefault
+    $scope.resetAnnoItems = function(){
+        $scope.annoItems = [];
+        svgNo = 0;
     }
 
     var isAnnoToolbarVisible = true;    // true: toolbar visible, anno editable | false: toolbar hide, anno not editable

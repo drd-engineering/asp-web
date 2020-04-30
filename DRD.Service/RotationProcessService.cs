@@ -407,7 +407,6 @@ namespace DRD.Service
                     emailService.sendEmailInbox(act);
                     inboxService.GenerateNewInbox(act);
                 }
-
                 return retvalues;
             }
         }
@@ -457,9 +456,15 @@ namespace DRD.Service
 
                     // update flag action di master rotationNodeDoc member
                     var memberId = rotationNode.UserId;
+                    var rotationid = rotationNode.RotationId;
                     var docm = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rnc.Document.Id && c.UserId == memberId);
+                    var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == memberId);
                     if (docm != null)
+                    {
                         docm.FlagAction = rnc.FlagAction;
+                        // Also Document permission updating related to Rotation User that have permission
+                        docm.FlagPermission |= rotationUser.FlagPermission;
+                    }
                     else
                     {
                         DocumentUser docmem = new DocumentUser();
@@ -467,6 +472,8 @@ namespace DRD.Service
                         docmem.UserId = memberId;
                         docmem.FlagAction = rnc.FlagAction;
                         docmem.FlagPermission = 6; // default view, add annotate
+                        // Also Document permission updating related to Rotation User that have permission
+                        docmem.FlagPermission |= rotationUser.FlagPermission;
                         db.DocumentUsers.Add(docmem);
                     }
 
@@ -480,7 +487,6 @@ namespace DRD.Service
                         docElement = docSvr.SaveAnnos(rnc.Document.Id, memberId, "CALLER", docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
-                        System.Diagnostics.Debug.WriteLine("[[DEBUG SIGNATURE BERHASIL MASUK FUNGSI PENERUS]] " + rnc.FlagAction);
                         docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
                         docSvr.Stamp((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);

@@ -25,7 +25,7 @@
                     <span><u>Documents:</u></span> <br />
                     <span ng-repeat="d in x.RotationNodeDocs">
                         <span>
-                            <b><span ng-show="$index>0">| </span>{{d.Document.Title}}</b>
+                            <b>{{d.Document.FileName}}</b>
                             <span style="font-size:xx-small;color:darkgrey">
                                 <span ng-show="validAction(d.FlagAction,1)">signed</span>
                                 <span ng-show="validAction(d.FlagAction,32)">stamped</span>
@@ -82,7 +82,7 @@
         <thead>
             <tr>
                 <th width="25px">#</th>
-                <th>Title | File Name</th>
+                <th>File Name</th>
                 <th>Action Summaries</th>
                 <th width="125px" style="text-align:right">Size (bytes)</th>
             </tr>
@@ -90,7 +90,7 @@
         <tbody>
             <tr ng-repeat="x in sumDocuments" style="vertical-align:top;font-size:small">
                 <td width="25px">{{$index+1 + index}}</td>
-                <td><a ng-click="viewDocument(x)">{{x.Document.Title}} | {{x.Document.FileNameOri}}</a></td>
+                <td><a ng-click="viewDocumentSummary(x)">{{x.Document.FileName}}</a></td>
 
                 <td>
                     <span style="font-size:small;color:darkgrey">
@@ -102,7 +102,7 @@
                         <span ng-show="validAction(x.FlagAction,16)">downloaded</span>
                     </span>
                 </td>
-                <td width="125px" style="text-align:right">{{x.Document.FileSize | number}}</td>
+                <td width="125px" style="text-align:right">{{humanFileSize(x.Document.FileSize,1024)}}</td>
             </tr>
         </tbody>
     </table>

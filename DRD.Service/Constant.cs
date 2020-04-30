@@ -71,7 +71,8 @@ namespace DRD.Service
             VIEW = 4,
             PRINT = 8,
             DOWNLOAD = 16,
-            PRIVATESTAMP = 32
+            PRIVATESTAMP = 32,
+            REMOVE = 64,
         }
         public enum EnumDataHit
         {

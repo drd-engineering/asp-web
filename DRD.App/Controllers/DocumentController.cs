@@ -262,19 +262,19 @@ namespace DRD.App.Controllers
         //    return Json(data, JsonRequestBehavior.AllowGet);
         //}
 
-        public ActionResult SaveCxPrint(string docName)
+        public ActionResult RequestPrintDocument(string docName)
         {
             UserSession user = getUserLogin();
             var srv = new DocumentService();
-            var data = srv.SaveCxPrint(docName, user.Id);
+            var data = srv.RequestPrintDocument(docName, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SaveCxDownload(string docName)
+        public ActionResult RequestDownloadDocument(string docName)
         {
             UserSession user = getUserLogin();
             var srv = new DocumentService();
-            var data = srv.SaveCxDownload(docName, user.Id);
+            var data = srv.RequestDownloadDocument(docName, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
