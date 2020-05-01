@@ -113,20 +113,12 @@
                             </div>
                         </div>
                         <div style="height:5px"></div>
+                            
                         <div class="col-md-10">
-                            <div class="row">
-                                <label class="control-label">Recipient Determination</label>
+                            <div  class="row">
                                 <table class="table-xxs table-bordered table-striped" style="font-size:small;width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th width="25px">#</th>
-                                            <th>Activity</th>
-                                            <th>Recipient</th>
-                                        </tr>
-                                    </thead>
                                     <tbody ng-repeat="x in users" ng-init="topIdx = $index">
                                         <tr style="vertical-align:top" on-finish-render="ngRepeatFinished">
-                                            <td width="25px" rowspan="2">{{$index+1 + index}}</td>
                                             <td rowspan="2">{{x.ActivityName}}</td>
                                             <td>
                                                 <table style="width:100%;">
@@ -135,9 +127,10 @@
                                                             <img ng-src={{(x.Picture==null?"/Images/Member/user.png":"/Images/Member/"+x.EncryptedId+"/"+x.Picture)}} height="40" width="40" style="cursor:pointer;border-radius:50%;" ng-click="editMember($index)" />
                                                         </td>
                                                         <td style="font-size:xx-small">
-                                                            <span class="text-format">{{x.Name +" "+ x.encrypteid}}</span><br />
+                                                            <span class="text-format">{{(x.Name == null? "Click the user icon":x.Name) +" "+ x.encrypteid}}</span><br />
                                                             <span class="text-format">{{x.Email}}</span><br />
                                                         </td>
+                                                        
                                                     </tr>
 
                                                 </table>
@@ -147,9 +140,9 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission :&ensp;</span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
+                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -174,8 +167,9 @@
         <!--CONFIRMATION THANK YOU-->
         <div ng-show="wizarno=='success'">
             <div class="alert alert-success alert-styled-left">
-                Data successfully saved. Click <a href='' ng-click="showSubscription()">here</a> to start with the rotation process.
+                Data successfully saved. Click <a class="btn" style="background-color:green;color:white;" href='' ng-click="showSubscription()">start</a> to start the rotation process  </br>
             </div>
+            This page will be redirected to Rotation List page in 10 seconds
         </div>
 
         <!--CONFIRMATION THANK YOU-->
@@ -214,7 +208,7 @@
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
 
             // modal workflow
-            $scope.workflow = {};
+            $scope.workflow = null;
             $scope.workflows = [];
             $scope.workflowCount = [];
             $scope.paging = [];
@@ -275,7 +269,7 @@
                 }else{
 
                 }
-
+                
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -330,6 +324,9 @@
                             $scope.wizarno = 'success';
                             $scope.model.Id = response.data;
                             $scope.getSubscriptionList();
+                            setTimeout(function () {
+                                  window.location.href = "/rotation/list";
+                                }, 10000);
                         }
                     }, function (response) {
                         //error handle
@@ -384,6 +381,8 @@
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
             $scope.popupWorkflow = function () {
+                
+                $scope.findWorkflows(null, 1, 20);
                 if ($scope.model.Status!='00'){
                     showInfo("Workflow data can not be changed.");
                     return;
@@ -470,6 +469,7 @@
                 $scope.page = "1";
                 $scope.paging = [];
                 $scope.kriteria = "";
+                $scope.findMembers(null, 1, 20);
                 $("#modal_select_member").modal("show");
             }
 
@@ -576,6 +576,9 @@
                             else {
                                 $scope.wizarno = 'started';
                                 showSuccess("Successful data process.");
+                                setTimeout(function () {
+                                  window.location.href = "/rotation/list";
+                                }, 1000);
                             }
                         } else
                             showInfo("process data error.");
@@ -591,7 +594,8 @@
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
                     .then(function (response) {
                         if (response.data) {
-                            $scope.SubscriptionList = response.data.subscriptions;
+                            $scope.SubscriptionList = response.data.usages;
+                            console.log(response);
                         }
                     });
             }
