@@ -613,7 +613,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(doc.Document.FileName);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 $("#modal_pdf_viewer").modal("show");
-                $scope.selectedIdx=idx;
+                $scope.selectedIdx = idx;
             };
             /*--------------------------------------------------------------
                 DOCUMENT REVISED FUNCTION
@@ -1487,8 +1487,12 @@
                     iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
 
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);//$scope.model.FileName);
+                
+                iframe.contentWindow.angular.element("#xpdfController").scope().resetAnnoItems();
                 /*iframe.contentWindow.angular.element("#xpdfController").scope().showDownload();
                 iframe.contentWindow.angular.element("#xpdfController").scope().showPrint();*/
+                
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName($scope.model.FileNameOri);
                 isdefineiframe = true;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
