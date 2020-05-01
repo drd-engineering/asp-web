@@ -412,7 +412,7 @@
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
                 console.log(data.links);
-                                $http.post('@Url.Action("Save", "Workflow")',
+                $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {
                             Id: $scope.model.Id,
