@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
-    [Table("BusinessPacakges", Schema = "public")]
+    [Table("BusinessPackages", Schema = "public")]
     public class BusinessPackage
     {
         [Key]
