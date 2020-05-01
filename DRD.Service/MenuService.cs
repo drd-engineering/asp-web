@@ -1,45 +1,13 @@
-﻿using System;
+﻿using DRD.Models.View;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using DRD.Models.API;
 using System.IO;
-using System.Reflection;
-using DRD.Models.View;
+using System.Linq;
 
 namespace DRD.Service
 {
     public class MenuService
     {
-        public List<Menu> GetMenus(int activeId)
-        {
-            var root = System.Web.HttpContext.Current.Server.MapPath("~");
-            var path = Path.Combine(root, @"Menu.csv");
-            List <Menu> values = File.ReadAllLines(path)
-                                           .Select(v => Menu.FromCsv(v))
-                                           .ToList();
-            return values;
-        }
-        public List<Menu> GetMenus(string path, int activeId)
-        {
-            var menuPath = Path.Combine(path,"..\\Menu.csv");
-            List<Menu> values = File.ReadAllLines(menuPath)
-                                           .Skip(1)
-                                           .Select(v => Menu.FromCsv(v))
-                                           .ToList();
-            return values;
-        }
-
-        public string Encrypt(string data)
-        {
-            var result = Utilities.Encrypt(data);
-            var first = Reverse(result.Substring(0, result.Length / 2));
-            result = first + result.Substring(result.Length / 2);
-            return result;
-        }
-        public string EncryptData(long id)
-        {
-            return Encrypt(DateTime.Now.ToString("yyyyMMddHHmmssfff") + "," + id.ToString());
-        }
         public string Decrypt(string data)
         {
             if (string.IsNullOrEmpty(data))
@@ -50,12 +18,45 @@ namespace DRD.Service
             {
                 result = Utilities.Decrypt(result);
             }
-            catch (Exception x)
+            catch (Exception)
             {
                 return null;
             }
 
             return result;
+        }
+
+        public string Encrypt(string data)
+        {
+            var result = Utilities.Encrypt(data);
+            var first = Reverse(result.Substring(0, result.Length / 2));
+            result = first + result.Substring(result.Length / 2);
+            return result;
+        }
+
+        public string EncryptData(long id)
+        {
+            return Encrypt(DateTime.Now.ToString("yyyyMMddHHmmssfff") + "," + id.ToString());
+        }
+
+        public List<Menu> GetMenus(int activeId)
+        {
+            var root = System.Web.HttpContext.Current.Server.MapPath("~");
+            var path = Path.Combine(root, @"Menu.csv");
+            List<Menu> values = File.ReadAllLines(path)
+                                           .Select(v => Menu.FromCsv(v))
+                                           .ToList();
+            return values;
+        }
+
+        public List<Menu> GetMenus(string path, int activeId)
+        {
+            var menuPath = Path.Combine(path, "..\\Menu.csv");
+            List<Menu> values = File.ReadAllLines(menuPath)
+                                           .Skip(1)
+                                           .Select(v => Menu.FromCsv(v))
+                                           .ToList();
+            return values;
         }
         private string Reverse(string data)
         {
@@ -68,5 +69,3 @@ namespace DRD.Service
         }
     }
 }
-
-

@@ -3581,7 +3581,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Subscription.csv" />
     <Content Include="Scripts\pdf.js\build\pdf.js.map" />
     <Content Include="Scripts\pdf.js\build\pdf.worker.js.map" />
     <Content Include="Scripts\pdf.js\LICENSE" />

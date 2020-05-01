@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
-using DRD.Service;
-using DRD.Models.View;
-using DRD.Models.API;
+﻿using DRD.Models.API;
 using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service;
+using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
     public class DashboardController : Controller
     {
-        LoginController login = new LoginController();
-        DashboardService dashboardService = new DashboardService();
-        CompanyService companyService = new CompanyService();
-        UserSession user;
-        Layout layout = new Layout();
+        private LoginController login = new LoginController();
+        private DashboardService dashboardService = new DashboardService();
+        private CompanyService companyService = new CompanyService();
+        private UserSession user;
+        private Layout layout = new Layout();
 
         public void Initialize()
         {
@@ -22,6 +22,7 @@ namespace DRD.App.Controllers
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
         }
+
         public void InitializeAPI()
         {
             user = login.GetUser(this);
@@ -39,7 +40,7 @@ namespace DRD.App.Controllers
 
             CompanyService companyService = new CompanyService();
             CompanyList companyList = companyService.GetAllCompanyOwnedbyUser(user.Id);
-            if (companyList.companies.Count > 0 ) return View(layout);
+            if (companyList.companies.Count > 0) return View(layout);
             return RedirectToAction("List", "Inbox");
         }
 
@@ -57,7 +58,6 @@ namespace DRD.App.Controllers
             Session["_COUNTER_"] = data;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
 
         public ActionResult GetActivityCounter()
         {
@@ -101,7 +101,7 @@ namespace DRD.App.Controllers
         public ActionResult sendEmailNotifikasiRotasi(long rotationId, long userId)
         {
             Initialize();
-            var data = dashboardService.sendEmailNotifikasiRotasi(rotationId, userId);
+            var data = dashboardService.SendEmailNotifikasiRotasi(rotationId, userId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

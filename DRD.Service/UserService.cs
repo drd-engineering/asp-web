@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using DRD.Models;
+﻿using DRD.Models;
 using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Service.Context;
-using System.Data.Entity.Infrastructure;
-using System.Linq.Expressions;
 using DRD.Models.View;
+using DRD.Service.Context;
+using System;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace DRD.Service
 {
@@ -47,7 +47,7 @@ namespace DRD.Service
                 //TODO: remove these lines when production
                 System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Will sent email of : " + user.Id + " - " + user.Name);
 
-                sendEmailRegistration(user);
+                SendEmailRegistration(user);
 
                 resgistrationResponse.Id = "" + user.Id;
                 resgistrationResponse.Email = register.Email;
@@ -110,6 +110,7 @@ namespace DRD.Service
                 else { return true; }
             }
         }
+
         public int Logout(long id)
         {
             using (var db = new ServiceContext())
@@ -122,7 +123,7 @@ namespace DRD.Service
             }
         }
 
-        public void sendEmailRegistration(User user)
+        public void SendEmailRegistration(User user)
         {
             //TODO: remove these lines when production
             System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
@@ -161,12 +162,12 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
-                user.ImageInitials = (userProfile.ImageInitials == null ? null : removePrefixLocation(userProfile.ImageInitials));
-                user.ImageKtp1 = (userProfile.ImageKtp1 == null ? null : removePrefixLocation(userProfile.ImageKtp1));
-                user.ImageKtp2 = (userProfile.ImageKtp2 == null ? null : removePrefixLocation(userProfile.ImageKtp2));
-                user.ImageProfile = (userProfile.ImageProfile == null ? null : removePrefixLocation(userProfile.ImageProfile));
-                user.ImageSignature = (userProfile.ImageSignature == null ? null : removePrefixLocation(userProfile.ImageSignature));
-                user.ImageStamp = (userProfile.ImageStamp == null ? null : removePrefixLocation(userProfile.ImageStamp));
+                user.ImageInitials = (userProfile.ImageInitials == null ? null : RemovePrefixLocation(userProfile.ImageInitials));
+                user.ImageKtp1 = (userProfile.ImageKtp1 == null ? null : RemovePrefixLocation(userProfile.ImageKtp1));
+                user.ImageKtp2 = (userProfile.ImageKtp2 == null ? null : RemovePrefixLocation(userProfile.ImageKtp2));
+                user.ImageProfile = (userProfile.ImageProfile == null ? null : RemovePrefixLocation(userProfile.ImageProfile));
+                user.ImageSignature = (userProfile.ImageSignature == null ? null : RemovePrefixLocation(userProfile.ImageSignature));
+                user.ImageStamp = (userProfile.ImageStamp == null ? null : RemovePrefixLocation(userProfile.ImageStamp));
                 user.OfficialIdNo = userProfile.OfficialIdNo;
                 db.SaveChanges();
             }
@@ -182,7 +183,8 @@ namespace DRD.Service
 
             return userProfile;
         }
-        public string removePrefixLocation(string location)
+
+        public string RemovePrefixLocation(string location)
         {
             if (location == null)
                 return location;
@@ -195,7 +197,6 @@ namespace DRD.Service
 
         public long Save(User user)
         {
-
             int result = 0;
             using (var db = new ServiceContext())
             {
@@ -224,6 +225,7 @@ namespace DRD.Service
                 return user.Id;
             }
         }
+
         public long Save(Member member)
         {
             int result = 0;
@@ -248,7 +250,6 @@ namespace DRD.Service
 
                 return member.Id;
             }
-
         }
 
         public String GetName(long id)
@@ -266,6 +267,7 @@ namespace DRD.Service
                 return result.Name;
             }
         }
+
         public UserProfile GetById(long id, long loginId)
         {
             using (var db = new ServiceContext())
@@ -292,12 +294,13 @@ namespace DRD.Service
                 return result;
             }
         }
+
         /// <summary>
         /// this function will return all the list Subscription if the user is admin and company have subscription, or the user have subscription.
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public ListSubscription getAllSubscription(long userId)
+        public ListSubscription GetAllSubscription(long userId)
         {
             using (var db = new ServiceContext())
             {
@@ -305,15 +308,14 @@ namespace DRD.Service
                 //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
                 var userBusinessPlan = (from member in db.Members
                                         join company in db.Companies on member.CompanyId equals company.Id
-                                        join plan in db.PlanBusinesses on company.Id equals plan.CompanyId
+                                        join usage in db.Usages on company.Id equals usage.CompanyId
                                         where member.UserId == userId
                                         && member.IsAdministrator
-                                        && plan.IsActive
+                                        && usage.IsActive
                                         select new SubscriptionData
                                         {
-                                            id = plan.Id,
+                                            id = usage.Id,
                                             type = "company",
-                                            name = plan.SubscriptionName,
                                             companyId = company.Id,
                                             companyName = company == null ? null : company.Name
                                         }).ToList();
@@ -327,6 +329,7 @@ namespace DRD.Service
                 return returnValue;
             }
         }
+
         /// <summary>
         /// Change password of specify user that loged in to application
         /// </summary>
@@ -348,6 +351,7 @@ namespace DRD.Service
                 return 1;
             }
         }
+
         /// <summary>
         /// User for reset user password, the password will be sent to user email
         /// </summary>
@@ -395,23 +399,23 @@ namespace DRD.Service
         /// <returns></returns>
         public bool ValidationPassword(long id, string password)
         {
-            System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD :: "+ id+" :: "+password);
-           var equals = false;
+            System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD :: " + id + " :: " + password);
+            var equals = false;
             using (var db = new ServiceContext())
             {
                 var User = db.Users.FirstOrDefault(c => c.Id == id);
                 if (User == null)
                     return equals;  // invalid User
-                
+
                 // for test case, can be deprecated if needed
                 if (User.Id < 0)
-                    System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD DB :: "+ User.Password);
-                    if (User.Password.Equals(password))
-                        equals = true;
+                    System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD DB :: " + User.Password);
+                if (User.Password.Equals(password))
+                    equals = true;
                 else
-                    if (User.Password.Equals(XEncryptionHelper.Encrypt(password)))
-                        equals = true;
-                
+                if (User.Password.Equals(XEncryptionHelper.Encrypt(password)))
+                    equals = true;
+
                 return equals;
             }
         }

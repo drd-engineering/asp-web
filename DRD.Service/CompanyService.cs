@@ -1,253 +1,33 @@
-﻿using System;
+﻿using DRD.Models;
+using DRD.Models.API;
+using DRD.Service.Context;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DRD.Models;
-using DRD.Models.View;
-using DRD.Models.API;
-using DRD.Service.Context;
+
 namespace DRD.Service
 {
     public class CompanyService
     {
-        private MemberService memberService;
-        private UserService userService;
-        private SubscriptionService subscriptionService;
-
-        public CompanyList GetAllCompany()
+        private MemberService memberService = new MemberService();
+        private SubscriptionService subscriptionService = new SubscriptionService();
+        private UserService userService = new UserService();
+        // POST/GET AcceptMember/memberId
+        // return user id if member accepted, return -1 if member not found.
+        public long AcceptMember(long memberId)
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
-                foreach (Company x in result)
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
                 {
-                    var company = new CompanyItem();
-                    company.Id = x.Id;
-                    company.Code = x.Code;
-                    company.Name = x.Name;
-                    listReturn.companies.Add(company);
-                }
-                return listReturn;
-            }
-        }
-
-        public CompanyList GetAllCompanyOwnedbyUser(long userId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
-                foreach (Company x in result)
-                {
-                    var company = new CompanyItem();
-                    company.Id = x.Id;
-                    company.Code = x.Code;
-                    company.Name = x.Name;
-                    listReturn.companies.Add(company);
-                }
-                return listReturn;
-            }
-        }
-
-        public CompanyItem GetCompanyItem(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result = (from Company in db.Companies
-                              where Company.Id == companyId
-                              select new CompanyItem
-                              {
-                                  Id = Company.Id,
-                                  Name = Company.Name,
-                                  Phone = Company.Phone,
-                                  Email = Company.Email
-                              }
-                            ).FirstOrDefault();
-                return result;
-            }
-        }
-
-        public bool checkIsOwner(long userId, long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
-                return owner == null ? false : true;
-            }
-        }
-
-        public PlanBusiness getCompanySubscription(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                if (db.PlanBusinesses != null)
-                {
-                    var subscription = db.PlanBusinesses.Where(subs => subs.CompanyId == companyId && subs.IsActive).FirstOrDefault();
-                    return subscription;
-                }
-                return null;
-            }
-        }
-        public CompanyList getCompanyListByOwnerId(long ownerId)
-        {
-            memberService = new MemberService();
-            userService = new UserService();
-            using (var db = new ServiceContext())
-            {
-                var companies = new CompanyList();
-                var companyThatOwnedBy = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
-                if (companyThatOwnedBy != null)
-                {
-                    foreach (Company x in companyThatOwnedBy)
-                    {
-                        CompanyItem company = new CompanyItem();
-                        var subscription = getCompanySubscription(x.Id);
-                        company.Id = x.Id;
-                        company.Code = x.Code;
-                        company.Name = x.Name;
-                        company.Phone = x.Phone;
-                        company.Address = x.Address;
-                        company.PointLocation = x.PointLocation;
-                        company.OwnerId = x.OwnerId;
-                        company.OwnerName = userService.GetName(x.OwnerId);
-                        if (subscription != null) { company.SubscriptionId = subscription.Id; }
-                        if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
-                        company.IsActive = x.IsActive;
-                        company.IsVerified = x.IsVerified;
-
-                        companies.addCompany(company);
-                    }
-                }
-                return companies;
-            }
-        }
-        public CompanyList getCompanyListByAdminId(long adminId)
-        {
-            memberService = new MemberService();
-            using (var db = new ServiceContext())
-            {
-                var companies = new CompanyList();
-                var companyAdmins = memberService.getMemberByCompanyAdmin(adminId);
-                foreach (Member x in companyAdmins)
-                {
-                    var company = GetCompanyDetail(x.CompanyId);
-                    if (company != null)
-                    {
-                        company.IsManagedByUser = true;
-                        companies.addCompany(company);
-                    }
-                }
-                return companies;
-            }
-        }
-        public CompanyList GetAllCompanyDetails(long userId)
-        {
-            memberService = new MemberService();
-            subscriptionService = new SubscriptionService();
-            userService = new UserService();
-
-            using (var db = new ServiceContext())
-            {
-
-                var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId==userId && companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies );
-                foreach (Company x in ownerCompanies)
-                {
-                    var company = new CompanyItem();
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.Id );
-                    var subscription = getCompanySubscription(x.Id);
-                    company.Id = x.Id;
-                    company.Code = x.Code;
-                    company.Name = x.Name;
-                    company.Phone = x.Phone;
-                    company.Address = x.Address;
-                    company.PointLocation = x.PointLocation;
-                    company.OwnerId = x.OwnerId;
-                    company.OwnerName = userService.GetName(company.OwnerId);
-                    if (subscription != null) { company.SubscriptionId = subscription.Id; }
-                    if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
-                    company.IsActive = x.IsActive;
-                    company.IsVerified = x.IsVerified;
-                    company.IsOwnedByUser = (x.Id == userId);
-                    company.Administrators = memberService.getAdministrators(company.Id);
-                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
-
-                    listReturn.addCompany(company);
-                }
-                CompanyList companyAsAdmins = getCompanyListByAdminId(userId);
-                listReturn.mergeCompanyList(companyAsAdmins);
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST :: " + listReturn.companies.Count);
-                return listReturn;
-            }
-        }
-
-        public CompanyItem GetCompanyDetail(long id)
-        {
-            memberService = new MemberService();
-
-            using (var db = new ServiceContext())
-            {
-                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
-                if (result.Count == 0)
-                {
-                    return null;
+                    memberSearch.isCompanyAccept = true;
+                    db.SaveChanges();
+                    return memberSearch.UserId;
                 }
                 else
-                {
-                    var company = new CompanyItem();
-                    foreach (Company x in result)
-                    {
-                        var subscription = getCompanySubscription(x.Id);
-                        company.Id = x.Id;
-                        company.Code = x.Code;
-                        company.Name = x.Name;
-                        company.Phone = x.Phone;
-                        company.Address = x.Address;
-                        company.PointLocation = x.PointLocation;
-                        company.OwnerId = x.OwnerId;
-                        company.OwnerName = userService.GetName(company.OwnerId);
-                        if (subscription != null) { company.SubscriptionId = subscription.Id; }
-                        if (subscription != null) { company.SubscriptionName = subscription.SubscriptionName; }
-                        company.IsActive = x.IsActive;
-                        company.IsVerified = x.IsVerified;
-                        company.Administrators = memberService.getAdministrators(company.Id);
-                    }
-                    return company;
-                }
-            }
-        }
-
-        public CompanyItem GetCompany(int id)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
-                if (result.Count == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    var company = new CompanyItem();
-                    foreach(Company x in result){
-                        company.Id = x.Id;
-                        company.Name = x.Name;
-                        company.Code = x.Code;
-                    }
-                    return company;
-                }
-            }
-        }
-
-        public Company GetCompany(long id)
-        {
-            using (var db = new ServiceContext())
-            {
-                return db.Companies.Where(companyItem => companyItem.Id == id).FirstOrDefault();
+                    return -1;
             }
         }
 
@@ -272,113 +52,6 @@ namespace DRD.Service
 
                 CompanyService companyService = new CompanyService();
                 long companyId = companyService.Save(company);
-
-            }
-        }
-        public long Save(Company company)
-        {
-
-            int result = 0;
-            using (var db = new ServiceContext())
-            {
-                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
-                {
-                    try
-                    {
-                        company.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
-
-                        //TODO: remove these lines when production
-                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + company.Id);
-
-                        
-                        db.Companies.Add(company);
-                        result = db.SaveChanges();
-                        break;
-                    }
-                    catch (DbUpdateException x)
-                    {
-                        if (i > Constant.TEST_DUPLICATION_COUNT)
-                            throw new Exception(x.Message);
-                    }
-                }
-
-                return company.Id;
-            }
-        }
-
-        public long changeOwner(long companyId, long newOwnerUserId)
-        {
-            using (var db = new ServiceContext())
-            {
-                Company company = GetCompany(companyId);
-                company.OwnerId = newOwnerUserId;
-
-                long result = db.Companies.Add(company).OwnerId;
-                db.SaveChanges();
-
-                return result;
-            }
-        }
-
-        public long chooseSubscription(int subscriptionId, long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                CompanyQuota companyQuota = new CompanyQuota();
-                SubscriptionDictionary subscriptionDictionary = new SubscriptionDictionary();
-
-                Company company = GetCompany(companyId);
-                CompanyQuota lastSubscription = getLastSubscription(companyId);
-                Subscription subscription = subscriptionDictionary.getBusinessSubscription[subscriptionId];
-
-                if (company != null && subscription != null)
-                {
-                    companyQuota.CompanyId = company.Id;
-                    companyQuota.startedAt = DateTime.Now;
-                    companyQuota.expiredAt = DateTime.Now.AddDays(subscription.DurationInDays);
-                    companyQuota.AdministratorQuota = subscription.AdministratorQuota;
-                    companyQuota.StorageQuota = subscription.StorageQuotaInByte;
-                    companyQuota.BusinessSubscriptionId = subscriptionId;
-                    companyQuota.StorageUsage = lastSubscription == null ? 0 : lastSubscription.StorageUsage;
-                    companyQuota.isActive = true;
-                    lastSubscription.isActive = false;
-                }
-
-
-                long result = db.CompanyQuotas.Add(companyQuota).Id;
-                long lastResult = db.CompanyQuotas.Add(lastSubscription).Id;
-                db.SaveChanges();
-
-                return result;
-            }
-        }
-
-        public CompanyQuota getLastSubscription(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                return db.CompanyQuotas.Where(companyItem => companyItem.CompanyId == companyId).LastOrDefault();
-            }
-        }
-        public CompanyQuota getActiveSubscription(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                return db.CompanyQuotas.Where(companyItem => companyItem.CompanyId == companyId && companyItem.isActive).FirstOrDefault();
-            }
-        }
-
-        public long verifyCompany(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                Company company = GetCompany(companyId);
-                company.IsVerified = true;
-
-                long result = db.Companies.Add(company).OwnerId;
-                db.SaveChanges();
-
-                return result;
             }
         }
 
@@ -434,7 +107,338 @@ namespace DRD.Service
             return retVal;
         }
 
-        public void sendEmailAddMember(string email, int status, string company)
+        public long ChangeOwner(long companyId, long newOwnerUserId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Company company = GetCompany(companyId);
+                company.OwnerId = newOwnerUserId;
+
+                long result = db.Companies.Add(company).OwnerId;
+                db.SaveChanges();
+
+                return result;
+            }
+        }
+
+        public bool CheckIsOwner(long userId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
+                return owner == null ? false : true;
+            }
+        }
+
+        public long ChooseSubscription(int subscriptionId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Usage Usage = new Usage();
+                SubscriptionDictionary subscriptionDictionary = new SubscriptionDictionary();
+
+                Company company = GetCompany(companyId);
+                Usage lastSubscription = GetLastSubscription(companyId);
+                Subscription subscription = subscriptionDictionary.getBusinessSubscription[subscriptionId];
+
+                if (company != null && subscription != null)
+                {
+                    Usage.CompanyId = company.Id;
+                    Usage.StartedAt = DateTime.Now;
+                    Usage.ExpiredAt = DateTime.Now.AddDays(subscription.DurationInDays);
+                    Usage.Administrator = subscription.AdministratorQuota;
+                    Usage.Storage = subscription.StorageLimitInByte;
+                    Usage.PackageId = subscriptionId;
+                    Usage.IsActive = true;
+                    lastSubscription.IsActive = false;
+                    lastSubscription.ExpiredAt = DateTime.Now;
+                }
+
+                long result = db.Usages.Add(Usage).Id;
+                long lastResult = db.Usages.Add(lastSubscription).Id;
+                db.SaveChanges();
+
+                return result;
+            }
+        }
+
+        public CompanyList GetAllCompany()
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.IsActive).ToList();
+                var listReturn = new CompanyList();
+                foreach (Company x in result)
+                {
+                    var company = new CompanyItem();
+                    company.Id = x.Id;
+                    company.Code = x.Code;
+                    company.Name = x.Name;
+                    listReturn.companies.Add(company);
+                }
+                return listReturn;
+            }
+        }
+
+        public CompanyList GetAllCompanyDetails(long userId)
+        {
+
+            using (var db = new ServiceContext())
+            {
+                var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
+                var listReturn = new CompanyList();
+                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies);
+                foreach (Company x in ownerCompanies)
+                {
+                    var company = new CompanyItem();
+                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.Id);
+                    var subscription = subscriptionService.GetCompanyUsage(x.Id);
+                    company.Id = x.Id;
+                    company.Code = x.Code;
+                    company.Name = x.Name;
+                    company.Phone = x.Phone;
+                    company.Address = x.Address;
+                    company.PointLocation = x.PointLocation;
+                    company.OwnerId = x.OwnerId;
+                    company.OwnerName = userService.GetName(company.OwnerId);
+                    if (subscription != null)
+                    {
+                        company.SubscriptionId = subscription.Id;
+                        Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                        company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
+                    }
+                    company.IsActive = x.IsActive;
+                    company.IsVerified = x.IsVerified;
+                    company.IsOwnedByUser = (x.Id == userId);
+                    company.Administrators = memberService.getAdministrators(company.Id);
+                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
+
+                    listReturn.addCompany(company);
+                }
+                CompanyList companyAsAdmins = GetCompanyListByAdminId(userId);
+                listReturn.mergeCompanyList(companyAsAdmins);
+                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST :: " + listReturn.companies.Count);
+                return listReturn;
+            }
+        }
+
+        public CompanyList GetAllCompanyOwnedbyUser(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
+                var listReturn = new CompanyList();
+                foreach (Company x in result)
+                {
+                    var company = new CompanyItem();
+                    company.Id = x.Id;
+                    company.Code = x.Code;
+                    company.Name = x.Name;
+                    listReturn.companies.Add(company);
+                }
+                return listReturn;
+            }
+        }
+
+        public CompanyItem GetCompany(int id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    var company = new CompanyItem();
+                    foreach (Company x in result)
+                    {
+                        company.Id = x.Id;
+                        company.Name = x.Name;
+                        company.Code = x.Code;
+                    }
+                    return company;
+                }
+            }
+        }
+
+        public Company GetCompany(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                return db.Companies.Where(companyItem => companyItem.Id == id).FirstOrDefault();
+            }
+        }
+
+        public CompanyItem GetCompanyDetail(long id)
+        {
+            memberService = new MemberService();
+
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    var company = new CompanyItem();
+                    foreach (Company x in result)
+                    {
+                        var subscription = subscriptionService.GetCompanyUsage(x.Id);
+                        company.Id = x.Id;
+                        company.Code = x.Code;
+                        company.Name = x.Name;
+                        company.Phone = x.Phone;
+                        company.Address = x.Address;
+                        company.PointLocation = x.PointLocation;
+                        company.OwnerId = x.OwnerId;
+                        company.OwnerName = userService.GetName(company.OwnerId);
+                        if (subscription != null)
+                        {
+                            company.SubscriptionId = subscription.Id;
+                            Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                            company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
+                        }
+                        company.IsActive = x.IsActive;
+                        company.IsVerified = x.IsVerified;
+                        company.Administrators = memberService.getAdministrators(company.Id);
+                    }
+                    return company;
+                }
+            }
+        }
+
+        public CompanyItem GetCompanyItem(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = (from Company in db.Companies
+                              where Company.Id == companyId
+                              select new CompanyItem
+                              {
+                                  Id = Company.Id,
+                                  Name = Company.Name,
+                                  Phone = Company.Phone,
+                                  Email = Company.Email
+                              }
+                            ).FirstOrDefault();
+                return result;
+            }
+        }
+        public CompanyList GetCompanyListByAdminId(long adminId)
+        {
+            memberService = new MemberService();
+            using (var db = new ServiceContext())
+            {
+                var companies = new CompanyList();
+                var companyAdmins = memberService.getMemberByCompanyAdmin(adminId);
+                foreach (Member x in companyAdmins)
+                {
+                    var company = GetCompanyDetail(x.CompanyId);
+                    if (company != null)
+                    {
+                        company.IsManagedByUser = true;
+                        companies.addCompany(company);
+                    }
+                }
+                return companies;
+            }
+        }
+
+        public CompanyList GetCompanyListByOwnerId(long ownerId)
+        {
+
+            using (var db = new ServiceContext())
+            {
+                var companies = new CompanyList();
+                var companyThatOwnedBy = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
+                if (companyThatOwnedBy != null)
+                {
+                    foreach (Company x in companyThatOwnedBy)
+                    {
+                        CompanyItem company = new CompanyItem();
+                        var subscription = subscriptionService.GetCompanyUsage(x.Id);
+                        company.Id = x.Id;
+                        company.Code = x.Code;
+                        company.Name = x.Name;
+                        company.Phone = x.Phone;
+                        company.Address = x.Address;
+                        company.PointLocation = x.PointLocation;
+                        company.OwnerId = x.OwnerId;
+                        company.OwnerName = userService.GetName(x.OwnerId);
+                        if (subscription != null)
+                        {
+                            company.SubscriptionId = subscription.Id;
+                            Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                            company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
+                        }
+                        company.IsActive = x.IsActive;
+                        company.IsVerified = x.IsVerified;
+
+                        companies.addCompany(company);
+                    }
+                }
+                return companies;
+            }
+        }
+        public Usage GetLastSubscription(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                return db.Usages.Where(companyItem => companyItem.CompanyId == companyId).LastOrDefault();
+            }
+        }
+
+        // POST/GET RejectMember/memberId
+        // return user id if member accepted, return -1 if member not found.
+        public long RejectMember(long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+                if (memberSearch != null)
+                {
+                    memberSearch.IsActive = false;
+                    db.SaveChanges();
+                    return memberSearch.UserId;
+                }
+                else
+                    return -1;
+            }
+        }
+
+        public long Save(Company company)
+        {
+            int result = 0;
+            using (var db = new ServiceContext())
+            {
+                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
+                {
+                    try
+                    {
+                        company.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+
+                        //TODO: remove these lines when production
+                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + company.Id);
+
+                        db.Companies.Add(company);
+                        result = db.SaveChanges();
+                        break;
+                    }
+                    catch (DbUpdateException x)
+                    {
+                        if (i > Constant.TEST_DUPLICATION_COUNT)
+                            throw new Exception(x.Message);
+                    }
+                }
+
+                return company.Id;
+            }
+        }
+        public void SendEmailAddMember(string email, int status, string company)
         {
             //TODO: remove these lines when production
             System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
@@ -442,8 +446,8 @@ namespace DRD.Service
             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
             EmailService emailService = new EmailService();
-            
-            if(status == 1)
+
+            if (status == 1)
             {
                 string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
@@ -487,40 +491,18 @@ namespace DRD.Service
             }
         }
 
-        // POST/GET AcceptMember/memberId
-        // return user id if member accepted, return -1 if member not found. 
-        public long AcceptMember(long memberId)
+        public long VerifyCompany(long companyId)
         {
             using (var db = new ServiceContext())
             {
-                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-                if (memberSearch != null)
-                {
-                    memberSearch.isCompanyAccept = true;
-                    db.SaveChanges();
-                    return memberSearch.UserId;
-                }
-                else
-                    return -1;
+                Company company = GetCompany(companyId);
+                company.IsVerified = true;
+
+                long result = db.Companies.Add(company).OwnerId;
+                db.SaveChanges();
+
+                return result;
             }
         }
-        // POST/GET RejectMember/memberId
-        // return user id if member accepted, return -1 if member not found. 
-        public long RejectMember(long memberId)
-        {
-            using (var db = new ServiceContext())
-            {
-                Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-                if (memberSearch != null)
-                {
-                    memberSearch.IsActive = false;
-                    db.SaveChanges();
-                    return memberSearch.UserId;
-                }
-                else
-                    return -1;
-            }
-        }
-        
     }
 }

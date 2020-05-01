@@ -1,13 +1,8 @@
-﻿using System;
+﻿using DRD.Models.View;
+using DRD.Service.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Configuration;
-
-using DRD.Service.Context;
-using DRD.Models.View;
-using DRD.Service;
 
 namespace DRD.Service
 {
@@ -21,28 +16,32 @@ namespace DRD.Service
             _appZoneAccess = appZoneAccess;
             _connString = connString;
         }
+
         public DashboardService(string appZoneAccess)
         {
             _appZoneAccess = appZoneAccess;
             _connString = Constant.CONSTRING;
         }
+
         public DashboardService()
         {
             _connString = Constant.CONSTRING;
         }
+
         public CounterItem GetActivityCounter(long memberId, CounterItem counter, long companyId)
         {
             using (var db = new ServiceContext())
             {
                 CompanyService companyService = new CompanyService();
+                SubscriptionService subscriptionService = new SubscriptionService();
 
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
-                counter.Old.StorageQuota = counter.New.StorageQuota;
-                counter.Old.StorageUsage = counter.New.StorageUsage;
+                counter.Old.StorageLimit = counter.New.StorageLimit;
+                counter.Old.TotalStorage = counter.New.TotalStorage;
 
                 var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
-                var storages = companyService.getActiveSubscription(companyId: companyId);
+                var storages = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId: companyId);
 
                 if (rotation != null)
                 {
@@ -51,8 +50,8 @@ namespace DRD.Service
                 }
                 if (storages != null)
                 {
-                    counter.New.StorageQuota = storages.StorageQuota;
-                    counter.New.StorageUsage = storages.StorageUsage;
+                    counter.New.StorageLimit = storages.StorageLimit.Value;
+                    counter.New.TotalStorage = storages.TotalStorage.Value;
                 }
                 return counter;
             }
@@ -61,16 +60,16 @@ namespace DRD.Service
         public CounterItem GetActivityCounter(long memberId, CounterItem counter)
         {
             using (var db = new ServiceContext())
-            { 
+            {
                 counter.Old.InProgress = counter.New.InProgress;
                 counter.Old.Completed = counter.New.Completed;
 
                 var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList();
                 if (rotationNodes != null)
-                { 
+                {
                     long[] Ids = (from c in rotationNodes select c.Rotation.Id).ToArray();
                     var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.UserId == memberId).ToList();
-                    
+
                     counter.New.InProgress = rot.Count(c => c.Status == 1);
                     counter.New.Completed = rot.Count(c => c.Status == 90);
                 }
@@ -78,45 +77,44 @@ namespace DRD.Service
             }
         }
 
-
         // untuk tampilan front dari dashboard.
         public ICollection<RotationDashboard> GetDashboardRotationStatus(long companyId, long userId, ICollection<string> Tags, int skip, int pageSize)
         {
-            ICollection<RotationDashboard> data;
+
             RotationService rotationService = new RotationService();
-            if (userId==-99) {
+            if (userId == -99)
+            {
                 return rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
             }
             return rotationService.GetRelatedToCompany(companyId, userId, Tags, skip, pageSize);
-
         }
 
-        public int sendEmailNotifikasiRotasi(long rotationId, long userId)
+        public int SendEmailNotifikasiRotasi(long rotationId, long userId)
         {
-             var configGenerator = new AppConfigGenerator();
-             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
-             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
-             EmailService emailService = new EmailService();
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
 
-             string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/rotationReminder.html"));
-             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
-             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+            string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/rotationReminder.html"));
+            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
-             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-             System.Diagnostics.Debug.WriteLine(senderEmail);
+            System.Diagnostics.Debug.WriteLine(senderEmail);
 
-             try
-             {
-                 var task = emailService.Send(senderEmail, senderName + "Administrator", "franna.jaya@gmail.com", senderName + " User Registration", body, false, new string[] { });
-             }
-             catch (Exception ex)
-             {
-                 Console.WriteLine("Exception caught in RetryIfBusy(): {0}",
-                         ex.ToString());
-             }
-             return 1;
-         }
+            try
+            {
+                var task = emailService.Send(senderEmail, senderName + "Administrator", "franna.jaya@gmail.com", senderName + " User Registration", body, false, new string[] { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught in RetryIfBusy(): {0}",
+                        ex.ToString());
+            }
+            return 1;
+        }
     }
 
     public static class Ext

@@ -187,19 +187,19 @@
                                     <tr style="vertical-align:top;border-bottom:solid;border-bottom-width:1px">
 
                                         <td>Total Storage Usage</td>
-                                        <td class="push-right" style="padding-right:5px">{{dashboard.TotalStorageUsage|number}}</td>
+                                        <td class="push-right" style="padding-right:5px">{{dashboard.TotalTotalStorage|number}}</td>
                                         <td style="padding-left:unset;color:darkgrey;font-size:xx-small;">bytes</td>
                                     </tr>
-                                    <tr style="vertical-align:top;border-bottom:solid;border-bottom-width:1px" ng-show="(dashboard.PlanStorageSize*byteGb)-dashboard.TotalStorageUsage>=0">
+                                    <tr style="vertical-align:top;border-bottom:solid;border-bottom-width:1px" ng-show="(dashboard.PlanStorageSize*byteGb)-dashboard.TotalTotalStorage>=0">
 
                                         <td><b>Remaining Available</b></td>
-                                        <td class="push-right" style="padding-right:5px">{{(dashboard.PlanStorageSize*byteGb)-dashboard.TotalStorageUsage|number}}</td>
+                                        <td class="push-right" style="padding-right:5px">{{(dashboard.PlanStorageSize*byteGb)-dashboard.TotalTotalStorage|number}}</td>
                                         <td style="padding-left:unset;color:darkgrey;font-size:xx-small;">bytes</td>
                                     </tr>
-                                    <tr style="vertical-align:top;border-bottom:solid;border-bottom-width:1px" ng-show="(dashboard.PlanStorageSize*byteGb)-dashboard.TotalStorageUsage<0">
+                                    <tr style="vertical-align:top;border-bottom:solid;border-bottom-width:1px" ng-show="(dashboard.PlanStorageSize*byteGb)-dashboard.TotalTotalStorage<0">
 
                                         <td><b style="color:red">Over Usage</b></td>
-                                        <td class="push-right" style="padding-right:5px">{{(dashboard.PlanStorageSize*byteGb)-dashboard.TotalStorageUsage|number}}</td>
+                                        <td class="push-right" style="padding-right:5px">{{(dashboard.PlanStorageSize*byteGb)-dashboard.TotalTotalStorage|number}}</td>
                                         <td style="padding-left:unset;color:darkgrey;font-size:xx-small;">bytes</td>
                                     </tr>
                                 </tbody>
