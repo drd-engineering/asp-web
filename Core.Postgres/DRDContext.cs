@@ -402,11 +402,13 @@ namespace Core.Postgres
             BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive=true, Storage=100000000, Administrator=2, Name= "Corporate"};
             BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive=true, Storage=100000000, Administrator=2, Name= "Enterprise"};
 
-            Price price1 = new Price { CreatedAt= DateTime.Now, Total = 2019192039};
+            Price price1 = new Price { CreatedAt= DateTime.Now, Total = 2019192039, PackageId = package1.Id};
+            Price price2 = new Price { CreatedAt= DateTime.Now, Total = 31241256, PackageId = package2.Id};
+            Price price3 = new Price { CreatedAt= DateTime.Now, Total = 423566135, PackageId = package3.Id};
 
-            Usage usage1 = new Usage { CompanyId = listOfCompanyCreated[0].Id, StartedAt=DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration)};
-            Usage usage2 = new Usage { CompanyId = listOfCompanyCreated[1].Id, StartedAt=DateTime.Now};
-            Usage usage3 = new Usage { CompanyId = listOfCompanyCreated[2].Id, StartedAt=DateTime.Now};
+            Usage usage1 = new Usage { CompanyId = listOfCompanyCreated[0].Id, StartedAt=DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId=price1.Id};
+            Usage usage2 = new Usage { CompanyId = listOfCompanyCreated[1].Id, StartedAt=DateTime.Now, PriceId = price1.Id };
+            Usage usage3 = new Usage { CompanyId = listOfCompanyCreated[2].Id, StartedAt = DateTime.Now, PriceId = price1.Id };
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
