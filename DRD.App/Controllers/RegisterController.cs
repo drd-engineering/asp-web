@@ -30,7 +30,26 @@ namespace DRD.App.Controllers
         {
             var service = new UserService();
             var data = service.SaveRegistration(register);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var registrationResponse = new RegisterResponse();
+            if (data.Id < 0)
+            {
+                registrationResponse.Id = "DBLEMAIL";
+                return Json(registrationResponse, JsonRequestBehavior.AllowGet);
+            }
+            var encryptedUserId = Utilities.Encrypt(data.Id.ToString());
+            string userFolder = "Images/Member/" + encryptedUserId;
+            var targetDir = "/" + userFolder + "/";
+            bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
+            if (!exists)
+            {
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
+                registrationResponse.Id = "" + data.Id;
+                registrationResponse.Email = data.Email;
+                service.SendEmailRegistration(data);
+            }
+            else
+                registrationResponse.Id = "ERROR";
+            return Json(registrationResponse, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Register/GetAllCompany

@@ -319,6 +319,10 @@
                                 showInfo("User email already used by other.");
                                 return;
                             }
+                            if (result.Id == "ERROR") {
+                                showInfo("There is some error please try again.")
+                                return;
+                            }
                             /*if (result.SubscriptionId == "DBLEMAIL") {
                                 showInfo("Company email already used by other.");
                                 return;
