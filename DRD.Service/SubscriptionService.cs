@@ -119,11 +119,19 @@ namespace DRD.Service
             }
         }
 
+        internal Price getActivePricePackage(long packageId)
+        {
+            using (var db = new ServiceContext())
+            {
+                return db.Prices.Where(p => p.PackageId == packageId && p.IsActive).LastOrDefault();
+            }
+        }
+
         public BusinessPackage GetCompanyPackage(long packageId)
         {
             using (var db = new ServiceContext())
             {
-                BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId).FirstOrDefault();
+                BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).LastOrDefault();
                 return plan;
             }
         }
@@ -138,7 +146,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                Usage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                Usage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).LastOrDefault();
                 return plan;
             }
         }

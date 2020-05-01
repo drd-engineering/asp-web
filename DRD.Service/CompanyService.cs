@@ -134,28 +134,31 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
+
                 Usage Usage = new Usage();
-                SubscriptionDictionary subscriptionDictionary = new SubscriptionDictionary();
+                SubscriptionService subscriptionService = new SubscriptionService();
 
                 Company company = GetCompany(companyId);
-                Usage lastSubscription = GetLastSubscription(companyId);
-                Subscription subscription = subscriptionDictionary.getBusinessSubscription[subscriptionId];
+                Usage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
+                BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
+                Price price = subscriptionService.getActivePricePackage(package.Id);
 
-                if (company != null && subscription != null)
+                if (company != null && package != null && price != null)
                 {
                     Usage.CompanyId = company.Id;
                     Usage.StartedAt = DateTime.Now;
-                    Usage.ExpiredAt = DateTime.Now.AddDays(subscription.DurationInDays);
-                    Usage.Administrator = subscription.AdministratorQuota;
-                    Usage.Storage = subscription.StorageLimitInByte;
-                    Usage.PackageId = subscriptionId;
+                    Usage.ExpiredAt = DateTime.Now.AddDays(package.Duration);
+                    Usage.Administrator = 0;
+                    Usage.Storage = 0;
+                    Usage.PackageId = package.Id;
+                    Usage.PriceId = price.Id;
                     Usage.IsActive = true;
                     lastSubscription.IsActive = false;
                     lastSubscription.ExpiredAt = DateTime.Now;
                 }
 
                 long result = db.Usages.Add(Usage).Id;
-                long lastResult = db.Usages.Add(lastSubscription).Id;
+                db.Usages.Add(lastSubscription);
                 db.SaveChanges();
 
                 return result;
@@ -382,13 +385,6 @@ namespace DRD.Service
                     }
                 }
                 return companies;
-            }
-        }
-        public Usage GetLastSubscription(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                return db.Usages.Where(companyItem => companyItem.CompanyId == companyId).LastOrDefault();
             }
         }
 
