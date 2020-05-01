@@ -194,7 +194,8 @@
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
                     .then(function (response) {
                         if (response.data) {
-                            $scope.SubscriptionList = response.data.subscriptions;
+                            $scope.SubscriptionList = response.data.usages;
+                            console.log(response);
                         }
                     });
             }
