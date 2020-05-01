@@ -1,42 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DRD.Models;
+﻿using DRD.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using System;
+using System.Collections.Generic;
 
 namespace Core.Postgres
 {
     public class DRDContext : DbContext
     {
-        public DRDContext(DbContextOptions<DRDContext> options) : base(options) { }
+        public DRDContext(DbContextOptions<DRDContext> options) : base(options)
+        {
+        }
+
+        public DbSet<BusinessPackage> BusinessPackages { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<CompanyQuota> CompanyQuotas { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }
         public DbSet<DocumentUser> DocumentUsers { get; set; }
+        public DbSet<Inbox> Inboxes { get; set; }
         public DbSet<Member> Members { get; set; }
-        public DbSet<PlanBusiness> PlanBusinesses { get; set; }
+        public DbSet<Price> Prices { get; set; }
         public DbSet<Rotation> Rotations { get; set; }
-        public DbSet<User> Users { get; set; }
-        //public DbSet<UserAdmin> UserAdmins { get; set; }
-        public DbSet<Workflow> Workflows { get; set; }
-        public DbSet<WorkflowNode> WorkflowNodes { get; set; }
-        public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
-        // public DbSet<RotationMember> RotationMembers { get; set; }
         public DbSet<RotationNode> RotationNodes { get; set; }
         public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
         public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
         public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
-        public DbSet<DocumentSign> DocumentSigns { get; set; }
-        // public DbSet<FaspayData> FaspayDatas { get; set; }
-
-        //public DbSet<RotationActivity> RotationActvities { get; set; }
-        public DbSet<Inbox> Inbox { get; set; }
-        public DbSet<TagItem> TagItems { get; set; }
+        public DbSet<RotationUser> RotationUsers { get; set; }
+        public DbSet<Stamp> Stamps { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<TagItem> TagItems { get; set; }
+        public DbSet<Usage> Usages { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Workflow> Workflows { get; set; }
+        public DbSet<WorkflowNode> WorkflowNodes { get; set; }
+        public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,7 +107,7 @@ namespace Core.Postgres
                     OwnerId = listOfUserCreated[0].Id, CreatedAt = DateTime.Now });
             listOfCompanyCreated.Add(
                 new Company { Id = -2, Code = "DG23JJ2PDO", Name = "PT perusahaan 2", Phone = "0218229103", Email = "sempuasupport@sempua.com",
-                    Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211", IsActive = true,
+                    Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211", IsActive = true, 
                     OwnerId = listOfUserCreated[2].Id, CreatedAt = DateTime.Now });
             listOfCompanyCreated.Add(
                 new Company { Id = -4, Code = "DG23JE4PDO", Name = "PT perusahaan 4", Phone = "0218229103", Email = "siminsupport@sempua.com",
@@ -179,9 +176,17 @@ namespace Core.Postgres
             Member member14 = new Member { Id = -14, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
                 isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
 
-            PlanBusiness planBusiness1 = new PlanBusiness { Id = -1, IsActive=true, CompanyId= listOfCompanyCreated[1].Id, Price=210000, ExpiredAt=DateTime.Now.AddDays(30), StartedAt=DateTime.Now, StorageSize=100000000, StorageUsedinByte= 100, totalAdministrators=2, SubscriptionName= "Business"};
-            PlanBusiness planBusiness2 = new PlanBusiness { Id = -2, IsActive=true, CompanyId= listOfCompanyCreated[0].Id, Price=2120000, ExpiredAt=DateTime.Now.AddDays(60), StartedAt=DateTime.Now, StorageSize = 100000000, StorageUsedinByte = 1000, totalAdministrators=1, SubscriptionName= "Business"};
-            PlanBusiness planBusiness3 = new PlanBusiness { Id = -3, IsActive=true, CompanyId= listOfCompanyCreated[2].Id, Price=2103000, ExpiredAt=DateTime.Now.AddDays(50), StartedAt=DateTime.Now, StorageSize = 100000000, StorageUsedinByte = 10000, totalAdministrators=3, SubscriptionName= "Corporate"};
+            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
+            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Corporate" };
+            BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Enterprise" };
+
+            Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
+            Price price2 = new Price { Id = -2, CreatedAt = DateTime.Now, Total = 31241256, PackageId = package2.Id };
+            Price price3 = new Price { Id = -3, CreatedAt = DateTime.Now, Total = 423566135, PackageId = package3.Id };
+
+            Usage usage1 = new Usage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, StartedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
+            Usage usage2 = new Usage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, StartedAt = DateTime.Now, PriceId = price2.Id };
+            Usage usage3 = new Usage { Id = -3, CompanyId = listOfCompanyCreated[2].Id, PackageId = package3.Id, StartedAt = DateTime.Now, PriceId = price3.Id };
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
@@ -192,7 +197,10 @@ namespace Core.Postgres
 
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2], listOfCompanyCreated[3]);
             modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10, member11, member12, member13, member14, member15, member16, member17, member18, member19, member20, member21, member22, member23, member24, member25, member26);
-            modelBuilder.Entity<PlanBusiness>().HasData(planBusiness1, planBusiness2, planBusiness3);
+
+            modelBuilder.Entity<BusinessPackage>().HasData(package1, package2, package3);
+            modelBuilder.Entity<Price>().HasData(price1, price2, price3);
+            modelBuilder.Entity<Usage>().HasData(usage1, usage2, usage3);
 
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
             modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);
@@ -204,7 +212,7 @@ namespace Core.Postgres
             WorkflowNode wfn2 = new WorkflowNode { Id = -2, WorkflowId = wf1.Id, SymbolCode = 1, Caption = "End", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", TextColor = "#ffffff", BackColor = "#ff0000" };
             WorkflowNode wfn3 = new WorkflowNode { Id = -3, WorkflowId = wf1.Id, SymbolCode = 5, Caption = "Activity", WorkflowNodeLinkTos = new List<WorkflowNodeLink>(), WorkflowNodeLinks = new List<WorkflowNodeLink>(), Value = "0", PosLeft = "0px", PosTop = "0px", TextColor = "#ffffff", BackColor = "#deb887" };
 
-            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, FirstNodeId = wfn3.Id, EndNodeId = wfn2.Id,  WorkflowNodeId = wfn1.Id, Value = "0", WorkflowNodeToId = wfn3.Id, SymbolCode = 20 };
+            WorkflowNodeLink wflnl1 = new WorkflowNodeLink { Id = -1, FirstNodeId = wfn3.Id, EndNodeId = wfn2.Id, WorkflowNodeId = wfn1.Id, Value = "0", WorkflowNodeToId = wfn3.Id, SymbolCode = 20 };
             WorkflowNodeLink wflnl2 = new WorkflowNodeLink { Id = -2, FirstNodeId = wfn3.Id, EndNodeId = wfn2.Id, WorkflowNodeId = wfn3.Id, Value = "0", WorkflowNodeToId = wfn2.Id, SymbolCode = 20 };
 
             modelBuilder.Entity<Workflow>().HasData(wf1);
@@ -214,14 +222,27 @@ namespace Core.Postgres
             Rotation rt1 = new Rotation { Id = -1, CreatorId = listOfUserCreated[0].Id, Remark = "fe", Status = 1, WorkflowId = wf1.Id,
                 Subject = "Goodddd", DateCreated = DateTime.Now, UserId = listOfUserCreated[0].Id};
 
-            RotationNode rtn1 = new RotationNode { Id = -1, UserId = listOfUserCreated[2].Id, RotationId=rt1.Id,
-                WorkflowNodeId = wfn3.Id, CreatedAt = DateTime.Now};
+            RotationNode rtn1 = new RotationNode
+            {
+                Id = -1,
+                UserId = listOfUserCreated[2].Id,
+                RotationId = rt1.Id,
+                WorkflowNodeId = wfn3.Id,
+                CreatedAt = DateTime.Now
+            };
 
             RotationUser rtnusr1 = new RotationUser { Id = -1, isStartPerson = true, FlagPermission = 6, WorkflowNodeId = wfn3.Id, UserId = listOfUserCreated[1].Id, RotationId = rt1.Id };
 
-            Inbox inbox1 = new Inbox { Id = -1, UserId = rtn1.UserId, ActivityId = rtn1.Id, 
-                Message = listOfUserCreated[2].Name + ", you has new Work on Rotatiion " + rt1.Subject, IsUnread = true, CreatedAt = DateTime.Now, 
-                DateNote = "New Created Inbox from " + rt1.Subject};
+            Inbox inbox1 = new Inbox
+            {
+                Id = -1,
+                UserId = rtn1.UserId,
+                ActivityId = rtn1.Id,
+                Message = listOfUserCreated[2].Name + ", you has new Work on Rotatiion " + rt1.Subject,
+                IsUnread = true,
+                CreatedAt = DateTime.Now,
+                DateNote = "New Created Inbox from " + rt1.Subject
+            };
 
             rt1.DateUpdated = DateTime.Now;
             rt1.CompanyId = listOfCompanyCreated[2].Id;

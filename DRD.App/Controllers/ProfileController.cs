@@ -66,7 +66,7 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult User()
+        public ActionResult UserMenu()
         {
             LoginController login = new LoginController();
             login.CheckLogin(this);
@@ -195,7 +195,7 @@ namespace DRD.App.Controllers
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
             try
             {
-                int returnval = 0;
+
                 string Tranfiles, ProcessedFiles;
                 Tranfiles = Server.MapPath("/" + fromFolder + "/") + location;
                 System.Diagnostics.Debug.WriteLine("[[ IMAGE NAME ]] " + Tranfiles);

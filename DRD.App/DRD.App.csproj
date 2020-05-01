@@ -3533,6 +3533,7 @@
     <Content Include="assets\js\plugins\uploaders\plupload\files\Moxie.xap" />
     <Content Include="ElementType.csv" />
     <Content Include="doc\company\temp\9f0d9250-499c-4ada-b4c1-a5eb4b747a83.pdf.drd" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -3581,7 +3582,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Subscription.csv" />
     <Content Include="Scripts\pdf.js\build\pdf.js.map" />
     <Content Include="Scripts\pdf.js\build\pdf.worker.js.map" />
     <Content Include="Scripts\pdf.js\LICENSE" />

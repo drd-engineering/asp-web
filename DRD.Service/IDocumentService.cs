@@ -38,8 +38,8 @@ namespace DRD.Service
         ICollection<DocumentUserInboxData> CreateDocumentUser(long documentId);
         int RequestDownloadDocument(string docName, long userId);
         int RequestPrintDocument(string docName, long userId);
-        void sendEmailSignature(Member member, string rotName, string docName, string numbers);
-        void sendEmailStamp(Member member, string rotName, string docName, string numbers);
+        void SendEmailSignature(Member member, string rotName, string docName, string numbers);
+        void SendEmailStamp(Member member, string rotName, string docName, string numbers);
         int Signature(long documentId, long memberId, long rotationId);
         int Stamp(long documentId, long memberId, long rotationId);
     }

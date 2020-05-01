@@ -11,12 +11,13 @@
                 <h6 class="modal-title">Select Subscription</h6>
             </div>
 
-            <div style="height:450px" class="table-responsive">
+            <div style="max-height:450px" class="table-responsive">
                 @*class="modal-body"*@
-                <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                     <tbody>
-                        <tr data-dismiss="modal" style="cursor:pointer" ng-repeat="x in SubscriptionList" style="vertical-align:top">
-                            <td width="25px" ng-click="do_start($index);">{{x.SubscriptionName}} Subscription - {{x.CompanyName}}</td>
+                        <tr  ng-click="do_start($index);" data-dismiss="modal" style="cursor:pointer;height:40px;" ng-repeat="x in SubscriptionList" style="vertical-align:top">
+                            <td width="15px"><i class="icon-box"></td>
+                            <td>{{x.CompanyName}} - {{x.PackageName}}</td>
                         </tr>
                     </tbody>
                 </table>

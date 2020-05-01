@@ -22,7 +22,7 @@ namespace DRD.App.Controllers
             var logincontroller = new LoginController();
             UserSession user = logincontroller.GetUser(this);
             var service = new UserService();
-            var data = service.getAllSubscription(user.Id);
+            var data = service.GetAllSubscription(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

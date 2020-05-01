@@ -138,7 +138,7 @@ namespace DRD.Service
                 result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
                 RotationService rotationService = new RotationService();
-                result = rotationService.assignNodes(db, result, UserId, new DocumentService());
+                result = rotationService.AssignNodes(db, result, UserId, new DocumentService());
 
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)

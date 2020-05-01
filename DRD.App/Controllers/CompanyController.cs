@@ -60,7 +60,7 @@ namespace DRD.App.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
             
-            if(!companyService.checkIsOwner(user.Id, id) && !memberService.checkIsAdmin(user.Id, id))
+            if(!companyService.CheckIsOwner(user.Id, id) && !memberService.checkIsAdmin(user.Id, id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
@@ -87,7 +87,7 @@ namespace DRD.App.Controllers
         public ActionResult GetSubscriptionList()
         {
             InitializeAPI();
-            List<BusinessSubscription> data = subscriptionService.getSubscription();
+            List<BusinessPackage> data = subscriptionService.GetAllPublicSubscription();
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

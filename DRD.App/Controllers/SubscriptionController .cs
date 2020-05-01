@@ -33,7 +33,7 @@ namespace DRD.App.Controllers
             Initialize();
 
             SubscriptionService subscriptionService = new SubscriptionService();
-            BusinessSubscriptionList data = subscriptionService.getBusinessSubscriptionByUser(user.Id);
+            ActiveUsageList data = subscriptionService.GetBusinessSubscriptionByUser(user.Id);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

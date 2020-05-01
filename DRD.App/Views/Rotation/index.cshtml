@@ -288,8 +288,6 @@
                     $scope.workflow=product.Workflow;
                     $scope.users = product.RotationUsers;
                     $scope.model.Tags = product.Tags;
-                    console.log("THIS IS PRODUCT :: " + product);
-                    console.log("THIS IS Users :: " + $scope.users);
                 }else{
 
                 }
@@ -556,7 +554,7 @@
             --------------------------------------------------------------*/
 
             $scope.showSubscription = function () {
-                console.log("idx : " + $scope.model.Id);
+                console.log("idx : " + $scope.SubscriptionList );
                 $("#modal_select_subscription").modal("show");
             }
             $scope.do_start = function (id) {
@@ -611,7 +609,9 @@
                 $http.get('@Url.Action("GetSubscriptionList", "Subscription")')
                     .then(function (response) {
                         if (response.data) {
-                            $scope.SubscriptionList = response.data.subscriptions;
+                            $scope.SubscriptionList = response.data.usages;
+                            console.log($response);
+                            console.log( $scope.SubscriptionList);
                         }
                     });
             }

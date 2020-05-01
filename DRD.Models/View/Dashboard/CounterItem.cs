@@ -21,8 +21,8 @@ namespace DRD.Models.View
         {
             public int InProgress { get; set; }
             public int Completed { get; set; }
-            public long StorageQuota { get; set; }
-            public long StorageUsage { get; set; }
+            public long StorageLimit { get; set; }
+            public long TotalStorage { get; set; }
         }
     }
 }

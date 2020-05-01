@@ -192,7 +192,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\BusinessSubscriptionList.cs" />
+    <Compile Include="API\ActivePackageList.cs" />
+    <Compile Include="API\ActiveUsageList.cs" />
     <Compile Include="API\AddMemberResponse.cs" />
     <Compile Include="API\DocUploadResult.cs" />
     <Compile Include="API\InboxList.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Custom\UserInboxData.cs" />
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="TagItem.cs" />
+    <Compile Include="Price.cs" />
     <Compile Include="View\Document\DocumentItem.cs" />
     <Compile Include="View\ElementType.cs" />
     <Compile Include="View\Rotation\RotationDashboard.cs" />
@@ -216,13 +218,12 @@
     <Compile Include="View\Rotation\RotationItem.cs" />
     <Compile Include="View\Rotation\RotationIndex.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
-    <Compile Include="PlanBusiness.cs" />
+    <Compile Include="BusinessPackage.cs" />
     <Compile Include="PlanPersonal.cs" />
     <Compile Include="Inbox.cs" />
-    <Compile Include="View\BusinessSubscription.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
-    <Compile Include="CompanyQuota.cs" />
+    <Compile Include="Usage.cs" />
     <Compile Include="View\ErrorInfo.cs" />
     <Compile Include="View\List\InboxItem.cs" />
     <Compile Include="View\Member\MemberItem.cs" />
@@ -275,6 +276,9 @@
     <Compile Include="WorkflowNodeLink.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
