@@ -12,7 +12,6 @@
             </div>
 
             <div class="input-group">
-                <span class="input-group-addon"><i class="icon-search4"></i></span>
                 <input type="text" ng-keyup="$event.keyCode == 13 && findWorkflows($parent.kriteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.kriteria" placeholder="Enter workflow name" />
 
                 <span class="input-group-btn">
@@ -26,20 +25,13 @@
                 </span>
             </div>
 
-            <div style="height:450px" class="table-responsive">
-                <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                    <thead>
-                        <tr>
-                            <th width="25px">#</th>
-                            <th>Name</th>
-                            <th width="150px">Type</th>
-                        </tr>
-                    </thead>
+            <div style="max-height:450px" class="table-responsive">
+                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+
                     <tbody>
-                        <tr ng-repeat="x in $parent.workflows" style="vertical-align:top;background-color:{{(x.IsTemplate?'#fff9c4':'')}}" data-dismiss="modal" ng-click="setWorkflow($index);">
-                            <td width="25px">{{$index+1 + index}}</td>
+                        <tr ng-repeat="x in $parent.workflows" style="cursor:pointer;height:25px;vertical-align:top;" data-dismiss="modal" ng-click="setWorkflow($index);">
+                            <td width="15px"><i class="icon-search4"></td>
                             <td>{{x.Name}}</td>
-                            <td width="150px">{{(x.IsTemplate?"Template":"My workflow")}}</td>
                         </tr>
                     </tbody>
                 </table>
