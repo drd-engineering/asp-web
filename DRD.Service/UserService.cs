@@ -12,29 +12,32 @@ namespace DRD.Service
 {
     public class UserService
     {
-        public RegisterResponse SaveRegistration(Register register)
+        /// <summary>
+        /// Save User Ragistration as a new user
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns></returns>
+        public User SaveRegistration(Register register)
         {
             using (var db = new ServiceContext())
             {
-                var resgistrationResponse = new RegisterResponse();
                 var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email)).ToList();
 
                 if (result.Count != 0)
                 {
-                    resgistrationResponse.Id = "DBLEMAIL";
-                    return resgistrationResponse;
+                    User retVal = new User();
+                    retVal.Id = -1;
+                    return retVal;
                 }
-
                 User user = new User();
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
-                user.IsActive = false;
+                user.IsActive = true;
                 user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
                 // user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
                 long userId = Save(user);
                 user.Id = userId;
-
                 if (register.CompanyId != null)
                 {
                     Member member = new Member();
@@ -43,18 +46,114 @@ namespace DRD.Service
                     member.CompanyId = register.CompanyId.Value;
                     long memberId = Save(member);
                 }
-
-                //TODO: remove these lines when production
-                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Will sent email of : " + user.Id + " - " + user.Name);
-
-                sendEmailRegistration(user);
-
-                resgistrationResponse.Id = "" + user.Id;
-                resgistrationResponse.Email = register.Email;
-                return resgistrationResponse;
+                return user;
             }
         }
+        /// <summary>
+        /// Save user with valid user Id long value
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public long Save(User user)
+        {
+            int result = 0;
+            using (var db = new ServiceContext())
+            {
+                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
+                {
+                    for (int j = 0; j < Constant.TEST_DUPLICATION_COUNT; j++)
+                    {
+                        user.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                        var encryptedUserId = Utilities.Encrypt(user.Id.ToString());
+                        if (!Constant.RESTRICTED_FOLDER_NAME.Any(w => encryptedUserId.Contains(w)))
+                            break;
+                    }
+                    try
+                    {
+                        //TODO: remove these lines when production
+                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + user.Id);
+                        user.ImageProfile = "icon_user.png";
+                        user.CreatedAt = DateTime.Now;
+                        db.Users.Add(user);
+                        result = db.SaveChanges();
+                        break;
+                    }
+                    catch (DbUpdateException x)
+                    {
+                        if (i > Constant.TEST_DUPLICATION_COUNT)
+                            throw new Exception(x.Message);
+                    }
+                }
+                return user.Id;
+            }
+        }
+        /// <summary>
+        /// Save member with valid user Id long value
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public long Save(Member member)
+        {
+            int result = 0;
+            using (var db = new ServiceContext())
+            {
+                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
+                {
+                    try
+                    {
+                        member.Id = ((long)member.CompanyId * 10000) + Utilities.RandomLongGenerator(1000, 10000);
+                        member.JoinedAt = DateTime.Now;
+                        db.Members.Add(member);
+                        result = db.SaveChanges();
+                        break;
+                    }
+                    catch (DbUpdateException x)
+                    {
+                        if (i > Constant.TEST_DUPLICATION_COUNT)
+                            throw new Exception(x.Message);
+                    }
+                }
 
+                return member.Id;
+            }
+
+        }
+        /// <summary>
+        /// Registration notification via email, for new user
+        /// </summary>
+        /// <param name="user"></param>
+        public void SendEmailRegistration(User user)
+        {
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
+
+            string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/Registration.html"));
+            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration");
+            System.Diagnostics.Debug.WriteLine(strPathAndQuery);
+
+            body = body.Replace("{_URL_}", strUrl);
+            body = body.Replace("{_NAME_}", user.Name);
+            body = body.Replace("{_NUMBER_}", "" + user.Id);
+            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
+
+            body = body.Replace("//images", "/images");
+
+            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+            //TODO: remove these lines when production
+            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration");
+            System.Diagnostics.Debug.WriteLine(senderEmail);
+
+            var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
+        }
         public UserSession Login(string username, string password)
         {
             using (var db = new ServiceContext())
@@ -121,40 +220,6 @@ namespace DRD.Service
                 return 0;
             }
         }
-
-        public void sendEmailRegistration(User user)
-        {
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
-            var configGenerator = new AppConfigGenerator();
-            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
-            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
-            EmailService emailService = new EmailService();
-
-            string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/Registration.html"));
-            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
-            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration");
-            System.Diagnostics.Debug.WriteLine(strPathAndQuery);
-
-            body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_NAME_}", user.Name);
-            body = body.Replace("{_NUMBER_}", "" + user.Id);
-            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
-
-            body = body.Replace("//images", "/images");
-
-            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
-
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration");
-            System.Diagnostics.Debug.WriteLine(senderEmail);
-
-            var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
-        }
-
         public UserProfile Update(UserProfile userProfile)
         {
             User user;
@@ -192,65 +257,6 @@ namespace DRD.Service
             string removedPrefix = System.Text.RegularExpressions.Regex.Replace(location, pattern, string.Empty);
             return removedPrefix;
         }
-
-        public long Save(User user)
-        {
-
-            int result = 0;
-            using (var db = new ServiceContext())
-            {
-                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
-                {
-                    try
-                    {
-                        user.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
-
-                        //TODO: remove these lines when production
-                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + user.Id);
-
-                        user.ImageProfile = "icon_user.png";
-                        user.CreatedAt = DateTime.Now;
-                        db.Users.Add(user);
-                        result = db.SaveChanges();
-                        break;
-                    }
-                    catch (DbUpdateException x)
-                    {
-                        if (i > Constant.TEST_DUPLICATION_COUNT)
-                            throw new Exception(x.Message);
-                    }
-                }
-
-                return user.Id;
-            }
-        }
-        public long Save(Member member)
-        {
-            int result = 0;
-            using (var db = new ServiceContext())
-            {
-                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
-                {
-                    try
-                    {
-                        member.Id = ((long)member.CompanyId * 10000) + Utilities.RandomLongGenerator(1000, 10000);
-                        member.JoinedAt = DateTime.Now;
-                        db.Members.Add(member);
-                        result = db.SaveChanges();
-                        break;
-                    }
-                    catch (DbUpdateException x)
-                    {
-                        if (i > Constant.TEST_DUPLICATION_COUNT)
-                            throw new Exception(x.Message);
-                    }
-                }
-
-                return member.Id;
-            }
-
-        }
-
         public String GetName(long id)
         {
             using (var db = new ServiceContext())
