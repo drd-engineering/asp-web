@@ -40,7 +40,7 @@ namespace Core.Postgres
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMvc();
+           
             //app.UseHttpsRedirection();
 
             //app.UseRouting();
