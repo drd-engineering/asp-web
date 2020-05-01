@@ -26,7 +26,7 @@ namespace DRD.Models.View
         public string Address { get; set; }
         public string PointLocation { get; set; }
         public bool isVerified { get; set; }
-        public BusinessSubscription businessSubscription { get; set; }
+        public BusinessPackage businessSubscription { get; set; }
         public virtual ICollection<DRD.Models.Member> Members { get; set; }
         public virtual ICollection<DRD.Models.Member> Administrators { get; set; }
 
