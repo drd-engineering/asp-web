@@ -146,7 +146,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                Usage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).LastOrDefault();
+                Usage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 return plan;
             }
         }
