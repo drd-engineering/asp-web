@@ -3978,7 +3978,6 @@
     <Content Include="Views\Include\PopupDocument.cshtml" />
     <Content Include="Views\Member\Member.cshtml" />
     <Content Include="Views\Member\MemberList.cshtml" />
-    <Content Include="Views\Company\CompanyList.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Project\Project.cshtml" />
     <Content Include="Views\Project\ProjectList.cshtml" />

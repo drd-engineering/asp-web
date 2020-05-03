@@ -903,7 +903,6 @@
 
         if (x != null && minW <= rectsvg.width + w - (pad * 2)) {
             svgselection.css({ "left": (rectsvg.left + x) + 'px' });
-            //console.log('rectsvg x: ' + rectsvg.left + ' ' + x + ' = ' + (rectsvg.left+x));
         }
         if (y != null && minH <= rectsvg.height + h - (pad * 2)) {
             svgselection.css({ "top": (rectsvg.top + y) + 'px' });
@@ -916,7 +915,6 @@
         if (h != null && minH <= rectsvg.height + h - (pad * 2)) {
             svgselection.css({ "height": (rectsvg.height + h) + 'px' });
             rectselection.css({ "height": (rectsvg.height + h - pad) + 'px' });
-            //console.log('rectsvg h: ' + rectsvg.height + ' ' + h + ' = ' + (rectsvg.height + h));
         }
         $scope.repositionSelectorPath();
         resizeElement(id);
@@ -996,9 +994,7 @@
         selectedMouseDown = event.target.classList[1];
         isresize = true;
         var selected = $('#' + selectedNodeId);
-        
-        //console.log(selected[0].offsetHeight);
-        
+                
         var outc = recoverClientValues(event);
         
         lastMouseX = outc.x;
@@ -1041,9 +1037,7 @@
         } if (selectedMouseDown == 'resize-cursor-left') {
             resizeSelector(selectedNodeId, -deltaX, null, deltaX, null);
         }
-        console.log(deltaX + ' ' + deltaY);
 
-        //$scope.repositionSelector(selectedNodeId);
     }
     var selectorMouseUp = function (event) {
         isresize = false;
@@ -1620,7 +1614,6 @@
             var out = recoverClientValues(e);
             pos3 = out.x;
             pos4 = out.y;
-            //console.log('dragMouseDown clientX: ' + e.clientY + ', clientY: ' + e.clientY);
             document.onmouseup = closeDragElement;
             document.ontouchend = closeDragElement;
             //document.addEventListener("mouseup", closeDragElement);
@@ -1647,8 +1640,7 @@
             // set the element's new position:
             elmnt.style.top = (pos2Float(elmnt.style.top) - pos2) + "px";
             elmnt.style.left = (pos2Float(elmnt.style.left) - pos1) + "px";
-            console.log(selectedNodeId + ' | elementDrag TOP: ' + (elmnt.offsetTop - pos2) + ', LEFT: ' + (elmnt.offsetLeft - pos1));
-
+           
             var svg = document.getElementById("svg-selection");
             svg.style.top = (pos2Float(svg.style.top) - pos2) + "px";
             svg.style.left = (pos2Float(svg.style.left) - pos1) + "px";
@@ -1806,7 +1798,7 @@
     $scope.findMembersRotation = function (kriteria, page, row, rotationId) {
         $scope.page = 1;
         $scope.members = [];
-        console.log(kriteria, page, row, rotationId);
+        
         $http.post('/Member/FindMembersRotation', { topCriteria: kriteria, page: page, pageSize: row , rotationId : rotationId }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;

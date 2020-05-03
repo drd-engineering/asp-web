@@ -17,7 +17,6 @@
     <link href="/assets/css/pages/company-member.css" rel="stylesheet" type="text/css">
 }
 
-
 <body>
 
     <div class="section-title">
@@ -26,8 +25,6 @@
     <!-- CONTACT-LIST SECTION -->
     <section class="panel" id="contact-list">
         <!-- Page container -->
-
-
 
         <div class="page-container invitation-list" ng-controller="drdController">
             <!-- Page content -->
@@ -51,7 +48,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -87,14 +83,10 @@
                                             </button>
                                         </div>
                                     </div>
-
                                 </div>
-
                             </div>
                             <!-- /LIST -->
                         </div>
-
-
                     </div>
                     <!-- /content area -->
                     @*INVITE BY EMAIL*@
@@ -115,59 +107,51 @@
                     @*INVITE BY EMAIL*@
 
                     <!-- Content area -->
-                <div class="content" ng-show="hasPendingRequest()">
-                    <!-- Contextual classes -->
-                    <div class="manage-member-header">
-                        <div class="row content-align-right">
-                            <div class="col-lg-2">
-                                <p> {{ waitingMembers.length }} Waiting Member Request </p>
+                    <div class="content" ng-show="hasPendingRequest()">
+                        <!-- Contextual classes -->
+                        <div class="manage-member-header">
+                            <div class="row content-align-right">
+                                <div class="col-lg-2">
+                                    <p> {{ waitingMembers.length }} Waiting Member Request </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="request-join overflow-auto">
-                        @*JOIN BY REQUEST*@
-                        <div>
-                            <!-- LIST -->
-                            <div calss="row">
-                                <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
-                                    <div class="row member-container">
-                                        <div class="col-sm-2 col-lg-2">
-                                            <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
-
-                                        </div>
-                                        <div class="col-sm-6 col-lg-6 no-overflow">
-                                            <strong class="ellipsis">{{x.User.Name}}</strong>
-                                            <div>{{x.User.Email}}</div>
-                                        </div>
-
-                                        <div class="col-sm-4 col-lg-4">
-                                            <div class="input-group-btn container">
-                                                <div class="row pull-right">
-                                                    <button class="image-container-sm green-border" ng-click="acceptMember(x.Id)" >
-                                                        <img src="~/Images/icon/accept.png"/>
-                                                    </button>
-
-                                                    <button class="image-container-sm red-border" ng-click="rejectMember(x.Id)" >
-                                                        <img src="~/Images/icon/reject.png"/>
-                                                    </button>
-                                                </div>
-
-
+                        <div class="request-join overflow-auto">
+                            @*JOIN BY REQUEST*@
+                            <div>
+                                <!-- LIST -->
+                                <div calss="row">
+                                    <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
+                                        <div class="row member-container">
+                                            <div class="col-sm-2 col-lg-2">
+                                                <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
+                                            </div>
+                                            <div class="col-sm-6 col-lg-6 no-overflow">
+                                                <strong class="ellipsis">{{x.User.Name}}</strong>
+                                                <div>{{x.User.Email}}</div>
                                             </div>
 
+                                            <div class="col-sm-4 col-lg-4">
+                                                <div class="input-group-btn container">
+                                                    <div class="row pull-right">
+                                                        <button class="image-container-sm green-border" ng-click="acceptMember(x.Id)">
+                                                            <img src="~/Images/icon/accept.png" />
+                                                        </button>
+
+                                                        <button class="image-container-sm red-border" ng-click="rejectMember(x.Id)">
+                                                            <img src="~/Images/icon/reject.png" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
-
+                                <!-- /LIST -->
                             </div>
-                            <!-- /LIST -->
-
+                            @*JOIN BY REQUEST*@
                         </div>
-                        @*JOIN BY REQUEST*@
                     </div>
-
-                </div>
                     <!-- /content area -->
                 </div>
                 <!-- /main content -->
@@ -175,14 +159,9 @@
             <!-- /page content -->
         </div>
         <!-- /page container -->
-
-
     </section>
 
-
-
     <script type="text/javascript">
-
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
@@ -211,7 +190,6 @@
                 $scope.getAcceptedMember($scope.companyId);
             });
 
-
             $scope.getUrlVars = function () {
                 var vars = {};
                 var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -228,8 +206,6 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.acceptedMembers = response.data.members;
-
-                        console.log("MEMBERS ::  " + $scope.acceptedMembers );
                     }
                 });
             }
@@ -240,7 +216,6 @@
                     .then(function (response) {
                     if (response.data) {
                         $scope.waitingMembers = response.data.members;
-                        console.log("WAITING MEMBERS ::  " + $scope.waitingMembers);
                     }
                 });
             }
@@ -261,7 +236,7 @@
                                 $scope.getAcceptedMember($scope.companyId);
                             }
                         }
-                            
+
                     })
             }
             /*--------------------------------------------------------------
@@ -288,7 +263,6 @@
             REJECT MEMBER
             --------------------------------------------------------------*/
             $scope.rejectMember = function (MemberId) {
-                console.log("Rejecting member")
                 $http.post('@Url.Action("RejectMember", "Company")', { memberId: MemberId })
                     .then(function (response) {
                         if (response.data) {
@@ -303,7 +277,7 @@
                                 $scope.getWaitingMember($scope.companyId);
                             }
                         }
-                            
+
                     })
             }
             /*--------------------------------------------------------------
@@ -387,7 +361,5 @@
         $(document).ready(function () {
 
         });
-
     </script>
-
 </body>
