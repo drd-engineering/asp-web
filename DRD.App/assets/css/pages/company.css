@@ -110,7 +110,7 @@ div.modal-content{
     width: 640px;
 }
 div.modal-content .row{
-    margin-left:20px;
+    margin:auto;
 }
 div.transfer-double{
     border: none;
@@ -119,5 +119,6 @@ div.transfer-double{
 }
 
 .btn-sm{
-    width: 40px;
+    width: 100%;
+    margin-bottom: 20px;
 }
