@@ -42,7 +42,7 @@
                                             </div>
                                             <div class="col-md-4 push-left">
                                                 <!-- SELECT -->
-                                                <select class="card-filter" ng-option="x in companyOwned track by x.Name" ng-model="selectedCompany" ng-change="getDashboardRotationStatus()"></select>
+                                                <select  class="card-filter select-lg" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -99,7 +99,7 @@
                 </div>
             </section>
 
-            <section id="dashboard-rotation-status" ng-init="getDashboardRotationStatus" ng-show="haveCompany">
+            <section id="dashboard-rotation-status" ng-show="haveCompany">
                 <div class="panel highlight-container">
                     <div class="highlight-card">
                         <!-- HEADER -->
@@ -138,9 +138,7 @@
                                     </div>
                                     <div class="col-md-4 push-left">
                                         <!-- SELECT -->
-                                        <select class="card-filter select-lg">
-                                            <option class="card-filter" ng-repeat="x in companyOwned">{{x.Name}}</option>
-                                        </select>
+                                        <select class="card-filter select-lg" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
                                     </div>
                                 </div>
                             </div>
@@ -158,8 +156,7 @@
                                             <th style="width: 7%">Status</th>
                                             <th style="width: 7%">Created</th>
                                             <th style="width: 7%">Updated</th>
-                                            <th style="width: 44%">Position Now</th>
-                                            <th style="width: 7%">Send Email</th>
+                                            <th style="width: 51%">Position Now</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -172,7 +169,6 @@
                                             <td>
                                                 <span ng-repeat="usr in x.RotationUsers"><img title="{{usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
                                             </td>
-                                            <td><button style="font-size:9px" ng-click="sendEmailNotifikasiRotasi($index)">Notify Latest Person</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -247,7 +243,6 @@
             angular.element(document).ready(function () {
                 $scope.getCompanyOwned();
                 $scope.getActivityCounter();
-
                 $("#content").show();
             });
             $scope.getActivityCounter = function () {
@@ -361,6 +356,10 @@
                     }
                 })
             }
+            $scope.setSelectedCompany = function (x) {
+                $scope.selectedCompany = x;
+                $scope.getDashboardRotationStatus();
+            }
             $scope.haveCompany = function () {
                 return $scope.companyOwned.Count() > 0;
             }
@@ -399,7 +398,7 @@
             Dashboard Rotation Status
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
-                console.log("INI "+ $scope.selectedCompany);
+                console.log("Perusahaan terpilih", $scope.selectedCompany);
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
                     { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: $scope.pagerotationstatus, pageSize: $scope.pagesizerotationstatus }
                 ).then(function (response) {

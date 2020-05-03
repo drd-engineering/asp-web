@@ -79,7 +79,10 @@
                             <!-- LIST -->
                             <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
                                 <div class="panel panel-flat">
-                                    <div class="table-responsive" ng-show="isView">
+                                    <div ng-show="!hasWorkflow">
+                                        You don't have a workflow yet or there is no match workflow with the search criteria.
+                                    </div>
+                                    <div class="table-responsive" ng-show="isView && hasWorkflow">
                                         <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                             <thead>
                                                 <tr>
@@ -127,6 +130,7 @@
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
+            $scope.hasWorkflow = false;
 
             /*--------------------------------------------------------------
             INIT DATA
@@ -162,6 +166,7 @@
                         $scope.findWorkflowsCountAll(kriteria);
                         $scope.isView = true;
                     }
+                    $scope.hasWorkflow = $scope.products.length > 0;
                 }, function (response) {
                     //error handle\
                     var x = 0;

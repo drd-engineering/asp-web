@@ -156,7 +156,6 @@
                             <div class="col-xs-8">
                                 <div class="card-title">
                                     <p>Personal</p>
-
                                 </div>
                                 <div class="card-content">
                                     <p>{{totalPersonalContact}} Contacts</p>
@@ -164,14 +163,13 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- end of CARD 1 -->
-            
+
             <!-- CARD 2 -->
-            <div class="col-md-3 card" ng-repeat="x in companies" ng-if="isMemberOfACompany()" ng-click="getDefaultContactFromCompany(x.Id)" ng-init="$last && equalHeight()">
-                <div class="highlight-card {{x.Id}}">
+            <div class="col-md-3 card" ng-repeat="y in companies" ng-if="isMemberOfACompany()" ng-click="getDefaultContactFromCompany(y.Id)" ng-init="$last && equalHeight()">
+                <div class="highlight-card {{y.Id}}">
                     <div class="container">
                         <div class="row">
                             <div class="col-xs-4">
@@ -179,15 +177,14 @@
                             </div>
                             <div class="col-xs-8">
                                 <div class="card-title">
-                                    <p>{{ x.Name }}</p>
+                                    <p>{{ y.Name }}</p>
                                 </div>
                                 <div class="card-content">
-                                    <p>{{ x.TotalMember }} Contacts</p>
+                                    <p>{{ y.TotalMember }} Contacts</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- end of CARD 2 -->
@@ -346,6 +343,7 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.companies = response.data.companies;
+                            console.log($scope.companies.length)
                             console.log("COMPANIES", $scope.companies);
                         }
         

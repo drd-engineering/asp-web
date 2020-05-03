@@ -87,7 +87,10 @@
                             <!-- LIST -->
                             <div calss="row">
                                 <div class="panel panel-flat">
-                                    <div class="table-responsive" ng-show="isView">
+                                    <div ng-show="!hasRotation">
+                                        You don't have a rotation yet or there is no match rotation with the search criteria.
+                                    </div>
+                                    <div class="table-responsive" ng-show="isView && hasRotation">
                                         <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                             <thead>
                                                 <tr>
@@ -143,6 +146,7 @@
             $scope.index = 0;
             $scope.rotationSelected = -1
             $scope.SubscriptionList = [];
+            $scope.hasRotation = false;
             initValues() ;
 
             /*--------------------------------------------------------------
@@ -279,6 +283,7 @@
                             }
                         );
                     }
+                    $scope.hasRotation = $scope.products.length > 0;
                 }, function (response) {
                     //error handle\
                     btn.stop();

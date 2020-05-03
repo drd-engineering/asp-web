@@ -45,7 +45,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="pull-right">
-                                    <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                    <select ng-model="page" class="form-control" ng-change="changePageInbox(kriteria, page, row)">
                                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                     </select>
                                 </div>
@@ -56,8 +56,10 @@
                 <div class="content">
                     <div calss="row">
                         <div class="panel panel-flat">
-
-                            <div class="table-responsive" ng-show="isView">
+                            <div ng-show="!hasInbox">
+                                You don't have an inbox yet
+                            </div>
+                            <div class="table-responsive" ng-show="isView && hasInbox">
                                 <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
@@ -73,6 +75,8 @@
                                             <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                             <td>{{x.RotationName}}</td>
                                             <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                        </tr>
+                                        <tr>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -106,13 +110,15 @@
             $scope.isView = false;
             $scope.index = 0;
 
+            $scope.hasInbox = false;
+
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
 
                 //$scope.GetPartners();
-                $scope.GetInboxList($scope.kriteria, $scope.page, $scope.row);
+                $scope.GetInboxList($scope.page, $scope.row);
                 console.log($scope.products);
                 $(".content-wrapper").show();
             });
@@ -129,43 +135,47 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
-            $scope.GetInboxList = function (kriteria, page, row) {
-                $http.post('@Url.Action("GetInboxList", "Inbox")', {}).then(function (response) {
+            $scope.GetInboxList = function (page, row) {
+                $http.post('@Url.Action("GetInboxList", "Inbox")', { page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
-
                         $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        /*$scope.getProductCount(kriteria);*/
-
+                        $scope.page = "1";
                         $scope.isView = true;
-
-                        //Ladda.stopAll();
-                        console.log("LIST", $scope.products);
+                        $scope.InboxCountAll();
+                    }
+                    $scope.hasInbox = $scope.products.length > 0;
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            $scope.InboxCountAll = function () {
+                $http.post('@Url.Action("CountAll", "Inbox")', { }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
-
-            $scope.changePage = function (kriteria, page, row) {
-
-                $http.post('@Url.Action("GetNodeLiteAll", "Rotation")', { status: '00', topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+            $scope.changePageInbox = function ( page, row) {
+                $http.post('@Url.Action("GetInboxList", "Inbox")', { page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
-
-
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
 
             /*--------------------------------------------------------------
             CONVERT JSON DATE
@@ -190,8 +200,6 @@
                     return "info";
                     
             }
-
-
 
         });
 

@@ -13,12 +13,14 @@ namespace DRD.Service
     public class InboxService
     {
         
-        public List<InboxList> GetInboxList(UserSession user) {
+        public List<InboxList> GetInboxList(long userId, int page, int pageSize) {
+            int skip = pageSize * (page - 1); 
+            
             using (var db = new ServiceContext()) 
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == user.Id && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt);
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(pageSize);
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -47,7 +49,21 @@ namespace DRD.Service
                 }
                 return null;
             }
-        
+        }
+
+        public int CountAll(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                if (db.Inboxes != null)
+                {
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt).Count();
+
+                    return inboxesCount;
+                }
+                return 0;
+            }
+
         }
 
         public long GetRotationNodeId(long inboxId)

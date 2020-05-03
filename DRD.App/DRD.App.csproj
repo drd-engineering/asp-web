@@ -3878,7 +3878,6 @@
     <Content Include="Scripts\pdf.js\web\locale\zu\viewer.properties" />
     <Content Include="Scripts\pdf.js\web\viewer.js.map" />
     <Content Include="Scripts\pdf.js\web\xannotation.pdf" />
-    <Content Include="Views\Dashboard\Index - Copy %282%29.cshtml" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <None Include="Views\Company\Member.cshtml" />
@@ -4025,7 +4024,6 @@
     <Content Include="Views\Include\PopupIdentityImage.cshtml" />
     <Content Include="Views\Testing\Pen.cshtml" />
     <Content Include="Views\Include\PopupText.cshtml" />
-    <Content Include="Views\Dashboard\Index - Copy.cshtml" />
     <Content Include="Views\Login\ForgotPassword.cshtml" />
     <Content Include="Views\Chat\Chat.cshtml" />
     <Content Include="Views\TopupDeposit\Topup.cshtml" />
