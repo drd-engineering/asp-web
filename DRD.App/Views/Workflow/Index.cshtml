@@ -6,7 +6,6 @@
     ViewBag.Submenu = "WORKFLOW";
 }
 
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -30,8 +29,8 @@
 <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
 
 @*
-<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
-<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>*@
+    <script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
+    <script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>*@
 
 <script src="~/Scripts/xpublic.js"></script>
 <script src="/assets/vendors/ng_only_number.js"></script>
@@ -43,7 +42,7 @@
 <script src="~/Scripts/flow/scripts/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 
 @*
-<script type="text/javascript" src="~/Scripts/flow/d3.v5.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/flow/d3.v5.js"></script>*@
 <script type="text/javascript" src="/assets/js/pages/components_popups.js"></script>
 <script type="text/javascript" src="~/Scripts/flow/dom-to-image.js"></script>
 <script type="text/javascript" src="/assets/filesaver/FileSaver.min.js"></script>
@@ -53,7 +52,6 @@
 <script src="~/Scripts/contextMenu/jquery.contextMenu.js" type="text/javascript"></script>
 <link href="~/Scripts/contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 <!--/diagram-->
-
 
 <style type="text/css">
     .auto-style3 {
@@ -296,7 +294,6 @@
                                                 @*</span>*@
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </form>
@@ -315,7 +312,6 @@
                             <ng-include src="'/Include/PopupWorkflow'"></ng-include>
                             <ng-include src="'/Include/PopupProject'"></ng-include>
                             <!-- View member modal -->
-
                         </div>
                     </div>
                     <!-- /basic layout -->
@@ -389,11 +385,7 @@
                     $scope.model.IsUsed = product.IsUsed;
                     $scope.project=product.Project;
                     $scope.nodes = product.WorkflowNodes;
-                    console.log("DEBUG PRODUCT NODE");
-                    console.log(product.WorkflowNodes);
                     $scope.links = product.WorkflowNodeLinks;
-                    console.log("DEBUG PRODUCT LINK");
-                    console.log(product.WorkflowNodeLinks);
                     $scope.isUsed=product.IsUsed;
                     if (!product.IsUsed)
                         $("#canvas").css("pointer-events",'');

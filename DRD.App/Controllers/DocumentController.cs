@@ -206,8 +206,9 @@ namespace DRD.App.Controllers
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = user;
+            return RedirectToAction("Index", "Dashboard");
 
-            return View(layout);
+            //return View(layout);
         }
 
         public string OpenFile(string fileName)

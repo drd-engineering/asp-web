@@ -119,8 +119,7 @@
                 var from = document.getElementById($scope.elmActivityName + "-" + fromIdx);
                 var to = document.getElementById("end-1");
                 $scope.endNode = to;
-                console.log($scope.endNode);
-
+                
                 if (ui.draggable.context.id == 'submit-' + fromIdx && fromIdx!='start') {
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'reject-' + fromIdx) {
@@ -734,8 +733,6 @@
         link.caption = cap;
         link.line = line;
 
-        console.log("add link ");
-        console.log(link);
         if (!isready)
             $scope.links.push(link);
     }
@@ -747,7 +744,6 @@
                 endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
             });
 
-        console.log("ADD LINK SUBMIT :: " + $scope.firstNode+" "+$scope.endNode);
         $scope.addLink(elmFrom.id, elmTo.id, $scope.firstNode.id, $scope.endNode.id, 'SUBMIT', '', line);
     }
 
@@ -1629,11 +1625,6 @@ $(function () {
 
     $('.context-menu-one').on('click', function (e) {
         var scope = angular.element(document.getElementById("xdiagramController")).scope();
-        console.log("scope.firstNode");
-        console.log(scope.firstNode);
-        console.log("scope.endNode");
-        console.log(scope.endNode);
-
     })
 });
 

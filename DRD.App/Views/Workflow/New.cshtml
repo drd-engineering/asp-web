@@ -6,7 +6,6 @@
     ViewBag.Submenu = "WORKFLOW";
 }
 
-
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
 <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
 <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
@@ -52,7 +51,6 @@
 <link href="~/Scripts/contextMenu/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 <!--/diagram-->
 
-
 <style type="text/css">
     .auto-style3 {
         width: 64px;
@@ -80,8 +78,6 @@
         bottom: 0;
     }
 </style>
-
-
 
 <body @*ng-app="drdApp"*@>
     <!-- Page container -->
@@ -297,7 +293,6 @@
                                                 @*</span>*@
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </form>
@@ -316,7 +311,6 @@
                             <ng-include src="'/Include/PopupWorkflow'"></ng-include>
                             <ng-include src="'/Include/PopupProject'"></ng-include>
                             <!-- View member modal -->
-
                         </div>
                     </div>
                     <!-- /basic layout -->
@@ -411,7 +405,6 @@
                 btn.start();
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
-                console.log(data.links);
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {
