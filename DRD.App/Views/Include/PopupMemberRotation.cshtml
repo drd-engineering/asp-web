@@ -12,7 +12,6 @@
             </div>
 
             <div class="input-group">
-                <span class="input-group-addon"><i class="icon-search4"></i></span>
                 <input type="text" ng-keyup="$event.keyCode == 13 && findMembersRotation($parent.kriteria, $parent.page, $parent.row, $parent.rotationId)" class="form-control" ng-model="$parent.kriteria" placeholder="Enter nomor/name/email/phone" />
 
                 <span class="input-group-btn">
@@ -26,27 +25,17 @@
                 </span>
             </div>
 
-            <div style="height:450px" class="table-responsive">
-                <table class="table-xxs table-bordered table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                    <thead>
-                        <tr>
-                            <th width="25px">#</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
+            <div style="max-height:450px" class="table-responsive">
+                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+
                     <tbody>
-                        <tr ng-repeat="x in $parent.members" style="vertical-align:top" data-dismiss="modal" ng-click="setMemberFromRotation($index);">
-                            <td width="25px">{{$index+1 + index}}</td>
-                            <td>{{x.Name}}</td>
-                            <td>{{x.Phone}}</td>
-                            <td>{{x.Email}}</td>
+                        <tr ng-repeat="x in $parent.members" style="cursor:pointer;height:25px;vertical-align:top" data-dismiss="modal" ng-click="setMemberFromRotation($index);">
+                            <td width="15px"><i class="icon-user" /></td>
+                            <td>{{x.Name+" - "+x.Email}}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 </div>

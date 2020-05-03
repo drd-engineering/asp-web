@@ -131,7 +131,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).LastOrDefault();
+                BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).FirstOrDefault();
                 return plan;
             }
         }
