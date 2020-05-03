@@ -126,8 +126,8 @@
                                     </li>
                                     @foreach (var submenu in Model.menus)
                                         {
-                                    <li class="@( submenu.SecondaryKey.Equals(ViewBag.Submenu) ? "active":"")">
-                                        <a href="@(submenu.UrlPage)" style="background-color:@( submenu.SecondaryKey.Equals(ViewBag.Submenu)? "grey": "black")"><i class="@submenu.Icon"></i> <span>@submenu.Name</span></a>
+                                    <li class="@(submenu.SecondaryKey.Equals(ViewBag.Submenu) ? "active":"")">
+                                        <a href="@(submenu.UrlPage)" style="background-color:@(submenu.SecondaryKey.Equals(ViewBag.Submenu)? "grey": "black")"><i class="@submenu.Icon"></i> <span>@submenu.Name</span></a>
                                     </li>
                                         }
                                     <!-- /main -->
@@ -156,7 +156,7 @@
 @RenderSection("ScriptsBottom", false/*required*/)
 <script type="text/javascript">
 
-       //var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
+    //var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
     myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
 
         $scope.$on("$destroy", function (event) {
@@ -183,9 +183,7 @@
         INIT DATA
         --------------------------------------------------------------*/
         angular.element(document).ready(function () {
-            //$scope.getFolders();
-            //$scope.startCounting();
-
+            $scope.getCompaniesOwned();
             $scope.getActivityCounter();
             $("#menu-content").show();
         });
@@ -226,20 +224,6 @@
                     var x = 0;
                 });
         }
-
-/*
-        $scope.resetCounter = function () {
-            $scope.counter.New.Rotation = 0;
-            $scope.counter.New.Inbox = 0;
-            $scope.counter.New.Altered = 0;
-            $scope.counter.New.Revised = 0;
-            $scope.counter.New.InProgress = 0;
-            $scope.counter.New.Pending = 0;
-            $scope.counter.New.Signed = 0;
-            $scope.counter.New.Declined = 0;
-            $scope.counter.New.Completed = 0;
-        }*/
-
         /*--------------------------------------------------------------
         JS
         --------------------------------------------------------------*/

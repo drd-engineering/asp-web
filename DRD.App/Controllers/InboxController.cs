@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -57,19 +57,23 @@ namespace DRD.App.Controllers
         public ActionResult List()
         {
             Initialize();
-            var data = inboxService.GetInboxList(user);
-            layout.obj = data;
             return View(layout);
         }
 
 
-        public ActionResult GetInboxList()
+        public ActionResult GetInboxList(int page, int pageSize)
         {
             Initialize();
-            var data = inboxService.GetInboxList(user);
+            var data = inboxService.GetInboxList(user.Id, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult CountAll()
+        {
+            Initialize();
+            var data = inboxService.CountAll(user.Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult AddDocument(int id) 
         {
