@@ -32,8 +32,8 @@ namespace DRD.App.Controllers
             Initialize();
             layout.menus = login.GetMenus(this, 0);
             layout.activeId = 0;
-
-            return View(layout);
+            return RedirectToAction("Index", "Dashboard");
+            //return View(layout);
         }
 
         // GET: Contact/GetPersonalContact
