@@ -23,7 +23,7 @@ namespace DRD.App.Controllers
             if (companyItem != null)
             {
                 var folder = "doc/company";
-                var encryptedId = XEncryptionHelper.Encrypt(companyItem.Id.ToString());
+                var encryptedId = Utilities.Encrypt(companyItem.Id.ToString());
                 var pathTarget = "/" + folder + "/" + encryptedId + "/";
                 var docServ = new DocumentService();
                 var allDocument = docServ.GetAllCompanyDocument(companyItem.Id);

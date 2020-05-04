@@ -420,7 +420,7 @@ namespace DRD.Service
                 if (User.Password.Equals(password))
                     equals = true;
                 else
-                if (User.Password.Equals(XEncryptionHelper.Encrypt(password)))
+                if (User.Password.Equals(Utilities.Encrypt(password)))
                     equals = true;
 
                 return equals;

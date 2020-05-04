@@ -79,7 +79,7 @@ namespace DRD.Service
             foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
             {
                 // user encrypted id
-                rotationNode.User.EncryptedUserId = XEncryptionHelper.Encrypt(rotationNode.User.Id.ToString());
+                rotationNode.User.EncryptedUserId = Utilities.Encrypt(rotationNode.User.Id.ToString());
                 // set note for waiting pending member
                 if (rotationNode.Status.Equals(Constant.RotationStatus.Pending))
                 {
@@ -177,7 +177,7 @@ namespace DRD.Service
                             System.Diagnostics.Debug.WriteLine(documentElement.ElementId);
                             System.Diagnostics.Debug.WriteLine(user.Id);
                             Element newElement = new Element();
-                            newElement.EncryptedUserId = XEncryptionHelper.Encrypt(user.Id.ToString());
+                            newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
                             newElement.UserId = user.Id;
                             newElement.Name = user.Name;
                             newElement.Foto = user.ImageProfile;
@@ -187,7 +187,7 @@ namespace DRD.Service
                         {
                             // Stamp Masih Perlu perbaikan nantinya
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
-                            documentElement.Element.EncryptedUserId = XEncryptionHelper.Encrypt(documentElement.ElementId.ToString());
+                            documentElement.Element.EncryptedUserId = Utilities.Encrypt(documentElement.ElementId.ToString());
                             documentElement.Element.Name = stmp.Descr;
                             documentElement.Element.Foto = stmp.StampFile;
                         }
@@ -933,7 +933,7 @@ namespace DRD.Service
                 }
                 foreach (RotationDashboard x in data)
                 {
-                    x.Creator.EncryptedId = XEncryptionHelper.Encrypt(x.Creator.Id.ToString());
+                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
                     foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
                     {
                         var user = (from rotationNode in db.RotationNodes
@@ -953,7 +953,7 @@ namespace DRD.Service
                             y.CreatedAt = DateTime.MaxValue;
                             y.Status = -99;
                         }
-                        y.EncryptedId = XEncryptionHelper.Encrypt(y.Id.ToString());
+                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
                     }
                     x.RotationUsers = x.RotationUsers.OrderBy(i => i.CreatedAt).ToList();
                 }
@@ -1045,7 +1045,7 @@ namespace DRD.Service
                 }
                 foreach (RotationDashboard x in data)
                 {
-                    x.Creator.EncryptedId = XEncryptionHelper.Encrypt(x.Creator.Id.ToString());
+                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
                     foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
                     {
                         var user = (from rotationNode in db.RotationNodes
@@ -1065,7 +1065,7 @@ namespace DRD.Service
                             y.CreatedAt = DateTime.MaxValue;
                             y.Status = -99;
                         }
-                        y.EncryptedId = XEncryptionHelper.Encrypt(y.Id.ToString());
+                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
                     }
                     x.RotationUsers = x.RotationUsers.OrderBy(i => i.CreatedAt).ToList();
                 }

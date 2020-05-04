@@ -48,7 +48,7 @@ namespace Core.Postgres
                 ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -14, Name = "user 3", Phone = "081111111113", Email = "c@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -14, Name = "user 14", Phone = "081111111113", Email = "c@hotmail.com",
                 OfficialIdNo = 1111111111111113, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
                 IsActive = true, CreatedAt = DateTime.Now
@@ -63,7 +63,7 @@ namespace Core.Postgres
                 ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
                 IsActive = true, CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -16, Name = "user 6", Phone = "081111111116", Email = "f@hotmail.com",
+            listOfUserCreated.Add(new User { Id = -16, Name = "user 16", Phone = "081111111116", Email = "f@hotmail.com",
                 OfficialIdNo = 1111111111111116, ImageProfile = "danilova.jpg", Password = "kapandeadline",
                 ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
                 IsActive = true, CreatedAt = DateTime.Now

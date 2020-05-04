@@ -122,18 +122,9 @@
 
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-show="hasCompany" class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
-                                        <a ng-show="hasCompany" href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")">
-                                            <i ng-show="hasCompany" class="icon-home4"></i> 
-                                            <span ng-show="hasCompany" >DASHBOARD</span>
-                                        </a>
+                                    <li ng-repeat="x in menusFromController" ng-show="isNotDashboard(x.SecondaryKey) || hasCompany" class="{{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}">
+                                        <a href="{{x.UrlPage}}" style="background-color:{{x.SecondaryKey.Equals(viewbagsubmenu) ? "grey": "black"}}"><i class="{{x.Icon}}"></i> <span>{{x.Name}}</span></a>
                                     </li>
-                                    @foreach (var submenu in Model.menus)
-                                        {
-                                    <li class="@(submenu.SecondaryKey.Equals(ViewBag.Submenu) ? "active":"")">
-                                        <a href="@(submenu.UrlPage)" style="background-color:@(submenu.SecondaryKey.Equals(ViewBag.Submenu)? "grey": "black")"><i class="@submenu.Icon"></i> <span>@submenu.Name</span></a>
-                                    </li>
-                                        }
                                     <!-- /main -->
                                 </ul>
                             </div>
@@ -174,6 +165,7 @@
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
         $scope.hasCompany = false;
+        $scope.menusFromController = "";
 
         $scope.companies = [];
         $scope.startCounting = function () {
@@ -187,6 +179,10 @@
         INIT DATA
         --------------------------------------------------------------*/
         angular.element(document).ready(function () {
+            $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
+            $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
+            console.log($scope.menusFromController);
+            console.log($scope.viewbagsubmenu);
             $scope.getCompaniesOwned();
             $scope.getActivityCounter();
             $("#menu-content").show();
@@ -195,7 +191,13 @@
         $scope.goUrl = function (url) {
             location.href = url;
         };
-
+        /*--------------------------------------------------------------
+        GET ASSET ITEM
+        ------------------------------------- -------------------------*/
+        $scope.isNotDashboard = function (item) {
+            console.log(item, ((item !== "DASHBOARD") || $scope.hasCompany));
+            return item !== "DASHBOARD";
+        }
         /*--------------------------------------------------------------
         GET ASSET ITEM
         ------------------------------------- -------------------------*/
@@ -217,8 +219,8 @@
         $scope.getCompaniesOwned = function () {
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     if (response.data) {
-                        $scope.companies = response.data;
-                        $scope.hasCom = $scope.companies.length != 0;
+                        $scope.companies = response.data.companies;
+                        $scope.hasCompany = $scope.companies.length > 0;
                     }
                     else {
 

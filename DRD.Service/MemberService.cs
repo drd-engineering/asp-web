@@ -266,7 +266,7 @@ namespace DRD.Service
                     for(var i = 0; i<contactListAllMatch.Count(); i++)
                     {
                         var item = contactListAllMatch.ElementAt(i);
-                        item.EncryptedId = XEncryptionHelper.Encrypt(item.Id.ToString());
+                        item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
                         contactListAllMatch[i] = item;
                     }
                         
@@ -358,7 +358,7 @@ namespace DRD.Service
                     for (var i = 0; i < contactListAllMatch.Count(); i++)
                     {
                         var item = contactListAllMatch.ElementAt(i);
-                        item.EncryptedId = XEncryptionHelper.Encrypt(item.Id.ToString());
+                        item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
                         contactListAllMatch[i] = item;
                     }
                 return contactListAllMatch;
