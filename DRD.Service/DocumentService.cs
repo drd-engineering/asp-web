@@ -70,7 +70,7 @@ namespace DRD.Service
                 ValidateWithPlan(document, newDocument, package);
 
                 // mapping value
-                document.Title = newDocument.Title;
+                document.Extention = newDocument.Extention;
                 document.Description = newDocument.Description;
                 document.Description = newDocument.FileUrl;
                 document.FileName = newDocument.FileName;
@@ -207,7 +207,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = doc.Id,
-                     Title = doc.Title,
+                     Extention = doc.Extention,
                      FileName = doc.FileUrl,
                      FileNameOri = doc.FileName,
                      FileSize = doc.FileSize,
@@ -232,7 +232,7 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId && (keywords.All(x => (c.Title).Contains(x)))
+                     where c.CreatorId == memberId && (keywords.All(x => (c.FileName).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
@@ -267,7 +267,7 @@ namespace DRD.Service
                 var tmps =
                     (from c in db.DocumentElements
                      where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(GetElementTypeFromCsvById(c.ElementTypeId).Code) &&
-                            (topCriteria == null || tops.All(x => (c.Document.Title).Contains(x)))
+                            (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
                      {
@@ -294,7 +294,6 @@ namespace DRD.Service
                  select new DocumentSign
                  {
                      Id = c.Id,
-                     Title = d.Title,
                      FileName = d.FileName,
                      CxAnnotate = c.CxAnnotate,
                      RowCount = rowCount,
@@ -327,7 +326,7 @@ namespace DRD.Service
                      select new Document
                      {
                          Id = c.Id,
-                         Title = c.Title,
+                         Extention = c.Extention,
                          Description = c.Description,
                          FileName = c.FileName,
                          FileUrl = c.FileUrl,
@@ -448,12 +447,12 @@ namespace DRD.Service
                 var result =
                 (from doc in db.Documents
                  where (doc.CreatorId == creatorId || doc.CompanyId == companyId)
-                 && (keywords.All(x => (doc.Title).Contains(x)))
+                 && (keywords.All(x => (doc.FileName).Contains(x)))
                  orderby doc.CreatedAt descending
                  select new DocumentItem
                  {
                      Id = doc.Id,
-                     Title = doc.Title,
+                     Extention = doc.Extention,
                      FileNameOri = doc.FileName,
                      FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
@@ -509,12 +508,12 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == creatorId && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                 where c.CreatorId == creatorId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  orderby c.CreatedAt descending
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Title = c.Title,
+                     Extention = c.Extention,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.CreatorId,
@@ -569,7 +568,7 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId && (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                     where c.CreatorId == memberId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
@@ -613,11 +612,11 @@ namespace DRD.Service
                 var result =
                 (from c in db.Documents
                  where c.CreatorId == memberId &&
-                    (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                    (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Title = c.Title,
+                     Extention = c.Extention,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.CreatorId,
@@ -662,7 +661,7 @@ namespace DRD.Service
                 var result =
                 (from c in db.Documents
                  where c.CreatorId == memberId &&
-                    (topCriteria == null || tops.All(x => (c.Title).Contains(x)))
+                    (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  select new DocumentItem
                  {
                      Id = c.Id,
@@ -692,12 +691,12 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where (topCriteria == null || tops.All(x => c.Title.Contains(x)))
+                     where (topCriteria == null || tops.All(x => c.FileName.Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
                          Description = c.Description,
-                         Title = c.Title,
+                         Extention = c.Extention,
                          FileName = c.FileName,
 
                      }).Skip(skip).Take(pageSize).ToList();
@@ -757,7 +756,7 @@ namespace DRD.Service
                 var tmps =
                     (from c in db.DocumentElements
                      where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(GetElementTypeFromCsvById(c.ElementTypeId).Code) && (c.Flag & 1) == 1 &&
-                        (topCriteria == null || tops.All(x => (c.Document.Title).Contains(x)))
+                        (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
                      {
@@ -786,7 +785,6 @@ namespace DRD.Service
                  select new DocumentSign
                  {
                      Id = c.Id,
-                     Title = d.Title,
                      FileName = d.FileName,
                      CxSignature = c.CxSignature,
                      CxInitial = c.CxInitial,
@@ -1055,7 +1053,7 @@ namespace DRD.Service
                     xmem.Id = user.Id;
                     xmem.Name = user.Name;
                     xmem.Email = user.Email;
-                    SendEmailSignature(xmem, rotnod.Subject, doc.Title, numbers);
+                    SendEmailSignature(xmem, rotnod.Subject, doc.FileName, numbers);
                 }
                 return cx;
             }
@@ -1092,7 +1090,7 @@ namespace DRD.Service
                     xmem.Id = member.Id;
                     xmem.Name = member.Name;
                     xmem.Email = member.Email;
-                    SendEmailStamp(xmem, rotnod.Subject, doc.Title, numbers);
+                    SendEmailStamp(xmem, rotnod.Subject, doc.FileName, numbers);
                 }
                 return cx;
             }
@@ -1113,7 +1111,7 @@ namespace DRD.Service
 
 
                 // mapping value
-                document.Title = newDocument.Title;
+                document.Extention = newDocument.Extention;
                 document.Description = newDocument.Description;
                 document.FileName = newDocument.FileName;
 

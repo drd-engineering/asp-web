@@ -1673,7 +1673,8 @@
         svgNo = items.length;
     }
     //setdefault
-    $scope.resetAnnoItems = function(){
+    $scope.resetAnnoItems = function () {
+        annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null } };
         $scope.annoItems = [];
         svgNo = 0;
     }

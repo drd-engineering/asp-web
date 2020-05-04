@@ -46,7 +46,7 @@ namespace DRD.Service
                      },
                      Document = new Document
                      {
-                         Title = d.Document.Title,
+                         Extention = d.Document.Extention,
                          FileName = d.Document.FileName,
                          FileSize = d.Document.FileSize,
                          //DocumentUser =

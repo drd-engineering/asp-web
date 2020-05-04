@@ -41,7 +41,7 @@ namespace DRD.App.Controllers
                                 XFEncryptionHelper xf = new XFEncryptionHelper();
                                 var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
                             }
-                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.ExtFile, CompressionLevel.Fastest);
+                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.Extention, CompressionLevel.Fastest);
                             using (var entryStream = inerFile.Open())
                             using (var streamWriter = new StreamWriter(entryStream))
                             {

@@ -10,7 +10,7 @@ namespace DRD.Models
     {
         
         public long Id { get; set; } // Id (Primary key)
-        public string Title { get; set; } // Title (length: 500)
+        public string Extention { get; set; } // Title (length: 500)
         public string Description { get; set; } // Descr
         public string FileUrl { get; set; } // FileUrl --> file path
         public string FileName { get; set; } // FileName (length: 100)

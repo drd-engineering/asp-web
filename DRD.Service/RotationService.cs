@@ -1187,7 +1187,7 @@ namespace DRD.Service
                      Document = new DocumentInboxData
                      {
                          Id = d.Document.Id,
-                         Title = d.Document.Title,
+                         Extention = d.Document.Extention,
                          FileUrl = d.Document.FileUrl,
                          FileName = d.Document.FileName,
                          FileSize = d.Document.FileSize,
