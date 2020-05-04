@@ -181,8 +181,6 @@
         angular.element(document).ready(function () {
             $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
             $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
-            console.log($scope.menusFromController);
-            console.log($scope.viewbagsubmenu);
             $scope.getCompaniesOwned();
             $scope.getActivityCounter();
             $("#menu-content").show();
@@ -195,7 +193,6 @@
         GET ASSET ITEM
         ------------------------------------- -------------------------*/
         $scope.isNotDashboard = function (item) {
-            console.log(item, ((item !== "DASHBOARD") || $scope.hasCompany));
             return item !== "DASHBOARD";
         }
         /*--------------------------------------------------------------
@@ -204,7 +201,6 @@
         $scope.getActivityCounter = function () {
                 $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                     if (response.data) {
-                        console.log(response.data);
                         $scope.counter = response.data;
                     }
                     else {

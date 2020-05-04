@@ -300,7 +300,6 @@
             $scope.saveUser = function () {
                 var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
                 btn.start();
-                console.log( $scope.model.Id, $scope.model.Name,$scope.model.Phone,$scope.model.Email,$scope.model.CompanyId)
 
                 $http.post('@Url.Action("Save", "Register")',
                     {
@@ -346,7 +345,6 @@
                         $scope.companyAll = $.map(response.data.companies, function (dataItem) {
                             return { value: dataItem.Name, data: dataItem.Id };
                         });
-                        console.log($scope.companyAll);
                         $scope.autocompleteCompany(); 
                     }
                 });

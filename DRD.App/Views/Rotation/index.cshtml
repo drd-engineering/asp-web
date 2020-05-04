@@ -349,7 +349,6 @@
                         }
                     }, function (response) {
                         //error handle
-                        console.log("Good")
                         btn.stop();
                         var x = 0;
                     });
@@ -554,7 +553,6 @@
             --------------------------------------------------------------*/
 
             $scope.showSubscription = function () {
-                console.log("idx : " + $scope.SubscriptionList );
                 $("#modal_select_subscription").modal("show");
             }
             $scope.do_start = function (id) {
@@ -576,7 +574,6 @@
             }
             $scope.startProduct = function (id) {
                 var rotationId = $scope.model.Id;
-                console.log(rotationId, id);
                 $http.post("/Rotation/start?rotationId=" + rotationId + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
@@ -598,7 +595,6 @@
                         } else
                             showInfo("process data error.");
                     }, function (response) {
-                        console.log(response);
                         //error handle\
                         var x = 0;
                         showInfo("process data error.");
@@ -610,8 +606,6 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.usages;
-                            console.log($response);
-                            console.log( $scope.SubscriptionList);
                         }
                     });
             }

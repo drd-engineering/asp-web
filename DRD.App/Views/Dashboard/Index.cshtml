@@ -249,7 +249,6 @@
                 $scope.products = [];
                 $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                     if (response.data) {
-                        //console.log(response.data);
                         $scope.counter = response.data;
                         var counter = response.data;
                         $.jGrowl.defaults.closer = false;
@@ -346,13 +345,10 @@
 
             $scope.getCompanyOwned = function () {
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
-                    //console.log("run");
                     if (response.data) {
                         $scope.companyOwned = response.data.companies;
                         $scope.selectedCompany = $scope.companyOwned[0];
-                        console.log($scope.companyOwned);
                         $scope.getDashboardRotationStatus();
-                        //console.log($scope.companyOwned);
                     }
                 })
             }
@@ -398,13 +394,11 @@
             Dashboard Rotation Status
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
-                console.log("Perusahaan terpilih", $scope.selectedCompany);
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
                     { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: $scope.pagerotationstatus, pageSize: $scope.pagesizerotationstatus }
                 ).then(function (response) {
                     if (response.data) {
                         $scope.listrotationStatus = response.data;
-                        console.log($scope.listrotationStatus);
                         return true;
                     }
                     else {
@@ -490,17 +484,14 @@
                 $scope.exportCSVFile(null, $scope.listrotationStatus, filename);
             }
 
-            
+            // Belum digunakan
             $scope.sendEmailNotifikasiRotasi = function (index) {
 
                 $http.post('@Url.Action("sendEmailNotifikasiRotasi","Dashboard")', {}).then(function (response) {
                     if (response.data) {
-                        console.log('send email success')
                     } else {
-                        console.log('Filed send email')
                     }
                 }, function (response) {
-                    console.log("error send email")
                 });
             }
 

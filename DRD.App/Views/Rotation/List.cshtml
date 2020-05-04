@@ -190,7 +190,6 @@
 
             $scope.showSubscription = function (rotationSelected) {
                 $scope.rotationSelected = rotationSelected;
-                console.log("idx : " + rotationSelected);
                 $("#modal_select_subscription").modal("show");
             }
 
@@ -199,7 +198,6 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.usages;
-                            console.log(response);
                         }
                     });
             }
@@ -207,9 +205,6 @@
              $scope.setSubscription = function (idx) {
                 $scope.CompanyList[$scope.companyIndex].SubscriptionId = $scope.SubscriptionList[idx].Id;
                 $scope.CompanyList[$scope.companyIndex].SubscriptionName = $scope.SubscriptionList[idx].Name;
-
-                console.log("company index : " + $scope.companyIndex + ", subs Id : " + $scope.CompanyList[$scope.companyIndex].SubscriptionId + ", get : " + $scope.SubscriptionList[idx].Id + "  " + idx);
-                console.log("Company List :: ", $scope.CompanyList);
             }
 
             $scope.do_start = function (id) {
@@ -231,7 +226,6 @@
             }
 
             $scope.startProduct = function (id) {
-                console.log($scope.rotationSelected , id)
                 $http.post("/Rotation/start?rotationId=" + $scope.rotationSelected + "&subscriptionId=" + id,
                     {
                     }).then(function (response) {
@@ -254,7 +248,6 @@
                         } else
                             showInfo("process data error.");
                     }, function (response) {
-                            console.log(response);
                         //error handle\
                         var x = 0;
                         showInfo("process data error.");
@@ -277,9 +270,7 @@
                         $scope.findRotationsCountAll(kriteria);
                         $scope.products.forEach(
                             function (item) {
-                                console.log("THIS IS CREATED :: " + item.CreatedAt);
                                 item.CreatedAt = moment(item.CreatedAt).fromNow();
-                                console.log("THIS IS CREATED :: " + item.CreatedAt);
                             }
                         );
                     }
@@ -313,9 +304,7 @@
                         $scope.index = row * (page - 1);
                         $scope.products.forEach(
                             function (item) {
-                                console.log("THIS IS CREATED :: " + item.CreatedAt);
                                 item.CreatedAt = moment(item.CreatedAt).fromNow();
-                                console.log("THIS IS CREATED :: " + item.CreatedAt);
                             }
                         );
                     }

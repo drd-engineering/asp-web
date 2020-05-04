@@ -343,8 +343,6 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.companies = response.data.companies;
-                            console.log($scope.companies.length)
-                            console.log("COMPANIES", $scope.companies);
                         }
         
                 });
@@ -363,8 +361,6 @@
                     .then(function (response) {
 
                         if (response.data) {
-                            console.log("[GET] PERSONAL CONTACT", response.data);
-
                             // init total of personal data when first calling
                             $scope.contactList.Count = response.data.Count;
                             $scope.contactList.Items = response.data.Items;
@@ -372,13 +368,9 @@
                             $scope.contactList.CompanyName = "Personal";
                             $scope.currentCompanyId = "";
                             $scope.totalPersonalContact = response.data.Count;
-
-                            console.log("[GET] PERSONAL CONTACT", $scope.contactList);
                             if (!$scope.hasPersonalContactAccessed) {
                                 $scope.contactList.Count = response.data.Count;
                             }
-
-                            console.log("PERSONAL CONTACT", $scope.contactList);
                             if ($scope.contactList.Count < 1) {
                                 $scope.page = 0;
                             }
@@ -455,7 +447,6 @@
             $scope.getContactFromCompany = function (companyId, searchKey, page, pageSize) {
                 $scope.contactList = { Count: 0, CompanyName: "", Items: [], Type: "" }
                 $scope.currentCompanyId = companyId;
-                console.log("COMPANY ID", companyId);
                 $http.post('@Url.Action("GetContactFromCompany", "Contact")', { CompanyId: companyId, topCriteria: searchKey, page: page, pageSize: pageSize })
                     .then(function (response) {
                         if (response.data) {
@@ -468,8 +459,6 @@
                                 $scope.contactList.Count = response.data.Count;
                                 $scope.hasPersonalContactAccessed = true;
                             }
-
-                            console.log("COMPANY CONTACT RESPONSE", response);
                             if ($scope.contactList.Count < 1) {
                                 $scope.page = 0;
                             }
@@ -506,7 +495,6 @@
             }
             $scope.back = function () {
                 $scope.page = $scope.page - 1;
-                console.log($scope.contactList)
                 if ($scope.contactList.Type == "Personal") {
                     $scope.getPersonalContact($scope.searchKey, $scope.page, $scope.row);
                 }
