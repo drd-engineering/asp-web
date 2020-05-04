@@ -87,7 +87,7 @@
                             <!-- LIST -->
                             <div calss="row">
                                 <div class="panel panel-flat">
-                                    <div ng-show="!hasRotation">
+                                    <div ng-show="!hasRotation" style="text-align:center;padding:50px;">
                                         You don't have a rotation yet or there is no match rotation with the search criteria.
                                     </div>
                                     <div class="table-responsive" ng-show="isView && hasRotation">
@@ -311,6 +311,13 @@
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
+                        $scope.products.forEach(
+                            function (item) {
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                                item.CreatedAt = moment(item.CreatedAt).fromNow();
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                            }
+                        );
                     }
                 }, function (response) {
                     //error handle\

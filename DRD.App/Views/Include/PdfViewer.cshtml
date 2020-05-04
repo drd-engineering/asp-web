@@ -305,9 +305,9 @@ See https://github.com/adobe-type-tools/cmap-resources
                                                 <div class="btn-group">
                                                     <button type="button" id="signature" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickSignature($event)" title="Signature"><img src="~/Images/Toolbar/signature.png" width="16" /></button>
                                                     <button type="button" id="initial" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickInitial($event)" title="Initial"><img src="~/Images/Toolbar/initial.png" width="16" /></button>
-                                                    <button type="button" id="pstamp" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPrivateStamp($event)" title="Private Stamp"><img src="~/Images/Toolbar/privatestamp.png" width="16" /></button>
+                                                    <button hidden type="button" id="pstamp" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPrivateStamp($event)" title="Private Stamp"><img src="~/Images/Toolbar/privatestamp.png" width="16" /></button>
                                                 </div>
-                                                <div class="btn-group">
+                                                <div class="btn-group" hidden>
                                                     <button type="button" id="stamp" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickStamp($event)" title="Stamp"><img src="~/Images/Toolbar/stamp.png" width="16" /></button>
                                                 </div>
 
@@ -451,12 +451,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <div id="printContainer"></div>
 
                 <div id="panel-body">
-                    <div id="signature-xxx" class="signature" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
+                    <div id="signature-xxx" class="signature" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
                         <img ng-src="/Images/Member/icon_user.png" id="signed-xxx" style="top:0px;left:0px;height:90%;" />
                         <div id="signed-name-xxx">Budi Mulyana</div>
                         <div id="signed-code-xxx">0303030499393</div>
                     </div>
-                    <table id="signature-xx" class="signature" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('signature-xx')">
+                    <table id="signature-xx" class="signature" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('signature-xx')">
                         <tr style="font-size:6pt;vertical-align:top;">
                             <td style="width:35px" rowspan="2">
                                 <img id="member-foto-xx" ng-src="/Images/Member/icon_user.png" style="border-radius:10%;" width="30" height="30" align="top" />
@@ -467,12 +467,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                             <td><span id="member-name-xx" class="text-format">Approver</span></td>
                         </tr>
                     </table>
-                    <div id="initial-xxx" class="initial" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
+                    <div id="initial-xxx" class="initial" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
                         <img ng-src="/Images/Member/icon_user.png" id="signed-xxx" style="top:0px;left:0px;height:90%;" />
                         <div id="signed-name-xxx">Budi Mulyana</div>
                         <div id="signed-code-xxx">0303030499393</div>
                     </div>
-                    <table id="initial-xx" class="initial" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('initial-xx')">
+                    <table id="initial-xx" class="initial" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('initial-xx')">
                         <tr style="font-size:6pt;vertical-align:top;">
                             <td style="width:35px" rowspan="2">
                                 <img id="member-foto-xx" ng-src="/Images/Member/icon_user.png" style="border-radius:10%;" width="30" height="30" align="top" />
@@ -483,11 +483,11 @@ See https://github.com/adobe-type-tools/cmap-resources
                             <td><span id="member-name-xx" class="text-format">Approver</span></td>
                         </tr>
                     </table>
-                    <div id="privatestamp-xxx" class="privatestamp" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
+                    <div id="privatestamp-xxx" class="privatestamp" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;border-width:0px;box-shadow:unset;background-color:transparent;cursor:default;">
                         <img ng-src="/Images/Member/icon_user.png" id="signed-xxx" style="top:0px;left:0px;height:90%;" />
                         <div id="signed-code-xxx">0303030499393</div>
                     </div>
-                    <table id="privatestamp-xx" class="privatestamp" style="top:4px;left:4px;width:150px;height:40px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('privatestamp-xx')">
+                    <table id="privatestamp-xx" class="privatestamp" style="top:4px;left:4px;width:100px;height:100px;display:none;border-collapse:unset;border-spacing:unset;" onclick="annoSelector('privatestamp-xx')">
                         <tr style="font-size:6pt;vertical-align:top;">
                             <td style="width:35px" rowspan="2">
                                 <img id="member-foto-xx" ng-src="/Images/Member/icon_user.png" style="border-radius:10%;" width="30" height="30" align="top" />

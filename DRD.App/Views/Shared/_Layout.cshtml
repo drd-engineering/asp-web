@@ -121,8 +121,11 @@
 
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-show="isCompany" class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
-                                        <a href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")"><i class="icon-home4"></i> <span>DASHBOARD</span></a>
+                                    <li ng-show="hasCompany" class="@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "active":"")">
+                                        <a ng-show="hasCompany" href="/Dashboard" style="background-color:@(ViewBag.Submenu!= null && ViewBag.Submenu.Equals("DASHBOARD")? "grey":"black")">
+                                            <i ng-show="hasCompany" class="icon-home4"></i> 
+                                            <span ng-show="hasCompany" >DASHBOARD</span>
+                                        </a>
                                     </li>
                                     @foreach (var submenu in Model.menus)
                                         {
@@ -169,7 +172,7 @@
         };
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
-        $scope.isCompany = false;
+        $scope.hasCompany = false;
 
         $scope.companies = [];
         $scope.startCounting = function () {
@@ -214,7 +217,7 @@
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     if (response.data) {
                         $scope.companies = response.data;
-                        $scope.isCompany = $scope.companies.length != 0;
+                        $scope.hasCom = $scope.companies.length != 0;
                     }
                     else {
 

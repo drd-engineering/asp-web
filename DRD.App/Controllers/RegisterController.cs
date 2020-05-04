@@ -43,6 +43,18 @@ namespace DRD.App.Controllers
             if (!exists)
             {
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
+                var Tranfiles = Server.MapPath("/" + "Images/Member" + "/") + "user.png";
+                if (System.IO.File.Exists(Tranfiles))
+                {
+                    //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
+                    //1)Cannot create a file when that file already exists
+                    //2)The path....is a folder not a file.
+                    //ProcessedFiles = Server.MapPath(@"~\ProcessedFiles"); //Wrong
+                    var ProcessedFiles = Server.MapPath("/" + userFolder + "/") + "user.png";
+
+                    //Need to move or overwrite the new file with actual file.
+                    System.IO.File.Copy(Tranfiles, ProcessedFiles);
+                }
                 registrationResponse.Id = "" + data.Id;
                 registrationResponse.Email = data.Email;
                 service.SendEmailRegistration(data);

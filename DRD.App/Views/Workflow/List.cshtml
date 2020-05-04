@@ -79,7 +79,7 @@
                             <!-- LIST -->
                             <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
                                 <div class="panel panel-flat">
-                                    <div ng-show="!hasWorkflow">
+                                    <div ng-show="!hasWorkflow" style="text-align:center;padding:50px;">
                                         You don't have a workflow yet or there is no match workflow with the search criteria.
                                     </div>
                                     <div class="table-responsive" ng-show="isView && hasWorkflow">
@@ -193,6 +193,13 @@
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
+                        $scope.products.forEach(
+                            function (item) {
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                                item.CreatedAt = moment(item.CreatedAt).fromNow();
+                                console.log("THIS IS CREATED :: " + item.CreatedAt);
+                            }
+                        );
                     }
                 }, function (response) {
                     //error handle\

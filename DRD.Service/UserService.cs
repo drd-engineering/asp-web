@@ -72,7 +72,7 @@ namespace DRD.Service
                     {
                         //TODO: remove these lines when production
                         System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + user.Id);
-                        user.ImageProfile = "icon_user.png";
+                        user.ImageProfile = "user.png";
                         user.CreatedAt = DateTime.Now;
                         db.Users.Add(user);
                         result = db.SaveChanges();
