@@ -11,10 +11,9 @@ namespace DRD.Models.View
         public string Key { get; set; }
         public long Id { get; set; } // Id (Primary key)
         public string EncryptedId { get; set; } //generated encryptedid
-        public string Title { get; set; } // Title (length: 500)
+        public string Extention { get; set; } // Title (length: 500)
         public string FileName { get; set; } // FileName (length: 100)
         public string FileNameOri { get; set; } // FileNameOri (length: 100)
-        public string ExtFile { get; set; } // ExtFile (length: 20)
         public int FileFlag { get; set; } // FileFlag
         public int FileSize { get; set; } // FileSize
         public int MaxPrint { get; set; } // MaxPrint

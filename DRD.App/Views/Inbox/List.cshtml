@@ -119,7 +119,6 @@
 
                 //$scope.GetPartners();
                 $scope.GetInboxList($scope.page, $scope.row);
-                console.log($scope.products);
                 $(".content-wrapper").show();
             });
 
@@ -128,7 +127,6 @@
             --------------------------------------------------------------*/
 
             $scope.do_edit = function (id) {
-                console.log("ROTATION ID", id);
                 location.href = "/inbox?id=" + id;
             }
 
@@ -188,8 +186,6 @@
             }
 
             $scope.SetItemClass = function (status) {
-                console.log(status);
-                console.log("STATUS");
                     if (status == "REJECT" || status == "REJECTED") {
                         return "danger";
                     } else if (status == "REVISION") {

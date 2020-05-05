@@ -3496,9 +3496,6 @@
     <Content Include="Scripts\xcontroller\xdiagram.js" />
     <Content Include="Scripts\xcontroller\xdiagram1.js" />
     <Content Include="Scripts\xcontroller\xdiagram2.js" />
-    <Content Include="Scripts\xcontroller\xpdf - Copy %282%29.js" />
-    <Content Include="Scripts\xcontroller\xpdf - Copy %283%29.js" />
-    <Content Include="Scripts\xcontroller\xpdf - Copy.js" />
     <Content Include="Scripts\xcontroller\xpdf.js" />
     <Content Include="Scripts\xpdfxx\app.js" />
     <Content Include="Scripts\xpdfxx\jspdf.debug.js" />

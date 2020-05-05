@@ -444,8 +444,6 @@
                         showInfo("Error upload data signature/initial.");
                     },
                     success:function(data){
-                        //console.log(data);
-                        //alert('success');
                         if (signatureNo==0){
                             $scope.model.ImageSignature=data.filename;
                         }else if (signatureNo==1){
@@ -453,8 +451,6 @@
                         }
                     },
                     complete:function(data){
-                        //console.log("Request finished.");
-                        //alert('complete');
                     }
                 });
 

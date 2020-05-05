@@ -409,7 +409,6 @@
                     $scope.getUserSession();
 
                 getUserProfile();
-                console.log($scope.model.EncryptedId);
                 $('#content').show();
 
             });
@@ -439,8 +438,6 @@
                 // Convert to blob
                 var blob = b64toBlob(realData, contentType);
 
-                console.log(blob);
-
                 // Create a FormData and append the file
                 var fd = new FormData(form);
                 fd.append("MyImages", blob);
@@ -465,7 +462,6 @@
                         }
                     },
                     complete: function (data) {
-                        console.log("Request to upload initial finished.");
                         //alert('complete');
                     }
                 });
@@ -502,8 +498,6 @@
 
                         if (response.data) {
                             var result = response.data;
-                            console.log("[GET] PROFILE DATA", result);
-
                             // do mapping values
                             $scope.model.Id = result.Id;
                             $scope.model.EncryptedId = result.EncryptedId;
@@ -612,7 +606,6 @@
                         }
                     }).then(function (response) {
                         btn.stop();
-                        console.log("UPDATE USER PROFILE", response.data);
                         if (response.data) {
                             if (response.data=="DBLEMAIL"){
                                 showError("Email "+$scope.model.Email+" has been used by other users. Please use another email.");
@@ -637,7 +630,6 @@
             $scope.getUserSession = function () {
                 $http.get('@Url.Action("GetUserLogin", "Profile")', {}).then(function (response) {
                     if (response.data) {
-                        console.log("GET USER SESSION", response.data);
                         $scope.model.LoginId = response.data.Id;
                     }
                 }, function (response) {

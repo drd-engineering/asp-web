@@ -23,7 +23,7 @@ namespace DRD.App.Controllers
             if (companyItem != null)
             {
                 var folder = "doc/company";
-                var encryptedId = XEncryptionHelper.Encrypt(companyItem.Id.ToString());
+                var encryptedId = Utilities.Encrypt(companyItem.Id.ToString());
                 var pathTarget = "/" + folder + "/" + encryptedId + "/";
                 var docServ = new DocumentService();
                 var allDocument = docServ.GetAllCompanyDocument(companyItem.Id);
@@ -41,7 +41,7 @@ namespace DRD.App.Controllers
                                 XFEncryptionHelper xf = new XFEncryptionHelper();
                                 var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
                             }
-                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.ExtFile, CompressionLevel.Fastest);
+                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.Extention, CompressionLevel.Fastest);
                             using (var entryStream = inerFile.Open())
                             using (var streamWriter = new StreamWriter(entryStream))
                             {
