@@ -1113,12 +1113,15 @@ namespace DRD.Service
                                               //CxPrint = x.CxPrint,
                                           }).ToList(),
                      }).FirstOrDefault();
-                if (result != null)
+                foreach (RotationUserItem x in result.RotationUsers)
                 {
+                    x.EncryptedId = Utilities.Encrypt(x.UserId.ToString());
+
+                }
                     var tagService = new TagService();
                     var tags = tagService.GetTags(result.Id);
                     result.Tags = (from tag in tags select tag.Name).ToList();
-                }
+                
                 return result;
             }
         }

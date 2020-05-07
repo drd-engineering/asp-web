@@ -38,6 +38,15 @@ namespace DRD.Service
             Waiting_For_Response = 10,
             Accepted = 11,
             Expired = 97
+        }        
+        public enum PackageItem
+        {
+            Administrator = 0,
+            User = 1,
+            Rotation = 2,
+            Workflow = 3,
+            Rotation_Started = 4,
+            Storage = 99
         }
 
         public static string getRotationStatusNameByCode(int statusCode)

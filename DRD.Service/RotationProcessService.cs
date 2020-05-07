@@ -404,6 +404,7 @@ namespace DRD.Service
                     retvalues.Add(CreateActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();
+                subscriptionService.AddUsage(Constant.PackageItem.Rotation_Started, 1, companyIdStarted);
                 return retvalues;
             }
         }
