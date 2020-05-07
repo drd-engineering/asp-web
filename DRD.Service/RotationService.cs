@@ -1151,6 +1151,7 @@ namespace DRD.Service
                         }
                     }
                 }
+                result = result.OrderBy(c=> c.WorkflowNodeId).ToList();
                 return result;
             }
         }
