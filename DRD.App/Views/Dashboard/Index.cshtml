@@ -111,8 +111,8 @@
                                     </div>
                                     <div class="col-sm-12">
                                         <form>
-                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="$event.keyCode == 188 && addTagList()" />
-                                            <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
+                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
+                                            <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
                                         </form>
                                     </div>
                                 </div>
@@ -371,7 +371,7 @@
             TAGGING SYSTEM FILTER
             --------------------------------------------------------------*/
             $scope.addTagList = function () {
-                $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                if($scope.newTag.charAt($scope.newTag.length - 1)==",") $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
                 var alreadyUsed = false;
                 if ($scope.newTag != '') {
                     $scope.tags.some(function (element, i) {

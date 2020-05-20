@@ -11,6 +11,34 @@ namespace DRD.Service
 {
     public class SubscriptionService
     {
+        public bool AddUsage(Constant.PackageItem packageType, long additionalUsage, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = GetCompanyUsage(companyId);
+                if (packageType != Constant.PackageItem.Storage)
+                {
+                    int additional = (int)additionalUsage;
+                    if (packageType.Equals(Constant.PackageItem.Administrator))
+                        result.Administrator += additional;
+                    if (packageType.Equals(Constant.PackageItem.Rotation))
+                        result.Rotation += additional;
+                    if (packageType.Equals(Constant.PackageItem.Rotation_Started))
+                        result.RotationStarted += additional;
+                    if (packageType.Equals(Constant.PackageItem.User))
+                        result.User += additional;
+                    if (packageType.Equals(Constant.PackageItem.Workflow))
+                        result.Workflow+= additional;
+                }
+                else
+                {
+                    result.Storage += additionalUsage;
+                }
+                db.SaveChanges();
+            }
+            return true;
+        }
+
         public bool DeactivateActiveUsage(long companyId)
         {
             Usage planBusiness = EditBusinessPackage(companyId, null, null, null, IsActive: false);

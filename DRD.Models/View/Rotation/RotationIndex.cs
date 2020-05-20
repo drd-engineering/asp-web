@@ -50,6 +50,7 @@ namespace DRD.Models.View
         public int FlagPermission { get; set; } // FlagPermission
 
         public string ActivityName { get; set; }
+        public string EncryptedId { get; set; }
         public string Picture { get; set; }
         public long? Number { get; set; }
         public string Name { get; set; }
