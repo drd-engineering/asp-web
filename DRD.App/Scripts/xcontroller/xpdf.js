@@ -1732,12 +1732,18 @@
         if (condition == undefined || condition == true) {
             $('#print').show();
             $('#secondaryPrint').show();
+        } else {
+            $('#print').hide();
+            $('#secondaryPrint').hide();
         }
     }
     $scope.showDownload = function (condition) {
         if (condition == undefined || condition == true) {
             $('#download').show();
             $('#secondaryDownload').show();
+        } else {
+            $('#download').hide();
+            $('#secondaryDownload').hide();
         }
     }
     $scope.pdfSetScale = function (scale) {

@@ -33,6 +33,7 @@
                                 <span ng-show="validAction(d.FlagAction,4)">viewed</span>
                                 <span ng-show="validAction(d.FlagAction,8)">printed</span>
                                 <span ng-show="validAction(d.FlagAction,16)">downloaded</span>
+                                <span ng-show="validAction(d.FlagAction,64)">removed</span>
                             </span>
                         </span>
                     </span>
@@ -93,13 +94,15 @@
                 <td><a ng-click="viewDocumentSummary(x)">{{x.Document.FileName}}</a></td>
 
                 <td>
-                    <span style="font-size:small;color:darkgrey">
-                        <span ng-show="validAction(x.FlagAction,1)">signed</span>
-                        <span ng-show="validAction(x.FlagAction,32)">stamped</span>
-                        <span ng-show="validAction(x.FlagAction,2)">revised</span>
-                        <span ng-show="validAction(x.FlagAction,4)">viewed</span>
-                        <span ng-show="validAction(x.FlagAction,8)">printed</span>
-                        <span ng-show="validAction(x.FlagAction,16)">downloaded</span>
+                    <span style="font-size:small;color:white">
+                        <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.FlagAction,2) && !validAction(x.FlagAction,64)">completed</span>
+                        <span style="background-color:#bb2124; padding:5px;" ng-show="validAction(x.FlagAction,64)">removed</span>
+                        <span style="background-color:#f0ad4e; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,2)">revised</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,1)">signed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,32)">stamped</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,4)">viewed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,8)">printed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,16)">downloaded</span>
                     </span>
                 </td>
                 <td width="125px" style="text-align:right">{{humanFileSize(x.Document.FileSize,1024)}}</td>
