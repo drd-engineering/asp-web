@@ -81,7 +81,7 @@
                                                 <span>Loading log...</span>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-10">
+                                                <div class="col-md-12">
                                                     <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
                                                 </div>
                                             </div>
@@ -94,15 +94,15 @@
                                         </div>
                                         <hr />
                                         <div class="row" ng-show="!isCompleteRotation()">
-                                            <div class="col-md-5">
+                                            <div class="col-md-6">
                                                 <span style="font-size:medium"><b>Document</b></span>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-6">
                                                 <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-show="checkIsFirstPerson() && checkIsActive()" ng-click="popupDocument()">Add</button>
                                             </div>
                                         </div>
                                         <div class="row" ng-show="!isCompleteRotation()">
-                                            <div class="col-lg-10">
+                                            <div class="col-lg-12">
                                                 <div style="height:5px"></div>
                                                 <table class="table-xs table-bordered table-striped table-hover datatable-highlight" style="font-size:small;width:100%">
                                                     <thead>
@@ -113,10 +113,9 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="x in docs">
-                                                            <td  ng-click="viewDocument($index)"  style="cursor:pointer" class="text-top">{{$index+1 + index}}</td>
-                                                            <td style="cursor:pointer" class="text-top">
-                                                                <span  ng-click="viewDocument($index)" >
+                                                        <tr  ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
+                                                            <td class="text-top">{{$index+1 + index}}</td>
+                                                            <td class="text-top">
                                                                     <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="16" />
                                                                     {{x.Document.FileName}}
                                                                 </span>
@@ -135,7 +134,7 @@
                                         <hr />
                                     </fieldset>
                                     <br />
-                                    <div class="col-md-10" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
+                                    <div class="col-md-12" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
                                         <div class="panel panel-body border-top-primary text-center">
                                             <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
                                             <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
@@ -286,9 +285,12 @@
                             // copy doc and updoc from sender
                             var sender = angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
                             if (sender.RotationNodeDocs.length > 0) {
-                                $scope.docs = sender.RotationNodeDocs;
-                                for (i = 0; i < $scope.docs.length; i++) {
-                                    $scope.docs[i].FlagAction = 0;
+                                var tempDocs = sender.RotationNodeDocs;
+                                for (i = 0; i < tempDocs.length; i++) {
+                                    if ((tempDocs[i].FlagAction & 64) != 64) {
+                                        tempDocs[i].FlagAction = 0;
+                                        $scope.docs.push(tempDocs[i]);
+                                    }
                                 }
                             }
                             if (sender.RotationNodeUpDocs.length > 0)
@@ -458,8 +460,8 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var permission = arg.Document.DocumentUser.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16));
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8));
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16) && ((arg.FlagAction & 64) != 64));
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8) && ((arg.FlagAction & 64) != 64));
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
                 // used for print request and download request in document viewer.
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
@@ -533,14 +535,38 @@
                 $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
             };
 
-            var revisiFinished = function(e){
+ 
+
+            var revisiFinished = function (e) {
+
                 var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
-                $scope.$apply();
-                if ($scope.fromSelectDoc) {
-                    $("#modal_select_document").modal("show");
-                    $scope.fromSelectDoc = false;
+                if (items != [] && items != null && items != undefined) {
+
+                    swal({
+                        title: "Confirmation",
+                        text: "Do you want to save these changes?",
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonColor: "#2196F3",
+                        showLoaderOnConfirm: true,
+                        confirmButtonText: "Yes ",
+                        cancelButtonText: "No",
+                    },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                $scope.$apply();
+                                if ($scope.fromSelectDoc) {
+                                    $("#modal_select_document").modal("show");
+                                    $scope.fromSelectDoc = false;
+                                }
+                            }
+                        });
                 }
+
+                
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -976,7 +1002,8 @@
             };
 
             $scope.removeDocument = function (idx) {
-                $scope.docs.splice(idx, 1);
+                var docRemoved = $scope.docs[idx];
+                docRemoved.FlagAction |= 64;
             };
 
             $scope.removeUpDocument = function (idx) {
