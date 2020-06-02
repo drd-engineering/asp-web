@@ -109,22 +109,24 @@
                                                         <tr>
                                                             <th width="25px">#</th>
                                                             <th width="150px">File Name</th>
-                                                            <th width="100px">Action</th>
+                                                            <th ng-show="checkIsFirstPerson()" width="100px">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr  ng-click="viewDocument($index)" ng-repeat="x in docs">
-                                                            <td class="text-top">{{$index+1 + index}}</td>
-                                                            <td class="text-top">
+                                                        <tr ng-repeat="x in docs">
+                                                            <td  ng-click="viewDocument($index)"  style="cursor:pointer" class="text-top">{{$index+1 + index}}</td>
+                                                            <td style="cursor:pointer" class="text-top">
+                                                                <span  ng-click="viewDocument($index)" >
                                                                     <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="16" />
                                                                     {{x.Document.FileName}}
+                                                                </span>
                                                                 <br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
                                                                     <span ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn-permission" 
                                                                           ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span></span>
                                                             </td>
-                                                            <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
+                                                            <td ng-show="checkIsFirstPerson()" class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
