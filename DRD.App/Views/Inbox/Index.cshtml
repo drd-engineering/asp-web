@@ -567,12 +567,16 @@
                                         $scope.fromSelectDoc = false;
                                     }
                                 }
-                                $scope.isRevising = false;
+                                $("#modal_pdf_viewer").modal("hide");
                             });
                     }
+                } else {
+                                $("#modal_pdf_viewer").modal("hide");
+
                 }
+                $scope.isRevising = false;
                 console.log($scope.isRevising );
-                $("#modal_pdf_viewer").modal("hide");
+                
                 
             }
             /*--------------------------------------------------------------
