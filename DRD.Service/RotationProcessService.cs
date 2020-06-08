@@ -391,7 +391,7 @@ namespace DRD.Service
                     System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE:: " + rtnode.WorkflowNodeId + " : " + workflowNodeLink.WorkflowNodeToId);
                     //long user = db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeToId && c.RotationId == rt.Id).UserId.Value;
                     long userNodeId = GetUserId(workflowNodeLink.WorkflowNodeToId, rt.Id);
-                    System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE :: USER :: " + userNodeId);
+                    System.Diagnostics.Debug.WriteLine("REACHED CREATE RNODE :: USER :: " + userNodeId + userId);
                     //rtnode.User = user;
                     rtnode.UserId = userNodeId;
                     rtnode.Status = (int)Constant.RotationStatus.Open;
@@ -401,6 +401,7 @@ namespace DRD.Service
                     System.Diagnostics.Debug.WriteLine("REACHED ADD RNODE:: " + rt.WorkflowId);
                     db.SaveChanges();
 
+                    System.Diagnostics.Debug.WriteLine("REACHED asaaa " + rtnode.UserId + " " + userId);
                     retvalues.Add(CreateActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();
@@ -427,7 +428,7 @@ namespace DRD.Service
 
         private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
         {
-            System.Diagnostics.Debug.WriteLine(":: MASUK AKHIR :: " + userId + previousUserId + exitCode + rotationName + rotationNodeId + rotationId);
+            System.Diagnostics.Debug.WriteLine(":: MASUK AKHIR tes :: " + userId + previousUserId + exitCode + rotationName + rotationNodeId + rotationId);
             using (var db = new ServiceContext())
             {
                 ActivityItem ret = new ActivityItem();
@@ -440,7 +441,7 @@ namespace DRD.Service
                 ret.Email = mem.Email;
 
                 var prev = db.Users.FirstOrDefault(c => c.Id == previousUserId);
-                ret.PreviousUserId = userId;
+                ret.PreviousUserId = previousUserId;
                 ret.PreviousUserName = prev.Name;
                 ret.PreviousEmail = prev.Email;
 

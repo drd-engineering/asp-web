@@ -195,7 +195,7 @@ namespace DRD.Service
         public int CreateInbox(ActivityItem activity)
         {
             int returnItem = -1;
-            System.Diagnostics.Debug.WriteLine("EXIT CODE :: " + activity.ExitCode + " " + activity.UserId + " " + activity.RotationNodeId);
+            System.Diagnostics.Debug.WriteLine("EXIT CODE :: " + activity.ExitCode + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.PreviousUserId);
             if (activity.ExitCode > 0)
             {
                 using (var db = new ServiceContext())
@@ -240,13 +240,30 @@ namespace DRD.Service
                     {
                         inboxItem.LastStatus = "UPLOAD";
                         inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
+                        System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + activity.PreviousUserId + " " + activity.UserId);
+                        if(activity.PreviousUserId != activity.UserId)
+                        {
+                            Inbox inboxItem2;
+                            inboxItem2 = new Inbox();
+                            inboxItem2.IsUnread = true;
+                            inboxItem2.LastStatus = "ROTATION";
+                            inboxItem2.DateNote = "You have rotation - " + activity.RotationName;
+                            inboxItem2.prevUserEmail = activity.PreviousEmail;
+                            inboxItem2.prevUserName = activity.PreviousUserName;
+                            inboxItem2.UserId = activity.PreviousUserId;
+                            inboxItem2.ActivityId = activity.RotationNodeId;
+                            inboxItem2.RotationId = activity.RotationId;
+                            inboxItem2.CreatedAt = DateTime.Now;
+                            db.Inboxes.Add(inboxItem2);
+                            
+                            System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + inboxItem.Message);
+                        }
                     }
                     inboxItem.prevUserEmail = activity.PreviousEmail;
                     inboxItem.prevUserName = activity.PreviousUserName;
                     inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
-                    System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + inboxItem.Message);
                     return db.SaveChanges();
                 }
             }
