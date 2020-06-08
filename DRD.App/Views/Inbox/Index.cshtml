@@ -109,22 +109,24 @@
                                                         <tr>
                                                             <th width="25px">#</th>
                                                             <th width="150px">File Name</th>
-                                                            <th width="100px">Action</th>
+                                                            <th ng-show="checkIsFirstPerson()" width="100px">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr  ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
-                                                            <td class="text-top">{{$index+1 + index}}</td>
-                                                            <td class="text-top">
+                                                            <td ng-click="viewDocument($index)"  style="cursor:pointer" class="text-top">{{$index+1 + index}}</td>
+                                                            <td style="cursor:pointer" class="text-top">
+                                                                <span ng-click="viewDocument($index)">
                                                                     <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="16" />
                                                                     {{x.Document.FileName}}
+                                                                </span>
                                                                 <br />
                                                                 <div style="height:5px"></div>
                                                                 <span style="font-size:xx-small;">
                                                                     <span ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn-permission" 
                                                                           ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span></span>
                                                             </td>
-                                                            <td class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
+                                                            <td ng-show="checkIsFirstPerson()" class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -231,6 +233,8 @@
             $scope.curentUser;
             $scope.passwordType = 0;
             $scope.passwordcheck = false;
+            $scope.isRevising = false;
+            $scope.isUploading = false;
             $scope.docIdx = 0;
             $scope.identities = [];
             initValues();
@@ -503,6 +507,7 @@
             $scope.revisedDocument = function (idx) {
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
+                $scope.isRevising = true;
                 // Reset everytime document want to open
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
                 iframe.contentWindow.angular.element("#xpdfController").scope().resetAnnoItems();
@@ -531,40 +536,59 @@
                 isdefineiframe = true;
                 $scope.selectedIdx=idx;
                 $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);
+                /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
 
  
 
-            var revisiFinished = function (e) {
+            $scope.closePdf = function () {
+                console.log("revise");
+                if ($scope.isRevising) {
+                    var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
+                    if (items != [] && items != null && items != undefined) {
 
-                var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                if (items != [] && items != null && items != undefined) {
-
-                    swal({
-                        title: "Confirmation",
-                        text: "Do you want to save these changes?",
-                        type: "warning",
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        closeOnCancel: true,
-                        confirmButtonColor: "#2196F3",
-                        showLoaderOnConfirm: true,
-                        confirmButtonText: "Yes ",
-                        cancelButtonText: "No",
-                    },
-                        function (isConfirm) {
-                            if (isConfirm) {
-                                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
-                                $scope.$apply();
-                                if ($scope.fromSelectDoc) {
-                                    $("#modal_select_document").modal("show");
-                                    $scope.fromSelectDoc = false;
+                        swal({
+                            title: "Confirmation",
+                            text: "Do you want to save these changes?",
+                            type: "warning",
+                            showCancelButton: true,
+                            closeOnConfirm: true,
+                            closeOnCancel: true,
+                            confirmButtonColor: "#2196F3",
+                            showLoaderOnConfirm: true,
+                            confirmButtonText: "Yes ",
+                            cancelButtonText: "No",
+                        },
+                            function (isConfirm) {
+                                if (isConfirm) {
+                                    $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                    $scope.$apply();
+                                    if ($scope.fromSelectDoc) {
+                                        $("#modal_select_document").modal("show");
+                                        $scope.fromSelectDoc = false;
+                                    }
                                 }
-                            }
-                        });
-                }
+                                $("#modal_pdf_viewer").modal("hide");
+                            });
+                    }
+                } else if ($scope.isUploading) {
+                    var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
+                            
+                        $scope.annos = items;
+                        $("#modal_pdf_viewer").modal("hide");
+                        if ($scope.fromSelectDoc) {
+                            $("#modal_select_document").modal("show");
+                            $scope.fromSelectDoc = false;
+                        }
 
+                } else {
+                        $("#modal_pdf_viewer").modal("hide");
+
+                }
+                $scope.isRevising = false;
+                $scope.isUploading = false;
+                console.log($scope.isRevising );
+                
                 
             }
             /*--------------------------------------------------------------
@@ -574,6 +598,8 @@
             $scope.annoDocument = function () {
                 $("#modal_select_document").modal("hide");
                 $scope.fromSelectDoc = true;
+                $scope.isUploading = true;
+
                 var iframe = document.getElementById('xpdfIFrame');
                 // Reset everytime document want to open
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
@@ -597,7 +623,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 isdefineiframe = true;
                 $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);
+                /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
             };
             var annoFinished = function (e) {
                 $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
