@@ -73,7 +73,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#fcfcfc;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
+                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
                                             <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
                                             <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                             <td>{{x.RotationName}}</td>
