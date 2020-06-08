@@ -20,7 +20,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(pageSize);
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(pageSize);
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -129,6 +129,7 @@ namespace DRD.Service
 
         public RotationInboxData GetInboxItem(long inboxId, long UserId=0)
         {
+            changeUnreadtoReadInbox(inboxId);
             var rotationNodeId = GetRotationNodeId(inboxId);
             using (var db = new ServiceContext())
             {
@@ -185,7 +186,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
-                inbox.IsUnread = !inbox.IsUnread;
+                inbox.IsUnread = false;
                 db.SaveChanges();
                 return inbox.IsUnread;
             }

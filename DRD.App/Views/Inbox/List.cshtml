@@ -56,10 +56,13 @@
                 <div class="content">
                     <div calss="row">
                         <div class="panel panel-flat">
-                            <div ng-show="!hasInbox" style="text-align:center;padding:50px;">
+                            <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
+                                Loading Inbox Data
+                            </div>
+                            <div ng-show="!hasInbox && completeLoad" style="text-align:center;padding:50px;">
                                 You don't have an inbox yet
                             </div>
-                            <div class="table-responsive" ng-show="isView && hasInbox">
+                            <div class="table-responsive" ng-show="isView && hasInbox && completeLoad">
                                 <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
@@ -70,7 +73,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-click="do_edit(x.Id);" ng-repeat="x in products">
+                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#fcfcfc;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
                                             <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
                                             <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                             <td>{{x.RotationName}}</td>
@@ -111,13 +114,12 @@
             $scope.index = 0;
 
             $scope.hasInbox = false;
+            $scope.completeLoad = false;
 
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-
-                //$scope.GetPartners();
                 $scope.GetInboxList($scope.page, $scope.row);
                 $(".content-wrapper").show();
             });
@@ -153,14 +155,17 @@
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        $scope.hasInbox = jumlahData > 0;
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
                         $scope.page = "1";
                     }
+                    $scope.completeLoad = true;
                 }, function (response) {
                     //error handle\
                     var x = 0;
+                    $scope.completeLoad = true;
                 });
             }
             $scope.changePageInbox = function ( page, row) {
