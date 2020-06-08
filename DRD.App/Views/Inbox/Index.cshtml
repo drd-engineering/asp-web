@@ -234,6 +234,7 @@
             $scope.passwordType = 0;
             $scope.passwordcheck = false;
             $scope.isRevising = false;
+            $scope.isUploading = false;
             $scope.docIdx = 0;
             $scope.identities = [];
             initValues();
@@ -570,11 +571,22 @@
                                 $("#modal_pdf_viewer").modal("hide");
                             });
                     }
+                } else if ($scope.isUploading) {
+                    var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
+                            
+                        $scope.annos = items;
+                        $("#modal_pdf_viewer").modal("hide");
+                        if ($scope.fromSelectDoc) {
+                            $("#modal_select_document").modal("show");
+                            $scope.fromSelectDoc = false;
+                        }
+
                 } else {
-                                $("#modal_pdf_viewer").modal("hide");
+                        $("#modal_pdf_viewer").modal("hide");
 
                 }
                 $scope.isRevising = false;
+                $scope.isUploading = false;
                 console.log($scope.isRevising );
                 
                 
@@ -586,6 +598,8 @@
             $scope.annoDocument = function () {
                 $("#modal_select_document").modal("hide");
                 $scope.fromSelectDoc = true;
+                $scope.isUploading = true;
+
                 var iframe = document.getElementById('xpdfIFrame');
                 // Reset everytime document want to open
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
@@ -609,7 +623,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 isdefineiframe = true;
                 $("#modal_pdf_viewer").modal("show");
-                $('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);
+                /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
             };
             var annoFinished = function (e) {
                 $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
