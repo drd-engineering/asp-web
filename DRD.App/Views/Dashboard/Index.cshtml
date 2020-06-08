@@ -127,12 +127,12 @@
                                     </div>
                                 </div>
                                 <div class="row vertical-align-row">
-                                    <div class="col-md-1">
-                                        <button class="image-container-sm" ng-click="exportRotationListToCSV()">
-                                            <span class="tooltiptext">export as csv</span>
-                                            <img src="~/Images/icon/export-csv.png"/>
-                                        </button>
-                                    </div>
+                                    <!--<div class="col-md-1">
+        <button class="image-container-sm" ng-click="exportRotationListToCSV()">
+            <span class="tooltiptext">export as csv</span>
+            <img src="~/Images/icon/export-csv.png"/>
+        </button>
+    </div>-->
                                     <div class="col-md-7">
                                         <p class="card-title"><strong>Rotation Status</strong></p>
                                     </div>
@@ -153,21 +153,21 @@
                                         <tr>
                                             <th style="width: 14%">Workflow Name</th>
                                             <th style="width: 14%">Name</th>
-                                            <th style="width: 7%">Status</th>
+                                            <th style="width: 10%">Status</th>
                                             <th style="width: 7%">Created</th>
                                             <th style="width: 7%">Updated</th>
-                                            <th style="width: 51%">Position Now</th>
+                                            <th style="width: 48%">Position Now</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr style="height:50px;vertical-align:central;" ng-repeat="x in listrotationStatus">
                                             <td>{{x.Workflow.Name}}</td>
                                             <td>{{x.Subject}} </td>
-                                            <td>{{(x.Status == 0) ? "Not Started" : "Started"}}</td>
+                                            <td>{{getStatusName(x.Status)}}</td>
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td>
-                                                <span ng-repeat="usr in x.RotationUsers"><img title="{{usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                                <span ng-repeat="usr in x.RotationUsers"><img title="{{(usr.Status == 0? 'ongoing' : (usr.Status == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -494,6 +494,48 @@
                 }, function (response) {
                 });
             }
+
+            $scope.getStatusName = function (status) {
+                switch (status) {
+                    case 0:
+                        return "Open";
+                        break;
+                    case 1:
+                        return "In Progress";
+                        break;
+                    case 2:
+                        return "Pending";
+                        break;
+                    case 3:
+                        return "Signed";
+                        break;
+                    case 5:
+                        return "Revision";
+                        break;
+                    case 6:
+                        return "Altered";
+                        break;
+                    case 90:
+                        return "Completed";
+                        break;
+                    case 98:
+                        return "Declined";
+                        break;
+                    case 99:
+                        return "Canceled";
+                        break;
+                    case 10:
+                        return "Waiting_For_Response";
+                        break;
+                    case 11:
+                        return "Accepted";
+                        break;
+                    case 97:
+                        return "Expired";
+                        break;
+
+                }
+            };
 
             // belum dipake gue rasa
             $scope.linkPage = function (name) {
