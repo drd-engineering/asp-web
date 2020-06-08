@@ -536,6 +536,7 @@
                 isdefineiframe = true;
                 $scope.selectedIdx=idx;
                 $("#modal_pdf_viewer").modal("show");
+                $(window).on('beforeunload', function(){ return "";});
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
 
