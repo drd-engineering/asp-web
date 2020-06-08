@@ -175,7 +175,7 @@
     <!-- /Page container -->
 
     <script type="text/javascript">
-        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp']);
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngFileUpload', 'ngOnlyNumberApp', ]);
 
         myApp.directive('onFinishRender', function ($timeout) {
             return {
@@ -1233,6 +1233,7 @@
                                 doc.Document.Extention = file.result.fileext;
                                 $scope.tempDoc = doc;
                                 $scope.isUpload = 1;
+                                $(window).off('beforeunload');
                                 document.querySelector('.submit-document').disabled = false;
                             }
                         }
@@ -1243,6 +1244,7 @@
                         }
                     }, function (evt) {
                         file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                        $(window).on('beforeunload', function(){ return "";});
                         if (file.progress >= 100) {
                             $scope.progressValueUploadFile = "Upload success";
                             ////$scope.podcastImage="podcast_uploaded.png";
@@ -1255,7 +1257,9 @@
                     showError("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
                 }
             };
-
+            $scope.confirmExit = function () {
+                return "You are uploading your file. Are you sure want to leave incomplete upload process?";
+            }
             $scope.updateProduct = function () {
                 if ($scope.isUpload == 0) {
                     showInfo("document must be uploaded");
