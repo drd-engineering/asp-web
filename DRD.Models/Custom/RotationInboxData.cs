@@ -26,6 +26,7 @@ namespace DRD.Models.Custom
         public long? UserId { get; set; }
         public int FlagAction { get; set; }
         public byte SubscriptionType { get; set; }
+        public int AccessType { get; set; }
         public long SubscriptionOf { set; get; }
         public string DecissionInfo { get; set; }
         public DocumentInboxData Document { get; set; }

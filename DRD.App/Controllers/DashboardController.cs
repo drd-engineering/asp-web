@@ -39,8 +39,11 @@ namespace DRD.App.Controllers
             layout.activeId = 0;
 
             CompanyService companyService = new CompanyService();
+            if (user != null)
+            {
             CompanyList companyList = companyService.GetAllCompanyOwnedbyUser(user.Id);
             if (companyList.companies.Count > 0) return View(layout);
+            }
             return RedirectToAction("List", "Inbox");
         }
 

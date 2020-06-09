@@ -36,8 +36,13 @@ namespace DRD.App.Controllers
             InboxService inboxService = new InboxService();
 
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
+
+            //page authorization check if user has no access
+            if(product.AccessType.Equals((int)Constant.AccessType.noAccess))
+                return RedirectToAction("Index", "Dashboard");
+
+            //user have access
             layout.obj = product;
-            
             return View(layout);
         }
 

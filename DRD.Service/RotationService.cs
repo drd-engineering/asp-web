@@ -34,7 +34,7 @@ namespace DRD.Service
             _connString = Constant.CONSTRING;
         }
 
-        public RotationInboxData AssignNodes(ServiceContext db, RotationInboxData rot, long memberId, IDocumentService docSvr)
+        public RotationInboxData AssignNodes(ServiceContext db, RotationInboxData rot, long userId, IDocumentService docSvr)
         {
             RotationInboxData rotation = rot;
 
@@ -75,9 +75,27 @@ namespace DRD.Service
                      //     DateStamp = rotationNodeRemark.DateStamp,
                      // }).ToList(),
                  }).ToList();
+            
+            rotation.AccessType = (int)Constant.AccessType.noAccess;
 
             foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
             {
+                //set page access to specific user
+                if (rotationNode.User.Id == userId)
+                {
+                    // responsible access for the current user
+                    if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
+                    {
+                        rotation.AccessType = (int)Constant.AccessType.responsible;
+                    }
+                    //readonly access for other user in node or rotation creator
+                    else if (!rotation.AccessType.Equals((int)Constant.AccessType.responsible) || rotation.CreatorId == userId)
+                    { 
+                        rotation.AccessType = (int) Constant.AccessType.readOnly;
+                    }
+                }
+
+
                 // user encrypted id
                 rotationNode.User.EncryptedUserId = Utilities.Encrypt(rotationNode.User.Id.ToString());
                 // set note for waiting pending member
@@ -138,7 +156,7 @@ namespace DRD.Service
                             List<RotationNodeUpDocInboxData> listUpDoc = new List<RotationNodeUpDocInboxData>();
                             foreach (RotationNode rnx in rns)
                             {
-                                var d = AssignNodeDocs(db, rnx.Id, memberId/*rotation.UserId*/, rot.RotationNodeId, docSvr);
+                                var d = AssignNodeDocs(db, rnx.Id, userId/*rotation.UserId*/, rot.RotationNodeId, docSvr);
                                 if (d.Count > 0)
                                     listDoc.AddRange(d);
 
@@ -159,7 +177,7 @@ namespace DRD.Service
                 else
                 {
                     //rotationNode.RotationNodeDocs = assignNodeDocs(db, rotationNode.Id, rotation.UserId, rot.RotationNodeId);
-                    rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, memberId/*rotationNode.UserId*/, rot.RotationNodeId, docSvr);
+                    rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId/*rotationNode.UserId*/, rot.RotationNodeId, docSvr);
                     rotationNode.RotationNodeUpDocs = AssignNodeUpDocs(db, rotationNode.Id);
                 }
 
@@ -211,6 +229,8 @@ namespace DRD.Service
                 //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
                 //}
             }
+
+            System.Diagnostics.Debug.WriteLine(rotation.Remark + " ACCESS TYPE ROT :: " + rotation.AccessType);
             return rotation;
         }
 

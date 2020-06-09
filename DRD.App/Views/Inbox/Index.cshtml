@@ -309,6 +309,7 @@
 
             function initDocumentValues() {
                 var product = @Html.Raw(Json.Encode(Model.obj));
+                console.log(product);
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Title=product.Title;
