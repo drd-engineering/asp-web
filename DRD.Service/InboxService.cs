@@ -57,7 +57,22 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt).Count();
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().Count();
+
+                    return inboxesCount;
+                }
+                return 0;
+            }
+
+        }
+
+        public int CountUnread(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                if (db.Inboxes != null)
+                {
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().Count();
 
                     return inboxesCount;
                 }
