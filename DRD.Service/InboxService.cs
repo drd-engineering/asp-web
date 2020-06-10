@@ -334,9 +334,8 @@ namespace DRD.Service
                 System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.LastActivityStatus);
                     if (activity.LastActivityStatus.Equals("SUBMIT"))
                     {
-                          inbox.DateNote = "You need to review " + activity.RotationName;
-                          inbox.LastStatus = "REVIEW";
-
+                        inbox.DateNote = "You need to review " + activity.RotationName;
+                        inbox.LastStatus = "REVIEW";
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
@@ -357,6 +356,7 @@ namespace DRD.Service
                     inbox.CreatedAt = DateTime.Now;
                     inbox.prevUserEmail = activity.PreviousEmail;
                     inbox.prevUserName = activity.PreviousUserName;
+                    inbox.IsUnread = true;
                     UpdatePreviousInbox(activity);
                     return db.SaveChanges();
                 }
