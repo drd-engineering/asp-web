@@ -39,6 +39,16 @@ namespace DRD.Service
             Accepted = 11,
             Expired = 97
         }        
+
+        public enum AccessType
+        {
+            //restricted, cannot access at all
+            noAccess = 0,
+
+            readOnly = 1,
+            responsible = 2,
+            fullAccess = 3
+        }
         public enum PackageItem
         {
             Administrator = 0,
