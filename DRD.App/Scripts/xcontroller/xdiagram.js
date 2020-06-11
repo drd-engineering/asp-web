@@ -14,9 +14,9 @@
 
     $scope.nodeItem = { element: '', memberId: 0, symbolCode: '', caption: '', info: '', Operator: '', value: 0, textColor: '', backColor: '', posLeft: 0, posTop: 0, width: 0, height: 0, member: { number: '', name: '', email: '', imageProfile: '' } };
     $scope.nodes = [];
-    $scope.linkItem = { elementFrom: '', elementTo: '', firstNode: '', endNode:'', symbolCode: '', caption: '', Operator: '', value: 0, line: {} };
+    $scope.linkItem = { elementFrom: '', elementTo: '', firstNode: '', endNode: '', symbolCode: '', caption: '', Operator: '', value: 0, line: {} };
     $scope.links = [];
-    $scope.inode = 0;
+    $scope.inode = 1;
     $scope.elmActivityName = "node-activity";
     $scope.elmTitleName = "title-activity";
     $scope.elmDecisionName = "node-decision";
@@ -77,17 +77,7 @@
 
     $scope.initTerminator = function () {
 
-        var line = new LeaderLine(
-            document.getElementById('start-0'),
-            document.getElementById('submit-start'),
-            {
-                endPlug: 'behind',
-                hide: true,
-                path: $scope.linkTypeSubmit,
-                dash: { animation: true },
-                size: 2,
-                color: $scope.linkColorSubmit,
-            });
+
 
         $("#start-0").draggable({
             create: function (event, ui) { },
@@ -97,21 +87,16 @@
             start: function (event, ui) { },
             stop: function (event, ui) { }
         });
-        $("#submit-start").draggable({
-            create: function (event, ui) { },
-            drag: function (event, ui) {
-                line.position().show();
-            },
-            start: function (event, ui) { },
-            stop: function (event, ui) {
-                line.hide('none');
-                event.target.style.left = "";
-                event.target.style.top = "";
 
-            }
-        });
 
         $scope.addNode('start-0', 'START', 'Start');
+
+        $scope.initUpload();
+
+        var from = document.getElementById("start-0");
+        var to = document.getElementById("node-activity-0");
+        $scope.addLinkSubmit(from, to);
+        $scope.refreshLines();
 
         $("#end-1").droppable({
             drop: function (event, ui) {
@@ -119,8 +104,8 @@
                 var from = document.getElementById($scope.elmActivityName + "-" + fromIdx);
                 var to = document.getElementById("end-1");
                 $scope.endNode = to;
-                
-                if (ui.draggable.context.id == 'submit-' + fromIdx && fromIdx!='start') {
+
+                if (ui.draggable.context.id == 'submit-' + fromIdx && fromIdx != 'start') {
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'reject-' + fromIdx) {
                     $scope.addLinkReject(from, to);
@@ -139,6 +124,56 @@
         });
 
         $scope.addNode('end-1', 'END', 'End');
+        $scope.firstNode = document.getElementById("node-activity-0");
+    }
+
+    $scope.initUpload = function () {
+        var activityId = "node-activity-0"
+        var submitId = "submit-0";
+
+        var activity = document.getElementById(activityId);
+        var submit = document.getElementById(submitId);
+
+        $("#node-activity-0").show();
+        console.log("show");
+        var lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmit,
+            });
+
+        $("#submit-0").draggable({
+            create: function (event, ui) { },
+            drag: function (event, ui) {
+                lineSubmit.position().show();
+            },
+            start: function (event, ui) { },
+            stop: function (event, ui) {
+                lineSubmit.hide('none');
+                event.target.style.left = "";
+                event.target.style.top = "";
+            }
+        });
+
+        $("#node-activity-0").draggable({
+            create: function (event, ui) { },
+            drag: function (event, ui) {
+                $scope.refreshLines();
+            },
+            start: function (event, ui) { },
+            stop: function (event, ui) { }
+        });
+
+        $("#" + activityId).resizable({
+            resize: function (event, ui) {
+                $scope.refreshLines()
+            },
+        });
+
+        $scope.addNode('node-activity-0', 'ACTIVITY', 'activity');
     }
 
     $scope.initActivity = function (idNo) {
@@ -155,38 +190,38 @@
         var alter = document.getElementById(alterId);
 
         var
-        lineSubmit = new LeaderLine(activity, submit, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorSubmit,
-        }),
-        lineReject = new LeaderLine(activity, reject, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorReject,
-        }),
-        lineRevisi = new LeaderLine(activity, revisi, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorRevisi,
-        }),
-        lineAlter = new LeaderLine(activity, alter, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorAlter,
-        });
+            lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmit,
+            }),
+            lineReject = new LeaderLine(activity, reject, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorReject,
+            }),
+            lineRevisi = new LeaderLine(activity, revisi, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorRevisi,
+            }),
+            lineAlter = new LeaderLine(activity, alter, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorAlter,
+            });
 
         $("#" + submitId).draggable({
             create: function (event, ui) { },
@@ -242,11 +277,10 @@
                 var fromIdx = $scope.getIndex(ui.draggable.context.id);
                 var from = document.getElementById($scope.elmActivityName + "-" + fromIdx);
                 var to = document.getElementById($scope.elmActivityName + "-" + idNo);
-                if (ui.draggable.context.id == 'submit-start') {
-                    from = document.getElementById("start-0");
-                    $scope.firstNode = to;
+                if (ui.draggable.context.id == 'submit-0') {
+                    from = document.getElementById('node-activity-0');
                     $scope.addLinkSubmit(from, to);
-                } else if (ui.draggable.context.id == 'submit-' + fromIdx) {
+                }else if (ui.draggable.context.id == 'submit-' + fromIdx) {
                     $scope.addLinkSubmit(from, to);
                 } /*else if (ui.draggable.context.id == 'reject-' + fromIdx) {
                     $scope.addLinkReject(from, to);
@@ -301,22 +335,22 @@
         var no = document.getElementById(noId);
 
         var
-        lineYes = new LeaderLine(activity, yes, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorYes,
-        }),
-        lineNo = new LeaderLine(activity, no, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorNo,
-        });
+            lineYes = new LeaderLine(activity, yes, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorYes,
+            }),
+            lineNo = new LeaderLine(activity, no, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorNo,
+            });
 
         $("#" + yesId).draggable({
             create: function (event, ui) { },
@@ -388,14 +422,14 @@
         var submit = document.getElementById(submitId);
 
         var
-        lineSubmit = new LeaderLine(activity, submit, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorSubmit,
-        });
+            lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmit,
+            });
 
 
         $("#" + submitId).draggable({
@@ -450,14 +484,14 @@
         var submit = document.getElementById(submitId);
 
         var
-        lineSubmit = new LeaderLine(activity, submit, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorSubmitCase,
-        });
+            lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmitCase,
+            });
 
         $("#" + submitId).draggable({
             create: function (event, ui) { },
@@ -510,14 +544,14 @@
         var submit = document.getElementById(submitId);
 
         var
-        lineSubmit = new LeaderLine(activity, submit, {
-            endPlug: 'behind',
-            hide: true,
-            path: 'straight',
-            dash: { animation: true },
-            size: 2,
-            color: $scope.linkColorSubmit,
-        });
+            lineSubmit = new LeaderLine(activity, submit, {
+                endPlug: 'behind',
+                hide: true,
+                path: 'straight',
+                dash: { animation: true },
+                size: 2,
+                color: $scope.linkColorSubmit,
+            });
 
         $("#" + submitId).draggable({
             create: function (event, ui) { },
@@ -561,6 +595,7 @@
             $scope.links[i].line.position().show();
         }
     }
+
     $scope.refreshLine = function (idx) {
         $scope.links[idx].line.position().show();
     }
@@ -722,10 +757,7 @@
                 link.line.remove();
         }
 
-        if (elmFrom == "start-0") {
-            $scope.firstNode =  elmTo;
-        }
-        link.firstNode = $scope.firstNode;
+        link.firstNode = "node-activity-0";
         link.endNode = "end-1";
         link.elementFrom = elmFrom;
         link.elementTo = elmTo;
@@ -739,6 +771,8 @@
 
     $scope.addLinkSubmit = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
+        console.log(elmFrom);
+        console.log(elmTo);
         var line = new LeaderLine(elmFrom, elmTo,
             {
                 endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
@@ -750,63 +784,63 @@
     $scope.addLinkSubmit = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
-                                });
-        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement,'SUBMIT', '', line);
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
+            });
+        $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'SUBMIT', '', line);
     }
     $scope.addLinkReject = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeReject, size: 2, color: $scope.linkColorReject,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'Reject', color: $scope.linkColorReject, fontSize: $scope.linkLabelFontSize, })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeReject, size: 2, color: $scope.linkColorReject,
+                middleLabel: LeaderLine.pathLabel({ text: 'Reject', color: $scope.linkColorReject, fontSize: $scope.linkLabelFontSize, })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'REJECT', 'Reject', line);
     }
     $scope.addLinkRevisi = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeRevisi, size: 2, color: $scope.linkColorRevisi,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'Revision', color: $scope.linkColorRevisi, fontSize: $scope.linkLabelFontSize })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeRevisi, size: 2, color: $scope.linkColorRevisi,
+                middleLabel: LeaderLine.pathLabel({ text: 'Revision', color: $scope.linkColorRevisi, fontSize: $scope.linkLabelFontSize })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'REVISI', 'Revision', line);
     }
     $scope.addLinkYes = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeYes, size: 2, color: $scope.linkColorYes,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'Yes', color: $scope.linkColorYes, fontSize: $scope.linkLabelFontSize })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeYes, size: 2, color: $scope.linkColorYes,
+                middleLabel: LeaderLine.pathLabel({ text: 'Yes', color: $scope.linkColorYes, fontSize: $scope.linkLabelFontSize })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'YES', "Yes", line);
     }
     $scope.addLinkNo = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeNo, size: 2, color: $scope.linkColorNo,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'No', color: $scope.linkColorNo, fontSize: $scope.linkLabelFontSize })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeNo, size: 2, color: $scope.linkColorNo,
+                middleLabel: LeaderLine.pathLabel({ text: 'No', color: $scope.linkColorNo, fontSize: $scope.linkLabelFontSize })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'NO', "No", line);
     }
     $scope.addLinkAlter = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeAlter, size: 2, color: $scope.linkColorAlter,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'Period?', color: $scope.linkColorAlter, fontSize: $scope.linkLabelFontSize })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeAlter, size: 2, color: $scope.linkColorAlter,
+                middleLabel: LeaderLine.pathLabel({ text: 'Period?', color: $scope.linkColorAlter, fontSize: $scope.linkLabelFontSize })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'ALTER', "Period?", line);
     }
     $scope.addLinkSubmitCase = function (elmFrom, elmTo, frstNode, endElement) {
         if (elmFrom.id == elmTo.id) return;
         var line = new LeaderLine(elmFrom, elmTo,
-                                {
-                                    endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmitCase, size: 2, color: $scope.linkColorSubmitCase,
-                                    middleLabel: LeaderLine.pathLabel({ text: 'Expression?', color: $scope.linkColorSubmitCase, fontSize: $scope.linkLabelFontSize })
-                                });
+            {
+                endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmitCase, size: 2, color: $scope.linkColorSubmitCase,
+                middleLabel: LeaderLine.pathLabel({ text: 'Expression?', color: $scope.linkColorSubmitCase, fontSize: $scope.linkLabelFontSize })
+            });
         $scope.addLink(elmFrom.id, elmTo.id, frstNode, endElement, 'SUBMITCASE', 'Expression?', line);
     }
 
@@ -861,15 +895,15 @@
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel please!",
         },
-        function (isConfirm) {
-            //setTimeout(function () {
-            if (isConfirm)
-                $scope.removeActivity(idx);
+            function (isConfirm) {
+                //setTimeout(function () {
+                if (isConfirm)
+                    $scope.removeActivity(idx);
 
-            swal.close();
-            //}, 500);
+                swal.close();
+                //}, 500);
 
-        });
+            });
     }
 
     $scope.removeDecisionConfirmation = function (idx) {
@@ -884,15 +918,15 @@
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel please!",
         },
-        function (isConfirm) {
-            //setTimeout(function () {
-            if (isConfirm)
-                $scope.removeDecision(idx);
+            function (isConfirm) {
+                //setTimeout(function () {
+                if (isConfirm)
+                    $scope.removeDecision(idx);
 
-            swal.close();
-            //}, 500);
+                swal.close();
+                //}, 500);
 
-        });
+            });
     }
 
     $scope.removeTransferConfirmation = function (idx) {
@@ -907,15 +941,15 @@
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel please!",
         },
-        function (isConfirm) {
-            //setTimeout(function () {
-            if (isConfirm)
-                $scope.removeTransfer(idx);
+            function (isConfirm) {
+                //setTimeout(function () {
+                if (isConfirm)
+                    $scope.removeTransfer(idx);
 
-            swal.close();
-            //}, 500);
+                swal.close();
+                //}, 500);
 
-        });
+            });
     }
 
     $scope.removeCaseConfirmation = function (idx) {
@@ -930,15 +964,15 @@
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel please!",
         },
-        function (isConfirm) {
-            //setTimeout(function () {
-            if (isConfirm)
-                $scope.removeCase(idx);
+            function (isConfirm) {
+                //setTimeout(function () {
+                if (isConfirm)
+                    $scope.removeCase(idx);
 
-            swal.close();
-            //}, 500);
+                swal.close();
+                //}, 500);
 
-        });
+            });
     }
 
     $scope.removePararrelConfirmation = function (idx) {
@@ -953,15 +987,15 @@
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel please!",
         },
-        function (isConfirm) {
-            //setTimeout(function () {
-            if (isConfirm)
-                $scope.removePararrel(idx);
+            function (isConfirm) {
+                //setTimeout(function () {
+                if (isConfirm)
+                    $scope.removePararrel(idx);
 
-            swal.close();
-            //}, 500);
+                swal.close();
+                //}, 500);
 
-        });
+            });
     }
 
     $scope.clearDiagram = function () {
@@ -997,7 +1031,7 @@
         // temp
 
         $scope.bindDiagram(xnodes, xlinks);
-        
+
     }
 
     $scope.bindDiagram = function (nodes, links) {
@@ -1186,18 +1220,18 @@
                     confirmButtonText: "Yes, delete it!",
                     cancelButtonText: "No, cancel please!",
                 },
-            function (isConfirm) {
-                //setTimeout(function () {
-                if (isConfirm) {
-                    var i = $scope.selectedLinkNoIdx;
-                    $scope.releaseAllSelected();
-                    $scope.links[i].line.remove();
-                    $scope.links.splice(i, 1);
-                    swal.close();
-                }
-                //}, 500);
+                    function (isConfirm) {
+                        //setTimeout(function () {
+                        if (isConfirm) {
+                            var i = $scope.selectedLinkNoIdx;
+                            $scope.releaseAllSelected();
+                            $scope.links[i].line.remove();
+                            $scope.links.splice(i, 1);
+                            swal.close();
+                        }
+                        //}, 500);
 
-            });
+                    });
             }
         } else if (e.key == 'c' || e.key == 'C') {
             if ($scope.selectedLinkNoIdx != -1) {
@@ -1372,8 +1406,8 @@
 
     $scope.popupDecision = function (elm) {
         $scope.defineDecisionElement = elm;
-        if ($scope.decOperators.length==0)
-            $scope.decOperators=$scope.operators.filter((subject) => subject.Descr != 'ELSE')
+        if ($scope.decOperators.length == 0)
+            $scope.decOperators = $scope.operators.filter((subject) => subject.Descr != 'ELSE')
         var idx = $scope.getIndex(elm);
         $scope.decision.Name = $("#" + elm).text();
         $scope.decision.Info = $("#info-decision-" + idx).attr("data-content");
@@ -1558,14 +1592,14 @@
         $scope.memberIdx = -1;
         $scope.members = [];
     }
-            /*--------------------------------------------------------------
-    END POPUP MEMBER
+    /*--------------------------------------------------------------
+END POPUP MEMBER
 --------------------------------------------------------------*/
 
 });
 
 $(function () {
-    
+
     $.contextMenu({
         selector: '.context-menu-one',
         callback: function (key, options) {
