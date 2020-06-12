@@ -80,6 +80,26 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult UpdateUnreadInboxCounter()
+        {
+            Initialize();
+            CounterInboxData counter = (CounterInboxData)Session["_COUNTERINBOX_"];
+            if (counter == null)
+                counter = new CounterInboxData();
+
+            if (user == null)
+                return Json(null, JsonRequestBehavior.AllowGet);
+
+            var data = inboxService.CountUnread(user.Id);
+            if (counter.New.Unread != data)
+            {
+                counter.Old.Unread = counter.New.Unread;
+                counter.New.Unread = data;
+            }
+            Session["_COUNTERINBOX_"] = counter;
+            return Json(counter, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AddDocument(int id) 
         {
             var data = inboxService.GetInboxItemById(id, user);

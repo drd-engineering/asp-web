@@ -336,6 +336,10 @@ namespace DRD.Service
         }
         public static Symbol getSymbolsFromCsvByCode(string code)
         {
+            if (code.Equals("UPLOAD"))
+            {
+                code = "ACTIVITY";
+            }
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Symbols.csv");
             Symbol values = File.ReadAllLines(path)

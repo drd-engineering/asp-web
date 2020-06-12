@@ -210,6 +210,7 @@
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="TagItem.cs" />
     <Compile Include="Price.cs" />
+    <Compile Include="View\CounterInboxData.cs" />
     <Compile Include="View\Document\DocumentItem.cs" />
     <Compile Include="View\ElementType.cs" />
     <Compile Include="View\Rotation\RotationDashboard.cs" />

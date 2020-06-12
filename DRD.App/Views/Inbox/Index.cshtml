@@ -1238,8 +1238,7 @@
                         //$timeout(function () {
                         file.result = response.data;
                         if (file.result.idx == -2) {
-                            show +
-                                Info("Invalid plan Used.");
+                            showInfo("Invalid plan Used.");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;

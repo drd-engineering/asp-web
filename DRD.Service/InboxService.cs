@@ -57,7 +57,22 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().OrderByDescending(item => item.CreatedAt).Count();
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().Count();
+
+                    return inboxesCount;
+                }
+                return 0;
+            }
+
+        }
+
+        public int CountUnread(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                if (db.Inboxes != null)
+                {
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().Count();
 
                     return inboxesCount;
                 }
@@ -319,9 +334,8 @@ namespace DRD.Service
                 System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.LastActivityStatus);
                     if (activity.LastActivityStatus.Equals("SUBMIT"))
                     {
-                          inbox.DateNote = "You need to review " + activity.RotationName;
-                          inbox.LastStatus = "REVIEW";
-
+                        inbox.DateNote = "You need to review " + activity.RotationName;
+                        inbox.LastStatus = "REVIEW";
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
@@ -342,6 +356,7 @@ namespace DRD.Service
                     inbox.CreatedAt = DateTime.Now;
                     inbox.prevUserEmail = activity.PreviousEmail;
                     inbox.prevUserName = activity.PreviousUserName;
+                    inbox.IsUnread = true;
                     UpdatePreviousInbox(activity);
                     return db.SaveChanges();
                 }

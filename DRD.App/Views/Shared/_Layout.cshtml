@@ -162,6 +162,10 @@
             Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
             New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
         };
+        $scope.inboxCounter = {
+            Old: { Read: 0, UnRead: 0},
+            New: { Read: 0, UnRead: 0}
+        }
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
         $scope.hasCompany = false;
@@ -184,6 +188,7 @@
             $scope.getCompaniesOwned();
             $scope.getActivityCounter();
             $("#menu-content").show();
+            $scope.getUnreadInbox();
         });
 
         $scope.goUrl = function (url) {
@@ -199,17 +204,34 @@
         GET ASSET ITEM
         ------------------------------------- -------------------------*/
         $scope.getActivityCounter = function () {
-                $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
-                    if (response.data) {
-                        $scope.counter = response.data;
-                    }
-                    else {
+            $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
+                if (response.data) {
+                    $scope.counter = response.data;
+                }
+                else {
 
+                }
+            }, function (response) {
+                //error handle\
+                var x = 0;
+            });
+        }
+
+        $scope.getUnreadInbox = function () {
+            $http.post('@Url.Action("UpdateUnreadInboxCounter", "Inbox")', {}).then(function (response) {
+                if (response.data) {
+                    $scope.inboxCounter = response.data;
+                    if ($scope.inboxCounter.New.Unread > 0) {
+                        $(".sidebar-inbox").parent().append("<span class=\"badge badge-danger\">" + $scope.inboxCounter.New.Unread + "</span>");
                     }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
+                }
+                else {
+
+                }
+            }, function (response) {
+                //error handle\
+                var x = 0;
+            });
         }
 
         $scope.getCompaniesOwned = function () {
