@@ -222,7 +222,7 @@
                 if (response.data) {
                     $scope.inboxCounter = response.data;
                     if ($scope.inboxCounter.New.Unread > 0) {
-                        $(".sidebar-inbox").parent().append("<span class=\"badge\">" + $scope.inboxCounter.New.Unread + "</span>");
+                        $(".sidebar-inbox").parent().append("<span class=\"badge badge-danger\">" + $scope.inboxCounter.New.Unread + "</span>");
                     }
                 }
                 else {
