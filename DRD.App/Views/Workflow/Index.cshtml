@@ -28,8 +28,7 @@
 <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
 <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
 
-@*
-    <script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
+@*<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>*@
 
 <script src="~/Scripts/xpublic.js"></script>
@@ -41,8 +40,7 @@
 
 <script src="~/Scripts/flow/scripts/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 
-@*
-    <script type="text/javascript" src="~/Scripts/flow/d3.v5.js"></script>*@
+@*<script type="text/javascript" src="~/Scripts/flow/d3.v5.js"></script>*@
 <script type="text/javascript" src="/assets/js/pages/components_popups.js"></script>
 <script type="text/javascript" src="~/Scripts/flow/dom-to-image.js"></script>
 <script type="text/javascript" src="/assets/filesaver/FileSaver.min.js"></script>
@@ -80,6 +78,7 @@
         bottom: 0;
     }
 </style>
+
 <body @*ng-app="drdApp"*@>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController" id="drdController">
@@ -175,6 +174,7 @@
                                                 </div>
                                             </div>
 
+
                                             <div id="node-decision-xx" class="node-decision-yy" style="display:none">
                                                 <div id="node-decision-caption-xx" class="node-decision-caption-yy">
                                                     <span id="title-decision-xx" class="title-decision" onclick="popupDecision('title-decision-xx')">Decision</span>
@@ -257,8 +257,27 @@
 
                                             <div id="start-0" class="terminator start" style="display:none">
                                                 <span id="title-start-0" class="text-format">Start</span>
-                                                <div class="footer" style="bottom:2px">
-                                                    <div id="submit-start" class="join con-submit" data-popup="tooltip" title="Start" data-placement="bottom"></div>
+                                            </div>
+
+                                            <div id="node-activity-0" class="node-activity-0" style="display:none">
+                                                <div id="node-activity-caption-0" class="node-activity-caption-0">
+                                                    <span id="title-activity-0" class="title-activity">Document Uploading</span>
+                                                </div>
+                                                <div class="node-activity-content">
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            <td style="width:50px;"><img id="photo-profile-0" src="/Images/Member/icon_user.png" height="45" style="cursor:pointer;border-radius:10%;" onclick="lookupReceipent('0')" /></td>
+                                                            <td>
+                                                                <span id="member-number-0" class="text-format"></span><br />
+                                                                <span id="member-name-0" class="text-format">Recipient</span><br />
+                                                                <span id="member-email-0" class="text-format"></span><br />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <input id="member-id-0" value="0" style="display:none" />
+                                                </div>
+                                                <div class="footer">
+                                                    <div id="submit-0" class="join con-submit" data-popup="tooltip" title="Start" data-placement="bottom"></div>
                                                 </div>
                                             </div>
 
@@ -361,7 +380,10 @@
             angular.element(document).ready(function () {
                 if ($scope.model.Id!=0){
                     setTimeout(function () {
-                        var digramScope=angular.element('#xdiagramController').scope();
+                        var digramScope = angular.element('#xdiagramController').scope();
+                        console.log('tes');
+                        console.log(digramScope.$parent.nodes);
+
                         digramScope.bindDiagram(digramScope.$parent.nodes, digramScope.$parent.links);
                         $("#start-0").show();
                         $("#end-1").show();
@@ -376,16 +398,16 @@
             function initValues() {
                 var product = @Html.Raw(Json.Encode(Model.obj));
                 $scope.objectItems = @Html.Raw(Json.Encode(Model.objItems));
-                if (product.Id!=0 ){
+                if (product.Id != 0) {
+                    console.log(product);
                     $scope.model.Id=product.Id;
                     $scope.model.Name=product.Name;
                     $scope.model.Description= product.Description;
                     $scope.model.IsActive= product.IsActive;
-                    $scope.model.IsTemplate = product.IsTemplate;
-                    $scope.model.IsUsed = product.IsUsed;
+                    $scope.model.IsTemplate= product.IsTemplate;
                     $scope.project=product.Project;
-                    $scope.nodes = product.WorkflowNodes;
-                    $scope.links = product.WorkflowNodeLinks;
+                    $scope.nodes=product.WorkflowNodes;
+                    $scope.links=product.WorkflowNodeLinks;
                     $scope.isUsed=product.IsUsed;
                     if (!product.IsUsed)
                         $("#canvas").css("pointer-events",'');
@@ -407,6 +429,7 @@
                 btn.start();
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
+                console.log(data);
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {
@@ -421,22 +444,20 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
-                            if (response.data==-1){
-                                showInfo("The amount of activity created exceeds the number of your package. Please see your default plan type at My account -> My Plan Type");
-                                return;
-                            }else if (response.data==-2){
-                                showInfo("You do not have a plan payment.");
-                                return;
-                            }
+                            if (response.data == -1) { showInfo("The amount of activity created exceeds the number of your package. Please see your default plan type at My account -> My Plan Type"); return; }
+                            else if (response.data == -2) { showInfo("You do not have a plan payment."); return; }
+                            else if (response.data == -3) { showInfo("This workflow can not be edit because it already in use"); return; }
+
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
                         }
                     }, function (response) {
-                        btn.stop();
+                            btn.stop();
                         //error handle\
                         var x = 0;
                     });
+
             }
             $scope.saveProductDraft = function () {
                 var btn = Ladda.create(document.querySelector('.btn-submit2'));
@@ -457,6 +478,7 @@
                     }).then(function (response) {
                         btn.stop();
                         if (response.data) {
+                            if (response.data == -3) { showInfo("This workflow can not be edit because it already in use"); return; }
 
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
@@ -487,9 +509,9 @@
                     scrollTop: $(id).offset().top
                 }, 200);
             }
-            $scope.isValidObject = function (name) {
+/*            $scope.isValidObject = function (name) {
                 return $scope.objectItems.includes(name);
-            };
+            };*/
             /*--------------------------------------------------------------
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
@@ -559,8 +581,8 @@
                         $scope.page = "1";
                     }
                 }, function (response) {
-                        var x = 0;
-                })
+                    var x = 0;
+                });
             }
             $scope.changePageWorkflows = function (kriteria, page, row) {
                 $scope.products = [];
@@ -577,9 +599,90 @@
             /*--------------------------------------------------------------
                 END POPUP WORKFLOW
             --------------------------------------------------------------*/
+            /*--------------------------------------------------------------
+                POPUP MEMBER
+            --------------------------------------------------------------*/
+            $scope.memberIdx=-1;
+            $scope.editMember = function (idx) {
+                $scope.memberIdx=idx;
+                $scope.members = [];
+                $scope.page = "1";
+                $scope.kriteria = "";
+                $scope.paging = [];
+                $("#modal_select_member").modal("show");
+            }
 
+            $scope.findMembers = function (kriteria, page, row) {
+                $scope.page = 1;
+                $scope.members = [];
+                $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    if (response.data) {
+                        $scope.members = response.data;
+                        $scope.index = row * (page - 1);
+                        $scope.findMembersCountAll(kriteria);
+                        $scope.isView = true;
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            $scope.findMembersCountAll = function (kriteria) {
+                $scope.paging = [];
+                $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.paging.push({ value: i, text: i });
+                        }
+                        $scope.page = "1";
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            $scope.changePageMember = function (kriteria, page, row) {
+                $scope.products = [];
+                $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                    if (response.data) {
+                        $scope.members = response.data;
+                        $scope.index = row * (page - 1);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.setMember = function (idx) {
+                $scope.users[$scope.memberIdx].UserId=$scope.members[idx].Id;
+                $scope.users[$scope.memberIdx].Name=$scope.members[idx].Name;
+                $scope.users[$scope.memberIdx].Email=$scope.members[idx].Email;
+                $scope.users[$scope.memberIdx].Picture = $scope.members[idx].ImageProfile;
+                $scope.users[$scope.memberIdx].EncryptedId = $scope.members[idx].EncryptedId;
+            }
+            $scope.removeMember = function (idx) {
+                $scope.users.splice(idx,1);
+            }
+            $scope.popupMember = function () {
+                $scope.memberIdx=-1;
+                $scope.members = [];
+            }
+            /*--------------------------------------------------------------
+                END POPUP MEMBER
+            --------------------------------------------------------------*/
         });
         $(document).ready(function () {
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
             $('#checkbox1').bootstrapSwitch();
             $('#checkbox2').bootstrapSwitch();
             //var node = document.getElementById('canvas');

@@ -178,13 +178,14 @@
 .start {
     background-color: green;
     top: 20px;
-    left: 50 px;
+    left: 50px;
     /*position: relative;*/
 }
 
 .end {
     background-color: red;
     top: 200px;
+    left: 50px
     
 }
 

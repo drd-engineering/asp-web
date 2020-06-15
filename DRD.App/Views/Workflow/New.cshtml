@@ -378,6 +378,8 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
+                console.log($scope.model.Id);
+                console.log("TESTING");
                 if ($scope.model.Id!=0){
                     setTimeout(function () {
                         var digramScope=angular.element('#xdiagramController').scope();
@@ -426,6 +428,7 @@
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
                 console.log(data);
+                
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {

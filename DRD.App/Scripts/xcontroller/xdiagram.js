@@ -94,6 +94,7 @@
         $scope.initUpload();
 
         var from = document.getElementById("start-0");
+        from.style.left = 50;
         var to = document.getElementById("node-activity-0");
         $scope.addLinkSubmit(from, to);
         $scope.refreshLines();
@@ -105,7 +106,7 @@
                 var to = document.getElementById("end-1");
                 $scope.endNode = to;
 
-                if (ui.draggable.context.id == 'submit-' + fromIdx && fromIdx != 'start') {
+                if (fromIdx!= 0 && ui.draggable.context.id == 'submit-' + fromIdx && fromIdx != 'start') {
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'reject-' + fromIdx) {
                     $scope.addLinkReject(from, to);
@@ -135,7 +136,7 @@
         var submit = document.getElementById(submitId);
 
         $("#node-activity-0").show();
-        console.log("show");
+        console.log($scope.nodes);
         var lineSubmit = new LeaderLine(activity, submit, {
                 endPlug: 'behind',
                 hide: true,
@@ -771,8 +772,7 @@
 
     $scope.addLinkSubmit = function (elmFrom, elmTo) {
         if (elmFrom.id == elmTo.id) return;
-        console.log(elmFrom);
-        console.log(elmTo);
+
         var line = new LeaderLine(elmFrom, elmTo,
             {
                 endPlug: $scope.linkEndPlug, path: $scope.linkTypeSubmit, size: 2, color: $scope.linkColorSubmit, fontSize: $scope.linkLabelFontSize
@@ -1040,9 +1040,11 @@
         // node
         //$scope.nodes =angular.copy( nodes);
         $scope.inode = 2;
+            console.log(nodes);
         for (i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-
+            console.log(node.element);
+            var elm;
             if (node.symbolCode == 'START' || node.symbolCode == 'END') {
                 elm = document.getElementById(node.element);
             } else if (node.symbolCode == 'PARALLEL') {
@@ -1111,9 +1113,9 @@
 
                 $("#case-descr-" + idx).text(node.value);
             }
-
-            elm.style.left = node.posLeft;
-            elm.style.top = node.posTop;
+            console.log(elm);
+            elm.style.left = node.posLeft == null ? 0 : node.posLeft;
+            elm.style.top = node.posTop == null ? 0 : node.posTop;
             elm.style.width = node.width;
             elm.style.height = node.height;
         }
