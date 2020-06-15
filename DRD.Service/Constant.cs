@@ -44,9 +44,11 @@ namespace DRD.Service
         {
             //restricted, cannot access at all
             noAccess = 0,
-
+            //read only access
             readOnly = 1,
+            //can access page
             responsible = 2,
+            //fully access granted if there are multiple feature access in a pages
             fullAccess = 3
         }
         public enum PackageItem
