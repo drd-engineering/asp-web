@@ -61,13 +61,21 @@ namespace DRD.Service
                     var nodes = db.WorkflowNodes.Where(wfnode => wfnode.WorkflowId == result.Id).ToList();
                     if (nodes.Count() > 0)
                     {
-                        int dmid = 0;
+                        int dmid = 2;
                         result.WorkflowNodes = new List<WorkflowNodeItem>();
                         foreach (WorkflowNode workflowNode in nodes)
                         {
                             WorkflowNodeItem WorkflowNodeItem = new WorkflowNodeItem();
                             WorkflowNodeItem.Id = workflowNode.Id;
-                            WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + dmid;
+                            var elementname = getSymbolsFromCsvById(workflowNode.SymbolCode).ElementName;
+                            if (elementname == "start")
+                                WorkflowNodeItem.element = elementname + "-" + 0;
+                            else if (elementname == "end")
+                                WorkflowNodeItem.element = elementname + "-" + 1;
+                            else {
+                                WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + dmid;
+                                dmid++;
+                            }
                             WorkflowNodeItem.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
                             WorkflowNodeItem.userId = workflowNode.UserId;
                             WorkflowNodeItem.caption = workflowNode.Caption;
@@ -95,7 +103,6 @@ namespace DRD.Service
                                 WorkflowNodeItem.user = null;
                             }
                             result.WorkflowNodes.Add(WorkflowNodeItem);
-                            dmid++;
                         }
                     }
 
