@@ -2764,7 +2764,8 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="doc\emailtemplate\testemail.html" />
+    <Content Include="doc\emailtemplate\JoinDRD.html" />
+    <Content Include="doc\emailtemplate\MemberInvitation.html" />
     <Content Include="doc\emailtemplate\InboxNotif.html" />
     <Content Include="doc\emailtemplate\Registration.html" />
     <Content Include="doc\tnc\tnc.htm" />

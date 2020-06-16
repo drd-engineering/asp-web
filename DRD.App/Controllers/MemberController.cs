@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using DRD.Models;
+using System.Net;
 using DRD.Models.Custom;
 using DRD.Models.View;
 
@@ -78,6 +78,20 @@ namespace DRD.App.Controllers
             InitializeAPI();
             var data = memberService.FindMembersRotationCountAll(user.Id, topCriteria, rotationId);
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AcceptInvitation(long memberId)
+        {
+            InitializeAPI();
+            if(user == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            }
+            var data = memberService.AcceptInvitation(user.Id, memberId);
+            if (data)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
+            }
+            else return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
         public ActionResult GetAcceptedMember(long companyId)
         {

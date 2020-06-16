@@ -403,5 +403,35 @@ namespace DRD.Service
                 return equals;
             }
         }
+        /// <summary>
+        /// Checking if the user is owner of a company or more
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool HasCompany(long userId)
+        {
+            var has = true;
+            using (var db = new ServiceContext())
+            {
+                var countCompany = db.Companies.Count(c => c.OwnerId == userId);
+                has = countCompany > 0;
+            }
+            return has;
+        }
+        /// <summary>
+        /// Checking if the user is a member of some company
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool IsMemberofCompany(long userId)
+        {
+            var isMember = true;
+            using (var db = new ServiceContext())
+            {
+                var countMember = db.Members.Count(m => m.UserId == userId && m.isCompanyAccept && m.isMemberAccept);
+                isMember = countMember > 0;
+            }
+            return isMember;
+        }
     }
 }

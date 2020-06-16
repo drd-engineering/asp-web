@@ -35,10 +35,6 @@ namespace DRD.Service
         public int ProcessActivity(ProcessActivity parameter, Constant.EnumActivityAction enumActivityAction)
         {
             var ret = ProcessActivity(parameter, enumActivityAction, new DocumentService());
-            foreach (ActivityItem act in ret)
-            {
-                sendemailactiviity(act);
-            }
             return ret.FirstOrDefault().ExitCode;
         }
 
@@ -391,22 +387,6 @@ namespace DRD.Service
                 return retvalues;
             }
         }
-        private ActivityItem createActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationId, long rotationNodeId, string lastActivityStatus)
-        {
-            using (var db = new ServiceContext())
-            {
-                ActivityItem ret = CreateActivityResult(userId, previousUserId, exitCode, rotationName, rotationNodeId, rotationId);
-                ret.LastActivityStatus = lastActivityStatus;
-                return ret;
-            }
-        }
-
-        private ActivityItem createActivityResult(int exitCode)
-        {
-            ActivityItem ret = new ActivityItem();
-            ret.ExitCode = exitCode;
-            return ret;
-        }
 
         private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
         {
@@ -431,20 +411,13 @@ namespace DRD.Service
                 return ret;
             }
         }
-
-        private ActivityItem CreateActivityResult(long userId, int exitCode)
+        private ActivityItem createActivityResult(int exitCode)
         {
-            using (var db = new ServiceContext())
-            {
-                ActivityItem ret = new ActivityItem();
-                var mem = db.Users.FirstOrDefault(c => c.Id == userId);
-                ret.ExitCode = exitCode;
-                ret.Email = mem.Email;
-                ret.UserId = userId;
-                ret.UserName = mem.Name;
-                return ret;
-            }
+            ActivityItem ret = new ActivityItem();
+            ret.ExitCode = exitCode;
+            return ret;
         }
+
         private long GetUserId(long WorkflowNodeToId, long RotationId)
         {
             using (var db = new ServiceContext())
@@ -564,34 +537,6 @@ namespace DRD.Service
             {
                 rotationNode.Status = status;
             }
-        }
-
-        public void sendemailactiviity(ActivityItem activity)
-        {
-            if (activity.ExitCode < 0)
-                return;
-            var configGenerator = new AppConfigGenerator();
-            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
-            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
-            EmailService emailService = new EmailService();
-
-            string body = string.Empty;
-            if (System.Web.HttpContext.Current != null)
-                body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
-            else
-                body = emailService.CreateHtmlBody(@"c:\doc\emailtemplate\InboxNotif.html"); ///Masih perlu di edit
-
-            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
-            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
-            body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_NAME_}", activity.UserName);
-
-            body = body.Replace("//images", "/images");
-
-            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
-
-            var task = emailService.Send(senderEmail, senderName, activity.Email, "Inbox Reception" , body, false, new string[] { });
         }
     }
 }

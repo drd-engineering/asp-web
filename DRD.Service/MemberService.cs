@@ -59,7 +59,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var listReturn = new MemberList();
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept  && memberItem.isMemberAccept && memberItem.IsActive).ToList();
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive).ToList();
 
                 mappingMember(membersFromDb, listReturn);
                 return listReturn;
@@ -73,7 +73,7 @@ namespace DRD.Service
                 var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive).ToList();
 
                 mappingMember(membersFromDb, listReturn);
-                return listReturn;   
+                return listReturn;
             }
         }
 
@@ -93,7 +93,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-               var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId).FirstOrDefault();
+                var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId).FirstOrDefault();
                 return admin == null ? false : true;
             }
         }
@@ -261,15 +261,15 @@ namespace DRD.Service
                                                         Phone = user.Phone,
                                                         Email = user.Email,
                                                         ImageProfile = user.ImageProfile
-                                                    }).Where(criteria).OrderBy(member=>member.Name).Skip(skip).Take(pageSize).ToList();
-                if(contactListAllMatch != null)
-                    for(var i = 0; i<contactListAllMatch.Count(); i++)
+                                                    }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
+                if (contactListAllMatch != null)
+                    for (var i = 0; i < contactListAllMatch.Count(); i++)
                     {
                         var item = contactListAllMatch.ElementAt(i);
                         item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
                         contactListAllMatch[i] = item;
                     }
-                        
+
                 return contactListAllMatch;
             }
         }
@@ -291,31 +291,31 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var countContactListAllMatch = (from Contact in db.Contacts
-                                           join User in db.Users on Contact.ContactItemId equals User.Id
-                                           where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
-                                           select new MemberData
-                                           {
-                                               Id = User.Id,
-                                               Name = User.Name,
-                                               Phone = User.Phone,
-                                               Email = User.Email,
-                                               ImageProfile = User.ImageProfile
-                                           }).Union(from member1 in db.Members
-                                                    join company in db.Companies on member1.CompanyId equals company.Id
-                                                    join member2 in db.Members on company.Id equals member2.CompanyId
-                                                    join user in db.Users on member2.UserId equals user.Id
-                                                    where member1.UserId == userId
-                                                    && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
-                                                    && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
-                                                    && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
-                                                    select new MemberData
-                                                    {
-                                                        Id = user.Id,
-                                                        Name = user.Name,
-                                                        Phone = user.Phone,
-                                                        Email = user.Email,
-                                                        ImageProfile = user.ImageProfile
-                                                    }).Count();
+                                                join User in db.Users on Contact.ContactItemId equals User.Id
+                                                where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                                select new MemberData
+                                                {
+                                                    Id = User.Id,
+                                                    Name = User.Name,
+                                                    Phone = User.Phone,
+                                                    Email = User.Email,
+                                                    ImageProfile = User.ImageProfile
+                                                }).Union(from member1 in db.Members
+                                                         join company in db.Companies on member1.CompanyId equals company.Id
+                                                         join member2 in db.Members on company.Id equals member2.CompanyId
+                                                         join user in db.Users on member2.UserId equals user.Id
+                                                         where member1.UserId == userId
+                                                         && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
+                                                         && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
+                                                         && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
+                                                         select new MemberData
+                                                         {
+                                                             Id = user.Id,
+                                                             Name = user.Name,
+                                                             Phone = user.Phone,
+                                                             Email = user.Email,
+                                                             ImageProfile = user.ImageProfile
+                                                         }).Count();
                 return countContactListAllMatch;
             }
         }
@@ -344,7 +344,7 @@ namespace DRD.Service
             {
                 var contactListAllMatch = (from RotationUser in db.RotationUsers
                                            join User in db.Users on RotationUser.UserId equals User.Id
-                                           where User.Id != userId && RotationUser.RotationId == rotationId 
+                                           where User.Id != userId && RotationUser.RotationId == rotationId
                                            && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
                                            select new MemberData
                                            {
@@ -384,7 +384,7 @@ namespace DRD.Service
             {
                 var countContactListAllMatch = (from RotationUser in db.RotationUsers
                                                 join User in db.Users on RotationUser.UserId equals User.Id
-                                                where User.Id != userId && RotationUser.RotationId == rotationId 
+                                                where User.Id != userId && RotationUser.RotationId == rotationId
                                                 && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
                                                 select new MemberData
                                                 {
@@ -395,6 +395,25 @@ namespace DRD.Service
                                                     ImageProfile = User.ImageProfile
                                                 }).Count();
                 return countContactListAllMatch;
+            }
+        }
+        /// <summary>
+        /// Accepting Invitation from company to join the company as a member, return true if success return false if failed/invalid
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public bool AcceptInvitation(long userId, long memberId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Member theUser = db.Members.FirstOrDefault(m => m.Id == memberId && m.UserId == userId && m.isCompanyAccept && !m.isMemberAccept);
+                if (theUser != null) {
+                    theUser.isMemberAccept = true;
+                    db.SaveChanges();
+                    return true;
+                }
+                return false;
             }
         }
         public MemberList BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)

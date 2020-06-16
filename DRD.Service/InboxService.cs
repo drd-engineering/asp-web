@@ -273,7 +273,9 @@ namespace DRD.Service
                     inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
-                    return db.SaveChanges();
+                    var dbsave = db.SaveChanges();
+                    sendemailactiviity(activity);
+                    return dbsave;
                 }
             }
             return returnItem;
@@ -358,6 +360,34 @@ namespace DRD.Service
                 }
             }
         }
+        public void sendemailactiviity(ActivityItem activity)
+        {
+            if (activity.ExitCode < 0)
+                return;
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
 
+            string body = string.Empty;
+            if (System.Web.HttpContext.Current != null)
+                body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
+            else
+                body = emailService.CreateHtmlBody(@"c:\doc\emailtemplate\InboxNotif.html"); ///Masih perlu di edit
+
+            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+            body = body.Replace("{_URL_}", strUrl);
+            body = body.Replace("{_SENDER_}", activity.UserName);
+            body = body.Replace("{_NAME_}", activity.UserName);
+            body = body.Replace("{_ACTION_}", activity.UserName);
+
+            body = body.Replace("//images", "/images");
+
+            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+            var task = emailService.Send(senderEmail, senderName, activity.Email, "Inbox Reception", body, false, new string[] { });
+        }
     }
 }

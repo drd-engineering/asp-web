@@ -65,7 +65,7 @@ namespace DRD.Service
                 if (admin == null)
                 {
                     // user editting member is not administrator
-                    retVal.Add(new AddMemberResponse("", -1, ""));
+                    retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace DRD.Service
                         if (target == null)
                         {
                             // user that wanted to invite is not found (not registered)
-                            retVal.Add(new AddMemberResponse(email, 0, companyInviting.Name));
+                            retVal.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
                         }
                         else
                         {
@@ -93,23 +93,23 @@ namespace DRD.Service
                                 db.Members.Add(memberBaru);
                                 db.SaveChanges();
                                 // success adding new member
-                                retVal.Add(new AddMemberResponse(email, 1, companyInviting.Name));
+                                retVal.Add(new AddMemberResponse(email, memberBaru.Id, target.Name, 1, companyInviting.Name));
                             }
                             else
                             {
                                 if (lama.isCompanyAccept)
                                 {
-                                    if (lama.isMemberAccept) retVal.Add(new AddMemberResponse(email, -2, companyInviting.Name));
+                                    if (lama.isMemberAccept) retVal.Add(new AddMemberResponse(email, lama.Id, target.Name, -2, companyInviting.Name));
                                     else
                                     {
-                                        retVal.Add(new AddMemberResponse(email, 2, companyInviting.Name));
+                                        retVal.Add(new AddMemberResponse(email, lama.Id, target.Name, 2, companyInviting.Name));
                                     }
                                 }
                                 else
                                 {
                                     lama.isCompanyAccept = true;
                                     db.SaveChanges();
-                                    retVal.Add(new AddMemberResponse(email, -2, companyInviting.Name));
+                                    retVal.Add(new AddMemberResponse(email, lama.Id, target.Name, -2, companyInviting.Name));
                                 }
                             }
                         }
@@ -448,23 +448,25 @@ namespace DRD.Service
 
             if (item.status == 1 || item.status == 2)
             {
-                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/MemberInvitation.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
                 body = body.Replace("{_URL_}", strUrl);
                 body = body.Replace("{_COMPANYNAME_}", item.companyName);
+                body = body.Replace("{_NAME_}", item.userName);
+                body = body.Replace("{_MEMBERID_}", item.memberId.ToString());
 
                 body = body.Replace("//images", "/images");
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName + " Administrator", item.email, senderName + " User Registration", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName , item.email, senderName + "Member Invitation", body, false, new string[] { });
             }
             // belum register jadi pengguna jadi ya invite aja.
             else if (item.status == 0)
             {
-                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/JoinDRD.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
@@ -475,7 +477,7 @@ namespace DRD.Service
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName + " Administrator", item.email, senderName + " User Registration", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName , item.email, senderName + "DRD Invitation", body, false, new string[] { });
             }
         }
 
