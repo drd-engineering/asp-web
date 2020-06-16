@@ -3189,6 +3189,7 @@
     <Content Include="Scripts\xcontroller\xdiagram1.js" />
     <Content Include="Scripts\xcontroller\xdiagram2.js" />
     <Content Include="Scripts\xcontroller\xpdf.js" />
+    <Content Include="Scripts\xflow\xdiagram - Copy.css" />
     <Content Include="Scripts\xpdfxx\app.js" />
     <Content Include="Scripts\xpdfxx\jspdf.debug.js" />
     <Content Include="Scripts\xpdfxx\MoveAndResizeTool.js" />
@@ -3682,6 +3683,7 @@
     <Content Include="Views\Include\PopupSubscription.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Include\PopupAddDocument.cshtml" />
+    <Content Include="Views\Workflow\New - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

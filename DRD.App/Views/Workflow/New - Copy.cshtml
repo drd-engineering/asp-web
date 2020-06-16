@@ -151,8 +151,21 @@
                                                     <span id="title-activity-xx" class="title-activity" onclick="popupActivity('title-activity-xx')">Activity</span>
                                                     <i class="icon-cross3 pull-right" onclick="removeActivityConfirmation('-xx-')"></i>
                                                     <i class="icon-loop4 pull-right" onclick="selectLink('node-activity-xx')" data-popup="tooltip" title="Select links" data-placement="bottom"></i>
+                                                    <i id="info-activity-xx" class="icon-info22 pull-right" data-popup="popover" data-trigger="hover" data-content="" data-html="true"></i>
                                                 </div>
-                                                
+                                                <div class="node-activity-content-yy">
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            <td style="width:50px;"><img id="photo-profile-xx" src="/Images/Member/icon_user.png" height="45" style="cursor:pointer;border-radius:10%;" onclick="lookupReceipent('-xx-')" /></td>
+                                                            <td>
+                                                                <span id="member-number-xx" class="text-format"></span><br />
+                                                                <span id="member-name-xx" class="text-format">Recipient</span><br />
+                                                                <span id="member-email-xx" class="text-format"></span><br />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <input id="member-id-xx" value="0" style="display:none" />
+                                                </div>
                                                 <div class="footer-yy">
                                                     <div id="reject-xx"></div>
                                                     <div id="submit-xx" class="join con-submit" data-popup="tooltip" title="Submit" data-placement="bottom"></div>
@@ -249,6 +262,19 @@
                                             <div id="node-activity-2" class="node-activity-2" style="display:none">
                                                 <div id="node-activity-caption-2" class="node-activity-caption-2">
                                                     <span id="title-activity-2" class="title-activity">Document Uploading</span>
+                                                </div>
+                                                <div class="node-activity-content">
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            <td style="width:50px;"><img id="photo-profile-2" src="/Images/Member/icon_user.png" height="45" style="cursor:pointer;border-radius:10%;" onclick="lookupReceipent('2')" /></td>
+                                                            <td>
+                                                                <span id="member-number-2" class="text-format"></span><br />
+                                                                <span id="member-name-2" class="text-format">Recipient</span><br />
+                                                                <span id="member-email-2" class="text-format"></span><br />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <input id="member-id-2" value="0" style="display:none" />
                                                 </div>
                                                 <div class="footer">
                                                     <div id="submit-2" class="join con-submit" data-popup="tooltip" title="Start" data-placement="bottom"></div>
@@ -402,7 +428,7 @@
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
                 console.log(data);
-                
+
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {

@@ -106,7 +106,7 @@
                 var to = document.getElementById("end-1");
                 $scope.endNode = to;
 
-                if (fromIdx!= 0 && ui.draggable.context.id == 'submit-' + fromIdx && fromIdx != 'start') {
+                if (fromIdx!= 2 && ui.draggable.context.id == 'submit-' + fromIdx && fromIdx != 'start') {
                     $scope.addLinkSubmit(from, to);
                 } else if (ui.draggable.context.id == 'reject-' + fromIdx) {
                     $scope.addLinkReject(from, to);

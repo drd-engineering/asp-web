@@ -2,20 +2,23 @@
 }
 
 .node-activity {
-    background-color: #c4b4a9;
-    color: white;
-    padding: 10px;
+    border: solid;
+    border-color: burlywood;
+    border-width: 1px;
     width: 150px;
+    background-color: white;
     min-width: 150px;
-    min-height: 40px;
-    border-radius: 10%;
-    top: 50px;
-    left: 200px;
+    min-height: 90px;
+    border-radius: 5%;
 }
 
 .node-activity-caption {
+    background-color: burlywood;
     cursor: pointer;
+    color: white;
     padding: 3px;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
 }
 
 .node-activity-content {
@@ -23,21 +26,25 @@
 }
 
 .node-activity-2 {
-    background-color: #63bcba;
-    color: white;
-    padding: 10px;
+    border: solid;
+    border-color: aquamarine;
+    border-width: 1px;
     width: 150px;
+    background-color: white;
     min-width: 150px;
-    min-height: 40px;
-    border-radius: 10%;
+    min-height: 90px;
+    border-radius: 5%;
     top: 50px;
     left: 200px;
 }
 
 .node-activity-caption-2 {
-    text-align:center;
+    background-color: aquamarine;
     cursor: pointer;
+    color: white;
     padding: 3px;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
 }
 
 .node-activity-content {
@@ -168,14 +175,14 @@
 }
 
 .start {
-    background-color: #8cb999;
+    background-color: green;
     top: 20px;
     left: 50px;
     /*position: relative;*/
 }
 
 .end {
-    background-color: #eb8b84;
+    background-color: red;
     top: 200px;
     left: 50px
 }
@@ -230,7 +237,7 @@
 }
 
 .canvas {
-    background-color: #eef1fa;
+    background-image: url("../../Images/Diagram/canvas.png");
     width: 100%;
     height: 1000px;
     overflow: auto;
