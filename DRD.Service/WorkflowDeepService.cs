@@ -149,11 +149,9 @@ namespace DRD.Service
             Rotation product;
             using (var db = new ServiceContext())
             {
-                System.Diagnostics.Debug.WriteLine("seek for rotation");
                 if (prod.Id != 0)
                 {
                     product = db.Rotations.FirstOrDefault(c => c.Id == prod.Id);
-                    System.Diagnostics.Debug.WriteLine("seek for rotation "+product.Id);
                 }
                 else
                 {
@@ -189,7 +187,6 @@ namespace DRD.Service
                     for (var x = 0; x < cxnew; x++)
                     {
                         var ep = prod.RotationUsers.ElementAt(x); // get the data
-                        System.Diagnostics.Debug.WriteLine(ep);
                         var newItem = new RotationUser();
                         newItem.Rotation = product;
                         newItem.WorkflowNodeId = ep.Id;
@@ -206,7 +203,6 @@ namespace DRD.Service
                                                     {
                                                         isFound = true
                                                     }).ToList();
-                            System.Diagnostics.Debug.WriteLine("CHECK START NODE :: " + checkIsStartNode.Count);
                             // if this RotationUser is startNode.
                             if (checkIsStartNode.Count == 1)
                             {
@@ -296,7 +292,6 @@ namespace DRD.Service
                         tagItemFromDb.Rotation = product;
                         tagItemFromDb.TagId = tagfromDB.Id;
                         tagItemFromDb.Tag = tagfromDB;
-                        System.Diagnostics.Debug.WriteLine("[[ID of tag]] " + tagfromDB.Id + " " + product.Id);
                         db.TagItems.Add(tagItemFromDb);
                         product.TagItems.Add(tagItemFromDb);
                     }

@@ -143,7 +143,6 @@ namespace DRD.App.Controllers
                     // Saving Image in Original Mode
 
                     file.SaveAs(path);
-                    System.Diagnostics.Debug.WriteLine("IMAGE UPLOADED :::" + path);
                 }
             }
             UploadResponse result = new UploadResponse();
@@ -171,8 +170,6 @@ namespace DRD.App.Controllers
             var data = new List<int>();
 
             var ret1 = userService.Update(user);
-
-            System.Diagnostics.Debug.WriteLine("PROFILE CONTROLLER, UPDATE RESULT" + ret1);
             data.Add(1);
             data.Add(MoveFromTemp(user, ret1.ImageInitials));
             data.Add(MoveFromTemp(user, ret1.ImageKtp1));
@@ -198,7 +195,6 @@ namespace DRD.App.Controllers
 
                 string Tranfiles, ProcessedFiles;
                 Tranfiles = Server.MapPath("/" + fromFolder + "/") + location;
-                System.Diagnostics.Debug.WriteLine("[[ IMAGE NAME ]] " + Tranfiles);
                 if (System.IO.File.Exists(Tranfiles))
                 {
                     ProcessedFiles = Server.MapPath("/" + toFolder + "/") + location;
@@ -214,7 +210,6 @@ namespace DRD.App.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("[[ERROR HAPPEN]] " + ex.Message);
                 return 0;
             }
         }

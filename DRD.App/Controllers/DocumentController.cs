@@ -253,13 +253,10 @@ namespace DRD.App.Controllers
             prod.CreatorId = user.Id;
             prod.UserEmail = user.Email;
             //prod.CompanyId = (long)user.CompanyId;
-            System.Diagnostics.Debug.WriteLine("TRY TO MOVE DIR");
-            System.Diagnostics.Debug.WriteLine("ROTATION ID NYA " + rotationId);
             var fileController = DependencyResolver.Current.GetService<UpDownFileController>();
             fileController.ControllerContext = new ControllerContext(this.Request.RequestContext, fileController);
 
             var moveDirResult = fileController.MoveFromTemporaryToActual(prod, companyId);
-            System.Diagnostics.Debug.WriteLine("MOVE DIR RESPONSE " + moveDirResult);
             if (moveDirResult == 1)
             {
                 var srv = new DocumentService();

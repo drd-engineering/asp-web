@@ -49,7 +49,7 @@ namespace DRD.Service
                 memberItem.UserId = x.UserId;
                 memberItem.Company = companyService.GetCompanyItem(memberItem.CompanyId);
                 memberItem.User = contactService.getContact(memberItem.UserId);
-                System.Diagnostics.Debug.WriteLine("USER MEMBER :: " + memberItem.User.Name);
+                memberItem.User.EncryptedId = Utilities.Encrypt(memberItem.UserId.ToString());
 
                 listReturn.addMember(memberItem);
             }

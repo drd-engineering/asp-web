@@ -154,11 +154,11 @@ namespace DRD.App.Controllers
 
         public ActionResult ProcessActivity(ProcessActivity param, int bit)
         {
-           var rotationService = new RotationService();// getUserLogin().AppZone.Code);
+            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
 
-           var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
-          return Json(data, JsonRequestBehavior.AllowGet);
+            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

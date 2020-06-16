@@ -164,7 +164,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var result = (from User in db.Users 
+                var result = (from User in db.Users
                               where User.Id == userId
                               select new ContactItem
                               {
@@ -199,9 +199,6 @@ namespace DRD.Service
                     item.TotalMember = CountMemberOfCompany(c.Id) - 1;
 
                     companyItems.Add(item);
-
-                    System.Diagnostics.Debug.WriteLine("LIST COMPANY: ");
-                    System.Diagnostics.Debug.WriteLine(item.Name);
 
                 }
                 companyList.companies = companyItems;

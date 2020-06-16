@@ -42,8 +42,7 @@ namespace DRD.Service
                 dict.Add("id", "2");
                 dict.Add("code", "EMAIL_USER");
                 dict.Add("description", "email user untuk kirim email");
-                dict.Add("value", "indonesia.drd@gmail.com");
-                /*dict.Add("value", "admin@drdaccess.com");*/
+                dict.Add("value", "no-reply@drdaccess.com");
                 dict.Add("flag", "0");
                 dict.Add("data_type", "string");
                 dict.Add("data_length", "0");
@@ -59,8 +58,7 @@ namespace DRD.Service
                 dict.Add("id", "3");
                 dict.Add("code", "EMAIL_PASSWORD");
                 dict.Add("description", "email pwd untuk kirim email");
-                dict.Add("value", "DRD.DRD19");
-                /*dict.Add("value", "DRDAccess19");*/
+                dict.Add("value", "");
                 dict.Add("flag", "0");
                 dict.Add("data_type", "string");
                 dict.Add("data_length", "0");
@@ -76,7 +74,7 @@ namespace DRD.Service
                 dict.Add("id", "4");
                 dict.Add("code", "EMAIL_SMTP");
                 dict.Add("description", "email smtp untuk kirim email");
-                dict.Add("value", "smtp.gmail.com");
+                dict.Add("value", "smtp-relay.gmail.com");
                 dict.Add("flag", "smtp.gmail.com");
                 dict.Add("data_type", "string");
                 dict.Add("data_length", "0");
@@ -141,7 +139,7 @@ namespace DRD.Service
                 dict.Add("id", "8");
                 dict.Add("code", "APPLICATION_NAME");
                 dict.Add("description", "Name of application");
-                dict.Add("value", "DRD Indonesia");
+                dict.Add("value", "");
                 dict.Add("flag", "1");
                 dict.Add("data_type", "string");
                 dict.Add("data_length", "15");

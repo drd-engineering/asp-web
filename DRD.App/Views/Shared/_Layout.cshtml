@@ -122,7 +122,7 @@
 
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-repeat="x in menusFromController" ng-show="isNotDashboard(x.SecondaryKey) || hasCompany" class="{{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}">
+                                    <li ng-repeat="x in menusFromController" ng-show="isNotDashboard(x.SecondaryKey) || hasCompany" class={{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}>
                                         <a href="{{x.UrlPage}}" style="background-color:{{x.SecondaryKey.Equals(viewbagsubmenu) ? "grey": "black"}}"><i class="{{x.Icon}}"></i> <span>{{x.Name}}</span></a>
                                     </li>
                                     <!-- /main -->

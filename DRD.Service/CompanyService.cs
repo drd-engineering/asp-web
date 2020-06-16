@@ -65,7 +65,7 @@ namespace DRD.Service
                 if (admin == null)
                 {
                     // user editting member is not administrator
-                    retVal.Add(new AddMemberResponse("", -1));
+                    retVal.Add(new AddMemberResponse("", -1, ""));
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace DRD.Service
                         if (target == null)
                         {
                             // user that wanted to invite is not found (not registered)
-                            retVal.Add(new AddMemberResponse(email, 0));
+                            retVal.Add(new AddMemberResponse(email, 0, companyInviting.Name));
                         }
                         else
                         {
@@ -93,12 +93,24 @@ namespace DRD.Service
                                 db.Members.Add(memberBaru);
                                 db.SaveChanges();
                                 // success adding new member
-                                retVal.Add(new AddMemberResponse(email, 1));
+                                retVal.Add(new AddMemberResponse(email, 1, companyInviting.Name));
                             }
                             else
                             {
-                                // member already added
-                                retVal.Add(new AddMemberResponse(email, -2));
+                                if (lama.isCompanyAccept)
+                                {
+                                    if (lama.isMemberAccept) retVal.Add(new AddMemberResponse(email, -2, companyInviting.Name));
+                                    else
+                                    {
+                                        retVal.Add(new AddMemberResponse(email, 2, companyInviting.Name));
+                                    }
+                                }
+                                else
+                                {
+                                    lama.isCompanyAccept = true;
+                                    db.SaveChanges();
+                                    retVal.Add(new AddMemberResponse(email, -2, companyInviting.Name));
+                                }
                             }
                         }
                     }
@@ -190,11 +202,9 @@ namespace DRD.Service
             {
                 var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
                 var listReturn = new CompanyList();
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES  :: " + ownerCompanies);
                 foreach (Company x in ownerCompanies)
                 {
                     var company = new CompanyItem();
-                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES id  :: " + x.Id);
                     var subscription = subscriptionService.GetCompanyUsage(x.Id);
                     company.Id = x.Id;
                     company.Code = x.Code;
@@ -214,13 +224,11 @@ namespace DRD.Service
                     company.IsVerified = x.IsVerified;
                     company.IsOwnedByUser = (x.Id == userId);
                     company.Administrators = memberService.getAdministrators(company.Id);
-                    System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST INSIDE LOOP :: " + company.Id);
 
                     listReturn.addCompany(company);
                 }
                 CompanyList companyAsAdmins = GetCompanyListByAdminId(userId);
                 listReturn.mergeCompanyList(companyAsAdmins);
-                System.Diagnostics.Debug.WriteLine("TES OWNER COMPANIES LIST :: " + listReturn.companies.Count);
                 return listReturn;
             }
         }
@@ -417,9 +425,6 @@ namespace DRD.Service
                     {
                         company.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
 
-                        //TODO: remove these lines when production
-                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + company.Id);
-
                         db.Companies.Add(company);
                         result = db.SaveChanges();
                         break;
@@ -434,56 +439,43 @@ namespace DRD.Service
                 return company.Id;
             }
         }
-        public void SendEmailAddMember(string email, int status, string company)
+        public void SendEmailAddMember(AddMemberResponse item)
         {
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
             var configGenerator = new AppConfigGenerator();
             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
             EmailService emailService = new EmailService();
 
-            if (status == 1)
+            if (item.status == 1 || item.status == 2)
             {
                 string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
-                //TODO: remove these lines when production
-                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration " + strPathAndQuery);
-
                 body = body.Replace("{_URL_}", strUrl);
-                body = body.Replace("{_COMPANYNAME_}", company);
+                body = body.Replace("{_COMPANYNAME_}", item.companyName);
 
                 body = body.Replace("//images", "/images");
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                //TODO: remove these lines when production
-                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration " + senderEmail);
-
-                var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName + " Administrator", item.email, senderName + " User Registration", body, false, new string[] { });
             }
-            else if (status == 0)
+            // belum register jadi pengguna jadi ya invite aja.
+            else if (item.status == 0)
             {
                 string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/??.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
-                //TODO: remove these lines when production
-                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration " + strPathAndQuery);
-
                 body = body.Replace("{_URL_}", strUrl);
-                body = body.Replace("{_COMPANYNAME_}", company);
+                body = body.Replace("{_COMPANYNAME_}", item.companyName);
 
                 body = body.Replace("//images", "/images");
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                //TODO: remove these lines when production
-                System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration " + senderEmail);
-
-                var task = emailService.Send(senderEmail, senderName + " Administrator", email, senderName + " User Registration", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName + " Administrator", item.email, senderName + " User Registration", body, false, new string[] { });
             }
         }
 

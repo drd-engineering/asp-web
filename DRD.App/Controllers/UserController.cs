@@ -34,10 +34,8 @@ namespace DRD.App.Controllers
                 var logincontroller = new LoginController();
                 UserSession user = logincontroller.GetUser(this);
                 userId = user.Id;
-                System.Diagnostics.Debug.WriteLine("User Id FOR VALIDATION :: " + userId);
             }
             var data = srv.ValidationPassword(userId, password);
-            System.Diagnostics.Debug.WriteLine("VALIDATION ENDING :: " + userId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

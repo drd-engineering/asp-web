@@ -90,8 +90,6 @@ namespace DRD.App.Controllers
         public ActionResult GetAcceptedMemberOrAdmin(long companyId, bool isAdmin)
         {
             InitializeAPI();
-            System.Diagnostics.Debug.WriteLine("USER MEMBER :: " + companyId +"  "+isAdmin);
-
             MemberList data = memberService.getAcceptedMember(companyId, isAdmin);
 
             return Json(data, JsonRequestBehavior.AllowGet);

@@ -107,7 +107,6 @@ namespace DRD.Service
                     }
 
                     var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.WorkflowNode.WorkflowId == result.Id).ToList();
-                    System.Diagnostics.Debug.WriteLine("[[JUMLAH WFNODELINKS]] " + links.Count());
                     if (links.Count() > 0)
                     {
                         result.WorkflowNodeLinks = new List<WorkflowNodeLinkItem>();

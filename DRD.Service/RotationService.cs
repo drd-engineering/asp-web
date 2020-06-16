@@ -191,9 +191,6 @@ namespace DRD.Service
                         if (documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("SIGNATURE").Id || documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("INITIAL").Id || documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("PRIVATESTAMP").Id)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
-                            // Element disini ternyata berisi detail dari user atau stamp yang digunakan.
-                            System.Diagnostics.Debug.WriteLine(documentElement.ElementId);
-                            System.Diagnostics.Debug.WriteLine(user.Id);
                             Element newElement = new Element();
                             newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
                             newElement.UserId = user.Id;
@@ -229,8 +226,6 @@ namespace DRD.Service
                 //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
                 //}
             }
-
-            System.Diagnostics.Debug.WriteLine(rotation.Remark + " ACCESS TYPE ROT :: " + rotation.AccessType);
             return rotation;
         }
 

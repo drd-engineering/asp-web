@@ -72,6 +72,10 @@ namespace DRD.App.Controllers
         {
             InitializeAPI();
             var data = companyService.AddMembers(companyId, user.Id, emails);
+            foreach(AddMemberResponse item in data)
+            {
+                companyService.SendEmailAddMember(item);
+            }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
