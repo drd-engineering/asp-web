@@ -3613,8 +3613,6 @@
     <Content Include="Views\Rotation\New.cshtml" />
     <Content Include="Views\Rotation\List.cshtml" />
     <Content Include="Views\Include\PopupWorkflow.cshtml" />
-    <Content Include="Views\InProgress\InProgressList.cshtml" />
-    <Content Include="Views\InProgress\InProgress.cshtml" />
     <Content Include="Views\Include\RotationLog.cshtml" />
     <Content Include="Views\Include\PopupMember.cshtml" />
     <Content Include="Views\Include\PopupActivity.cshtml" />
@@ -3664,18 +3662,10 @@
     <Content Include="Views\Testing\Pen.cshtml" />
     <Content Include="Views\Include\PopupText.cshtml" />
     <Content Include="Views\Login\ForgotPassword.cshtml" />
-    <Content Include="Views\Payment\Payment.cshtml" />
-    <Content Include="Views\Payment\Aggregator.cshtml" />
-    <Content Include="Views\Payment\Gerai.cshtml" />
-    <Content Include="Views\Payment\Deposit.cshtml" />
-    <Content Include="Views\Payment\Voucher.cshtml" />
-    <Content Include="Views\Payment\Confirmation.cshtml" />
-    <Content Include="Views\Payment\Aggregator2.cshtml" />
     <Content Include="Views\MemberAccount\MemberAccountList.cshtml" />
     <Content Include="Views\MemberAccount\MemberAccount.cshtml" />
     <Content Include="Views\Include\PopupBank.cshtml" />
     <Content Include="Views\Include\PopupMemberAccount.cshtml" />
-    <Content Include="Views\Payment\XAggregator.cshtml" />
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
     <Content Include="Views\Contact\index.cshtml" />

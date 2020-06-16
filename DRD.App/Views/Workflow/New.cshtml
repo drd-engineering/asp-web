@@ -148,7 +148,7 @@
 
                                             <div id="node-activity-xx" class="node-activity-yy" style="display:none">
                                                 <div id="node-activity-caption-xx" class="node-activity-caption-yy">
-                                                    <span id="title-activity-xx" class="title-activity" onclick="popupActivity('title-activity-xx')">Activity</span>
+                                                    <span id="title-activity-xx" class="title-activity"><input style="color:black" value="Activity" onfocus="this.value = this.value;"/></span>
                                                     <i class="icon-cross3 pull-right" onclick="removeActivityConfirmation('-xx-')"></i>
                                                     <i class="icon-loop4 pull-right" onclick="selectLink('node-activity-xx')" data-popup="tooltip" title="Select links" data-placement="bottom"></i>
                                                 </div>
@@ -352,8 +352,7 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                console.log($scope.model.Id);
-                console.log("TESTING");
+
                 if ($scope.model.Id!=0){
                     setTimeout(function () {
                         var digramScope=angular.element('#xdiagramController').scope();
@@ -368,6 +367,8 @@
                 }
                 $(".content").show();
             });
+
+
             function initValues() {
                 var product = @Html.Raw(Json.Encode(Model.obj));
                 $scope.objectItems = @Html.Raw(Json.Encode(Model.objItems));

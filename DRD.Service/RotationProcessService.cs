@@ -388,6 +388,15 @@ namespace DRD.Service
             }
         }
 
+        private ActivityItem createActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationId, long rotationNodeId, string lastActivityStatus)
+        {
+            using (var db = new ServiceContext())
+            {
+                ActivityItem ret = CreateActivityResult(userId, previousUserId, exitCode, rotationName, rotationNodeId, rotationId);
+                ret.LastActivityStatus = lastActivityStatus;
+                return ret;
+            }
+        }
         private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
         {
             using (var db = new ServiceContext())

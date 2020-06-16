@@ -618,6 +618,44 @@
         $scope.initActivity($scope.inode);
 
         $scope.addNode($scope.elmActivityName + '-' + $scope.inode, 'ACTIVITY', 'Activity');
+
+
+        var idx = $scope.inode - 1;
+        let elmTitle = document.getElementById('title-activity-' + idx);
+
+        $('#title-activity-' + idx).on("dblclick", function () {
+            var val = this.innerHTML;
+            var input = document.createElement("input");
+            input.style.backgroundColor = 'white';
+            input.style.color = 'black';
+            input.value = val;
+            input.onblur = function () {
+                var val = this.value;
+                if (val == "") {
+                    alert('this title should not be empty');
+                    val = 'Activity';
+                }
+                this.parentNode.innerHTML = val;
+            }
+            this.innerHTML = "";
+            this.appendChild(input);
+            input.focus();
+        });
+
+        console.log(elmTitle);
+        var tempinput = elmTitle.firstChild;
+        tempinput.onblur = function () {
+            var tempval = this.value;
+            if (tempval == "") {
+                alert('this title should not be empty');
+                tempval = 'Activity';
+            }
+            tempinput.parentNode.innerHTML = tempval;
+        }
+        tempinput.focus();
+
+
+
         // Popover
         $('[data-popup="popover"]').popover();
         // Tooltip
