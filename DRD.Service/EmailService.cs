@@ -46,7 +46,7 @@ namespace DRD.Service
                 {
                     attach = new Attachment(filename);
                     mail.Attachments.Add(attach);
-                }
+                }   
             }
 
             var configGenerator = new AppConfigGenerator();
@@ -60,7 +60,7 @@ namespace DRD.Service
             smtp.Host = emailsmtp;// "smtp.gmail.com";
             smtp.Port = int.Parse(emailport);// 587;
             smtp.UseDefaultCredentials = false;// true;
-            smtp.Credentials = new System.Net.NetworkCredential(emailuser, emailpassword);// "klaxononline@gmail.com", "klaxon123");
+            /*smtp.Credentials = new NetworkCredential(emailuser, emailpassword);*/// "klaxononline@gmail.com", "klaxon123");
             smtp.EnableSsl = true;
             //smtp.Timeout = 5000;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -69,7 +69,6 @@ namespace DRD.Service
             //, "Klaxon");
             try
             {
-                System.Diagnostics.Debug.WriteLine("[[DEBUGING SEND EMAIL]]"+ emailsmtp+emailuser+emailport+emailpassword);
                 smtp.Send(mail);
             }
             catch (SmtpException smtpException)
@@ -148,35 +147,6 @@ namespace DRD.Service
                 body = reader.ReadToEnd();
             }
             return body;
-        }
-
-        public void sendEmailInbox(ActivityItem activity)
-        {
-/*            ApplConfigService appsvr = new ApplConfigService();
-            var topaz = appsvr.GetValue("APPL_NAME");
-            var admName = appsvr.GetValue("EMAILUSERDISPLAY");
-            EmailTools emailtools = new EmailTools();
-
-            string body = string.Empty;
-            if (System.Web.HttpContext.Current != null)
-                body = emailtools.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
-            else
-                body = emailtools.CreateHtmlBody(@"c:\doc\emailtemplate\InboxNotif.html");
-
-
-            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
-            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
-            body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_NAME_}", activity.UserName);
-
-            body = body.Replace("//images", "/images");
-
-            var dbx = new DrdContext(Constant.CONSTRING);
-            var resultx = dbx.ApplConfigs.ToList();
-            var emailfrom = resultx.Where(c => c.Code == "EMAILUSER").FirstOrDefault().Value;
-
-            var task = emailtools.Send(emailfrom, admName + " Administrator", activity.Email, admName + " Inbox Reception", body, false, new string[] { });*/
         }
     }
 }

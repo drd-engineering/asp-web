@@ -122,7 +122,7 @@
 
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-repeat="x in menusFromController" ng-show="isNotDashboard(x.SecondaryKey) || hasCompany" class="{{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}">
+                                    <li ng-repeat="x in menusFromController" ng-show="checkShow(x.SecondaryKey)" class={{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}>
                                         <a href="{{x.UrlPage}}" style="background-color:{{x.SecondaryKey.Equals(viewbagsubmenu) ? "grey": "black"}}"><i class="{{x.Icon}}"></i> <span>{{x.Name}}</span></a>
                                     </li>
                                     <!-- /main -->
@@ -169,6 +169,7 @@
         $scope.notiftime = 5000;
         $scope.xtimer = 0;
         $scope.hasCompany = false;
+        $scope.memberofCompany = false;
         $scope.menusFromController = "";
 
         $scope.companies = [];
@@ -185,7 +186,9 @@
         angular.element(document).ready(function () {
             $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
             $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
-            $scope.getCompaniesOwned();
+            console.log($scope.viewbagsubmenu);
+            setTimeout($scope.isHasCompany(), 0);
+            setTimeout($scope.isMemberofCompany(), 0);
             $scope.getActivityCounter();
             $("#menu-content").show();
             $scope.getUnreadInbox();
@@ -194,12 +197,15 @@
         $scope.goUrl = function (url) {
             location.href = url;
         };
-        /*--------------------------------------------------------------
-        GET ASSET ITEM
-        ------------------------------------- -------------------------*/
-        $scope.isNotDashboard = function (item) {
-            return item !== "DASHBOARD";
+
+        $scope.checkShow = function (item) {
+            if (item == "DASHBOARD") {
+                return $scope.hasCompany;
+            } else if (item == "COMPANY") {
+                return $scope.isMemberofCompany;
+            } else return true;
         }
+
         /*--------------------------------------------------------------
         GET ASSET ITEM
         ------------------------------------- -------------------------*/
@@ -234,20 +240,32 @@
             });
         }
 
-        $scope.getCompaniesOwned = function () {
-                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
-                    if (response.data) {
-                        $scope.companies = response.data.companies;
-                        $scope.hasCompany = $scope.companies.length > 0;
-                    }
-                    else {
+        $scope.isHasCompany = function () {
+            $http.post('@Url.Action("HasCompany", "User")', {}).then(function (response) {
+                if (response.data) {
+                    $scope.hasCompany = response.data;
+                }
+                else {
 
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
+                }
+            }, function (response) {
+                //error handle\
+                var x = 0;
+            });
         }
+        $scope.isMemberofCompany = function () {
+            $http.post('@Url.Action("IsMemberofCompany", "User")', {}).then(function (response) {
+                if (response.data) {
+                    $scope.memberofCompany = response.data;
+                }
+                else {
+
+                }
+            }, function (response) {
+                //error handle\
+                var x = 0;
+            });
+        };
         /*--------------------------------------------------------------
         JS
         --------------------------------------------------------------*/

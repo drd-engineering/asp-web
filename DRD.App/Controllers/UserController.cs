@@ -7,11 +7,30 @@ using System.Web.Mvc;
 using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Service;
- 
+using DRD.Models.View;
+
 namespace DRD.App.Controllers
 {
     public class UserController : Controller
     {
+        private LoginController login = new LoginController();
+        private UserSession user;
+        private UserService userService = new UserService();
+        private Layout layout = new Layout();
+
+        public void Initialize()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+            layout.menus = login.GetMenus(this, layout.activeId);
+            layout.user = login.GetUser(this);
+        }
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+        }
+
         /// <summary>
         /// This function will return all the user's subscriptions even it personal or company
         /// </summary>
@@ -19,26 +38,39 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetAllSubscription()
         {
-            var logincontroller = new LoginController();
-            UserSession user = logincontroller.GetUser(this);
-            var service = new UserService();
-            var data = service.GetAllSubscription(user.Id);
+            Initialize();
+            var data = userService.GetAllSubscription(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ValidationPassword(long userId, string password)
         {
-            var srv = new UserService();
+            Initialize();
             if (userId == 0)
             {
-                var logincontroller = new LoginController();
-                UserSession user = logincontroller.GetUser(this);
                 userId = user.Id;
-                System.Diagnostics.Debug.WriteLine("User Id FOR VALIDATION :: " + userId);
             }
-            var data = srv.ValidationPassword(userId, password);
-            System.Diagnostics.Debug.WriteLine("VALIDATION ENDING :: " + userId);
-
+            var data = userService.ValidationPassword(userId, password);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// API to check is the user that login has company (is the user are an owner)
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult HasCompany()
+        {
+            InitializeAPI();
+            var data = userService.HasCompany(user.Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// API to check is the user that login a member of some company
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult IsMemberofCompany()
+        {
+            InitializeAPI();
+            var data = userService.IsMemberofCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

@@ -21,6 +21,7 @@ namespace DRD.App.Controllers
         private UserSession user;
         private CompanyService companyService = new CompanyService();
         private MemberService memberService = new MemberService();
+        private UserService userService = new UserService();
         private SubscriptionService subscriptionService = new SubscriptionService();
         private Layout layout = new Layout();
 
@@ -40,7 +41,11 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             Initialize();
-            return View(layout);
+            if (userService.HasCompany(user.Id))
+            {
+                return View(layout);
+            }
+            return null; 
         }
 
         public ActionResult GetAllCompanyOwnedbyUser()
@@ -72,6 +77,10 @@ namespace DRD.App.Controllers
         {
             InitializeAPI();
             var data = companyService.AddMembers(companyId, user.Id, emails);
+            foreach(AddMemberResponse item in data)
+            {
+                companyService.SendEmailAddMember(item);
+            }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

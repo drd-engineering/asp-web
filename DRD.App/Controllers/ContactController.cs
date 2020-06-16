@@ -39,7 +39,6 @@ namespace DRD.App.Controllers
         // GET: Contact/GetPersonalContact
         public ActionResult GetPersonalContact(string topCriteria, int page, int pageSize)
         {
-            System.Diagnostics.Debug.WriteLine("GET PERSONAL CONTACT:");
             InitializeAPI();
             
             ContactList data = contactService.GetPersonalContact(login.GetUser(this), topCriteria, page, pageSize);
@@ -49,7 +48,6 @@ namespace DRD.App.Controllers
         // GET: Contact/GetContactFromCompany/Id
         public ActionResult GetContactFromCompany(long CompanyId, string topCriteria, int page, int pageSize)
         {
-            System.Diagnostics.Debug.WriteLine("GET CONTACT FROM COMPANY: "+ CompanyId);
             InitializeAPI();
             ContactList data = contactService.GetContactFromCompany(login.GetUser(this), CompanyId, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);

@@ -83,7 +83,6 @@ namespace DRD.App.Controllers
             try
             {
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
-                System.Diagnostics.Debug.WriteLine("LOCATION FILE " + Tranfiles);
                 if (System.IO.File.Exists(Tranfiles))
                 {
                     //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
@@ -172,8 +171,6 @@ namespace DRD.App.Controllers
             var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
             if (xresult.Equals("OK"))
             {
-                System.Diagnostics.Debug.WriteLine("[[FILEPATH]] " + filepath + " [[OPEN DOC PDF]] " + xresult);
-
                 return Convert.ToBase64String(pdfByte);
             }
             else
@@ -238,9 +235,6 @@ namespace DRD.App.Controllers
                     _filename = Guid.NewGuid().ToString();
                     var _comPath = Server.MapPath("/" + folder + "/") + _filename + _ext;
                     _filename = _filename + _ext;
-
-                    System.Diagnostics.Debug.WriteLine("[[FILE]] " + _filename + " [[EXT]] " + _ext + "  [[PATH]]" + _comPath);
-
                     ViewBag.Msg = _comPath;
                     var path = _comPath;
 
@@ -249,7 +243,6 @@ namespace DRD.App.Controllers
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("Not exist file");
                     result.idx = -5;
                     return Json(result, JsonRequestBehavior.AllowGet); //Invalid member plan
                 }

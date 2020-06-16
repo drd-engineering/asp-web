@@ -89,6 +89,7 @@ namespace DRD.Service
             return rotationService.GetRelatedToCompany(companyId, userId, Tags, skip, pageSize);
         }
 
+        // Belom dipake ini bang
         public int SendEmailNotifikasiRotasi(long rotationId, long userId)
         {
             var configGenerator = new AppConfigGenerator();
@@ -101,8 +102,6 @@ namespace DRD.Service
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
-
-            System.Diagnostics.Debug.WriteLine(senderEmail);
 
             try
             {

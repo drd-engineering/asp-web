@@ -69,7 +69,7 @@
                                 <div ng-repeat="x in acceptedMembers" class="col-lg-4 col-md-4 col-xs-6">
                                     <div class="row member-container">
                                         <div class="col-sm-3 col-lg-3">
-                                            <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
+                                            <img class="avatar" ng-src="/Images/Member/{{x.User.EncryptedId}}/{{x.User.ImageProfile}}" />
                                         </div>
                                         <div class="col-sm-8 col-lg-8 no-overflow">
                                             <strong class="ellipsis">{{x.User.Name}}</strong>
@@ -124,7 +124,7 @@
                                     <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
                                         <div class="row member-container">
                                             <div class="col-sm-2 col-lg-2">
-                                                <img class="avatar" ng-src="/Images/Member/{{x.User.ImageProfile}}" />
+                                                <img class="avatar" ng-src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" />
                                             </div>
                                             <div class="col-sm-6 col-lg-6 no-overflow">
                                                 <strong class="ellipsis">{{x.User.Name}}</strong>
@@ -179,6 +179,8 @@
             $scope.isView = false;
             $scope.index = 0;
             $scope.companyId = 0;
+            $scope.acceptedMembers = [];
+            $scope.waitingMembers = [];
 
             /*--------------------------------------------------------------
             INIT DATA
@@ -201,17 +203,16 @@
             GET PRODUCT
             --------------------------------------------------------------*/
             $scope.getAcceptedMember = function (id) {
-            $scope.acceptedMembers = [];
                 $http.post('@Url.Action("GetAcceptedMember", "Member")', { companyId: id })
                     .then(function (response) {
                         if (response.data) {
+                            console.log(response.data.members);
                             $scope.acceptedMembers = response.data.members;
                     }
                 });
             }
 
             $scope.getWaitingMember = function (id) {
-                $scope.waitingMembers = [];
                 $http.post('@Url.Action("GetWaitingMember", "Member")', { companyId: id })
                     .then(function (response) {
                     if (response.data) {
@@ -288,6 +289,14 @@
                     .then(function (response) {
                         if (response.data) {
                             for (var i = 0; i < response.data.length; i++) {
+                                if (response.data[i].status == 2) {
+                                    $.jGrowl("You have success send email again for " + response.data[i].email + " to join this company", {
+                                        header: 'Send Email Again',
+                                        //sticky: true,
+                                        life: $scope.notiftime,
+                                        theme: 'alert-styled-right bg-warning'
+                                    });
+                                }
                                 if (response.data[i].status == 1) {
                                     $.jGrowl("You have success add " + response.data[i].email + " as memeber of this company", {
                                         header: 'Add Member Success',
@@ -313,14 +322,18 @@
                                     });
                                 }
                                 if (response.data[i].status == -2) {
-                                    $.jGrowl(response.data[i].email + " already invited as member of this company", {
-                                        header: 'Member Already Invited',
+                                    $.jGrowl(response.data[i].email + " is member of this company", {
+                                        header: 'Member of This Company',
                                         //sticky: true,
                                         life: $scope.notiftime,
                                         theme: 'alert-styled-right bg-warning'
                                     });
                                 }
                             }
+
+                            $scope.emails = "";
+                            $scope.getAcceptedMember();
+                            $scope.getWaitingMember();
                         }
                     });
             }

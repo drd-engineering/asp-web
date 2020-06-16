@@ -125,7 +125,6 @@ namespace DRD.Service
                                              TotalAdministrators = usage == null ? 0 : usage.Administrator
                                          }).ToList();
                 returnList.usages = adminSubscription;
-                System.Diagnostics.Debug.WriteLine("COUNT :: ADMIN :: " + returnList.usages.Count);
                 var ownerSubscriptions = (from company in db.Companies
                                           join usage in db.Usages on company.Id equals usage.CompanyId
                                           join package in db.BusinessPackages on usage.PackageId equals package.Id
@@ -140,7 +139,6 @@ namespace DRD.Service
                                               TotalAdministrators = usage == null ? 0 : usage.Administrator
                                           }).ToList();
                 OwnerSubscriptions.usages = ownerSubscriptions;
-                System.Diagnostics.Debug.WriteLine("COUNT :: TOTAL :: " + returnList.usages.Count);
                 returnList.mergeBusinessSubscriptionList(OwnerSubscriptions);
                 returnList.usages = returnList.usages.OrderBy(i => i.CompanyName).ToList();
                 return returnList;

@@ -70,8 +70,6 @@ namespace DRD.Service
                     }
                     try
                     {
-                        //TODO: remove these lines when production
-                        System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]User ID expected when saving : " + user.Id);
                         user.ImageProfile = "user.png";
                         user.CreatedAt = DateTime.Now;
                         db.Users.Add(user);
@@ -124,8 +122,6 @@ namespace DRD.Service
         /// <param name="user"></param>
         public void SendEmailRegistration(User user)
         {
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]Send Email Trigered");
             var configGenerator = new AppConfigGenerator();
             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
@@ -134,10 +130,6 @@ namespace DRD.Service
             string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/Registration.html"));
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the pathquery of Email Registration");
-            System.Diagnostics.Debug.WriteLine(strPathAndQuery);
 
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
@@ -148,11 +140,7 @@ namespace DRD.Service
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-            //TODO: remove these lines when production
-            System.Diagnostics.Debug.WriteLine("[[USERSERVICE]]This is the sender of Email Registration");
-            System.Diagnostics.Debug.WriteLine(senderEmail);
-
-            var task = emailService.Send(senderEmail, senderName + " Administrator", user.Email, senderName + " User Registration", body, false, new string[] { });
+            var task = emailService.Send(senderEmail, senderName , user.Email, "User Registration", body, false, new string[] { });
         }
         public UserSession Login(string username, string password)
         {
@@ -236,8 +224,6 @@ namespace DRD.Service
                 user.OfficialIdNo = userProfile.OfficialIdNo;
                 db.SaveChanges();
             }
-
-            System.Diagnostics.Debug.WriteLine("USER SERVICE, UPDATE RESULT" + user);
             userProfile.ImageInitials = user.ImageInitials;
             userProfile.ImageKtp1 = user.ImageKtp1;
             userProfile.ImageKtp2 = user.ImageKtp2;
@@ -255,7 +241,6 @@ namespace DRD.Service
                 return location;
             string pattern = @"(^\/.*\/)";
             location = "/" + location;
-            System.Diagnostics.Debug.WriteLine(location);
             string removedPrefix = System.Text.RegularExpressions.Regex.Replace(location, pattern, string.Empty);
             return removedPrefix;
         }
@@ -349,7 +334,6 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var encryptedPassword = Utilities.Encrypt(oldPassword);
-                System.Diagnostics.Debug.WriteLine("[[ DEBBUG USER ]]" + user.Id);
                 User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
                 if (getUser == null)
                     return -1;
@@ -368,16 +352,12 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                System.Diagnostics.Debug.WriteLine("[[ Email Usernya ]] " + emailUser);
-
                 var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
                 if (userGet == null) return 0;
 
                 var xpwd = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
 
                 userGet.Password = Utilities.Encrypt(xpwd);
-
-                System.Diagnostics.Debug.WriteLine("[[ SUCCESS RESETING PASSWORD ]]");
                 var result = db.SaveChanges();
 
                 EmailService emailService = new EmailService();
@@ -393,7 +373,6 @@ namespace DRD.Service
                 var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
 
                 var task = emailService.Send(emailfrom, emailfromdisplay + " Administrator", emailUser, "DRD Member Reset Password", body, false, new string[] { });
-                System.Diagnostics.Debug.WriteLine("[[ DEBUG CHANGE PASSWORD ]] sending email complete");
                 return 1;
             }
         }
@@ -406,7 +385,6 @@ namespace DRD.Service
         /// <returns></returns>
         public bool ValidationPassword(long id, string password)
         {
-            System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD :: " + id + " :: " + password);
             var equals = false;
             using (var db = new ServiceContext())
             {
@@ -416,7 +394,6 @@ namespace DRD.Service
 
                 // for test case, can be deprecated if needed
                 if (User.Id < 0)
-                    System.Diagnostics.Debug.WriteLine("VALIDATE PASSWORD DB :: " + User.Password);
                 if (User.Password.Equals(password))
                     equals = true;
                 else
@@ -425,6 +402,36 @@ namespace DRD.Service
 
                 return equals;
             }
+        }
+        /// <summary>
+        /// Checking if the user is owner of a company or more
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool HasCompany(long userId)
+        {
+            var has = true;
+            using (var db = new ServiceContext())
+            {
+                var countCompany = db.Companies.Count(c => c.OwnerId == userId);
+                has = countCompany > 0;
+            }
+            return has;
+        }
+        /// <summary>
+        /// Checking if the user is a member of some company
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool IsMemberofCompany(long userId)
+        {
+            var isMember = true;
+            using (var db = new ServiceContext())
+            {
+                var countMember = db.Members.Count(m => m.UserId == userId && m.isCompanyAccept && m.isMemberAccept);
+                isMember = countMember > 0;
+            }
+            return isMember;
         }
     }
 }

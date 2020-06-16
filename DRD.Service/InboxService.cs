@@ -102,9 +102,6 @@ namespace DRD.Service
                 if (db.Inboxes != null)
                 {
                     var inbox = db.Inboxes.Where(i => i.UserId == user.Id && i.Id == inboxId).FirstOrDefault();
-
-                    System.Diagnostics.Debug.WriteLine("INBOX ID " + inbox.Id);
-
                     inboxItem.CurrentActivity = db.RotationNodes.Where(rn => rn.Id == inbox.ActivityId).Select(rn => rn.WorkflowNode.Caption).FirstOrDefault();
 
                     // mapping rotation log
@@ -211,7 +208,6 @@ namespace DRD.Service
         public int CreateInbox(ActivityItem activity)
         {
             int returnItem = -1;
-            System.Diagnostics.Debug.WriteLine("EXIT CODE :: " + activity.ExitCode + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.PreviousUserId);
             if (activity.ExitCode > 0)
             {
                 using (var db = new ServiceContext())
@@ -256,7 +252,6 @@ namespace DRD.Service
                     {
                         inboxItem.LastStatus = "UPLOAD";
                         inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
-                        System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + activity.PreviousUserId + " " + activity.UserId);
                         if(activity.PreviousUserId != activity.UserId)
                         {
                             Inbox inboxItem2;
@@ -271,8 +266,6 @@ namespace DRD.Service
                             inboxItem2.RotationId = activity.RotationId;
                             inboxItem2.CreatedAt = DateTime.Now;
                             db.Inboxes.Add(inboxItem2);
-                            
-                            System.Diagnostics.Debug.WriteLine("INBOX MESSAGE :: " + inboxItem.Message);
                         }
                     }
                     inboxItem.prevUserEmail = activity.PreviousEmail;
@@ -280,7 +273,9 @@ namespace DRD.Service
                     inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
-                    return db.SaveChanges();
+                    var dbsave = db.SaveChanges();
+                    sendemailactiviity(activity);
+                    return dbsave;
                 }
             }
             return returnItem;
@@ -331,7 +326,6 @@ namespace DRD.Service
                 var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId == activity.UserId).FirstOrDefault();
                 if (inbox != null)
                 {
-                System.Diagnostics.Debug.WriteLine("INBOX UPDATE :: " + inbox.Id  + " " + activity.UserId + " " + activity.RotationNodeId + " " + activity.LastActivityStatus);
                     if (activity.LastActivityStatus.Equals("SUBMIT"))
                     {
                         inbox.DateNote = "You need to review " + activity.RotationName;
@@ -362,11 +356,38 @@ namespace DRD.Service
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("INBOX NULL");
                     return CreateInbox(activity);
                 }
             }
         }
+        public void sendemailactiviity(ActivityItem activity)
+        {
+            if (activity.ExitCode < 0)
+                return;
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
 
+            string body = string.Empty;
+            if (System.Web.HttpContext.Current != null)
+                body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
+            else
+                body = emailService.CreateHtmlBody(@"c:\doc\emailtemplate\InboxNotif.html"); ///Masih perlu di edit
+
+            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+            body = body.Replace("{_URL_}", strUrl);
+            body = body.Replace("{_SENDER_}", activity.UserName);
+            body = body.Replace("{_NAME_}", activity.UserName);
+            body = body.Replace("{_ACTION_}", activity.UserName);
+
+            body = body.Replace("//images", "/images");
+
+            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+            var task = emailService.Send(senderEmail, senderName, activity.Email, "Inbox Reception", body, false, new string[] { });
+        }
     }
 }

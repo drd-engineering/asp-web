@@ -16,6 +16,7 @@ namespace DRD.Models.View
         public string PreviousUserName { get; set; }
         public string PreviousEmail { get; set; }
         public string RotationName { get; set; }
+        public string ActivityName { get; set; }
         public long RotationId { get; set; }
         public long RotationNodeId { get; set; }
         public string LastActivityStatus { get; set; }

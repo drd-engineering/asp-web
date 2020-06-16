@@ -112,14 +112,11 @@ namespace DRD.Service
                 var createdOrUpdated = new List<DocumentUser>();
                 var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
                 if (docs == null) return null;
-                System.Diagnostics.Debug.WriteLine("Document found " + docs.Id);
                 foreach (DocumentElement el in docs.DocumentElements)
                 {
                     if (el.ElementId == null) continue;
-                    System.Diagnostics.Debug.WriteLine("Document element has person to sign or stamp or any " + el.ElementId.Value);
                     var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
                     if (docUser != null) continue;
-                    System.Diagnostics.Debug.WriteLine("create new docuser");
                     docUser = new DocumentUser();
                     docUser.UserId = el.ElementId.Value;
                     docUser.DocumentId = el.DocumentId;
@@ -812,13 +809,11 @@ namespace DRD.Service
                 var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
                 if (doc == null)
                     return -4;
-                System.Diagnostics.Debug.WriteLine("[[DEBUG Document found]] " + doc.Id);
                 // Harus di improve lagi untuk tau status saat ini
                 // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
                 var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
                 if (docMem == null)
                     return -4;
-                System.Diagnostics.Debug.WriteLine("[[DEBUG DocumentUser found]] " + docMem.Id);
                 // calc from rotation is completed
                 // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                 //    return -3;
@@ -849,13 +844,11 @@ namespace DRD.Service
                 var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
                 if (doc == null)
                     return -4;
-                System.Diagnostics.Debug.WriteLine("[[DEBUG Document found]] " + doc.Id);
                 // Harus di improve lagi untuk tau status saat ini
                 // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
                 var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
                 if (docMem == null)
                     return -4;
-                System.Diagnostics.Debug.WriteLine("[[DEBUG DocumentUser found]] " + docMem.Id);
                 // calc from rotation is completed
                 // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                 //    return -3;
@@ -897,15 +890,12 @@ namespace DRD.Service
             {
                 //
                 // prepare data 
-                System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + documentId.ToString());
                 var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
                 var cxnew = annos.Count();
-                System.Diagnostics.Debug.WriteLine("[count ] " + cxnew + "," + cxold);
                 //nambah old document
                 if (cxold < cxnew)
                 {
                     var ep = annos.ElementAt(0); // get 1 data for sample
-                    System.Diagnostics.Debug.WriteLine("[[ the anno ]] :" + ep.ToString());
                     for (var x = cxold; x < cxnew; x++)
                     {
                         DocumentElement da = new DocumentElement();
@@ -915,10 +905,8 @@ namespace DRD.Service
 
                         da.UserId = userEmail;
                         da.CreatedAt = DateTime.Now;
-                        System.Diagnostics.Debug.WriteLine("[ Dataelementbaru ] :" + da);
                         db.DocumentElements.Add(da);
                     }
-                    System.Diagnostics.Debug.WriteLine("[ Saved data ]");
                     db.SaveChanges();
                 }
                 else if (cxold > cxnew)
@@ -931,7 +919,6 @@ namespace DRD.Service
                 // save data (update)
                 //
                 var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
-                System.Diagnostics.Debug.WriteLine("[count data want to save] " + dnew.Count());
                 int v = 0;
                 var retval = new List<DocumentElementInboxData>();
                 foreach (DocumentElement da in dnew)
@@ -959,7 +946,6 @@ namespace DRD.Service
                     da.FlagCode = epos.FlagCode;
                     da.FlagDate = epos.FlagDate;
                     da.FlagImage = epos.FlagImage;
-                    System.Diagnostics.Debug.WriteLine(" Flag Code disini : " + epos.FlagCode);
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
                     da.Element = epos.Element;

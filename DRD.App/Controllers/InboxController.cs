@@ -49,9 +49,6 @@ namespace DRD.App.Controllers
         public ActionResult Inbox(int id)
         {
             Initialize();
-
-            System.Diagnostics.Debug.WriteLine("INBOX ID " + id);
-            
             var data = inboxService.GetInboxItemById(id, user);
             layout.dataId = id;
 
