@@ -95,7 +95,7 @@
 
         var from = document.getElementById("start-0");
         from.style.left = 50;
-        var to = document.getElementById("node-activity-0");
+        var to = document.getElementById("node-activity-2");
         $scope.addLinkSubmit(from, to);
         $scope.refreshLines();
 
@@ -125,18 +125,18 @@
         });
 
         $scope.addNode('end-1', 'END', 'End');
-        $scope.firstNode = document.getElementById("node-activity-0");
+        $scope.firstNode = document.getElementById("node-activity-2");
+
     }
 
     $scope.initUpload = function () {
-        var activityId = "node-activity-0"
-        var submitId = "submit-0";
+        var activityId = "node-activity-2"
+        var submitId = "submit-2";
 
         var activity = document.getElementById(activityId);
         var submit = document.getElementById(submitId);
 
-        $("#node-activity-0").show();
-        console.log($scope.nodes);
+        $("#node-activity-2").show();
         var lineSubmit = new LeaderLine(activity, submit, {
                 endPlug: 'behind',
                 hide: true,
@@ -146,7 +146,7 @@
                 color: $scope.linkColorSubmit,
             });
 
-        $("#submit-0").draggable({
+        $("#submit-2").draggable({
             create: function (event, ui) { },
             drag: function (event, ui) {
                 lineSubmit.position().show();
@@ -159,7 +159,7 @@
             }
         });
 
-        $("#node-activity-0").draggable({
+        $("#node-activity-2").draggable({
             create: function (event, ui) { },
             drag: function (event, ui) {
                 $scope.refreshLines();
@@ -174,7 +174,7 @@
             },
         });
 
-        $scope.addNode('node-activity-0', 'ACTIVITY', 'activity');
+        $scope.addNode('node-activity-2', 'ACTIVITY', 'activity');
     }
 
     $scope.initActivity = function (idNo) {
@@ -278,8 +278,8 @@
                 var fromIdx = $scope.getIndex(ui.draggable.context.id);
                 var from = document.getElementById($scope.elmActivityName + "-" + fromIdx);
                 var to = document.getElementById($scope.elmActivityName + "-" + idNo);
-                if (ui.draggable.context.id == 'submit-0') {
-                    from = document.getElementById('node-activity-0');
+                if (ui.draggable.context.id == 'submit-2') {
+                    from = document.getElementById('node-activity-2');
                     $scope.addLinkSubmit(from, to);
                 }else if (ui.draggable.context.id == 'submit-' + fromIdx) {
                     $scope.addLinkSubmit(from, to);
@@ -758,7 +758,7 @@
                 link.line.remove();
         }
 
-        link.firstNode = "node-activity-0";
+        link.firstNode = "node-activity-2";
         link.endNode = "end-1";
         link.elementFrom = elmFrom;
         link.elementTo = elmTo;
@@ -1039,17 +1039,15 @@
 
         // node
         //$scope.nodes =angular.copy( nodes);
-        $scope.inode = 2;
-            console.log(nodes);
+        $scope.inode = 3;
         for (i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-            console.log(node.element);
             var elm;
             if (node.symbolCode == 'START' || node.symbolCode == 'END') {
                 elm = document.getElementById(node.element);
             } else if (node.symbolCode == 'PARALLEL') {
                 elm = $scope.addNodePararrel(0, 0);
-            } else if (node.symbolCode == 'ACTIVITY') {
+            } else if (node.symbolCode == 'ACTIVITY' && node.caption != 'Document Uploading') {
                 elm = $scope.addNodeActivity(0, 0);
                 var idx = $scope.getIndex(elm.id);
 
@@ -1069,6 +1067,21 @@
                     $("#member-email-" + idx).text(node.member.email);
                 }
 
+            } else if (node.symbolCode == 'ACTIVITY' && node.caption == 'Document Uploading') {
+                elm = document.getElementById('node-activity-2');
+
+                var id = document.getElementById("member-id-2");
+
+                id.value = node.memberId;
+
+                if (node.member != null) {
+                    var foto = document.getElementById("photo-profile-" + idx);
+                    foto.src = "/Images/Member/" + node.member.imageProfile;
+                    $("#member-number-" + idx).text(node.member.number);
+                    $("#member-name-" + idx).text(node.member.name);
+                    $("#member-email-" + idx).text(node.member.email);
+                }
+            
             } else if (node.symbolCode == 'DECISION') {
                 elm = $scope.addNodeDecision(0, 0);
                 var idx = $scope.getIndex(elm.id);
@@ -1113,7 +1126,6 @@
 
                 $("#case-descr-" + idx).text(node.value);
             }
-            console.log(elm);
             elm.style.left = node.posLeft == null ? 0 : node.posLeft;
             elm.style.top = node.posTop == null ? 0 : node.posTop;
             elm.style.width = node.width;
