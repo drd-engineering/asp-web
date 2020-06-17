@@ -266,6 +266,7 @@ namespace DRD.Service
                             inboxItem2.RotationId = activity.RotationId;
                             inboxItem2.CreatedAt = DateTime.Now;
                             db.Inboxes.Add(inboxItem2);
+                            sendemailactiviity(inboxItem2);
                         }
                     }
                     inboxItem.prevUserEmail = activity.PreviousEmail;
@@ -274,7 +275,7 @@ namespace DRD.Service
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
                     var dbsave = db.SaveChanges();
-                    sendemailactiviity(activity);
+                    sendemailactiviity(inboxItem);
                     return dbsave;
                 }
             }
@@ -326,31 +327,35 @@ namespace DRD.Service
                 var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId == activity.UserId).FirstOrDefault();
                 if (inbox != null)
                 {
-                    if (activity.LastActivityStatus.Equals("SUBMIT"))
-                    {
-                        inbox.DateNote = "You need to review " + activity.RotationName;
-                        inbox.LastStatus = "REVIEW";
-                    }
-                    else if (activity.LastActivityStatus.Equals("REVISI"))
-                    {
-                          inbox.DateNote = "You need to revise " + activity.RotationName;
-                          inbox.LastStatus = "REVISION";
-                    }
-                    else if (activity.LastActivityStatus.Equals("REJECT"))
-                    {
-                          inbox.DateNote = "This " + activity.RotationName + " has ben rejected by you";
-                          inbox.LastStatus = "REJECTED";
-                    }else if (activity.LastActivityStatus.Equals("END"))
-                    {
-                          inbox.DateNote = "This " + activity.RotationName + " has been completed";
-                          inbox.LastStatus = "COMPLETED";
-                    }
 
                     inbox.ActivityId = activity.RotationNodeId;
                     inbox.CreatedAt = DateTime.Now;
                     inbox.prevUserEmail = activity.PreviousEmail;
                     inbox.prevUserName = activity.PreviousUserName;
                     inbox.IsUnread = true;
+
+                    if (activity.LastActivityStatus.Equals("SUBMIT"))
+                    {
+                        inbox.DateNote = "You need to review " + activity.RotationName;
+                        inbox.LastStatus = "REVIEW";
+                        sendemailactiviity(inbox);
+                    }
+                    else if (activity.LastActivityStatus.Equals("REVISI"))
+                    {
+                        inbox.DateNote = "You need to revise " + activity.RotationName;
+                        inbox.LastStatus = "REVISION";
+                        sendemailactiviity(inbox);
+                    }
+                    else if (activity.LastActivityStatus.Equals("REJECT"))
+                    {
+                        inbox.DateNote = "This " + activity.RotationName + " has ben rejected by you";
+                        inbox.LastStatus = "REJECTED";
+                    }
+                    else if (activity.LastActivityStatus.Equals("END"))
+                    {
+                        inbox.DateNote = "This " + activity.RotationName + " has been completed";
+                        inbox.LastStatus = "COMPLETED";
+                    }
                     UpdatePreviousInbox(activity);
                     return db.SaveChanges();
                 }
@@ -358,12 +363,12 @@ namespace DRD.Service
                 {
                     return CreateInbox(activity);
                 }
+
             }
         }
-        public void sendemailactiviity(ActivityItem activity)
+            public void sendemailactiviity(Inbox inbox)
         {
-            if (activity.ExitCode < 0)
-                return;
+
             var configGenerator = new AppConfigGenerator();
             var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
@@ -379,15 +384,16 @@ namespace DRD.Service
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
             body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_SENDER_}", activity.UserName);
-            body = body.Replace("{_NAME_}", activity.UserName);
-            body = body.Replace("{_ACTION_}", activity.UserName);
+            body = body.Replace("{_SENDER_}", inbox.prevUserName + " ("+inbox.prevUserEmail+")");
+            body = body.Replace("{_NAME_}", inbox.User.Name);
+            body = body.Replace("{_ACTION_}", inbox.LastStatus);
+            body = body.Replace("{_MESSAGE_}", inbox.DateNote);
 
             body = body.Replace("//images", "/images");
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-            var task = emailService.Send(senderEmail, senderName, activity.Email, "Inbox Reception", body, false, new string[] { });
+            var task = emailService.Send(senderEmail, senderName, inbox.User.Email, "Inbox Reception", body, false, new string[] { });
         }
     }
 }
