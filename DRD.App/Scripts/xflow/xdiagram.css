@@ -2,13 +2,13 @@
 }
 
 .node-activity {
-    background-color: #c4b4a9;
+    background-color: #35b1c9;
     color: white;
     padding: 10px;
     width: 150px;
     min-width: 150px;
-    min-height: 40px;
-    border-radius: 10%;
+    min-height: 80px;
+    border-radius: 15px;
     top: 50px;
     left: 200px;
 }
@@ -23,13 +23,13 @@
 }
 
 .node-activity-2 {
-    background-color: #63bcba;
+    background-color: #b06dad;
     color: white;
     padding: 10px;
     width: 150px;
     min-width: 150px;
     min-height: 40px;
-    border-radius: 10%;
+    border-radius: 15px;
     top: 50px;
     left: 200px;
 }
@@ -41,7 +41,7 @@
 }
 
 .node-activity-content {
-    padding: 5px;
+    padding: 20px;
 }
 
 .node-decision {
@@ -168,14 +168,14 @@
 }
 
 .start {
-    background-color: #8cb999;
+    background-color: #a4c645;
     top: 20px;
     left: 50px;
     /*position: relative;*/
 }
 
 .end {
-    background-color: #eb8b84;
+    background-color: #e96060;
     top: 200px;
     left: 50px
 }

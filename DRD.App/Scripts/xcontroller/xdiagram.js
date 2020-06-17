@@ -621,40 +621,37 @@
 
 
         var idx = $scope.inode - 1;
-        let elmTitle = document.getElementById('title-activity-' + idx);
+        let elmTitle = 'title-activity-' + idx;
 
-        $('#title-activity-' + idx).on("dblclick", function () {
-            var val = this.innerHTML;
-            var input = document.createElement("input");
-            input.style.backgroundColor = 'white';
-            input.style.color = 'black';
-            input.value = val;
-            input.onblur = function () {
-                var val = this.value;
-                if (val == "") {
-                    alert('this title should not be empty');
-                    val = 'Activity';
+        $(document).on("dblclick", "#" + elmTitle, function () {
+
+            var current = $(this).text();
+            console.log(current);
+            $("#" + elmTitle).html('<input class="form-control" id="newcont" rows="5"/>');
+            $("#newcont").val(current);
+            $("#newcont").focus();
+
+            $("#newcont").focus(function () {
+                console.log('in');
+            }).blur(function () {
+                var newcont = $("#newcont").val();
+                if (newcont == "") {
+                    alert("you should not leave this part empty");
+                    newcont = current==""?"Activity":current;
                 }
-                this.parentNode.innerHTML = val;
-            }
-            this.innerHTML = "";
-            this.appendChild(input);
-            input.focus();
-        });
+                $("#" + elmTitle).text(newcont);
+            }).keyup(function (e) {
+                if (e.keyCode == 13) {
+                    var newcont = $("#newcont").val();
+                    if (newcont == "") {
+                        alert("you should not leave this part empty");
+                        newcont = current==""?"Activity":current;
+                    }
+                    $("#" + elmTitle).text(newcont);
+                }
+            });
 
-        console.log(elmTitle);
-        var tempinput = elmTitle.firstChild;
-        tempinput.onblur = function () {
-            var tempval = this.value;
-            if (tempval == "") {
-                alert('this title should not be empty');
-                tempval = 'Activity';
-            }
-            tempinput.parentNode.innerHTML = tempval;
-        }
-        tempinput.focus();
-
-
+        })
 
         // Popover
         $('[data-popup="popover"]').popover();
