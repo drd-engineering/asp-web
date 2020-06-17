@@ -1,5 +1,8 @@
 ﻿body {
 }
+#newcont{
+    font-size: 10px;
+}
 
 .node-activity {
     background-color: #35b1c9;
