@@ -382,10 +382,14 @@ namespace DRD.Service
 
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
+            var user = new User();
+            using (var db = new ServiceContext())
+            {
+                user = db.Users.FirstOrDefault(c => c.Id == inbox.UserId);
+            }
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_SENDER_}", inbox.prevUserName + " ("+inbox.prevUserEmail+")");
-            body = body.Replace("{_NAME_}", inbox.User.Name);
+            body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_ACTION_}", inbox.LastStatus);
             body = body.Replace("{_MESSAGE_}", inbox.DateNote);
 
@@ -393,7 +397,7 @@ namespace DRD.Service
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-            var task = emailService.Send(senderEmail, senderName, inbox.User.Email, "Inbox Reception", body, false, new string[] { });
+            var task = emailService.Send(senderEmail, senderName, user.Email, "Inbox Reception", body, false, new string[] { });
         }
     }
 }

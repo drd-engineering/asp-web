@@ -16,12 +16,16 @@ namespace DRD.App.Controllers
         UserSession user;
         Layout layout = new Layout();
 
-        public void Initialize()
+        public bool Initialize()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
         public void InitializeAPI()
         {
@@ -34,7 +38,8 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult New()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             Rotation product = new Rotation();
             layout.obj = product;
             return View(layout);
@@ -45,7 +50,8 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult List()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             return View(layout);
         }
         /// <summary>
@@ -55,7 +61,8 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult Index(long id)
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             layout.obj = rotationService.GetRotationById(id);
             return View(layout);
         }

@@ -57,9 +57,14 @@ namespace DRD.App.Controllers
         }
 
         [OutputCache(Duration = 1800, VaryByParam = "none", Location = OutputCacheLocation.Client, NoStore = true)]
-        public void CheckLogin(Controller controller)
+        public bool CheckLogin(Controller controller)
         {
-            if (controller.Session["_USER_LOGIN_"] == null) controller.Response.Redirect("/Login");
+            if (controller.Session["_USER_LOGIN_"] == null)
+            {
+                controller.Response.Redirect("/Login");
+                return false;
+            }
+            return true;
         }
 
         public UserSession GetUser(Controller controller)

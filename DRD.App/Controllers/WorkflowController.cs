@@ -21,12 +21,16 @@ namespace DRD.App.Controllers
         UserSession user;
         Layout layout = new Layout();
 
-        public void Initialize()
+        public bool Initialize()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
         public void InitializeAPI()
         {
@@ -37,7 +41,8 @@ namespace DRD.App.Controllers
         // GET : Workflow/new
         public ActionResult New()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             WorkflowItem product = new WorkflowItem();
             layout.obj = product;
 
@@ -46,7 +51,8 @@ namespace DRD.App.Controllers
 
         public ActionResult Index(long id)
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             WorkflowItem product = new WorkflowItem();
             product = workflowService.GetById(id);
             layout.obj = product;
@@ -57,7 +63,8 @@ namespace DRD.App.Controllers
         //GET : Workflow/list
         public ActionResult List()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             return View(layout);
         }
         public ActionResult GetById(long id)

@@ -1320,8 +1320,6 @@
             } else if (node.symbolCode == 'ACTIVITY') {
                 var cap = $("#title-activity-" + fromIdx);
                 var info = $("#info-activity-" + fromIdx).attr("data-content");
-                var id = document.getElementById("member-id-" + fromIdx);
-                node.memberId = id.value;
                 node.caption = cap.text();
                 node.info = info;
                 var color = $scope.rgb2hex($("#node-activity-caption-" + fromIdx).css("background-color"));
@@ -1329,12 +1327,6 @@
                 color = $scope.rgb2hex($("#node-activity-caption-" + fromIdx).css("color"));
                 node.textColor = color;
 
-                // collect member
-                var foto = document.getElementById("photo-profile-" + fromIdx);
-                node.member.number = $("#member-number-" + fromIdx).text();
-                node.member.name = $("#member-name-" + fromIdx).text();
-                node.member.email = $("#member-email-" + fromIdx).text();
-                node.member.imageProfile = $scope.getFileName(foto.src);
             } else if (node.symbolCode == 'DECISION') {
                 var cap = $("#title-decision-" + fromIdx);
                 var info = $("#info-decision-" + fromIdx).attr("data-content");

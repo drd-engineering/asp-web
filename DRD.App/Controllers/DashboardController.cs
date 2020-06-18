@@ -15,12 +15,15 @@ namespace DRD.App.Controllers
         private UserSession user;
         private Layout layout = new Layout();
 
-        public void Initialize()
+        public bool Initialize()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            if (login.CheckLogin(this)) { 
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
 
         public void InitializeAPI()
@@ -32,7 +35,8 @@ namespace DRD.App.Controllers
         // GET: Dashboard
         public ActionResult Index()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, 0);
             layout.user = user;

@@ -25,12 +25,16 @@ namespace DRD.App.Controllers
         private SubscriptionService subscriptionService = new SubscriptionService();
         private Layout layout = new Layout();
 
-        public void Initialize()
+        public bool Initialize()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
         public void InitializeAPI()
         {
@@ -40,7 +44,8 @@ namespace DRD.App.Controllers
 
         public ActionResult Index()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             if (userService.HasCompany(user.Id))
             {
                 return View(layout);
@@ -58,7 +63,8 @@ namespace DRD.App.Controllers
 
         public ActionResult Member(long id)
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             var company = companyService.GetCompany(id);
             if(company == null)
             {
