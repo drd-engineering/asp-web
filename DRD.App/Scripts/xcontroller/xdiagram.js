@@ -1649,27 +1649,7 @@ $(function () {
                 scope.$apply(function () {
                     scope.addNodeActivity(0, 0);
                 });
-            } else if (key == 'adddecision') {
-                var scope = angular.element(document.getElementById("xdiagramController")).scope();
-                scope.$apply(function () {
-                    scope.addNodeDecision(0, 0);
-                });
-            } else if (key == 'addtransfer') {
-                var scope = angular.element(document.getElementById("xdiagramController")).scope();
-                scope.$apply(function () {
-                    scope.addNodeTransfer(0, 0);
-                });
-            } else if (key == 'addcase') {
-                var scope = angular.element(document.getElementById("xdiagramController")).scope();
-                scope.$apply(function () {
-                    scope.addNodeCase(0, 0);
-                });
-            } else if (key == 'addpararrel') {
-                var scope = angular.element(document.getElementById("xdiagramController")).scope();
-                scope.$apply(function () {
-                    scope.addNodePararrel(0, 0);
-                });
-            } else if (key == 'refresh') {
+            }  else if (key == 'refresh') {
                 var scope = angular.element(document.getElementById("xdiagramController")).scope();
                 scope.$apply(function () {
                     scope.refreshDiagram();
@@ -1678,23 +1658,7 @@ $(function () {
 
         },
         items: {
-            "addactivity": { name: "Add Activity" },
-            "sep1": "---------",
-            "adddecision": { name: "Add Decision" },
-            "addtransfer": { name: "Add Transfer" },
-            "addcase": { name: "Add Case" },
-            "addpararrel": { name: "Add Parallel" },
-            //"sep2": "---------",
-            //"refresh": { name: "Refresh" },
-            //copy: { name: "Copy", icon: "copy" },
-            //"paste": { name: "Paste", icon: "paste" },
-            //"delete": { name: "Delete", icon: "delete" },
-            //"sep1": "---------",
-            //"quit": {
-            //    name: "Quit", icon: function () {
-            //        return 'context-menu-icon context-menu-icon-quit';
-            //    }
-            //}
+            "addactivity": { name: "Add Activity" }
         }
     });
 
