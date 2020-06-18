@@ -105,7 +105,18 @@
                         <!-- HEADER -->
                         <div class="highlight-header">
                             <div class="container">
-                                <div class="row">
+                                <div class="row vertical-align-row">
+                                    <!--<div class="col-md-1">
+            <button class="image-container-sm" ng-click="exportRotationListToCSV()">
+                <span class="tooltiptext">export as csv</span>
+                <img src="~/Images/icon/export-csv.png"/>
+            </button>
+        </div>-->
+                                    <div class="col-md-1">
+                                        <img style="border:1px solid black;height:75%;cursor:pointer;border-radius:50%;padding:2px" ng-click="exportAllRotationStatusToCSV()" title="Export All Rotation Status as CSV" src="~/Images/icon/download.png" />
+                                    </div>
+                                </div>
+                                <div class="row ">
                                     <div class="col-sm-12">
                                         <label class="control-label">Tags Filter</label>
                                     </div>
@@ -127,12 +138,6 @@
                                     </div>
                                 </div>
                                 <div class="row vertical-align-row">
-                                    <!--<div class="col-md-1">
-        <button class="image-container-sm" ng-click="exportRotationListToCSV()">
-            <span class="tooltiptext">export as csv</span>
-            <img src="~/Images/icon/export-csv.png"/>
-        </button>
-    </div>-->
                                     <div class="col-md-7">
                                         <p class="card-title"><strong>Rotation Status</strong></p>
                                     </div>
@@ -160,27 +165,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr style="height:50px;vertical-align:central;" ng-repeat="x in listrotationStatus">
-                                            <td>{{x.Workflow.Name}}</td>
-                                            <td>{{x.Subject}} </td>
-                                            <td>{{getStatusName(x.Status)}}</td>
-                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
-                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        <tr style="height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
+                                            <td>{{y.Workflow.Name}}</td>
+                                            <td>{{y.Subject}} </td>
+                                            <td>{{getStatusName(y.Status)}}</td>
+                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                             <td>
-                                                <span ng-repeat="usr in x.RotationUsers"><img title="{{(usr.Status == 0? 'ongoing' : (usr.Status == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                                <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.Status == 0? 'ongoing' : (usr.Status == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="pagination-container">
-                                <div class="pagination">
-                                    <a ng-click="backRotationStat()">&laquo;</a>
-                                    <a href="#" class="active">{{ pagerotationstatus }}</a>
-                                    <a ng-click="nextRotationStat()">&raquo;</a>
+                                <div style="padding-bottom:20px;padding-top:20px"class="pagination">
+                                    <a data-toggle="tooltip" title="first page" ng-click="getDashboardRotationStatusPage(1)">&lt;&lt;</a>
+                                    <a data-toggle="tooltip" title="previous page" ng-click="getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
+                                    <a ng-repeat="rtsp in rotationStatusPaging | limitTo : pageRotationStatus+3>rotationStatusPaging.length?rotationStatusPaging.length:pageRotationStatus+3 : pageRotationStatus-4<0?0:pageRotationStatus-4" ng-click="getDashboardRotationStatusPage(rtsp)" class="{{rtsp == pageRotationStatus ? 'active':''}}">
+                                        {{rtsp}}
+                                    </a>
+                                    <a data-toggle="tooltip" title="next page" ng-click="getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
+                                    <a data-toggle="tooltip" title="last page" ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
                                 </div>
-                                <p class="pagination-info">{{ pagerotationstatus }}</p>
-
                             </div>
                         </div>
 
@@ -215,10 +222,12 @@
 
             $scope.tags = [];
             $scope.newTag = "";
-            $scope.listrotationStatus = [];
-            $scope.pagerotationstatus = 1;
-            $scope.pagesizerotationstatus = 10;
-
+            $scope.listRotationStatus = [];
+            $scope.rotationStatusPaging = [];
+            $scope.pageRotationStatus = 1;
+            $scope.pageSizeRotationStatus = 10;
+            $scope.hasPrevPage = false;
+            $scope.hasNextPage = false;
 
             $scope.counter = {
                 Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
@@ -395,37 +404,50 @@
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: $scope.pagerotationstatus, pageSize: $scope.pagesizerotationstatus }
+                    { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: $scope.pageRotationStatus, pageSize: $scope.pageSizeRotationStatus }
                 ).then(function (response) {
                     if (response.data) {
-                        $scope.listrotationStatus = response.data;
-                        return true;
-                    }
-                    else {
-                        return false;
+                        $scope.listRotationStatus = response.data;
+                        $scope.dashboardRotationStatusCountAll();
                     }
                 }, function (response) {
                     //error handle\
                         var x = 0;
-                        return false;
                 });
             }
-            $scope.backRotationStat = function () {
-                $scope.pagerotationstatus -= 1;
-                if (!$scope.getDashboardRotationStatus()) {
-                    $scope.pagerotationstatus += 1;
-                    window.alert("This is the first page");
-                }
+            $scope.dashboardRotationStatusCountAll = function () {
+                $http.post('@Url.Action("DashboardRotationStatusCountAll","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.tags }).then(function (response) {
+                    if (response.data) {
+                        var jumlahData = response.data;
+                        var jumlahPage = Math.ceil(jumlahData / $scope.pageSizeRotationStatus);
+                        for (var i = 1; i <= jumlahPage; i++) {
+                            $scope.rotationStatusPaging.push(i);
+                        }
+                        $scope.pageRotationStatus = 1;
+                    }
+                }, function (response) {
+                    var x = 0;
+                });
             }
-            $scope.nextRotationStat = function () {
-                $scope.pagerotationstatus += 1;
-                if (!$scope.getDashboardRotationStatus()) {
-                    $scope.pagerotationstatus -= 1;
-                    window.alert("This is the last page");
-                }
+            $scope.getDashboardRotationStatusPage = function (pageTarget) {
+                if ((pageTarget > $scope.rotationStatusPaging.length||pageTarget > $scope.rotationStatusPaging.length)) { return; }
+                $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
+                    { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
+                ).then(function (response) {
+                    if (response.data) {
+                        var saved = $scope.rotationStatusPaging; 
+                        $scope.rotationStatusPaging = [];
+                        $scope.rotationStatusPaging = saved;
+                        $scope.listRotationStatus = response.data;
+                        $scope.pageRotationStatus = pageTarget;
+                    }
+                }, function (response) {
+                    //error handle\
+                        var x = 0;
+                });
             }
             $scope.showRotationStatus = function () {
-                return $scope.listrotationStatus.Count() > 0
+                return $scope.listRotationStatus.Count() > 0
             }
             /*--------------------------------------------------------------
             CSV Handling
@@ -450,19 +472,21 @@
                 }
                 return str;
             }
-            $scope.exportCSVFile = function (headers, items, fileTitle) {
+            $scope.exportCSVFile = function (headers, items, string, fileTitle) {
                 if (headers) {
                     items.unshift(headers);
                 }
-
-                // Convert Object to JSON
-                var jsonObject = JSON.stringify(items);
-
-                var csv = $scope.convertToCSV(jsonObject);
-
-                var exportedFilename = fileTitle + '.csv' || 'export.csv';
-
-                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                if (string == null) {
+                    // Convert Object to JSON
+                    var jsonObject = JSON.stringify(items);
+                    var csv = $scope.convertToCSV(jsonObject);
+                    var exportedFilename = fileTitle + '.csv' || 'export.csv';
+                }
+                else {
+                    var csv = string;
+                    var exportedFilename = fileTitle + '.csv' || 'export.csv';
+                }
+                var blob = new Blob([csv], { type: 'text/csv;' });
                 if (navigator.msSaveBlob) { // IE 10+
                     navigator.msSaveBlob(blob, exportedFilename);
                 } else {
@@ -480,13 +504,28 @@
                 }
             }
             $scope.exportRotationListToCSV = function () {
-                var filename = $scope.tags.toString() + $scope.selectedCompany.Name;
-                $scope.exportCSVFile(null, $scope.listrotationStatus, filename);
+                var filename = $scope.tags.toString() + "_" + $scope.selectedCompany.Name + "_RotationStatus";
+                $scope.exportCSVFile(null, $scope.listRotationStatus, null, filename);
+            }
+
+            // export to csv all the rotation status
+            $scope.exportAllRotationStatusToCSV = function () {
+                console.log("exporting csv");
+                $http.post('@Url.Action("ExportAllRotationStatusToCSV", "Dashboard")',
+                    { companyId: $scope.selectedCompany.Id, companyName: $scope.selectedCompany.Name }
+                ).then(function (response) {
+                    var filename = $scope.selectedCompany.Name + "_AllRotationStatus";
+                    console.log(response.data)
+                    $scope.exportCSVFile(null, $scope.listRotationStatus, response.data, filename);
+                }, function (response) {
+                        //error handle
+                        console.log(response);
+                    }
+                );
             }
 
             // Belum digunakan
             $scope.sendEmailNotifikasiRotasi = function (index) {
-
                 $http.post('@Url.Action("sendEmailNotifikasiRotasi","Dashboard")', {}).then(function (response) {
                     if (response.data) {
                     } else {

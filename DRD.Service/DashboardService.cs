@@ -77,18 +77,6 @@ namespace DRD.Service
             }
         }
 
-        // untuk tampilan front dari dashboard.
-        public ICollection<RotationDashboard> GetDashboardRotationStatus(long companyId, long userId, ICollection<string> Tags, int skip, int pageSize)
-        {
-
-            RotationService rotationService = new RotationService();
-            if (userId == -99)
-            {
-                return rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
-            }
-            return rotationService.GetRelatedToCompany(companyId, userId, Tags, skip, pageSize);
-        }
-
         // Belom dipake ini bang
         public int SendEmailNotifikasiRotasi(long rotationId, long userId)
         {

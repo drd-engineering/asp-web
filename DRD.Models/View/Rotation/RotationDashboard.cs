@@ -20,10 +20,7 @@ namespace DRD.Models.View
         public virtual System.Collections.Generic.ICollection<UserDashboard> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
         public virtual UserDashboard Creator {get;set;}
         public virtual WorkflowDashboard Workflow { get; set; }
-        public RotationDashboard()
-        {
-            Creator = new UserDashboard();
-        }
+
         public class WorkflowDashboard
         {
             public long Id { get; set; }
@@ -36,8 +33,8 @@ namespace DRD.Models.View
             public string EncryptedId { get; set; }
             public string ImageProfile { get; set; }
 
-            public System.DateTime CreatedAt { get; set; } // DateCreated
-            public int Status { get; set; } // string
+            public System.DateTime InboxTimeStamp { get; set; } // DateCreated
+            public int InboxStatus { get; set; } // string
             public bool IsHere { get; set; }
         }
     }

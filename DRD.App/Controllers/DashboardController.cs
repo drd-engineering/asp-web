@@ -3,6 +3,7 @@ using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
 using System.Collections.Generic;
+using System.Text;
 using System.Web.Mvc;
 
 namespace DRD.App.Controllers
@@ -12,6 +13,7 @@ namespace DRD.App.Controllers
         private LoginController login = new LoginController();
         private DashboardService dashboardService = new DashboardService();
         private CompanyService companyService = new CompanyService();
+        private RotationService rotationService = new RotationService();
         private UserSession user;
         private Layout layout = new Layout();
 
@@ -92,20 +94,87 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // untuk tampilan front dari dashboard.
+        /// <summary>
+        /// API to obtain Rotation status of a Company 
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="Tags"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public ActionResult GetDashboardRotationStatus(long companyId, ICollection<string> Tags, int page, int pageSize)
         {
             Initialize();
             int skip = (page - 1) * pageSize;
-            var data = dashboardService.GetDashboardRotationStatus(companyId, -99, Tags, skip, pageSize);
+            var data = rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult sendEmailNotifikasiRotasi(long rotationId, long userId)
+        /// <summary>
+        /// API to count all Rotation Status of a company
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="Tags"></param>
+        /// <returns></returns>
+        public ActionResult DashboardRotationStatusCountAll(long companyId, ICollection<string> Tags)
+        {
+            Initialize();
+            var data = rotationService.CountAllRelatedToCompany(companyId, Tags);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// API to obtain CSV file of All Rotation Status of a Company
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public ActionResult ExportAllRotationStatusToCSV(long companyId, string companyName) {
+            InitializeAPI();
+            var data = rotationService.GetRelatedToCompany(companyId, null, 0, -1);
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Reviewed Done by,Reviewed by,Not Yet Review");
+            sb.Append("\r\n");
+            foreach (RotationDashboard rtd in data)
+            {
+                sb.Append(rtd.Id.ToString() + ',');
+                sb.Append(rtd.Subject + ',');
+                sb.Append(rtd.Status.ToString() + ',');
+                sb.Append(rtd.DateCreated.ToString() + ',');
+                sb.Append(rtd.DateStarted.ToString() + ',');
+                sb.Append(rtd.DateUpdated.ToString() + ',');
+                sb.Append(rtd.Creator.Name + ',');
+                sb.Append(rtd.Workflow.Name+ ',');
+                foreach (var tagname in rtd.Tags)
+                {
+                    sb.Append(tagname + " | ");
+                }
+                sb.Append(",");
+                var users = new List<RotationDashboard.UserDashboard>(rtd.RotationUsers);
+                for (var i = 0; i<users.Count;  i++)
+                {
+                    if (i == 0)
+                    {
+                        if (users[i].InboxStatus == -99)
+                        {
+                            sb.Append(",,"+ users[i].Name + " | ");
+                            continue;
+                        }
+                    }
+                    if (users[i].InboxStatus == 0)
+                    {
+                        sb.Append(","+ users[i].Name + ",");
+                    }
+                    sb.Append(users[i].Name + " | ");
+                }
+                //Append new line character.
+                sb.Append("\r\n");
+            }
+            return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", "RotationStatus" + companyName + ".csv");
+        }
+        public ActionResult SendEmailNotifikasiRotasi(long rotationId, long userId)
         {
             Initialize();
             var data = dashboardService.SendEmailNotifikasiRotasi(rotationId, userId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

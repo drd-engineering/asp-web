@@ -955,7 +955,7 @@
     var delKeyDown = function(e)
     {
         if (!isAnnoElementEnable) return;
-        if (event.keyCode == 46 && $('#svg-selection')[0].style.display != 'none') {
+        if ((event.keyCode == 46 || event.keyCode == 8) && $('#svg-selection')[0].style.display != 'none') {
             delKeyDownAction(e);
         }
     }

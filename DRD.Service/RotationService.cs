@@ -864,230 +864,6 @@ namespace DRD.Service
             return GetNodeLiteAllCount(userId, status, topCriteria, null);
         }
 
-        public ICollection<RotationDashboard> GetRelatedToCompany(long companyId, long userId, ICollection<string> tags, int skip, int pageSize)
-        {
-            using (var db = new ServiceContext())
-            {
-                ICollection<RotationDashboard> data;
-                if (tags == null) tags = new List<string>();
-                if (tags.Count > 0)
-                {
-                    data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId
-                            orderby rotation.DateUpdated descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Subject,
-                                Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ImageProfile
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            }).Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower()))).Skip(skip).Take(pageSize).ToList();
-                }
-                else
-                {
-                    data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId || rotation.CreatorId == userId
-                            orderby rotation.DateUpdated descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Subject,
-                                Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ImageProfile
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            }).Skip(skip).Take(pageSize).ToList();
-                }
-                foreach (RotationDashboard x in data)
-                {
-                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
-                    foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
-                    {
-                        var user = (from rotationNode in db.RotationNodes
-                                    where rotationNode.Rotation.Id == x.Id && rotationNode.UserId == y.Id
-                                    select new RotationNodeInboxData
-                                    {
-                                        CreatedAt = rotationNode.CreatedAt,
-                                        Status = rotationNode.Status
-                                    }).FirstOrDefault();
-                        if (user != null)
-                        {
-                            y.Status = user.Status;
-                            y.CreatedAt = user.CreatedAt;
-                        }
-                        else
-                        {
-                            y.CreatedAt = DateTime.MaxValue;
-                            y.Status = -99;
-                        }
-                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
-                    }
-                    x.RotationUsers = x.RotationUsers.OrderBy(i => i.CreatedAt).ToList();
-                }
-                return data;
-            }
-        }
-
-        public ICollection<RotationDashboard> GetRelatedToCompany(long companyId, ICollection<string> tags, int skip, int pageSize)
-        {
-            using (var db = new ServiceContext())
-            {
-                ICollection<RotationDashboard> data;
-                if (tags == null) tags = new List<string>();
-                if (tags.Count > 0)
-                {
-                    data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId
-                            orderby rotation.DateUpdated descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Subject,
-                                Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ImageProfile
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            }).Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower()))).Skip(skip).Take(pageSize).ToList();
-                }
-                else
-                {
-                    data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId
-                            orderby rotation.DateUpdated descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Subject,
-                                Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ImageProfile
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            }).Skip(skip).Take(pageSize).ToList();
-                }
-                foreach (RotationDashboard x in data)
-                {
-                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
-                    foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
-                    {
-                        var user = (from rotationNode in db.RotationNodes
-                                    where rotationNode.Rotation.Id == x.Id && rotationNode.UserId == y.Id
-                                    select new RotationNodeInboxData
-                                    {
-                                        CreatedAt = rotationNode.CreatedAt,
-                                        Status = rotationNode.Status
-                                    }).FirstOrDefault();
-                        if (user != null)
-                        {
-                            y.Status = user.Status;
-                            y.CreatedAt = user.CreatedAt;
-                        }
-                        else
-                        {
-                            y.CreatedAt = DateTime.MaxValue;
-                            y.Status = -99;
-                        }
-                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
-                    }
-                    x.RotationUsers = x.RotationUsers.OrderBy(i => i.CreatedAt).ToList();
-                }
-                return data;
-            }
-        }
-
         //
         // for edit
         //
@@ -1305,6 +1081,140 @@ namespace DRD.Service
                  }).ToList();
 
             return result;
+        }
+
+        /// <summary>
+        /// Function to obtain Rotation status of a Company from Models
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="tags">filter by tag, if tags is empty get all the rotation status data from models</param>
+        /// <param name="skip"></param>
+        /// <param name="pageSize"> if the pagesize is negative so it will get all the rotation status data from models</param>
+        /// <returns></returns>
+        public ICollection<RotationDashboard> GetRelatedToCompany(long companyId, ICollection<string> tags, int skip, int pageSize)
+        {
+            using (var db = new ServiceContext())
+            {
+                var data = (from rotation in db.Rotations
+                            where rotation.CompanyId == companyId
+                            orderby rotation.DateUpdated descending
+                            select new RotationDashboard
+                            {
+                                Id = rotation.Id,
+                                Subject = rotation.Subject,
+                                Status = rotation.Status,
+                                DateCreated = rotation.DateCreated,
+                                DateUpdated = rotation.DateUpdated,
+                                DateStarted = rotation.DateStarted,
+                                Tags = (from tagitem in rotation.TagItems
+                                        join tag in db.Tags on tagitem.TagId equals tag.Id
+                                        select tag.Name.ToLower()).ToList(),
+                                RotationUsers = (from rtuser in rotation.RotationUsers
+                                                 select new RotationDashboard.UserDashboard
+                                                 {
+                                                     Id = rtuser.User.Id,
+                                                     Name = rtuser.User.Name,
+                                                     ImageProfile = rtuser.User.ImageProfile
+                                                 }).ToList(),
+                                Creator = (from user in db.Users
+                                           where user.Id == rotation.CreatorId
+                                           select new RotationDashboard.UserDashboard
+                                           {
+                                               Id = user.Id,
+                                               Name = user.Name,
+                                               ImageProfile = user.ImageProfile
+                                           }).FirstOrDefault(),
+                                Workflow = new RotationDashboard.WorkflowDashboard
+                                {
+                                    Id = rotation.Workflow.Id,
+                                    Name = rotation.Workflow.Name
+                                }
+                            });
+                if(tags != null)
+                    data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
+                if (pageSize > 0 && skip >= 0)
+                    data = data.Skip(skip).Take(pageSize);
+                var result = data.ToList();
+                foreach (RotationDashboard x in result)
+                {
+                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
+                    foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
+                    {
+                        var user = (from rotationNode in db.RotationNodes
+                                    where rotationNode.Rotation.Id == x.Id
+                                    && rotationNode.UserId == y.Id
+                                    select new RotationNodeInboxData
+                                    {
+                                        CreatedAt = rotationNode.CreatedAt,
+                                        Status = rotationNode.Status
+                                    }).FirstOrDefault();
+                        if (user != null)
+                        {
+                            y.InboxStatus = user.Status;
+                            y.InboxTimeStamp = user.CreatedAt;
+                        }
+                        else
+                        {
+                            y.InboxTimeStamp = DateTime.MaxValue;
+                            y.InboxStatus = -99;
+                        }
+                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
+                    }
+                    x.RotationUsers = x.RotationUsers.OrderBy(i => i.InboxTimeStamp).ToList();
+                }
+                return result;
+            }
+        }
+        /// <summary>
+        /// Function to count all Rotation status of a Company from Models
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public int CountAllRelatedToCompany(long companyId, ICollection<string> tags)
+        {
+            using (var db = new ServiceContext())
+            {
+                var data = (from rotation in db.Rotations
+                            where rotation.CompanyId == companyId
+                            orderby rotation.DateUpdated descending
+                            select new RotationDashboard
+                            {
+                                Id = rotation.Id,
+                                Subject = rotation.Subject,
+                                Status = rotation.Status,
+                                DateCreated = rotation.DateCreated,
+                                DateUpdated = rotation.DateUpdated,
+                                DateStarted = rotation.DateStarted,
+                                Tags = (from tagitem in rotation.TagItems
+                                        join tag in db.Tags on tagitem.TagId equals tag.Id
+                                        select tag.Name.ToLower()).ToList(),
+                                RotationUsers = (from rtuser in rotation.RotationUsers
+                                                 select new RotationDashboard.UserDashboard
+                                                 {
+                                                     Id = rtuser.User.Id,
+                                                     Name = rtuser.User.Name,
+                                                     ImageProfile = rtuser.User.ImageProfile
+                                                 }).ToList(),
+                                Creator = (from user in db.Users
+                                           where user.Id == rotation.CreatorId
+                                           select new RotationDashboard.UserDashboard
+                                           {
+                                               Id = user.Id,
+                                               Name = user.Name,
+                                               ImageProfile = user.ImageProfile
+                                           }).FirstOrDefault(),
+                                Workflow = new RotationDashboard.WorkflowDashboard
+                                {
+                                    Id = rotation.Workflow.Id,
+                                    Name = rotation.Workflow.Name
+                                }
+                            });
+                if (tags != null)
+                    data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
+                var result = data.ToList().Count();
+                return result;
+            }
         }
     }
 }
