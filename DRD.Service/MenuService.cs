@@ -39,13 +39,21 @@ namespace DRD.Service
             return Encrypt(DateTime.Now.ToString("yyyyMMddHHmmssfff") + "," + id.ToString());
         }
 
-        public List<Menu> GetMenus(int activeId)
+        public List<Menu> GetMenus(long userId)
         {
+            UserService userService = new UserService();
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Menu.csv");
+            bool hasCompany = userService.HasCompany(userId);
+            bool isCompanyMember = userService.IsAdminOrOwnerofCompany(userId);
+
             List<Menu> values = File.ReadAllLines(path)
                                            .Select(v => Menu.FromCsv(v))
                                            .ToList();
+            if(!hasCompany)
+                values.Remove(values.Find(v => v.SecondaryKey.Equals("DASHBOARD")));
+            if(!isCompanyMember)
+                values.Remove(values.Find(v => v.SecondaryKey.Equals("COMPANY")));
             return values;
         }
 

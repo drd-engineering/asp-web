@@ -1695,6 +1695,7 @@
     <Content Include="assets\js\plugins\visualization\echarts\theme\limitless.js" />
     <Content Include="assets\js\plugins\visualization\sparkline.min.js" />
     <Content Include="assets\ongoing-no-bg.png" />
+    <Content Include="assets\spinner.gif" />
     <Content Include="assets\swf\datatables\flashExport.swf" />
     <Content Include="assets\swf\handsontable\zero_clipboard.swf" />
     <Content Include="assets\vendors\angular-1.5.5\angular-animate.js" />
