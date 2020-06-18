@@ -30,8 +30,11 @@
 
                     <tbody>
                         <tr ng-repeat="x in $parent.workflows" style="cursor:pointer;height:25px;vertical-align:top;" data-dismiss="modal" ng-click="setWorkflow($index);">
-                            <td width="15px"><i class="icon-search4"/></td>
+                            <td width="15px"><i class="icon-search4" /></td>
                             <td>{{x.Name}}</td>
+                        </tr>
+                        <tr ng-show="$parent.workflows.length == 0" style="height:40px;vertical-align:middle;text-align:center" data-dismiss="modal">
+                            <td>You have no available workflow </td>
                         </tr>
                     </tbody>
                 </table>

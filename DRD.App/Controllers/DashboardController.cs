@@ -134,7 +134,7 @@ namespace DRD.App.Controllers
             InitializeAPI();
             var data = rotationService.GetRelatedToCompany(companyId, null, 0, -1);
             StringBuilder sb = new StringBuilder();
-            sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Reviewed Done by,Reviewed by,Not Yet Review");
+            sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Done,Ongoing,Waiting");
             sb.Append("\r\n");
             foreach (RotationDashboard rtd in data)
             {
