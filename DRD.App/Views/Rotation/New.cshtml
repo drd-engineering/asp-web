@@ -48,78 +48,54 @@
             <form name="myForm" class="form-horizontal" autocomplete="off">
                 <fieldset>
                     <div class="row">
-                        <div class="col-md-6">
-                            <label class="control-label">Name</label>
+                        <div style="padding:30px; border-radius:10px" class="col-md-12">
+                            <span class="tag-item" ng-repeat="tag in model.Tags">
+                                {{tag}}
+                                <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
+                                    <img src="~/Images/icon/reject.png" />
+                                </button>
+                            </span>
+                        </div>
+                        <div class="col-sm-12 col-md-7 col-lg-5">
+                            <label class="control-label">Name <strong style="vertical-align:text-top; color:red"  data-toggle="tooltip" title="required">*</strong></label>
                             <input type="text" class="form-control" ng-model="model.Subject" ng-required="wizarno=='product'" maxlength="100" />
                         </div>
-                        <div class="col-md-6">
-                            <label class="control-label">Workflow</label>
-                            <div class="input-group">
+                        <div class="col-sm-12 col-md-5 col-lg-3">
+                            <label class="control-label">Workflow <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
+                            <div class="input-group" style="cursor:pointer!important" ng-click="popupWorkflow()">
                                 <div>
                                     <input type="text" class="form-control" ng-model="workflow.Name" maxlength="50" readonly />
                                 </div>
-                                <span class="input-group-addon" style="cursor:pointer" ng-click="popupWorkflow()"><i class="icon-cogs"></i></span>
+                                <span class="input-group-addon" ><i class="icon-cogs"></i></span>
 
                             </div>
 
                         </div>
-                    </div>
-                    <div class="row">
+                        <div class=" col-sm-12 col-md-4">
+                                <div>
+                                    <label class="control-label">Tags <small>(optional)</small></label>
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())" />
+                                </div>
+                                <div>
+                                    <div style="color:black;font-size:10px;align-self:end">use comma or enter to insert tag/div>
+                                </div>
+                        </div>
+                            </div>
+                        <div style="height:5px"></div>
 
                         <div class="col-md-12">
-                            <label class="control-label">Description</label><br />
+                            <label class="control-label">Description <small>(optional)</small></label><br />
                             <textarea class="control-label" ng-model="model.Remark" rows="3"></textarea>
                         </div>
 
-                    </div>
-
-                    <div class="row">
-                        <!--<div class="col-md-8">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="control-label">Important Notes</label>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" ng-model="model.ImportantNotes" maxlength="100" />
-                                </div>
-                                <div class="col-sm-4">
-                                    <select class="form-control">
-                                        <option>date</option>
-                                        <option>number</option>
-                                        <option>name</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div> -->
-                        <div class="col-md-4">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="control-label">Tags</label>
-                                </div>
-                                <div class="col-sm-12">
-                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())" />
-                                </div>
-                                <div class="col-sm-12">
-                                    <div style="color:black;font-size:10px;align-self:end">use coma to use the tag you type</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <span class="tag-item" ng-repeat="tag in model.Tags">
-                                    {{tag}}
-                                    <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
-                                        <img src="~/Images/icon/reject.png" />
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <div style="height:5px"></div>
-                            
-                        <div class="col-md-10">
-                            <div  class="row">
-                                <table class="table-xxs table-bordered table-striped" style="font-size:small;width:100%">
+                        <div class="col-md-12">
+                            <div class="row" style="align-content:center">
+                                <table class="table-xxs table-bordered table-striped" style="font-size:small;margin: 0 auto; ">
                                     <tbody ng-repeat="x in users" ng-init="topIdx = $index">
                                         <tr style="vertical-align:top" on-finish-render="ngRepeatFinished">
-                                            <td rowspan="2">{{x.ActivityName}}</td>
+                                            <td style="max-width:200px" rowspan="2">{{x.ActivityName}}</td>
                                             <td>
                                                 <table style="width:100%;">
                                                     <tr>
@@ -127,10 +103,10 @@
                                                             <img ng-src={{(x.Picture==null?"/Images/Member/user.png":"/Images/Member/"+x.EncryptedId+"/"+x.Picture)}} height="40" width="40" style="cursor:pointer;border-radius:50%;" ng-click="editMember($index)" />
                                                         </td>
                                                         <td style="font-size:xx-small">
-                                                            <span class="text-format">{{(x.Name == null? "Click the user icon":x.Name) +" "+ x.encrypteid}}</span><br />
+                                                            <span class="text-format">{{(x.Name == null? "Click the user icon":x.Name) }}</span><br />
                                                             <span class="text-format">{{x.Email}}</span><br />
                                                         </td>
-                                                        
+
                                                     </tr>
 
                                                 </table>
@@ -138,11 +114,11 @@
                                         </tr>
                                         <tr>
                                             <td style="font-size:xx-small">
-                                                <span style="font-size:small;color:brown">Permission :&ensp;</span>
+                                                <span style="font-size:small;color:brown">Permission : </span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                            <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp*@;
+                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
