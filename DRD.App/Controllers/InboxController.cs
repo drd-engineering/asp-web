@@ -18,12 +18,16 @@ namespace DRD.App.Controllers
         UserSession user;
         Layout layout = new Layout();
 
-        public void Initialize()
+        public bool Initialize()
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
         public void InitializeAPI()
         {
@@ -32,9 +36,10 @@ namespace DRD.App.Controllers
         }
         public ActionResult Index(long id)
         {
-            Initialize();
+            if(!Initialize())
+                return RedirectToAction("Index", "LoginController");
+ 
             InboxService inboxService = new InboxService();
-
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
 
             //page authorization check if user has no access
@@ -46,19 +51,10 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult Inbox(int id)
-        {
-            Initialize();
-            var data = inboxService.GetInboxItemById(id, user);
-            layout.dataId = id;
-
-            layout.obj = data;
-
-            return View(layout);
-        }
         public ActionResult List()
         {
-            Initialize();
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
             return View(layout);
         }
 

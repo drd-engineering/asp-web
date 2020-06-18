@@ -40,9 +40,12 @@
                                             <div class="col-md-4">
                                                 <p class="card-title"><strong>ROTATION</strong></p>
                                             </div>
-                                            <div class="col-md-4 push-left">
+                                            <div class="col-md-4">
+                                                
+                                            </div>
+                                            <div class="col-md-4 " style="align-items:flex-end;">
                                                 <!-- SELECT -->
-                                                <select  class="card-filter select-lg" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
+                                                <select class="card-filter select-lg pull-right" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
                                             </div>
                                         </div>
                                     </div>
