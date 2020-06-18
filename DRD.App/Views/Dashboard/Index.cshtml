@@ -37,10 +37,10 @@
                                 <div class="highlight-header">
                                     <div class="container">
                                         <div class="row vertical-align-row">
-                                            <div class="col-md-4">
-                                                <p class="card-title"><strong>ROTATION</strong></p>
+                                            <div class="col-md-6">
+                                                <p class="card-title"><strong>ROTATION COUNTER</strong></p>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 
                                             </div>
                                             <div class="col-md-4 " style="align-items:flex-end;">
@@ -102,47 +102,15 @@
                 </div>
             </section>
 
-            <section id="dashboard-rotation-status" ng-show="haveCompany">
+            <section id="dashboard-rotation-status">
                 <div class="panel highlight-container">
                     <div class="highlight-card">
                         <!-- HEADER -->
                         <div class="highlight-header">
                             <div class="container">
                                 <div class="row vertical-align-row">
-                                    <!--<div class="col-md-1">
-            <button class="image-container-sm" ng-click="exportRotationListToCSV()">
-                <span class="tooltiptext">export as csv</span>
-                <img src="~/Images/icon/export-csv.png"/>
-            </button>
-        </div>-->
-                                    <div class="col-md-1">
-                                        <img style="border:1px solid black;height:75%;cursor:pointer;border-radius:50%;padding:2px" ng-click="exportAllRotationStatusToCSV()" title="Export All Rotation Status as CSV" src="~/Images/icon/download.png" />
-                                    </div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-sm-12">
-                                        <label class="control-label">Tags Filter</label>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <form>
-                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
-                                            <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <span class="tag-item" ng-repeat="tag in tags">
-                                            {{tag}}
-                                            <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
-                                                <img src="~/Images/icon/reject.png" />
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row vertical-align-row">
                                     <div class="col-md-7">
-                                        <p class="card-title"><strong>Rotation Status</strong></p>
+                                        <p class="card-title"><strong>ROTATION DETAIL</strong></p>
                                     </div>
                                     <div class="col-md-4 push-left">
                                         <!-- SELECT -->
@@ -155,7 +123,34 @@
                         <!-- CONTENT -->
                         <div class="card-content" ng-show="showRotationStatus" >
                             <!-- each rotation status -->
-                            <div class="container">
+                            <div ng-show="listRotationStatus.length > 0" class="container">
+                                <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;background-color:#AFC9D8" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" >
+                                    <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
+                                </a>
+                                <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;background-color:#AFC9D8" ng-click="exportAllRotationStatusToCSV()" >
+                                    <i style="color:#075685" class="icon-file-download" data-toggle="tooltip" title="Export All Rotation Status as CSV"></i>
+                                </a>
+                                <div class="collapse" id="collapseExample">
+
+                                    <div class="row ">
+                                        <div class="col-sm-12 col-md-4 col-lg-3">
+                                            <form>
+                                                <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
+                                                <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="tag-item" ng-repeat="tag in tags">
+                                                {{tag}}
+                                                <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
+                                                    <img src="~/Images/icon/reject.png" />
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                                 <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                     <thead>
                                         <tr>
@@ -181,7 +176,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="pagination-container">
+                            <div ng-show="listRotationStatus.length > 0" class="pagination-container">
                                 <div style="padding-bottom:20px;padding-top:20px"class="pagination">
                                     <a data-toggle="tooltip" title="first page" ng-click="getDashboardRotationStatusPage(1)">&lt;&lt;</a>
                                     <a data-toggle="tooltip" title="previous page" ng-click="getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
@@ -191,6 +186,9 @@
                                     <a data-toggle="tooltip" title="next page" ng-click="getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
                                     <a data-toggle="tooltip" title="last page" ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
                                 </div>
+                            </div>
+                            <div ng-show="listRotationStatus.length == 0"  class="container" style="text-align:center">
+                                There is no rotation using {{selectedCompany.Name}}'s subscription plan
                             </div>
                         </div>
 
@@ -208,34 +206,33 @@
         <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            $scope.product = {};
             $scope.products = [];
-            $scope.productCount = [];
-            $scope.paging = [];
-            $scope.kriteria = "";
-            $scope.page = 1;
-            $scope.row = 20;
-            $scope.companyOwned = [];
-            $scope.currPage = 0;
-            $scope.isView = false;
-            $scope.index = 0;
-            initValues();
-            $scope.dashboard = {};
-            $scope.selectedCompany = "";
 
-            $scope.tags = [];
-            $scope.newTag = "";
-            $scope.listRotationStatus = [];
+            //pagination
+            $scope.productCount = [];
+            $scope.kriteria = "";
             $scope.rotationStatusPaging = [];
             $scope.pageRotationStatus = 1;
             $scope.pageSizeRotationStatus = 10;
             $scope.hasPrevPage = false;
             $scope.hasNextPage = false;
 
+            //company-related
+            $scope.companyOwned = [];
+            $scope.selectedCompany = "";
+
+            //tag-related
+            $scope.tags = [];
+            $scope.newTag = "";
+
+            //monitoring
+            $scope.listRotationStatus = [];
+
             $scope.counter = {
                 Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
                 New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
             };
+
             $scope.$on("$destroy", function (event) {
                 clearInterval(xtimer);
             });
@@ -249,9 +246,7 @@
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
-            function initValues() {
-                $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-            }
+
             angular.element(document).ready(function () {
                 $scope.getCompanyOwned();
                 $scope.getActivityCounter();
@@ -368,9 +363,7 @@
                 $scope.selectedCompany = x;
                 $scope.getDashboardRotationStatus();
             }
-            $scope.haveCompany = function () {
-                return $scope.companyOwned.Count() > 0;
-            }
+
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
@@ -584,25 +577,6 @@
                 var url=$filter('filter')($scope.dbmenus,{SecondaryKey:name})[0].UrlPage;
                 location.href=url;
             }
-            /*--------------------------------------------------------------
-            DO EDIT ROTATION
-            --------------------------------------------------------------*/
-            $scope.getProductCount = function (kriteria) {
-                $http.post('@Url.Action("GetListCount", "Rotation")', { topCriteria: kriteria }).then(function (response) {
-                    if (response.data) {
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-                        $scope.page = "1";
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            }
-
 
             /*--------------------------------------------------------------
             GENERAL FUNCTION
