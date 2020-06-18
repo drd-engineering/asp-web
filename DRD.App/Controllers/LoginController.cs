@@ -90,7 +90,7 @@ namespace DRD.App.Controllers
                 return null;
             MenuService menuService = new MenuService();
 
-            return menuService.GetMenus(activeId);
+            return menuService.GetMenus(user.Id);
         }
 
         public List<string> GetMenuObjectItems(List<Menu> menus, int parentId)

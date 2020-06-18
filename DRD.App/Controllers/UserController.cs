@@ -73,5 +73,13 @@ namespace DRD.App.Controllers
             var data = userService.IsMemberofCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult IsAdminOrOwnerofCompany()
+        {
+            InitializeAPI();
+            var data = userService.IsAdminOrOwnerofCompany(user.Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }

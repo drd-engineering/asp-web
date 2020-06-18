@@ -54,8 +54,8 @@
         <!-- Main navbar -->
         <div class="navbar navbar-default navbar-fixed-top header-highlight">
             <div class="navbar-header" style="background-color:black">
-                <a class="navbar-brand" href="/" style="color:white">
-                    <img ng-src="/Images/logo-color-background.png" alt="">
+                <a  class="navbar-brand" href="/" style="color:white">
+                    <img ng-show="!loadMenu" ng-src="/Images/logo-color-background.png" alt="">
                 </a>
                 <ul class="nav navbar-nav visible-xs-block">
                     <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
@@ -109,6 +109,7 @@
                 <div class="sidebar sidebar-main sidebar-fixed" style="background-color: black">
                     <div class="sidebar-content">
                         <!-- User menu -->
+                                    <span><img ng-show="loadMenu" style="position:absolute; left:50%;top: 50%;width:100px;transform: translate(-50%, -50%); height:50px;" src="~/assets/spinner2.gif"></span>
 
                         <div class="sidebar-user-material">
                             <div class="category-content desktop_layout">
@@ -119,11 +120,10 @@
                         <!-- Main navigation -->
                         <div class="sidebar-category sidebar-category-visible">
                             <div class="category-content no-padding" id="menu-content">
-
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-repeat="x in menusFromController" ng-show="checkShow(x.SecondaryKey)" class={{x.SecondaryKey.Equals(viewbagsubmenu) ? "active":""}}>
-                                        <a href="{{x.UrlPage}}" style="background-color:{{x.SecondaryKey.Equals(viewbagsubmenu) ? "grey": "black"}}"><i class="{{x.Icon}}"></i> <span>{{x.Name}}</span></a>
+                                    <li ng-repeat="x in menusFromController" ng-show="!loadMenu" class="{{x.SecondaryKey == viewbagsubmenu ? 'active':''}}">
+                                        <a href="{{x.UrlPage}}"><i class="{{x.Icon}}"></i> <span>{{x.Name }} </span></a>
                                     </li>
                                     <!-- /main -->
                                 </ul>
@@ -179,6 +179,8 @@
             alert($scope);
             }, 5000);
         };
+        $scope.loadMenu = true;
+        $scope.loacCounter = true;
 
         /*--------------------------------------------------------------
         INIT DATA
@@ -186,9 +188,6 @@
         angular.element(document).ready(function () {
             $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
             $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
-            console.log($scope.viewbagsubmenu);
-            setTimeout($scope.isHasCompany(), 0);
-            setTimeout($scope.isMemberofCompany(), 0);
             $scope.getActivityCounter();
             $("#menu-content").show();
             $scope.getUnreadInbox();
@@ -198,13 +197,6 @@
             location.href = url;
         };
 
-        $scope.checkShow = function (item) {
-            if (item == "DASHBOARD") {
-                return $scope.hasCompany;
-            } else if (item == "COMPANY") {
-                return $scope.isMemberofCompany;
-            } else return true;
-        }
 
         /*--------------------------------------------------------------
         GET ASSET ITEM
@@ -213,13 +205,17 @@
             $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
                 if (response.data) {
                     $scope.counter = response.data;
+                    $scope.loacCounter = false;
+
                 }
                 else {
 
+                    $scope.loacCounter = false;
                 }
             }, function (response) {
                 //error handle\
                 var x = 0;
+                    $scope.loacCounter = false;
             });
         }
 
@@ -228,44 +224,22 @@
                 if (response.data) {
                     $scope.inboxCounter = response.data;
                     if ($scope.inboxCounter.New.Unread > 0) {
-                        $(".sidebar-inbox").parent().append("<span class=\"badge badge-danger\">" + $scope.inboxCounter.New.Unread + "</span>");
+                        $(".sidebar-inbox").parent().append("<span data-toggle=\"tooltip\" title=\"unread\" data-placement=\"bottom\" class=\"badge badge-danger\">" + $scope.inboxCounter.New.Unread + "</span>");
+                    } else if  ($scope.inboxCounter.New.Unread == 0){
+                        $(".sidebar-inbox").parent().append("<span data-toggle=\"tooltip\" title=\"unread\" data-placement=\"bottom\" class=\"badge badge-default\">" + $scope.inboxCounter.New.Unread + "</span>");
                     }
+                    $scope.loadMenu = false;
                 }
                 else {
-
+                    $scope.loadMenu = false;
                 }
             }, function (response) {
                 //error handle\
-                var x = 0;
+                    var x = 0;
+                    $scope.loadMenu = false;
             });
         }
 
-        $scope.isHasCompany = function () {
-            $http.post('@Url.Action("HasCompany", "User")', {}).then(function (response) {
-                if (response.data) {
-                    $scope.hasCompany = response.data;
-                }
-                else {
-
-                }
-            }, function (response) {
-                //error handle\
-                var x = 0;
-            });
-        }
-        $scope.isMemberofCompany = function () {
-            $http.post('@Url.Action("IsMemberofCompany", "User")', {}).then(function (response) {
-                if (response.data) {
-                    $scope.memberofCompany = response.data;
-                }
-                else {
-
-                }
-            }, function (response) {
-                //error handle\
-                var x = 0;
-            });
-        };
         /*--------------------------------------------------------------
         JS
         --------------------------------------------------------------*/

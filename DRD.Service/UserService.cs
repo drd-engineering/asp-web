@@ -433,5 +433,16 @@ namespace DRD.Service
             }
             return isMember;
         }
+        public bool IsAdminOrOwnerofCompany(long userId)
+        {
+            var isMember = true;
+            using (var db = new ServiceContext())
+            {
+                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId && memberItem.IsActive & memberItem.IsAdministrator);
+                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
+
+                return countAsAdmin > 0 && countAsOwner > 0;
+            }
+        }
     }
 }

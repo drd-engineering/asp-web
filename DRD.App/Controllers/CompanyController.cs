@@ -46,11 +46,7 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
-            if (userService.HasCompany(user.Id))
-            {
-                return View(layout);
-            }
-            return null; 
+            return View(layout);
         }
 
         public ActionResult GetAllCompanyOwnedbyUser()
