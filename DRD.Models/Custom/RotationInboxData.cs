@@ -41,6 +41,8 @@ namespace DRD.Models.Custom
 
         // Foreign keys
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
+
+        public virtual CompanyInboxData CompanyInbox { get; set; } // FK_Rotation_Company
         //[ForeignKey("UserId")]
         //public virtual User User { get; set; } // FK_Rotation_Member
 
@@ -53,6 +55,14 @@ namespace DRD.Models.Custom
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
+            CompanyInbox = new CompanyInboxData();
+        }
+
+        public class CompanyInboxData {
+            public long Id { get; set; } // Id (Primary key)
+            public string Code { get; set; } // Code (length: 10)
+
+            public string Name { get; set; } // Name (length: 50)
         }
     }
 }

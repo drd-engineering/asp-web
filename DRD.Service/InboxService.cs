@@ -12,15 +12,19 @@ namespace DRD.Service
 {   
     public class InboxService
     {
-        
-        public List<InboxList> GetInboxList(long userId, int page, int pageSize) {
-            int skip = pageSize * (page - 1); 
-            
+        /// <summary>
+        /// Obtain all inbox data related to user as many as pageSize
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public List<InboxList> GetInboxList(long userId, int skip, int take) {
             using (var db = new ServiceContext()) 
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(pageSize);
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
 
                     List<InboxList> result = new List<InboxList>();
 
@@ -80,10 +84,13 @@ namespace DRD.Service
             }
 
         }
-
+        /// <summary>
+        /// Helper function to know id of rotation that inbox is attached
+        /// </summary>
+        /// <param name="inboxId"></param>
+        /// <returns></returns>
         public long GetRotationNodeId(long inboxId)
         {
-            InboxItem inboxItem = new InboxItem();
             using (var db = new ServiceContext())
             {
                 if (db.Inboxes != null)
@@ -138,10 +145,15 @@ namespace DRD.Service
                 return null;
             }
         }
-
-        public RotationInboxData GetInboxItem(long inboxId, long UserId=0)
+        /// <summary>
+        /// Find inbox details based on userid and inboxid
+        /// </summary>
+        /// <param name="inboxId"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public RotationInboxData GetInboxItem(long inboxId, long UserId)
         {
-            changeUnreadtoReadInbox(inboxId);
+            ChangeUnreadtoReadInbox(inboxId);
             var rotationNodeId = GetRotationNodeId(inboxId);
             using (var db = new ServiceContext())
             {
@@ -153,6 +165,7 @@ namespace DRD.Service
                         Id = c.Rotation.Id,
                         Subject = c.Rotation.Subject,
                         Status = c.Status,
+                        CompanyId = c.Rotation.CompanyId,
                         WorkflowId = c.Rotation.WorkflowId,
                         UserId = c.UserId,
                         FirstNodeId = c.FirstNodeId,
@@ -164,6 +177,14 @@ namespace DRD.Service
                         DecissionInfo = "",
                         RotationNodeId = c.Id,
                     }).FirstOrDefault();
+                result.CompanyInbox = (from cmpny in db.Companies
+                                       where cmpny.Id == result.CompanyId
+                                       select new RotationInboxData.CompanyInboxData
+                                       {
+                                           Id = cmpny.Id,
+                                           Code = cmpny.Code,
+                                           Name = cmpny.Name,
+                                       }).FirstOrDefault();
                 result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
                 RotationService rotationService = new RotationService();
@@ -192,8 +213,12 @@ namespace DRD.Service
                 return result;
             }
         }
-
-        public bool changeUnreadtoReadInbox(long inboxId)
+        /// <summary>
+        /// Mark inbox as read
+        /// </summary>
+        /// <param name="inboxId">id of inbox that want to marked as read</param>
+        /// <returns></returns>
+        public bool ChangeUnreadtoReadInbox(long inboxId)
         {
             using (var db = new ServiceContext())
             {
