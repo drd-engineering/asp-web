@@ -288,7 +288,7 @@ namespace DRD.Service
                                     Status = rotation.Status,
                                     WorkflowId = rotation.Workflow.Id,
                                     WorkflowName = rotation.Workflow.Name,
-                                    CompanyId = rotation.CompanyId.Value,
+                                    CompanyId = rotation.CompanyId,
                                     UserId = rotation.UserId,
                                     CreatedAt = rotation.DateCreated,
                                     UpdatedAt = rotation.DateUpdated,
@@ -557,6 +557,7 @@ namespace DRD.Service
                          Subject = rotation.Subject,
                          Remark = rotation.Remark,
                          WorkflowId = rotation.WorkflowId,
+                         CompanyId = rotation.CompanyId,
                          Workflow = new WorkflowItem
                          {
                              Id = rotation.Workflow.Id,

@@ -21,7 +21,7 @@ namespace DRD.Models.API
         public string ActivityName { get; set; }
         public string WorkflowName { get; set; }
         public string StatusDescription { get; set; }
-        public long CompanyId { get; set; }
+        public long? CompanyId { get; set; }
         public SmallCompanyData CompanyRotation { get; set; }
 
         public virtual ICollection<RotationNode> RotationNodes { get; set; } // RotationNode.FK_RotationNode_Rotation

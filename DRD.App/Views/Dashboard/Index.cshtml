@@ -124,7 +124,7 @@
                     <!-- CONTENT -->
                     <div class="card-content" ng-show="showRotationStatus">
                         <!-- each rotation status -->
-                        <div ng-show="listRotationStatus.length > 0" class="container">
+                        <div class="container">
                             <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
                             </a>
@@ -152,6 +152,9 @@
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+                        <div ng-show="listRotationStatus.length > 0" class="container">
                             <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                 <thead>
                                     <tr>
@@ -363,6 +366,7 @@
             $scope.setSelectedCompany = function (x) {
                 $scope.selectedCompany = x;
                 $scope.getDashboardRotationStatus();
+                $scope.getActivityCounter();
             }
 
             /*--------------------------------------------------------------

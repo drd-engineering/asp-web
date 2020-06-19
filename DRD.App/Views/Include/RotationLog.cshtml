@@ -84,6 +84,8 @@
             <tr>
                 <th width="25px">#</th>
                 <th>File Name</th>
+                <th>Created At</th>
+                <th>Updated At</th>
                 <th>Action Summaries</th>
                 <th width="125px" style="text-align:right">Size (bytes)</th>
             </tr>
@@ -92,7 +94,8 @@
             <tr ng-repeat="x in sumDocuments" style="vertical-align:top;font-size:small">
                 <td width="25px">{{$index+1 + index}}</td>
                 <td><a ng-click="viewDocumentSummary(x)">{{x.Document.FileName}}</a></td>
-
+                <td>{{x.Document}}</td>
+                <td>{{convertJsonDate(x.Document.UpdatedAt)}}</td>
                 <td>
                     <span style="font-size:small;color:white">
                         <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.FlagAction,2) && !validAction(x.FlagAction,64)">completed</span>
