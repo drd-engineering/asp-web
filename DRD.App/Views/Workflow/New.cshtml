@@ -87,7 +87,7 @@
             <!-- Main content -->
             <div class="content-wrapper">
                 <!-- Page header -->
-                <h4>Create a New Workflow</h4>
+                <h4><a href="/workflow/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-opt"></i></a> @ViewBag.Title</h4>
 
                 <!-- /page header -->
                 <!-- Horizontal form options -->
@@ -103,12 +103,11 @@
                                         <div class="col-md-12">
                                             <div class="row">
                                                 <div class="col-md-5">
-                                                    <label class="control-label">Workflow Name</label>
+                                                    <label class="control-label">Name</label>
                                                     <div class="input-group">
                                                         <div>
                                                             <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="100" />
                                                         </div>
-                                                        <span class="input-group-addon" style="cursor:pointer" ng-click="popupWorkflow()"><i class="icon-insert-template"></i></span>
                                                     </div>
                                                 </div>
                                             </div>

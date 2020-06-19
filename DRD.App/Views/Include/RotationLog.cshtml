@@ -9,7 +9,7 @@
 <div style="border-bottom:dotted;border-bottom-width:1px;"></div>
 <div ng-repeat="x in rotationNodes">
 
-    <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId?(x.Id==model.RotationNodeId?'#b2ebf2': '#eceff1'):'')}}">
+    <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId && x.Status==0?(x.Id==model.RotationNodeId?'#FCD097': '#AFC9D8'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
                 <img alt="" src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />

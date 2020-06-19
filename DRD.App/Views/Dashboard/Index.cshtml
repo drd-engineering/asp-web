@@ -24,186 +24,187 @@
 @section Styles{ 
     <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
 }
-    <body ng-controller="drdController">
-        <div class="page-container">
-            <section id="dashboard-highlight">
-                <div class="row">
+<body>
+    <h4><a class="btn" href="/dashboard" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-home4"></i></a> @ViewBag.Title</h4>
+    <div class="page-container"  ng-controller="drdController">
+        <section id="dashboard-highlight">
+            <div class="row">
 
-                    <!-- DASHBOARD - ROTATION -->
-                    <div class="col-sm-8 col-md-4" id="dashboard-rotation">
-                        <div class="panel highlight-container">
-                            <div class="highlight-card">
-                                <!-- HEADER -->
-                                <div class="highlight-header">
-                                    <div class="container">
-                                        <div class="row vertical-align-row">
-                                            <div class="col-md-6">
-                                                <p class="card-title"><strong>ROTATION COUNTER</strong></p>
-                                            </div>
-                                            <div class="col-md-2">
-                                                
-                                            </div>
-                                            <div class="col-md-4 " style="align-items:flex-end;">
-                                                <!-- SELECT -->
-                                                <select class="card-filter select-lg pull-right" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
-                                            </div>
+                <!-- DASHBOARD - ROTATION -->
+                <div class="col-sm-8 col-md-4" id="dashboard-rotation">
+                    <div class="panel highlight-container">
+                        <div class="highlight-card">
+                            <!-- HEADER -->
+                            <div class="highlight-header">
+                                <div class="container">
+                                    <div class="row vertical-align-row">
+                                        <div class="col-md-6">
+                                            <p class="card-title"><strong>ROTATION COUNTER</strong></p>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="col-md-2">
 
-                                <!-- CONTENT -->
-                                <div class="card-content">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
-                                                    <div class="col-sm-6 vertical-align-content">
-                                                        <div class="card-image-lg round-img">
-                                                            <img src="~/assets/ongoing.png" />
-                                                            <p>Ongoing</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="card-content-lg">
-                                                            <h1>{{counter.New.InProgress}}</h1>
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
-                                                    <div class="col-sm-6 vertical-align-content">
-                                                        <div class="card-image-lg round-img">
-                                                            <img src="~/assets/completed.png" />
-                                                            <p>Completed</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="card-content-lg">
-                                                            <h1>{{counter.New.Completed}}</h1>
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end of DASHBOARD - ROTATION -->
-
-                </div>
-            </section>
-
-            <section id="dashboard-rotation-status">
-                <div class="panel highlight-container">
-                    <div class="highlight-card">
-                        <!-- HEADER -->
-                        <div class="highlight-header">
-                            <div class="container">
-                                <div class="row vertical-align-row">
-                                    <div class="col-md-7">
-                                        <p class="card-title"><strong>ROTATION DETAIL</strong></p>
-                                    </div>
-                                    <div class="col-md-4 push-left">
-                                        <!-- SELECT -->
-                                        <select class="card-filter select-lg" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
+                                        <div class="col-md-4 " style="align-items:flex-end;">
+                                            <!-- SELECT -->
+                                            <select class="card-filter select-lg pull-right" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- CONTENT -->
-                        <div class="card-content" ng-show="showRotationStatus" >
-                            <!-- each rotation status -->
-                            <div ng-show="listRotationStatus.length > 0" class="container">
-                                <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;background-color:#AFC9D8" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" >
-                                    <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
-                                </a>
-                                <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;background-color:#AFC9D8" ng-click="exportAllRotationStatusToCSV()" >
-                                    <i style="color:#075685" class="icon-file-download" data-toggle="tooltip" title="Export All Rotation Status as CSV"></i>
-                                </a>
-                                <div class="collapse" id="collapseExample">
-
-                                    <div class="row ">
-                                        <div class="col-sm-12 col-md-4 col-lg-3">
-                                            <form>
-                                                <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
-                                                <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
-                                            </form>
-                                        </div>
-                                    </div>
+                            <!-- CONTENT -->
+                            <div class="card-content">
+                                <div class="container">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="tag-item" ng-repeat="tag in tags">
-                                                {{tag}}
-                                                <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
-                                                    <img src="~/Images/icon/reject.png" />
-                                                </button>
-                                            </span>
+                                        <div class="col-sm-6">
+                                            <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
+                                                <div class="col-sm-6 vertical-align-content">
+                                                    <div class="card-image-lg round-img">
+                                                        <img src="~/assets/ongoing.png" />
+                                                        <p>Ongoing</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="card-content-lg">
+                                                        <h1>{{counter.New.InProgress}}</h1>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
+                                                <div class="col-sm-6 vertical-align-content">
+                                                    <div class="card-image-lg round-img">
+                                                        <img src="~/assets/completed.png" />
+                                                        <p>Completed</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="card-content-lg">
+                                                        <h1>{{counter.New.Completed}}</h1>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 14%">Workflow Name</th>
-                                            <th style="width: 14%">Name</th>
-                                            <th style="width: 10%">Status</th>
-                                            <th style="width: 7%">Created</th>
-                                            <th style="width: 7%">Updated</th>
-                                            <th style="width: 48%">Position Now</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
-                                            <td>{{y.Workflow.Name}}</td>
-                                            <td>{{y.Subject}} </td>
-                                            <td>{{getStatusName(y.Status)}}</td>
-                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
-                                            <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
-                                            <td>
-                                                <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.Status == 0? 'ongoing' : (usr.Status == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div ng-show="listRotationStatus.length > 0" class="pagination-container">
-                                <div style="padding-bottom:20px;padding-top:20px"class="pagination">
-                                    <a data-toggle="tooltip" title="first page" ng-click="getDashboardRotationStatusPage(1)">&lt;&lt;</a>
-                                    <a data-toggle="tooltip" title="previous page" ng-click="getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
-                                    <a ng-repeat="rtsp in rotationStatusPaging | limitTo : pageRotationStatus+3>rotationStatusPaging.length?rotationStatusPaging.length:pageRotationStatus+3 : pageRotationStatus-4<0?0:pageRotationStatus-4" ng-click="getDashboardRotationStatusPage(rtsp)" class="{{rtsp == pageRotationStatus ? 'active':''}}">
-                                        {{rtsp}}
-                                    </a>
-                                    <a data-toggle="tooltip" title="next page" ng-click="getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
-                                    <a data-toggle="tooltip" title="last page" ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
-                                </div>
-                            </div>
-                            <div ng-show="listRotationStatus.length == 0"  class="container" style="text-align:center">
-                                There is no rotation using {{selectedCompany.Name}}'s subscription plan
+
                             </div>
                         </div>
-
                     </div>
                 </div>
+                <!-- end of DASHBOARD - ROTATION -->
 
-            </section>
-   
-        </div>
+            </div>
+        </section>
 
-        <script>
-            
-        </script>
+        <section id="dashboard-rotation-status">
+            <div class="panel highlight-container">
+                <div class="highlight-card">
+                    <!-- HEADER -->
+                    <div class="highlight-header">
+                        <div class="container">
+                            <div class="row vertical-align-row">
+                                <div class="col-md-7">
+                                    <p class="card-title"><strong>ROTATION DETAIL</strong></p>
+                                </div>
+                                <div class="col-md-4 push-left">
+                                    <!-- SELECT -->
+                                    <select class="card-filter select-lg" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <script type="text/javascript">
+                    <!-- CONTENT -->
+                    <div class="card-content" ng-show="showRotationStatus">
+                        <!-- each rotation status -->
+                        <div ng-show="listRotationStatus.length > 0" class="container">
+                            <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
+                            </a>
+                            <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;" ng-click="exportAllRotationStatusToCSV()">
+                                <i style="color:#075685" class="icon-file-download" data-toggle="tooltip" title="Export All Rotation Status as CSV"></i>
+                            </a>
+                            <div class="collapse" id="collapseExample">
+
+                                <div class="row ">
+                                    <div class="col-sm-12 col-md-4 col-lg-3">
+                                        <form>
+                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
+                                            <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="tag-item" ng-repeat="tag in tags">
+                                            {{tag}}
+                                            <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
+                                                <img src="~/Images/icon/reject.png" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 14%">Workflow Name</th>
+                                        <th style="width: 14%">Name</th>
+                                        <th style="width: 10%">Status</th>
+                                        <th style="width: 7%">Created</th>
+                                        <th style="width: 7%">Updated</th>
+                                        <th style="width: 48%">Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
+                                        <td>{{y.Workflow.Name}}</td>
+                                        <td>{{y.Subject}} </td>
+                                        <td>{{getStatusName(y.Status)}}</td>
+                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        <td>
+                                            <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.Status == 0? 'ongoing' : (usr.Status == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.Status == 0? ' border: 2px solid green' : (usr.Status == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-show="listRotationStatus.length > 0" class="pagination-container">
+                            <div style="padding-bottom:20px;padding-top:20px" class="pagination">
+                                <a data-toggle="tooltip" title="first page" ng-click="getDashboardRotationStatusPage(1)">&lt;&lt;</a>
+                                <a data-toggle="tooltip" title="previous page" ng-click="getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
+                                <a ng-repeat="rtsp in rotationStatusPaging | limitTo : pageRotationStatus+3>rotationStatusPaging.length?rotationStatusPaging.length:pageRotationStatus+3 : pageRotationStatus-4<0?0:pageRotationStatus-4" ng-click="getDashboardRotationStatusPage(rtsp)" class="{{rtsp == pageRotationStatus ? 'active':''}}">
+                                    {{rtsp}}
+                                </a>
+                                <a data-toggle="tooltip" title="next page" ng-click="getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
+                                <a data-toggle="tooltip" title="last page" ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
+                            </div>
+                        </div>
+                        <div ng-show="listRotationStatus.length == 0" class="container" style="text-align:center">
+                            There is no rotation using {{selectedCompany.Name}}'s subscription plan
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script>
+
+    </script>
+
+    <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
             $scope.products = [];
@@ -431,7 +432,7 @@
                     { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
                 ).then(function (response) {
                     if (response.data) {
-                        var saved = $scope.rotationStatusPaging; 
+                        var saved = $scope.rotationStatusPaging;
                         $scope.rotationStatusPaging = [];
                         $scope.rotationStatusPaging = saved;
                         $scope.listRotationStatus = response.data;
@@ -586,6 +587,6 @@
         });
         $(document).ready(function () {
         });
-        </script>
+    </script>
 
-    </body>
+</body>

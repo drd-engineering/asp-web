@@ -112,8 +112,9 @@
                             <div class="category-content no-padding" id="menu-content">
                                 <ul class="navigation navigation-main navigation-accordion">
                                     <!-- Main -->
-                                    <li ng-repeat="x in menusFromController" ng-show="!loadMenu" class="{{x.SecondaryKey == viewbagsubmenu ? 'active':''}}">
-                                        <a href="{{x.UrlPage}}"><i class="{{x.Icon}}"></i> <span>{{x.Name }} </span></a>
+                                    <li ng-repeat="x in menusFromController" ng-show="!loadMenu" class="{{x.Code == 0 ? 'divider' : (x.SecondaryKey == viewbagsubmenu ? 'active':'')}}" style="{{x.code==0?'height:1px;padding:5px':''}}">
+                                        <a ng-show="x.Code!=0" href="{{x.UrlPage}}"><i class="{{x.Icon}}"></i> <span>{{x.Name }} </span></a>
+                                        <div ng-show="x.Code==0" style=" border-top: 1px groove #FCD097;width: 90%;height:1px;margin: auto;"></div>
                                     </li>
                                     <!-- /main -->
                                 </ul>

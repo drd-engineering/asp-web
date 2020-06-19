@@ -41,14 +41,14 @@
 }
 
 <body ng-app="drdApp" ng-controller="drdController">
-
-    <h2>Company</h2>
+    <h4><a class="btn" href="/company" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-library2"></i></a> @ViewBag.Title</h4>
     <div ng-repeat="x in CompanyList" ng-init="topIdx = $index">
-        <h3><strong>{{x.Name}} </strong><span ng-if="x.IsVerified == true"><img src="~/Images/verified.png" /></span><span ng-if="x.IsVerified == false"><img src="~/Images/unverified.png" /></span></h3>
-        <div style="color:darkgray;font-size:10px;align-self:end" ng-show="x.IsManagedByUser">You are Administrator of this Company</div>
-        <div style="color:darkgray;font-size:10px;align-self:end" ng-show="x.IsOwnedByUser">You are Owner of this Company</div>
         <div class="panel panel-flat">
             <div class="panel-heading">
+                <h5>{{x.Name}}<span ng-if="x.IsVerified == true"><img src="~/Images/verified.png" /></span><span ng-if="x.IsVerified == false"><img src="~/Images/unverified.png" /></span></h5>
+                <div style="color:darkgray;font-size:10px;align-self:end" ng-show="x.IsManagedByUser">You are Administrator of this Company</div>
+                <div style="color:darkgray;font-size:10px;align-self:end" ng-show="x.IsOwnedByUser">You are Owner of this Company</div>
+                <hr>
                 <!--MEMBER DATA-->
                 <form name="{{x.Id}}" class="form-horizontal" autocomplete="off">
                     <div ng-show="wizarno=='product'">
@@ -197,7 +197,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-2">
-                                    <div class="row"  style="vertical-align:central;">
+                                    <div class="row" style="vertical-align:central;">
                                         <div class="col-md-12">
                                             @*<input  class='btn btn-sm' id='btnRight' value='  >  ' />*@
                                             <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='>' style="border:1px solid black;margin-top:50px;" />

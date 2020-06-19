@@ -39,10 +39,8 @@
 }
 
 <body>
-    <section class="panel" id="add-rotation" ng-controller="drdController">
-        <div class="section-title">
-            <h3>@ViewBag.Title</h3>
-        </div>
+            <h4><a href="/rotation/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
+    <section class="panel" ng-controller="drdController">
         <!-- ROTATION FORM-->
         <div ng-show="wizarno=='product'">
             <form name="myForm" class="form-horizontal" autocomplete="off">
@@ -66,7 +64,7 @@
                                 <div>
                                     <input type="text" class="form-control" ng-model="workflow.Name" maxlength="50" readonly />
                                 </div>
-                                <span class="input-group-addon" ><i class="icon-cogs"></i></span>
+                                <span class="input-group-addon" ><i class="icon-opt"></i></span>
 
                             </div>
 
