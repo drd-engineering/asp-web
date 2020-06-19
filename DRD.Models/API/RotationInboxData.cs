@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.Custom
+namespace DRD.Models.API
 {
     public class RotationInboxData
     {
@@ -56,13 +56,6 @@ namespace DRD.Models.Custom
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
             CompanyInbox = new CompanyInboxData();
-        }
-
-        public class CompanyInboxData {
-            public long Id { get; set; } // Id (Primary key)
-            public string Code { get; set; } // Code (length: 10)
-
-            public string Name { get; set; } // Name (length: 50)
         }
     }
 }

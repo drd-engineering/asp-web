@@ -11,6 +11,7 @@ namespace DRD.Models.API
     {
         public long Id { get; set; }
         public bool IsUnread { get; set; }
+        public long CompanyId { get; set; }
         public String RotationName { get; set; } // access rotation activity first then the rotation to get the name
         public String CurrentActivity { get; set; } // rotationActivity name
         public String WorkflowName { get; set; }
@@ -21,6 +22,6 @@ namespace DRD.Models.API
         public String LastStatus { get; set; }
         public string prevUserName { get; set; }
         public string prevUserEmail { get; set; }
-
+        public CompanyInboxData CompanyInbox { get; set; }
     }
 }

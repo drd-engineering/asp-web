@@ -25,9 +25,7 @@ namespace DRD.Service
                 if (db.Inboxes != null)
                 {
                     var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
-
                     List<InboxList> result = new List<InboxList>();
-
                     foreach (Inbox i in inboxes)
                     {
                         InboxList item = new InboxList();
@@ -39,6 +37,7 @@ namespace DRD.Service
                         item.CurrentActivity = activity.WorkflowNode.Caption;
                         item.RotationName = activity.Rotation.Subject;
                         item.RotationId = activity.RotationId;
+                        item.CompanyId = activity.Rotation.CompanyId.Value;
                         item.Message = i.Message;
                         item.LastStatus = i.LastStatus;
                         item.prevUserEmail = i.prevUserEmail;
@@ -46,7 +45,14 @@ namespace DRD.Service
                         item.DateNote = i.DateNote;
                         item.WorkflowName = activity.WorkflowNode.Workflow.Name;
                         item.CreatedAt = i.CreatedAt;
-
+                        item.CompanyInbox = (from cmpny in db.Companies
+                                             where cmpny.Id == item.CompanyId
+                                             select new CompanyInboxData
+                                             {
+                                                 Id = cmpny.Id,
+                                                 Code = cmpny.Code,
+                                                 Name = cmpny.Name,
+                                             }).FirstOrDefault();
                         result.Add(item);
                     }
                     return result;
@@ -179,7 +185,7 @@ namespace DRD.Service
                     }).FirstOrDefault();
                 result.CompanyInbox = (from cmpny in db.Companies
                                        where cmpny.Id == result.CompanyId
-                                       select new RotationInboxData.CompanyInboxData
+                                       select new CompanyInboxData
                                        {
                                            Id = cmpny.Id,
                                            Code = cmpny.Code,
