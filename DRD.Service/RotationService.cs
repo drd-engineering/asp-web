@@ -538,16 +538,19 @@ namespace DRD.Service
                 return result;
             }
         }
-        //
-        // for edit
-        //
-        public RotationIndex GetRotationById(long id)
+        /// <summary>
+        /// Obtain rotation that user has already made and search by Id of the rotation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="creatorId"></param>
+        /// <returns></returns>
+        public RotationIndex GetRotationById(long id, long creatorId)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.Rotations
-                     where rotation.Id == id
+                     where rotation.Id == id && rotation.CreatorId == creatorId
                      select new RotationIndex
                      {
                          Id = rotation.Id,
@@ -581,12 +584,19 @@ namespace DRD.Service
                 foreach (RotationUserItem x in result.RotationUsers)
                 {
                     x.EncryptedId = Utilities.Encrypt(x.UserId.ToString());
-
                 }
-                    var tagService = new TagService();
-                    var tags = tagService.GetTags(result.Id);
-                    result.Tags = (from tag in tags select tag.Name).ToList();
-                
+                if (result == null) return result;
+                result.CompanyRotation = (from cmpny in db.Companies
+                                          where cmpny.Id == result.CompanyId
+                                          select new SmallCompanyData
+                                          {
+                                              Id = cmpny.Id,
+                                              Code = cmpny.Code,
+                                              Name = cmpny.Name,
+                                          }).FirstOrDefault();
+                var tagService = new TagService();
+                var tags = tagService.GetTags(result.Id);
+                result.Tags = (from tag in tags select tag.Name).ToList();
                 return result;
             }
         }

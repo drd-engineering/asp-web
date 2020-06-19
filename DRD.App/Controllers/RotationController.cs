@@ -55,7 +55,7 @@ namespace DRD.App.Controllers
             return View(layout);
         }
         /// <summary>
-        /// Rotation Details Page by Id
+        /// Rotation Details Page by Id and user created
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -63,7 +63,7 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
-            layout.obj = rotationService.GetRotationById(id);
+            layout.obj = rotationService.GetRotationById(id, user.Id);
             return View(layout);
         }
 
