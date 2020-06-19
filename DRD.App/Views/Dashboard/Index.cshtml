@@ -354,7 +354,7 @@
             $scope.getCompanyOwned = function () {
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     if (response.data) {
-                        $scope.companyOwned = response.data.companies;
+                        $scope.companyOwned = response.data;
                         $scope.selectedCompany = $scope.companyOwned[0];
                         $scope.getDashboardRotationStatus();
                     }

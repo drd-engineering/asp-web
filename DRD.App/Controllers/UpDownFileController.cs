@@ -220,10 +220,7 @@ namespace DRD.App.Controllers
                         result.idx = -4;
                         return Json(result, JsonRequestBehavior.AllowGet); //The used rotation exceeds the data packet quota number
                     }
-
-                    var companyService = new CompanyService();
                     _ext = Path.GetExtension(file.FileName);
-                    var companyofUser = companyService.GetCompanyItem(companyId);
                     var fileName = Path.GetFileName(file.FileName);
                     filenameori = fileName;
 

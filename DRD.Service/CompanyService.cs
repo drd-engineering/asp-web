@@ -326,30 +326,31 @@ namespace DRD.Service
                 return company;
             }
         }
-
-        public CompanyItem GetCompany(long id)
+        /// <summary>
+        /// Obtain company little details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public SmallCompanyData GetCompany(long id)
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
-                if (result.Count == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    var company = new CompanyItem();
-                    foreach (Company x in result)
-                    {
-                        company.Id = x.Id;
-                        company.Name = x.Name;
-                        company.Code = x.Code;
-                    }
-                    return company;
-                }
+                var result = (from cmpny in db.Companies
+                              where cmpny.Id == id && cmpny.IsActive
+                              select new SmallCompanyData
+                              {
+                                  Id = cmpny.Id,
+                                  Code = cmpny.Code,
+                                  Name = cmpny.Name,
+                              }).FirstOrDefault();
+                return result;
             }
         }
-
+        /// <summary>
+        /// Obtain company data raw from database it's mean one data contain all atribute that company has
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>company contain all atribute from db</returns>
         public Company GetCompanyDb(long id)
         {
             using (var db = new ServiceContext())
@@ -357,38 +358,21 @@ namespace DRD.Service
                 return db.Companies.Where(companyItem => companyItem.Id == id).FirstOrDefault();
             }
         }
-        public CompanyItem GetCompanyItem(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result = (from Company in db.Companies
-                              where Company.Id == companyId
-                              select new CompanyItem
-                              {
-                                  Id = Company.Id,
-                                  Name = Company.Name,
-                                  Phone = Company.Phone,
-                                  Email = Company.Email
-                              }
-                            ).FirstOrDefault();
-                return result;
-            }
-        }
-        // POST/GET RejectMember/memberId
-        // return user id if member accepted, return -1 if member not found.
+        /// <summary>
+        /// Reject a member request to join the company
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns> return user id if member rejected, return -1 if member not found. </returns>
         public long RejectMember(long memberId)
         {
             using (var db = new ServiceContext())
             {
                 Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-                if (memberSearch != null)
-                {
-                    memberSearch.IsActive = false;
-                    db.SaveChanges();
-                    return memberSearch.UserId;
-                }
-                else
-                    return -1;
+                if (memberSearch == null) return -1;
+                memberSearch.IsActive = false;
+                memberSearch.isCompanyAccept = false;
+                db.SaveChanges();
+                return memberSearch.UserId;
             }
         }
 
@@ -430,7 +414,12 @@ namespace DRD.Service
                 return result;
             }
         }
-
+        /// <summary>
+        /// Email sender that will sending email to member about their status adding by company, 
+        /// this function will not return any response and running in background
+        /// Need improvement in how it will handling errors
+        /// </summary>
+        /// <param name="item"></param>
         public void SendEmailAddMember(AddMemberResponse item)
         {
             var configGenerator = new AppConfigGenerator();

@@ -19,12 +19,12 @@ namespace DRD.Models.View
         public bool IsAdministrator { get; set; } // IsActive
         
         public ContactItem User { get; set; }
-        public CompanyItem Company{ get; set; }
+        public SmallCompanyData Company{ get; set; }
 
         public MemberItem()
         {
             User = new ContactItem();
-            Company = new CompanyItem();
+            Company = new SmallCompanyData();
         }
     }
 }
