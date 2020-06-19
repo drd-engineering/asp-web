@@ -22,6 +22,6 @@ namespace DRD.Models.API
         public String LastStatus { get; set; }
         public string prevUserName { get; set; }
         public string prevUserEmail { get; set; }
-        public CompanyInboxData CompanyInbox { get; set; }
+        public SmallCompanyData CompanyInbox { get; set; }
     }
 }

@@ -90,33 +90,59 @@ namespace DRD.App.Controllers
             var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult FindRotations(string topCriteria, int page, int pageSize)
+        /// <summary>
+        /// API to obtain rotation that user logged in have related to criteria
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public ActionResult FindRotations(string criteria, int page, int pageSize)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
-            var data = rotationService.FindRotations(user.Id, topCriteria, page, pageSize, null);
+            int skip = pageSize * (page - 1);
+            var data = rotationService.FindRotations(user.Id, criteria, skip, pageSize);
+            if (data != null)
+            {
+                MenuService menuService = new MenuService();
+                foreach (var item in data)
+                {
+                    item.Key = menuService.EncryptData(item.Id);
+                }
+            }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult FindRotationCountAll(string topCriteria)
+        /// <summary>
+        /// API to count all the rotation that user logged in have related to criteria
+        /// </summary>
+        /// <param name="topCriteria"></param>
+        /// <returns></returns>
+        public ActionResult FindRotationCountAll(string criteria)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
-            var data = rotationService.FindRotationCountAll(user.Id, topCriteria);
+            var data = rotationService.FindRotationCountAll(user.Id, criteria);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetUsersWorkflow(long id)
+        {
+            var data = rotationService.GetUsersWorkflow(id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult ProcessActivity(ProcessActivity param, int bit)
+        {
+            InitializeAPI();
+            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
-        public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
+        /*public ActionResult GetLiteAll(string topCriteria, int page, int pageSize)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetLiteAll(user.Id, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetLiteAllCount(string topCriteria)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetLiteAllCount(user.Id, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -124,48 +150,27 @@ namespace DRD.App.Controllers
 
         public ActionResult GetLiteStatusAll(string topCriteria, string status, int page, int pageSize)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetLiteStatusAll(user.Id, status, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetLiteStatusAllCount(string topCriteria, string status)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetLiteStatusAllCount(user.Id, status, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
         public ActionResult GetNodeLiteAll(string status, string topCriteria, int page, int pageSize)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetNodeLiteAll(user.Id, status, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetNodeLiteAllCount(string status, string topCriteria)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
             InitializeAPI();
             var data = rotationService.GetNodeLiteAllCount(user.Id, status, topCriteria);
             return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetUsersWorkflow(long id)
-        {
-            
-            var data = rotationService.GetUsersWorkflow(id);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult ProcessActivity(ProcessActivity param, int bit)
-        {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
-            InitializeAPI();
-
-            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
+        }*/
     }
 }

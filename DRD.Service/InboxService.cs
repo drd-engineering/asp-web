@@ -47,7 +47,7 @@ namespace DRD.Service
                         item.CreatedAt = i.CreatedAt;
                         item.CompanyInbox = (from cmpny in db.Companies
                                              where cmpny.Id == item.CompanyId
-                                             select new CompanyInboxData
+                                             select new SmallCompanyData
                                              {
                                                  Id = cmpny.Id,
                                                  Code = cmpny.Code,
@@ -185,7 +185,7 @@ namespace DRD.Service
                     }).FirstOrDefault();
                 result.CompanyInbox = (from cmpny in db.Companies
                                        where cmpny.Id == result.CompanyId
-                                       select new CompanyInboxData
+                                       select new SmallCompanyData
                                        {
                                            Id = cmpny.Id,
                                            Code = cmpny.Code,

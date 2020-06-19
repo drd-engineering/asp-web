@@ -42,7 +42,7 @@ namespace DRD.Models.API
         // Foreign keys
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
 
-        public virtual CompanyInboxData CompanyInbox { get; set; } // FK_Rotation_Company
+        public virtual SmallCompanyData CompanyInbox { get; set; } // FK_Rotation_Company
         //[ForeignKey("UserId")]
         //public virtual User User { get; set; } // FK_Rotation_Member
 
@@ -55,7 +55,7 @@ namespace DRD.Models.API
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
-            CompanyInbox = new CompanyInboxData();
+            CompanyInbox = new SmallCompanyData();
         }
     }
 }
