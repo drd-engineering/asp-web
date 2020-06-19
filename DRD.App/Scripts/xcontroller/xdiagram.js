@@ -1089,34 +1089,15 @@
                 var cap = $("#title-activity-" + idx);
                 var info = $("#info-activity-" + idx);
                 var id = document.getElementById("member-id-" + idx);
-                id.value = node.memberId;
+               
                 cap.text(node.caption);
                 info.attr("data-content", node.info);
                 info.attr("data-original-title", node.caption);
 
-                if (node.member != null) {
-                    var foto = document.getElementById("photo-profile-" + idx);
-                    foto.src = "/Images/Member/" + node.member.imageProfile;
-                    $("#member-number-" + idx).text(node.member.number);
-                    $("#member-name-" + idx).text(node.member.name);
-                    $("#member-email-" + idx).text(node.member.email);
-                }
 
             } else if (node.symbolCode == 'ACTIVITY' && node.caption == 'Document Uploading') {
                 elm = document.getElementById('node-activity-2');
 
-                var id = document.getElementById("member-id-2");
-
-                id.value = node.memberId;
-
-                if (node.member != null) {
-                    var foto = document.getElementById("photo-profile-" + idx);
-                    foto.src = "/Images/Member/" + node.member.imageProfile;
-                    $("#member-number-" + idx).text(node.member.number);
-                    $("#member-name-" + idx).text(node.member.name);
-                    $("#member-email-" + idx).text(node.member.email);
-                }
-            
             } else if (node.symbolCode == 'DECISION') {
                 elm = $scope.addNodeDecision(0, 0);
                 var idx = $scope.getIndex(elm.id);

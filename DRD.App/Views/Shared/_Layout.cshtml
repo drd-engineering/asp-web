@@ -179,9 +179,7 @@
                     $scope.inboxCounter = response.data;
                     if ($scope.inboxCounter.New.Unread > 0) {
                         $(".sidebar-inbox").parent().append("<span data-toggle=\"tooltip\" title=\"unread\" data-placement=\"bottom\" class=\"badge badge-danger\">" + $scope.inboxCounter.New.Unread + "</span>");
-                    } else if  ($scope.inboxCounter.New.Unread == 0){
-                        $(".sidebar-inbox").parent().append("<span data-toggle=\"tooltip\" title=\"unread\" data-placement=\"bottom\" class=\"badge badge-default\">" + $scope.inboxCounter.New.Unread + "</span>");
-                    }
+                    } 
                     $scope.loadMenu = false;
                 }
                 else {
