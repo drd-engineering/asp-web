@@ -8,6 +8,12 @@
     background-size: cover;
 }
 
+navigation > li.divider {
+    border-top: 1px groove orange;
+    width: 90%;
+    margin: auto;
+}
+
 .navbar-brand img {
     margin-top: -5px;
     height: 30px;

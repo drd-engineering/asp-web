@@ -25,74 +25,47 @@
 
 <body @*ng-app="drdApp"*@>
 
+    <h4><a class="btn" href="/inbox/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-envelope"></i></a> @ViewBag.Title</h4>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
-        <!-- Page content -->
-        <div class="page-content">
 
-
-            <!-- Main content -->
-            <div class="content-wrapper" style="display:none">
-                <!-- Page header -->
-
-                <div class="page-header page-header-default">
-                    <div class="page-header-content">
-
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <h4><i class="icon-inbox position-left"></i>Inbox</h4>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="pull-right">
-                                    <select ng-model="page" class="form-control" ng-change="changePageInbox( page, row)">
-                                        <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+        <div class="content">
+            <div calss="row">
+                <div class="panel panel-flat">
+                    <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
+                        Loading Inbox Data
+                    </div>
+                    <div ng-show="!hasInbox && completeLoad" style="text-align:center;padding:50px;">
+                        You don't have an inbox yet
+                    </div>
+                    <div class="table-responsive" ng-show="isView && hasInbox && completeLoad">
+                        <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                            <thead>
+                                <tr style="background-color:white;">
+                                    <th width="200">Sender</th>
+                                    <th>Message</th>
+                                    <th>Rotation</th>
+                                    <th width="175px">Created</th>
+                                </tr>
+                            </thead>
+                            <tbody style="width:95%">
+                                <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
+                                    <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
+                                    <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
+                                    <td>{{x.RotationName}}</td>
+                                    <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                </tr>
+                                <tr>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="content">
-                    <div calss="row">
-                        <div class="panel panel-flat">
-                            <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
-                                Loading Inbox Data
-                            </div>
-                            <div ng-show="!hasInbox && completeLoad" style="text-align:center;padding:50px;">
-                                You don't have an inbox yet
-                            </div>
-                            <div class="table-responsive" ng-show="isView && hasInbox && completeLoad">
-                                <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                                    <thead>
-                                        <tr style= "background-color:#f3f3f9;">
-                                            <th width="200">Sender</th>
-                                            <th>Message</th>
-                                            <th>Rotation</th>
-                                            <th width="175px">Created</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
-                                            <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
-                                            <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
-                                            <td>{{x.RotationName}}</td>
-                                            <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
-                                        </tr>
-                                        <tr>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /LIST -->
-                </div>
-                <!-- /content area -->
             </div>
-            <!-- /main content -->
+            <!-- /LIST -->
         </div>
-        <!-- /page content -->
+        <!-- /content area -->
+
     </div>
     <!-- /page container -->
 
@@ -197,9 +170,9 @@
                         return "warning";
                     } else if (status == "INFO") {
                         return "default";
-                    } 
+                    }
                     return "info";
-                    
+
             }
 
         });

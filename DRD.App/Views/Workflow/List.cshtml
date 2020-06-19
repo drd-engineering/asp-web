@@ -19,100 +19,72 @@
     }
 </style>
 <body @*ng-app="makayaApp"*@>
-
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-
-            <!-- Page container -->
-            <div class="page-container" ng-controller="drdController">
-                <!-- Page content -->
-                <div class="page-content">
-
-                    <!-- Main content -->
-                    <div class="content-wrapper">
-                        <!-- Page header -->
-                        <div class="page-header page-header-default">
-                            <div class="page-header-content">
-                                <div class="page-title">
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-4">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" ng-model="kriteria" placeholder="Search" ng-keyup="$event.keyCode ==  13 && findWorkflows(kriteria, page, row)">
-                                                <span class="input-group-btn">
-                                                    <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findWorkflows(kriteria, page, row)" style="width:50px">
-                                                        <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
-                                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /page header -->
-                        <!-- Content area -->
-
-                        <div class="content" style="display:none">
-                            <!-- Contextual classes -->
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="">
-                                        <button class="btn border-slate text-slate-800 btn-flat" ng-click="addProduct('@Model.key')">
-                                            &nbsp;&nbsp;Add New&nbsp;&nbsp;
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="pull-right">
-
-                                        <select ng-model="page" class="form-control" ng-change="changePageWorkflows(kriteria, page, row)">
-                                            <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="height:10px"></div>
-                            <!-- LIST -->
-                            <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
-                                <div class="panel panel-flat">
-                                    <div ng-show="!hasWorkflow" style="text-align:center;padding:50px;">
-                                        You don't have a workflow yet or there is no match workflow with the search criteria.
-                                    </div>
-                                    <div class="table-responsive" ng-show="isView && hasWorkflow">
-                                        <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th width="25px"></th>
-                                                    <th>Name</th>
-                                                    <th width="70px">Type</th>
-                                                    <th width="70px">Active</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-repeat="x in products">
-                                                    <td ng-click="do_edit(x.Id);" width="25px">{{$index+1 + index}}</td>
-                                                    <td ng-click="do_edit(x.Id);">{{x.Name}}</td>
-                                                    <td ng-click="do_edit(x.Id);">{{(x.WfType==1?'Draft':'')}}</td>
-                                                    <td ng-click="do_edit(x.Id);" style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /LIST -->
-                        </div>
-                        <!-- /content area -->
+    <h4><a class="btn" href="/workflow/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-opt"></i></a> @ViewBag.Title</h4>
+    <div class="panel" ng-controller="drdController">
+        <!-- Content area -->
+        <div class="content" style="display:none">
+            <!-- Contextual classes -->
+            <div class="row">
+                <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && findRotations(kriteria, page, row)">
+                        <span class="input-group-btn">
+                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findRotations(kriteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
+                                <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
+                                <div class="ladda-progress" style="width: 0px;"></div>
+                            </button>
+                        </span>
                     </div>
-                    <!-- /main content -->
                 </div>
-                <!-- /page content -->
+                <div class="col-md-6">
+                    <div class="">
+                        <button class="btn btn-flat" style="background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="create new workflow" ng-click="addProduct('@Model.key')">
+                            <i class="icon-plus2"></i> Add
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="pull-right">
+
+                        <select ng-model="page" class="form-control" ng-change="changePageWorkflows(kriteria, page, row)">
+                            <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <!-- /page container -->
+            <div style="height:10px"></div>
+            <!-- LIST -->
+            <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
+                <div class="panel panel-flat">
+                    <div ng-show="!hasWorkflow" style="text-align:center;padding:50px;">
+                        You don't have a workflow yet or there is no match workflow with the search criteria.
+                    </div>
+                    <div class="table-responsive" ng-show="isView && hasWorkflow">
+                        <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                            <thead>
+                                <tr>
+                                    <th width="25px"></th>
+                                    <th>Name</th>
+                                    <th width="70px">Type</th>
+                                    <th width="70px">Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-repeat="x in products">
+                                    <td ng-click="do_edit(x.Id);" width="25px">{{$index+1 + index}}</td>
+                                    <td ng-click="do_edit(x.Id);">{{x.Name}}</td>
+                                    <td ng-click="do_edit(x.Id);">{{(x.WfType==1?'Draft':'')}}</td>
+                                    <td ng-click="do_edit(x.Id);" style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- /LIST -->
         </div>
+        <!-- /content area -->
     </div>
     <script type="text/javascript">
 

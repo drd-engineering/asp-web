@@ -133,7 +133,7 @@
     .style-status {
         text-align: center;
         font-size: smaller;
-        width: 100px;
+        width: 200px;
         /*border-bottom-style: dotted;
         border-bottom-width: 1px;*/
     }
@@ -184,14 +184,6 @@
 }
 
 .style-name {
-}
-
-.style-status {
-    text-align: center;
-    font-size: smaller;
-    width: 100px;
-    /*border-bottom-style: dotted;
-        border-bottom-width: 1px;*/
 }
 
 .style-date-remark {

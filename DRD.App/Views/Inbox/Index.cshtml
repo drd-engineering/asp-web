@@ -2,7 +2,7 @@
 @model Layout
 
 @{
-    ViewBag.Title = "Inbox";
+    ViewBag.Title = "Inbox Detail";
     ViewBag.Submenu = "INBOX";
 }
 
@@ -45,34 +45,22 @@
 }
 
 <body>
+    <h4><a class="btn" href="/inbox/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-envelope"></i></a> @ViewBag.Title</h4>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
-        <!-- Page content -->
-        <div class="page-content">
-
-            <!-- Main content -->
-            <div class="content-wrapper" style="display:none">
-                <!-- Page header -->
-                <div class="page-header page-header-default">
-                    <div class="page-header-content">
-                        <div class="page-title">
-                            <h4><i class="icon-envelope position-left"></i>Inbox: {{currentRotationNode.WorkflowNode.Caption}}</h4>
-                            Rotation: {{model.Subject}}
-                        </div>
-                    </div>
-                </div>
-                <!-- /page header -->
-                <!-- Horizontal form options -->
                 <!-- Content area -->
                 <div class="content">
                     <!-- Basic layout-->
-                    <div class="panel panel-flat">
-                        <div class="panel-body">
+                    <div class="panel panel-flat container-fluid" >
+                        <div style="padding-left:40px; padding-right:40px" class="page-title">
+                            <h4>Rotation : {{model.Subject}}</h4>
+                             {{currentRotationNode.WorkflowNode.Caption}}
+                        </div>
 
                             <!--MEMBER DATA-->
 
                             <form name="myForm" class="form-horizontal" autocomplete="off">
-                                <div ng-show="wizarno=='product'">
+                                <div class="row" style="padding-left:40px; padding-right:40px" ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
 
@@ -94,39 +82,30 @@
                                         </div>
                                         <hr />
                                         <div class="row" ng-show="!isCompleteRotation()">
-                                            <div class="col-md-6">
-                                                <span style="font-size:medium"><b>Document</b></span>
+                                            <div class="col-md-12">
+                                                <span style="font-size:medium"><h3>Document</h3></span>
+                                            </div>                                
+                                                <button class="btn btn-flat" ng-show="checkIsFirstPerson() && checkIsActive()" style="margin-left:10px;background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="create new workflow" ng-click="popupDocument()">
+                                                        <i class="icon-plus2"></i> Add
+                                                    </button>
                                             </div>
-                                            <div class="col-md-6">
-                                                <button class="btn bg-slate-400 btn-xs pull-right" type="button" ng-show="checkIsFirstPerson() && checkIsActive()" ng-click="popupDocument()">Add</button>
-                                            </div>
-                                        </div>
                                         <div class="row" ng-show="!isCompleteRotation()">
                                             <div class="col-lg-12">
                                                 <div style="height:5px"></div>
-                                                <table class="table-xs table-bordered table-striped table-hover datatable-highlight" style="font-size:small;width:100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th width="25px">#</th>
-                                                            <th width="150px">File Name</th>
-                                                            <th ng-show="checkIsFirstPerson()" width="100px">Action</th>
-                                                        </tr>
-                                                    </thead>
+                                                <table class="table-xs table-hover table-bordered datatable-highlight" style="font-size:small;width:100%">
                                                     <tbody>
-                                                        <tr  ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
-                                                            <td ng-click="viewDocument($index)"  style="cursor:pointer" class="text-top">{{$index+1 + index}}</td>
-                                                            <td style="cursor:pointer" class="text-top">
-                                                                <span ng-click="viewDocument($index)">
-                                                                    <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="16" />
-                                                                    {{x.Document.FileName}}
-                                                                </span>
-                                                                <br />
-                                                                <div style="height:5px"></div>
-                                                                <span style="font-size:xx-small;">
-                                                                    <span ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn-permission" 
-                                                                          ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</span></span>
+                                                        <tr style="vertical-align:central" ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
+                                                            <td ng-click="viewDocument($index)" style="cursor:pointer" class="text-top">
+
+                                                                <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="50" />
+                                                                {{x.Document.FileName}}
+
                                                             </td>
-                                                            <td ng-show="checkIsFirstPerson()" class="text-top"><a ng-click="removeDocument($index);">Remove</a> </td>
+                                                            <td style="width:100px" ng-show="checkIsFirstPerson()" class="text-top">
+                                                                <!--<button class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="set up document" ng-click="removeDocument($index);">set up</button> -->
+                                                                <button class="btn pull-right" style="background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
+                                                                <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</button>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -163,16 +142,13 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     </div>
 
                     <!-- /basic layout -->
                 </div>
                 <!-- /vertical form options -->
-            </div>
-            <!-- /Main content -->
-        </div>
-        <!-- /Page content -->
+          
     </div>
     <!-- /Page container -->
 
@@ -366,7 +342,7 @@
             $scope.initData = function () {
 
             };
-            
+
             $scope.showPasswordModal = function () {
                 var val = document.getElementById("thePassword");
                 val.value = "";
@@ -541,7 +517,7 @@
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
 
- 
+
 
             $scope.closePdf = function () {
                 console.log("revise");
@@ -575,7 +551,7 @@
                     }
                 } else if ($scope.isUploading) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                            
+
                         $scope.annos = items;
                         $("#modal_pdf_viewer").modal("hide");
                         if ($scope.fromSelectDoc) {
@@ -590,8 +566,8 @@
                 $scope.isRevising = false;
                 $scope.isUploading = false;
                 console.log($scope.isRevising );
-                
-                
+
+
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -615,6 +591,8 @@
                     var x = 0;
                 });
             };
+
+
 
             $scope.openDocument = function (iframe, fileName, isNew) {
                 if (iframe.contentWindow == null)
@@ -760,7 +738,7 @@
                 else if (bit == 2)
                     eventString = "Reject";
                 else if (bit == 4)
-                    eventString = "Ask for Revision";
+                    eventString = "Revision";
                 else if (bit == 8)
                     eventString = "Manual Alter";
                 swal({
@@ -1142,10 +1120,10 @@
             $scope.getStatusName = function (status) {
                 switch (status) {
                     case 0:
-                        return "Open";
+                        return "Ongoing";
                         break;
                     case 1:
-                        return "In Progress";
+                        return "Done";
                         break;
                     case 2:
                         return "Pending";
@@ -1154,7 +1132,7 @@
                         return "Signed";
                         break;
                     case 5:
-                        return "Revision";
+                        return "Ask for Revision";
                         break;
                     case 6:
                         return "Altered";
