@@ -375,10 +375,7 @@ namespace DRD.Service
             EmailService emailService = new EmailService();
 
             string body = string.Empty;
-            if (System.Web.HttpContext.Current != null)
-                body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
-            else
-                body = emailService.CreateHtmlBody(@"c:\doc\emailtemplate\InboxNotif.html"); ///Masih perlu di edit
+            body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
 
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");

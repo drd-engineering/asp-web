@@ -367,12 +367,12 @@ namespace DRD.Service
                     "Temporary password: <b>" + xpwd + "</b><br/><br/>" +
                     "Make a new password change after you login with this password.<br/><br/>" +
                     "Thank you<br/><br/>" +
-                    "DRD Administrator<br/>";
+                    "DRD<br/>";
                 var configGenerator = new AppConfigGenerator();
                 var emailfrom = configGenerator.GetConstant("EMAIL_USER")["value"];
                 var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
 
-                var task = emailService.Send(emailfrom, emailfromdisplay + " Administrator", emailUser, "DRD Member Reset Password", body, false, new string[] { });
+                var task = emailService.Send(emailfrom, emailfromdisplay , emailUser, "DRD User Reset Password", body, false, new string[] { });
                 return 1;
             }
         }
@@ -413,7 +413,7 @@ namespace DRD.Service
             var has = true;
             using (var db = new ServiceContext())
             {
-                var countCompany = db.Companies.Count(c => c.OwnerId == userId);
+                var countCompany = db.Companies.Count(c => c.OwnerId == userId && c.IsActive);
                 has = countCompany > 0;
             }
             return has;
@@ -433,13 +433,34 @@ namespace DRD.Service
             }
             return isMember;
         }
-        public bool IsAdminOrOwnerofCompany(long userId)
+        /// <summary>
+        /// Checking if the user is admin of a company or more
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool IsAdminOfCompany(long userId)
         {
-            var isMember = true;
+            var usrIsAdmin = false;
             using (var db = new ServiceContext())
             {
-                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId && memberItem.IsActive & memberItem.IsAdministrator);
-                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
+                var countAdminCompany = db.Members.Count(m => m.UserId == userId && m.IsAdministrator && m.IsActive && m.isCompanyAccept && m.isMemberAccept);
+                usrIsAdmin = countAdminCompany > 0;
+            }
+            return usrIsAdmin;
+        }
+        /// <summary>
+        /// Check if the user is an admin or has company
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool IsAdminOrOwnerofCompany(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId 
+                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive 
+                    && memberItem.isCompanyAccept && memberItem.isMemberAccept);
+                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive );
 
                 return countAsAdmin > 0 && countAsOwner > 0;
             }

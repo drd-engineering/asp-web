@@ -46,7 +46,12 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
-            return View(layout);
+            var isAdminandHasCompany = userService.IsAdminOrOwnerofCompany(user.Id);
+            if (isAdminandHasCompany)
+            {
+                return View(layout);
+            }
+            return RedirectToAction("List", "Inbox");
         }
 
         public ActionResult GetAllCompanyOwnedbyUser()
