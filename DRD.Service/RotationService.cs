@@ -825,7 +825,7 @@ namespace DRD.Service
                     x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
                     foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
                     {
-                        var rotationNode = (from rotationNode in db.RotationNodes
+                        var rNode = (from rotationNode in db.RotationNodes
                                     where rotationNode.Rotation.Id == x.Id
                                     && rotationNode.UserId == y.Id
                                     select new RotationNodeInboxData
@@ -833,10 +833,10 @@ namespace DRD.Service
                                         CreatedAt = rotationNode.CreatedAt,
                                         Status = rotationNode.Status
                                     }).FirstOrDefault();
-                        if (rotationNode != null)
+                        if (rNode != null)
                         {
-                            y.InboxStatus = rotationNode.Status;
-                            y.InboxTimeStamp = rotationNode.CreatedAt;
+                            y.InboxStatus = rNode.Status;
+                            y.InboxTimeStamp = rNode.CreatedAt;
                         }
                         else
                         {

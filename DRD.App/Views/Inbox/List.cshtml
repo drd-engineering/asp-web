@@ -50,7 +50,7 @@
                             </thead>
                             <tbody style="width:95%">
                                 <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
-                                    <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small></td>
+                                    <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
                                     <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                     <td>{{x.RotationName}}</td>
                                     <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
