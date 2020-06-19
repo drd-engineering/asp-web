@@ -57,6 +57,7 @@ namespace DRD.Models.API
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
             CompanyInbox = new SmallCompanyData();
+            Tags = new List<string>();
         }
     }
 }

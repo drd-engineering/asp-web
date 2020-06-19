@@ -55,35 +55,43 @@
                                     <fieldset>
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <div class="col-md-2">
+                                                <div class="col-sm-2">
                                                     Name <br>
                                                 </div>
-                                                <div class="col-md-10">
+                                                <div class="col-sm-10">
                                                     : <strong>{{model.Subject}}</strong><br>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2">
+                                                <div class="col-sm-2">
                                                     Workflow <br>
                                                 </div>
-                                                <div class="col-md-10">
+                                                <div class="col-sm-10">
                                                     : <strong>{{workflow.Name}}</strong><br>
                                                 </div>
                                             </div>
+                                            <div ng-show="model.CompanyName!= null" class="row">
+                                                <div class="col-sm-2">
+                                                    Company <br>
+                                                </div>
+                                                <div class="col-sm-10">
+                                                    : <strong>{{model.CompanyName}}</strong><br>
+                                                </div>
+                                            </div>
                                             <div ng-show="model.Remark!= null" class="row">
-                                                <div class="col-md-2">
+                                                <div class="col-sm-2">
                                                     Description <br>
                                                 </div>
-                                                <div class="col-md-10">
+                                                <div class="col-sm-10">
                                                     : {{model.Remark}}<br>
                                                 </div>
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-2">
+                                                <div class="col-sm-2">
                                                     Tags
                                                 </div>
-                                                <div class="col-md-10">
+                                                <div class="col-sm-10">
                                                     :
                                                     <span class="tag-item" ng-repeat="tag in model.Tags">
                                                         {{tag}}
@@ -215,11 +223,12 @@
 
             function initValues() {
                 var product = @Html.Raw(Json.Encode(Model.obj));
-                $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
+                
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Subject=product.Subject;
-                    $scope.model.Status=product.Status;
+                    $scope.model.Status = product.Status;
+                    $scope.model.CompanyName = product.CompanyRotation.Name;
                     $scope.model.Remark= product.Remark;
                     $scope.workflow=product.Workflow;
                     $scope.users = product.RotationUsers;

@@ -73,25 +73,24 @@
                         <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                             <thead>
                                 <tr>
-                                    <th width="25px"></th>
                                     <th>Name</th>
+                                    <th width="100px">Company</th>
                                     <th>Workflow</th>
                                     <th width="100px">Status</th>
-                                    <th width="100px">Action</th>
                                     <th width="175px">Created</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in products">
-                                    <td ng-click="do_edit(x.Id);">{{$index+1 + index}}</td>
                                     <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
-                                    <td ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
+                                    <td >
+                                        <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
+                                        <span ng-click="do_edit(x.Id);">{{x.CompanyRotation.Name}}</span>
+                                    </td>
+                                    <td  width="100px" ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
 
                                     <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus  ) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
-                                    <td width="100px">
-                                        <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
-                                    </td>
-                                    <td ng-click="do_edit(x.Id);" width="175px" style="font-size:10px">{{x.CreatedAt}}</td>
+                                    <td ng-click="do_edit(x.Id);" width="100px" style="font-size:10px">{{x.CreatedAt}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -121,14 +120,11 @@
             $scope.rotationSelected = -1
             $scope.SubscriptionList = [];
             $scope.hasRotation = false;
-            initValues() ;
 
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
-            function initValues() {
-                $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-            }
+            
             angular.element(document).ready(function () {
                 $scope.getSubscriptionList();
                 

@@ -54,7 +54,11 @@
                     <div class="panel panel-flat container-fluid" >
                         <div style="padding-left:40px; padding-right:40px" class="page-title">
                             <h4>Rotation : {{model.Subject}}</h4>
-                             {{currentRotationNode.WorkflowNode.Caption}}
+                            {{currentRotationNode.WorkflowNode.Caption}} <br><br>
+                            <span style="margin-top:5px;padding:5px 10px;margin-right:5px;font-size:10px;border-radius:5px;background-color:grey;color:white;" ng-repeat="tag in model.Tags">
+                                {{tag}}
+                            </span>
+                            <hr>
                         </div>
 
                             <!--MEMBER DATA-->
@@ -63,13 +67,15 @@
                                 <div class="row" style="padding-left:40px; padding-right:40px" ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
-
-                                            <div ng-show="loadingLog==1">
-                                                <i class="icon-spinner2 spinner"></i>
-                                                <span>Loading log...</span>
-                                            </div>
                                             <div class="row">
                                                 <div class="col-md-12">
+                                                    <h3 class="control-label">Activity Log</h3>
+
+                                                    <div ng-show="loadingLog==1">
+                                                        <i class="icon-spinner2 spinner"></i>
+                                                        <span>Loading log...</span>
+                                                    </div>
+
                                                     <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
                                                 </div>
                                             </div>
@@ -252,6 +258,7 @@
                     $scope.model.FlagAction = product.FlagAction;
                     $scope.model.DecissionInfo = product.DecissionInfo;
                     $scope.model.UserId = product.UserId;
+                    $scope.model.Tags= product.Tags;
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.workflow = product.Workflow;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
