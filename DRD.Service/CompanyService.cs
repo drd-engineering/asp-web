@@ -123,7 +123,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                Company company = GetCompany(companyId);
+                Company company = GetCompanyDb(companyId);
                 company.OwnerId = newOwnerUserId;
 
                 long result = db.Companies.Add(company).OwnerId;
@@ -150,7 +150,7 @@ namespace DRD.Service
                 Usage Usage = new Usage();
                 SubscriptionService subscriptionService = new SubscriptionService();
 
-                Company company = GetCompany(companyId);
+                Company company = GetCompanyDb(companyId);
                 Usage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
                 BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
                 Price price = subscriptionService.getActivePricePackage(package.Id);
@@ -176,32 +176,77 @@ namespace DRD.Service
                 return result;
             }
         }
-
-        public CompanyList GetAllCompany()
+        
+        /// <summary>
+        /// Obtain all company available in DRD 
+        /// </summary>
+        /// <returns>only contains little details like id, name and code</returns>
+        public ICollection<SmallCompanyData> GetAllCompany()
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
-                foreach (Company x in result)
-                {
-                    var company = new CompanyItem();
-                    company.Id = x.Id;
-                    company.Code = x.Code;
-                    company.Name = x.Name;
-                    listReturn.companies.Add(company);
-                }
+                var result = (from cmpny in db.Companies
+                              where cmpny.IsActive
+                              select new SmallCompanyData
+                              {
+                                  Id = cmpny.Id,
+                                  Code = cmpny.Code,
+                                  Name = cmpny.Name,
+                              }).ToList();
+                return result;
+            }
+        }
+        /// <summary>
+        /// Obtain all company that user manage and own
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public ICollection<CompanyItem> GetOwnedandManagedCompany(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var managedCompany = GetAllCompanyDetailByAdminId(userId);
+                var ownedCompany = GetAllCompanyDetailByOwnerId(userId);
+                // merge two list of company
+                List<CompanyItem> listReturn = new List<CompanyItem>();
+                listReturn.AddRange(ownedCompany); 
+                listReturn.AddRange(managedCompany);
                 return listReturn;
             }
         }
-
-        public CompanyList GetAllCompanyDetails(long userId)
+        /// <summary>
+        /// Obtain all company that user manage
+        /// </summary>
+        /// <param name="adminId"> user Id as admin</param>
+        /// <returns></returns>
+        public ICollection<CompanyItem> GetAllCompanyDetailByAdminId(long adminId)
         {
-
+            memberService = new MemberService();
             using (var db = new ServiceContext())
             {
-                var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
+                var companies = new List<CompanyItem>();
+                var memberAsAdmins = memberService.GetAllAdminDataofUser(adminId);
+                foreach (Member member in memberAsAdmins)
+                {
+                    var company = GetCompanyDetail(member.CompanyId);
+                    if (company == null) continue;
+                    company.IsManagedByUser = true;
+                    companies.Add(company);
+                }
+                return companies;
+            }
+        }
+        /// <summary>
+        /// Obtain all company that user own
+        /// </summary>
+        /// <param name="ownerId">user id as owner</param>
+        /// <returns></returns>
+        public ICollection<CompanyItem> GetAllCompanyDetailByOwnerId(long ownerId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var ownerCompanies = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
+                var listReturn = new List<CompanyItem>();
                 foreach (Company x in ownerCompanies)
                 {
                     var company = new CompanyItem();
@@ -222,36 +267,67 @@ namespace DRD.Service
                     }
                     company.IsActive = x.IsActive;
                     company.IsVerified = x.IsVerified;
-                    company.IsOwnedByUser = (x.Id == userId);
+                    company.IsOwnedByUser = true;
                     company.Administrators = memberService.getAdministrators(company.Id);
-
-                    listReturn.addCompany(company);
+                    listReturn.Add(company);
                 }
-                CompanyList companyAsAdmins = GetCompanyListByAdminId(userId);
-                listReturn.mergeCompanyList(companyAsAdmins);
                 return listReturn;
             }
         }
-
-        public CompanyList GetAllCompanyOwnedbyUser(long userId)
+        /// <summary>
+        /// Obtain all company that user has
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>only contain small data like id, code and name of company</returns>
+        public ICollection<SmallCompanyData> GetAllCompanyOwnedbyUser(long userId)
         {
             using (var db = new ServiceContext())
             {
-                var result = db.Companies.Where(companyItem => companyItem.OwnerId == userId && companyItem.IsActive).ToList();
-                var listReturn = new CompanyList();
-                foreach (Company x in result)
+                var result = (from cmpny in db.Companies
+                              where cmpny.OwnerId == userId && cmpny.IsActive
+                              select new SmallCompanyData {
+                                  Id = cmpny.Id,
+                                  Code = cmpny.Code,
+                                  Name = cmpny.Name,
+                              }).ToList();
+                return result;
+            }
+        }
+        /// <summary>
+        /// Obtain company details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CompanyItem GetCompanyDetail(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var result = db.Companies.Where(companyItem => companyItem.Id == id).FirstOrDefault();
+                if (result == null) return null;
+                var company = new CompanyItem();
+                var subscription = subscriptionService.GetCompanyUsage(result.Id);
+                company.Id = result.Id;
+                company.Code = result.Code;
+                company.Name = result.Name;
+                company.Phone = result.Phone;
+                company.Address = result.Address;
+                company.PointLocation = result.PointLocation;
+                company.OwnerId = result.OwnerId;
+                company.OwnerName = userService.GetName(company.OwnerId);
+                if (subscription != null)
                 {
-                    var company = new CompanyItem();
-                    company.Id = x.Id;
-                    company.Code = x.Code;
-                    company.Name = x.Name;
-                    listReturn.companies.Add(company);
+                    company.SubscriptionId = subscription.Id;
+                    Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                    company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                 }
-                return listReturn;
+                company.IsActive = result.IsActive;
+                company.IsVerified = result.IsVerified;
+                company.Administrators = memberService.getAdministrators(company.Id);
+                return company;
             }
         }
 
-        public CompanyItem GetCompany(int id)
+        public CompanyItem GetCompany(long id)
         {
             using (var db = new ServiceContext())
             {
@@ -274,54 +350,13 @@ namespace DRD.Service
             }
         }
 
-        public Company GetCompany(long id)
+        public Company GetCompanyDb(long id)
         {
             using (var db = new ServiceContext())
             {
                 return db.Companies.Where(companyItem => companyItem.Id == id).FirstOrDefault();
             }
         }
-
-        public CompanyItem GetCompanyDetail(long id)
-        {
-            memberService = new MemberService();
-
-            using (var db = new ServiceContext())
-            {
-                var result = db.Companies.Where(companyItem => companyItem.Id == id).ToList();
-                if (result.Count == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    var company = new CompanyItem();
-                    foreach (Company x in result)
-                    {
-                        var subscription = subscriptionService.GetCompanyUsage(x.Id);
-                        company.Id = x.Id;
-                        company.Code = x.Code;
-                        company.Name = x.Name;
-                        company.Phone = x.Phone;
-                        company.Address = x.Address;
-                        company.PointLocation = x.PointLocation;
-                        company.OwnerId = x.OwnerId;
-                        company.OwnerName = userService.GetName(company.OwnerId);
-                        if (subscription != null)
-                        {
-                            company.SubscriptionId = subscription.Id;
-                            Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
-                            company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
-                        }
-                        company.IsActive = x.IsActive;
-                        company.IsVerified = x.IsVerified;
-                        company.Administrators = memberService.getAdministrators(company.Id);
-                    }
-                    return company;
-                }
-            }
-        }
-
         public CompanyItem GetCompanyItem(long companyId)
         {
             using (var db = new ServiceContext())
@@ -339,63 +374,6 @@ namespace DRD.Service
                 return result;
             }
         }
-        public CompanyList GetCompanyListByAdminId(long adminId)
-        {
-            memberService = new MemberService();
-            using (var db = new ServiceContext())
-            {
-                var companies = new CompanyList();
-                var companyAdmins = memberService.getMemberByCompanyAdmin(adminId);
-                foreach (Member x in companyAdmins)
-                {
-                    var company = GetCompanyDetail(x.CompanyId);
-                    if (company != null)
-                    {
-                        company.IsManagedByUser = true;
-                        companies.addCompany(company);
-                    }
-                }
-                return companies;
-            }
-        }
-
-        public CompanyList GetCompanyListByOwnerId(long ownerId)
-        {
-
-            using (var db = new ServiceContext())
-            {
-                var companies = new CompanyList();
-                var companyThatOwnedBy = db.Companies.Where(companyItem => companyItem.OwnerId == ownerId && companyItem.IsActive).ToList();
-                if (companyThatOwnedBy != null)
-                {
-                    foreach (Company x in companyThatOwnedBy)
-                    {
-                        CompanyItem company = new CompanyItem();
-                        var subscription = subscriptionService.GetCompanyUsage(x.Id);
-                        company.Id = x.Id;
-                        company.Code = x.Code;
-                        company.Name = x.Name;
-                        company.Phone = x.Phone;
-                        company.Address = x.Address;
-                        company.PointLocation = x.PointLocation;
-                        company.OwnerId = x.OwnerId;
-                        company.OwnerName = userService.GetName(x.OwnerId);
-                        if (subscription != null)
-                        {
-                            company.SubscriptionId = subscription.Id;
-                            Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
-                            company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
-                        }
-                        company.IsActive = x.IsActive;
-                        company.IsVerified = x.IsVerified;
-
-                        companies.addCompany(company);
-                    }
-                }
-                return companies;
-            }
-        }
-
         // POST/GET RejectMember/memberId
         // return user id if member accepted, return -1 if member not found.
         public long RejectMember(long memberId)
@@ -439,6 +417,20 @@ namespace DRD.Service
                 return company.Id;
             }
         }
+        public long VerifyCompany(long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                Company company = GetCompanyDb(companyId);
+                company.IsVerified = true;
+
+                long result = db.Companies.Add(company).OwnerId;
+                db.SaveChanges();
+
+                return result;
+            }
+        }
+
         public void SendEmailAddMember(AddMemberResponse item)
         {
             var configGenerator = new AppConfigGenerator();
@@ -478,20 +470,6 @@ namespace DRD.Service
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
                 var task = emailService.Send(senderEmail, senderName , item.email, senderName + "DRD Invitation", body, false, new string[] { });
-            }
-        }
-
-        public long VerifyCompany(long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                Company company = GetCompany(companyId);
-                company.IsVerified = true;
-
-                long result = db.Companies.Add(company).OwnerId;
-                db.SaveChanges();
-
-                return result;
             }
         }
     }

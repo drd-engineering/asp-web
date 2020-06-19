@@ -215,6 +215,7 @@
     <Compile Include="View\Document\DocumentItem.cs" />
     <Compile Include="View\ElementType.cs" />
     <Compile Include="View\Rotation\RotationDashboard.cs" />
+    <Compile Include="View\Rotation\RotationUserItem.cs" />
     <Compile Include="View\UserProfile.cs" />
     <Compile Include="View\UploadResponse.cs" />
     <Compile Include="View\Rotation\RotationItem.cs" />
@@ -232,7 +233,7 @@
     <Compile Include="View\Member\MemberList.cs" />
     <Compile Include="View\Symbol.cs" />
     <Compile Include="API\ProcessActivity.cs" />
-    <Compile Include="API\CompanyList.cs" />
+    <Compile Include="API\CompanyItem.cs" />
     <Compile Include="API\Element.cs" />
     <Compile Include="API\RegisterResponse.cs" />
     <Compile Include="API\RegistrationData.cs" />

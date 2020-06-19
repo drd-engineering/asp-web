@@ -64,23 +64,17 @@ namespace DRD.App.Controllers
             return Json(registrationResponse, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Register/GetAllCompany
-        // Retrieve all companny as list
+        /// <summary>
+        /// API to Obtain all company that available in DRD
+        /// </summary>
+        /// <returns>company details only contain name, code and id</returns>
         public ActionResult GetAllCompany()
         {
             var service = new CompanyService();
             var data = service.GetAllCompany();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        // GET: Register/CompanySelected?id=
-        // retrieve a single company by company id
-        public ActionResult CompanySelected(int id)
-        {
-            var service = new CompanyService();
-            var data = service.GetAllCompany();
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
+        
         // GET: Register/CheckEmail
         // Check whenever an email is already used
         public ActionResult CheckEmail(string email)

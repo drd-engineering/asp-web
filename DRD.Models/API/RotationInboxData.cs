@@ -43,6 +43,7 @@ namespace DRD.Models.API
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
 
         public virtual SmallCompanyData CompanyInbox { get; set; } // FK_Rotation_Company
+        public ICollection<string> Tags { get; set; } // Tags
         //[ForeignKey("UserId")]
         //public virtual User User { get; set; } // FK_Rotation_Member
 

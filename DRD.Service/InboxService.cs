@@ -75,7 +75,11 @@ namespace DRD.Service
             }
 
         }
-
+        /// <summary>
+        /// Count Inbox that still not read by user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public int CountUnread(long userId)
         {
             using (var db = new ServiceContext())
@@ -108,49 +112,6 @@ namespace DRD.Service
             }
         }
 
-        public InboxItem GetInboxItemById(long inboxId, UserSession user) {
-            InboxItem inboxItem = new InboxItem();
-            using (var db = new ServiceContext()) 
-            {
-                if (db.Inboxes != null)
-                {
-                    var inbox = db.Inboxes.Where(i => i.UserId == user.Id && i.Id == inboxId).FirstOrDefault();
-                    inboxItem.CurrentActivity = db.RotationNodes.Where(rn => rn.Id == inbox.ActivityId).Select(rn => rn.WorkflowNode.Caption).FirstOrDefault();
-
-                    // mapping rotation log
-                    inboxItem.RotationLog = (from r in db.Rotations
-                                             join rn in db.RotationNodes on r.Id equals rn.RotationId
-                                             where rn.Id == inbox.ActivityId
-                                             select new RotationData
-                                             {
-                                                 Id = r.Id,
-                                                 Subject = r.Subject,
-                                                 WorkflowId = rn.WorkflowNode.Id,
-                                        
-                                                 Status = rn.Status,
-                                                 UserId = rn.UserId,
-                                                 //MemberId = 0,
-                                                 CreatedAt = rn.CreatedAt,
-                                                 UpdatedAt = rn.UpdatedAt,
-                                                 //DateStarted,
-                                                 //DateStatus,
-                                                 RotationNodeId = rn.Id,
-                                                 ActivityName = rn.WorkflowNode.Caption,
-                                                 WorkflowName = r.Workflow.Name,
-                                                 StatusDescription = r.StatusDescription
-                                             }
-                                             ).ToList();
-
-                    
-                    // Un-comment this when inbox feature ready
-                    //inbox.IsUnread = false;
-                    db.SaveChanges();
-
-                    return inboxItem;
-                }
-                return null;
-            }
-        }
         /// <summary>
         /// Find inbox details based on userid and inboxid
         /// </summary>
@@ -191,6 +152,9 @@ namespace DRD.Service
                                            Code = cmpny.Code,
                                            Name = cmpny.Name,
                                        }).FirstOrDefault();
+                var tagService = new TagService();
+                var tags = tagService.GetTags(result.Id);
+                foreach (var tag in tags) { result.Tags.Add(tag.Name); }
                 result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
                 RotationService rotationService = new RotationService();
@@ -233,7 +197,6 @@ namespace DRD.Service
                 db.SaveChanges();
                 return inbox.IsUnread;
             }
-
         }
 
         public int CreateInbox(ActivityItem activity)

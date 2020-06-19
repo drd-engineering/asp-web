@@ -100,12 +100,5 @@ namespace DRD.App.Controllers
             Session["_COUNTERINBOX_"] = counter;
             return Json(counter, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult AddDocument(int id) 
-        {
-            var data = inboxService.GetInboxItemById(id, user);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
     }
 }

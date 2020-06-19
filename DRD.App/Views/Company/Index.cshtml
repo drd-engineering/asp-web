@@ -286,7 +286,7 @@
                 $scope.model.Image1 = "no_picture.png";
                 $scope.model.Image2 = "no_picture.png";
                 $scope.model.ImageCard = "no_picture.png";
-                $scope.getCompanyList();
+                $scope.getOwnedandManagedCompany();
                 $(".content").show();
             });
 
@@ -360,12 +360,12 @@
             //END MAP
             //
 
-             $scope.getCompanyList = function () {
-                $http.get('@Url.Action("GetCompanyList", "company")')
+             $scope.getOwnedandManagedCompany = function () {
+                $http.get('@Url.Action("GetOwnedandManagedCompany", "Company")')
                     .then(function (response) {
 
                         if (response.data) {
-                            $scope.CompanyList = response.data.companies;
+                            $scope.CompanyList = response.data;
 
                             $scope.CompanyList.forEach(
                                 function (value, index, array) {

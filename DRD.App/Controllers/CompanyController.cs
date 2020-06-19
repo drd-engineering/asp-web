@@ -58,7 +58,6 @@ namespace DRD.App.Controllers
         {
             Initialize();
             var data = companyService.GetAllCompanyOwnedbyUser(user.Id);
-
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -71,8 +70,7 @@ namespace DRD.App.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            
-            if(!companyService.CheckIsOwner(user.Id, id) && !memberService.checkIsAdmin(user.Id, id))
+            if(!memberService.checkIsAdmin(user.Id, id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
@@ -90,13 +88,14 @@ namespace DRD.App.Controllers
             }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        // GET: Contact/GetPersonalContact?searhKey=[]&page=1&size=20
-        public ActionResult GetCompanyList()
+        /// <summary>
+        /// API to get all the company Owned and Managed by the user logged in
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetOwnedandManagedCompany()
         {
             InitializeAPI();
-            CompanyList data = companyService.GetAllCompanyDetails(user.Id);
-
+            var data = companyService.GetOwnedandManagedCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
