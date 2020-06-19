@@ -3671,12 +3671,11 @@
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
     <Content Include="Views\Contact\index.cshtml" />
-    <Content Include="Views\Rotation\index.cshtml" />
+    <Content Include="Views\Rotation\Index.cshtml" />
     <Content Include="Views\Include\PopupBusinessSubscription.cshtml" />
     <Content Include="Views\Include\PopupSubscription.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Include\PopupAddDocument.cshtml" />
-    <Content Include="Views\Workflow\New - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

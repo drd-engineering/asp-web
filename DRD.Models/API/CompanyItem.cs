@@ -7,29 +7,8 @@ using System.Threading.Tasks;
 
 namespace DRD.Models.API
 {
-    public class CompanyList
+    public class CompanyItem
     {
-        public ICollection<CompanyItem> companies { set; get; }
-
-        public long addCompany(CompanyItem companyItem)
-        {
-            companies.Add(companyItem);
-            return companyItem.Id;
-        }
-        public bool mergeCompanyList(CompanyList companyList)
-        {
-            List<CompanyItem> list = new List<CompanyItem>();
-            list.AddRange(companies);
-            list.AddRange(companyList.companies);
-            companies = list.ToArray();
-            return companies != null;
-        }
-        public CompanyList()
-            {
-            companies = new List<CompanyItem>();
-            }
-    }
-    public class CompanyItem {
         public long Id { get; set; } // Id (Primary key)
         public string Code { get; set; } // Code (length: 10)
         public string Name { get; set; } // Name (length: 50)

@@ -118,12 +118,15 @@ namespace DRD.Service
                 //return db.Members.Where(memberItem => memberItem.CompanyId == CompanyId && memberItem.IsAdministrator).ToList();
             }
         }
-
-        public List<Member> getMemberByCompanyAdmin(long adminId)
+        /// <summary>
+        /// Obtain all the user data as a member who managed a company or more
+        /// </summary>
+        /// <param name="adminId"></param>
+        /// <returns></returns>
+        public ICollection<Member> GetAllAdminDataofUser(long adminId)
         {
             using (var db = new ServiceContext())
             {
-
                 return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
             }
         }

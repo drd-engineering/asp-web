@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-using DRD.Models;
+using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
@@ -34,18 +34,20 @@ namespace DRD.App.Controllers
             user = login.GetUser(this);
             login.CheckLogin(this);
         }
+        /// <summary>
+        /// Access Page Inbox related to the inbox id that user has
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Index(long id)
         {
             if(!Initialize())
                 return RedirectToAction("Index", "LoginController");
  
-            InboxService inboxService = new InboxService();
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
-
             //page authorization check if user has no access
             if(product.AccessType.Equals((int)Constant.AccessType.noAccess))
                 return RedirectToAction("Index", "Dashboard");
-
             //user have access
             layout.obj = product;
             return View(layout);
@@ -58,11 +60,17 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-
+        /// <summary>
+        /// API to obtain all user inbox
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public ActionResult GetInboxList(int page, int pageSize)
         {
             Initialize();
-            var data = inboxService.GetInboxList(user.Id, page, pageSize);
+            int skip = pageSize * (page - 1);
+            var data = inboxService.GetInboxList(user.Id, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -91,13 +99,6 @@ namespace DRD.App.Controllers
             }
             Session["_COUNTERINBOX_"] = counter;
             return Json(counter, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AddDocument(int id) 
-        {
-            var data = inboxService.GetInboxItemById(id, user);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -90,17 +90,7 @@ namespace DRD.Service
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
-
-            try
-            {
-                var task = emailService.Send(senderEmail, senderName + "Administrator", "franna.jaya@gmail.com", senderName + " User Registration", body, false, new string[] { });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception caught in RetryIfBusy(): {0}",
-                        ex.ToString());
-            }
-            return 1;
+            return 0;
         }
     }
 

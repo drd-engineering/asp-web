@@ -10,7 +10,7 @@ namespace DRD.Models.View
     // bundling all contact data for Contact page needs.
     public class ContactData
     {
-        public CompanyList CompanyList;
+        public ICollection<CompanyItem> CompanyList;
         public ContactList ContactList;
     }
 }

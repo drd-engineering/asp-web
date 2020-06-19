@@ -342,7 +342,7 @@
                 $http.get('@Url.Action("GetAllCompany", "Register")')
                 .then(function (response) {
                     if (response.data) {
-                        $scope.companyAll = $.map(response.data.companies, function (dataItem) {
+                        $scope.companyAll = $.map(response.data, function (dataItem) {
                             return { value: dataItem.Name, data: dataItem.Id };
                         });
                         $scope.autocompleteCompany(); 

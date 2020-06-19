@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DRD.Models.Custom
+namespace DRD.Models.API
 {
     public class RotationInboxData
     {
@@ -41,6 +41,9 @@ namespace DRD.Models.Custom
 
         // Foreign keys
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
+
+        public virtual SmallCompanyData CompanyInbox { get; set; } // FK_Rotation_Company
+        public ICollection<string> Tags { get; set; } // Tags
         //[ForeignKey("UserId")]
         //public virtual User User { get; set; } // FK_Rotation_Member
 
@@ -53,6 +56,7 @@ namespace DRD.Models.Custom
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
+            CompanyInbox = new SmallCompanyData();
         }
     }
 }

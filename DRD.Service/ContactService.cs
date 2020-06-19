@@ -179,13 +179,12 @@ namespace DRD.Service
             }
         }
         // list all company that relate to the user (a member)
-        public CompanyList GetListOfCompany(UserSession user) {
+        public ICollection<CompanyItem> GetListOfCompany(UserSession user) {
             using (var db = new ServiceContext()) {
                 long[] CompanyIds = db.Members.Where(member => member.UserId == user.Id).Select(c => c.CompanyId).ToArray();
 
                 var Companies = db.Companies.Where(company => CompanyIds.Contains(company.Id)).ToList();
 
-                CompanyList companyList = new CompanyList();
                 List<CompanyItem> companyItems = new List<CompanyItem>();
 
                 foreach (Company c in Companies) {
@@ -201,9 +200,7 @@ namespace DRD.Service
                     companyItems.Add(item);
 
                 }
-                companyList.companies = companyItems;
-                
-                return companyList;
+                return companyItems;
             }
         }
 
