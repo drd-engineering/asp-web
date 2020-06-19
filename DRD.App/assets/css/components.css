@@ -430,8 +430,8 @@ a.badge,
 .navigation > li.active > a,
 .navigation > li.active > a:hover,
 .navigation > li.active > a:focus {
-    background-color: #075685;
-    color: #FD9816;
+    background-color: #AFC9D8;
+    color: #075685;
 }
 .navigation > li.active > a > [class*=text-] {
   color: #fff;
