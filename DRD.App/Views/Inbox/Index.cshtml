@@ -519,8 +519,10 @@
 
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
                 var doc = $scope.docs[idx];
+                if (!checkIsFirstPerson()) {
                 $scope.model.FlagAction |= 2;
                 doc.FlagAction |= 2;
+                }
                 $scope.setAnnos(doc.Document.DocumentElements);
                 if (iframe.contentWindow == null)
                     return;

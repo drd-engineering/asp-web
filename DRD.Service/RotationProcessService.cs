@@ -91,7 +91,7 @@ namespace DRD.Service
                 {
                     var workflowNodeLink = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == rtnode.WorkflowNodeId).FirstOrDefault();
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
-                    UpdateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
+                    UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
 
                     retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, (int)Constant.RotationStatus.Declined, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
                 }
@@ -294,9 +294,9 @@ namespace DRD.Service
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
                         {
                             if (rtnode.Status.Equals((int)Constant.RotationStatus.Declined))
-                                UpdateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
+                                UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
                             else
-                                UpdateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Completed);
+                                UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
                             retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, "END"));
                         }
                     }
@@ -537,14 +537,15 @@ namespace DRD.Service
             }
         }
 
-        private void UpdateAllStatus(ServiceContext db, long rotationId, int status)
+        private void UpdateStatus(ServiceContext db, long rotationId, int previousStatus, int status)
         {
             var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
             rot.Status = status;
             rot.DateUpdated = DateTime.Now;
             foreach (RotationNode rotationNode in rot.RotationNodes)
             {
-                rotationNode.Status = status;
+                if(rotationNode.Status.Equals(previousStatus))
+                    rotationNode.Status = status;
             }
         }
     }
