@@ -241,7 +241,7 @@ namespace DRD.Service
             {
                 var contactListAllMatch = (from Contact in db.Contacts
                                            join User in db.Users on Contact.ContactItemId equals User.Id
-                                           where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                           where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                            select new MemberData
                                            {
                                                Id = User.Id,
@@ -256,7 +256,7 @@ namespace DRD.Service
                                                     where member1.UserId == userId
                                                     && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
                                                     && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
-                                                    && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
+                                                    && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
                                                     select new MemberData
                                                     {
                                                         Id = user.Id,
@@ -295,7 +295,7 @@ namespace DRD.Service
             {
                 var countContactListAllMatch = (from Contact in db.Contacts
                                                 join User in db.Users on Contact.ContactItemId equals User.Id
-                                                where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                                where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                                 select new MemberData
                                                 {
                                                     Id = User.Id,
@@ -310,7 +310,7 @@ namespace DRD.Service
                                                          where member1.UserId == userId
                                                          && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
                                                          && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
-                                                         && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).Contains(x)))
+                                                         && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
                                                          select new MemberData
                                                          {
                                                              Id = user.Id,
@@ -348,7 +348,7 @@ namespace DRD.Service
                 var contactListAllMatch = (from RotationUser in db.RotationUsers
                                            join User in db.Users on RotationUser.UserId equals User.Id
                                            where User.Id != userId && RotationUser.RotationId == rotationId
-                                           && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                           && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                            select new MemberData
                                            {
                                                Id = User.Id,
@@ -388,7 +388,7 @@ namespace DRD.Service
                 var countContactListAllMatch = (from RotationUser in db.RotationUsers
                                                 join User in db.Users on RotationUser.UserId equals User.Id
                                                 where User.Id != userId && RotationUser.RotationId == rotationId
-                                                && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).Contains(x)))
+                                                && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                                 select new MemberData
                                                 {
                                                     Id = User.Id,
