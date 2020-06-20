@@ -33,7 +33,7 @@
                                                     ngf-max-size="1000MB" style="object-fit:fill" />
                                         </div>
                                         
-                                        <span style="font-size:xx-small">File Size: {{humanFileSize($parent.model.FileSize,1024)}}</span>   
+                                        <span ng-show="$parent.model.Id!=0 || $parent.isUpload" style="font-size:xx-small">File Size: {{humanFileSize($parent.model.FileSize,1024)}}</span>   
                                     </div>
                                 </div>
                                 <div class="row">
