@@ -85,7 +85,7 @@ namespace DRD.Service
                     db.SaveChanges();
                     //TODO change how to get last id inserted
                     long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
-                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
+                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, (int)Constant.RotationStatus.Revision, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                 }
                 else if (strbit.Equals("REJECT"))
                 {
@@ -93,7 +93,7 @@ namespace DRD.Service
                     rtnode.Status = (int)Constant.RotationStatus.Declined;
                     UpdateAllStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Declined);
 
-                    retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, 1, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
+                    retvalues.Add(createActivityResult(rtnode.UserId, rtnode.UserId, (int)Constant.RotationStatus.Declined, rtnode.Rotation.Subject, rtnode.RotationId, rtnode.Id, strbit));
                 }
                 else if (strbit.Equals("SUBMIT"))
                 {
@@ -125,7 +125,7 @@ namespace DRD.Service
                             db.SaveChanges();
                             //TODO change how to get last id inserted
                             long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
-                            retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
+                            retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, (int)Constant.RotationStatus.In_Progress, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                         }
                         else if (nodeto.SymbolCode == symbolService.getSymbolId("PARALLEL"))
                         {
@@ -192,7 +192,7 @@ namespace DRD.Service
 
                                     db.SaveChanges();
                                     long lastProductId = db.RotationNodes.Where(item => item.RotationId == rtnode2.RotationId).Max(item => item.Id);
-                                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, 1, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
+                                    retvalues.Add(createActivityResult(rtnode2.UserId, rtnode.UserId, (int)Constant.RotationStatus.In_Progress, rtnode2.Rotation.Subject, rtnode2.RotationId, lastProductId, strbit));
                                 }
                             }
                         }

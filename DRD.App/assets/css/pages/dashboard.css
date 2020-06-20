@@ -182,15 +182,6 @@ p {
         margin-bottom: 30px;
     }
 
-.tag-item {
-    font-size: xx-small;
-    border-radius: 10%;
-    padding: 5px;
-    margin: 3px;
-    color: white;
-    background-color: cornflowerblue;
-    display: inline-block;
-}
 
 .image-container-sm {
     display: inline-block;
@@ -257,4 +248,3 @@ p.pagination-info {
     position: absolute;
     z-index: 1;
 }
-

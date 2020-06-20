@@ -45,116 +45,128 @@
 }
 
 <body>
-    <h4><a class="btn" href="/inbox/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-envelope"></i></a> @ViewBag.Title</h4>
+    <h4>
+        <a class="btn" href="/inbox/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-envelope"></i></a> @ViewBag.Title
+    </h4>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
-                <!-- Content area -->
-                <div class="content">
-                    <!-- Basic layout-->
-                    <div class="panel panel-flat container-fluid" >
-                        <div style="padding-left:40px; padding-right:40px" class="page-title">
-                            <h4>Rotation : {{model.Subject}}</h4>
-                            {{currentRotationNode.WorkflowNode.Caption}} <br><br>
-                            <span style="margin-top:5px;padding:5px 10px;margin-right:5px;font-size:10px;border-radius:5px;background-color:grey;color:white;" ng-repeat="tag in model.Tags">
-                                {{tag}}
-                            </span>
-                            <hr>
-                        </div>
+        <div >
+            <div class="col-md-12">
 
-                            <!--MEMBER DATA-->
+            </div>
+        </div>
+        <!-- Content area -->
+        <div class="content">
+            <!-- Basic layout-->
+            <div class="panel panel-flat container-fluid">
+                
+                <div ng-show="wizarno=='success'" style="height:50px;margin-top:10px" class="alert alert-success alert-styled-left">
+                    Data successfully saved.
+                </div>
 
-                            <form name="myForm" class="form-horizontal" autocomplete="off">
-                                <div class="row" style="padding-left:40px; padding-right:40px" ng-show="wizarno=='product'">
-                                    <fieldset>
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h3 class="control-label">Activity Log</h3>
+                <div style="padding-left:40px; padding-right:40px">
+                    <h4 style="margin-bottom:0px;margin-top:20px">Rotation : {{model.Subject}}</h4>
+                    {{currentRotationNode.WorkflowNode.Caption}}
+                    <div ng-show="model.Tags.length>0" style="margin-top:5px">
+                        <span style="margin-top:5px;padding:5px 10px;margin-right:5px;font-size:10px;border-radius:5px;background-color:#f3f3f3;color:black;" ng-repeat="tag in model.Tags">
+                            {{tag}}
+                        </span>
+                    </div>
+                    <hr>
+                </div>
 
-                                                    <div ng-show="loadingLog==1">
-                                                        <i class="icon-spinner2 spinner"></i>
-                                                        <span>Loading log...</span>
-                                                    </div>
+                <!--MEMBER DATA-->
 
-                                                    <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
-                                                </div>
-                                            </div>
-                                            <br />
-                                            <div class="row" ng-show="model.DecissionInfo!=''">
-                                                @*<div class="col-md-10">
-                                                    <label class="control-label">Value to decision ({{model.DecissionInfo}})</label>
-                                                    <input type="text" class="form-control" ng-model="model.Value" ng-required="wizarno=='product' && model.DecissionInfo!=''" maxlength="100" />*@
-                                            </div>
-                                        </div>
-                                        <hr />
-                                        <div class="row" ng-show="!isCompleteRotation()">
-                                            <div class="col-md-12">
-                                                <span style="font-size:medium"><h3>Document</h3></span>
-                                            </div>                                
-                                                <button class="btn btn-flat" ng-show="checkIsFirstPerson() && checkIsActive()" style="margin-left:10px;background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="create new workflow" ng-click="popupDocument()">
-                                                        <i class="icon-plus2"></i> Add
-                                                    </button>
-                                            </div>
-                                        <div class="row" ng-show="!isCompleteRotation()">
-                                            <div class="col-lg-12">
-                                                <div style="height:5px"></div>
-                                                <table class="table-xs table-hover table-bordered datatable-highlight" style="font-size:small;width:100%">
-                                                    <tbody>
-                                                        <tr style="vertical-align:central" ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
-                                                            <td ng-click="viewDocument($index)" style="cursor:pointer" class="text-top">
-
-                                                                <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="50" />
-                                                                {{x.Document.FileName}}
-
-                                                            </td>
-                                                            <td style="width:100px" ng-show="checkIsFirstPerson()" class="text-top">
-                                                                <!--<button class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="set up document" ng-click="removeDocument($index);">set up</button> -->
-                                                                <button class="btn pull-right" style="background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
-                                                                <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <hr />
-                                    </fieldset>
-                                    <br />
-                                    <div class="col-md-12" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
-                                        <div class="panel panel-body border-top-primary text-center">
-                                            <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                            <button type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
-                                            <button type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
-                                            <button type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
-                                        </div>
-                                    </div>
+                <form name="myForm" class="form-horizontal" autocomplete="off">
+                    <div class="row" style="padding-left:40px; padding-right:40px">
+                        <div class="col-md-12">
+                            <button ng-show="checkIsActive()" type="button" data-target="#rot-log" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="rot-log" class="btn" style="color:white; background-color:#818181">
+                                Activity Log
+                            </button>
+                            <button ng-show="checkIsActive() && sumDocuments.length>0" type="button" data-target="#doc-sum" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="doc-sum" class="btn" style="color:white; background-color:#818181">
+                                Document Summary
+                            </button>
+                            <div class="{{checkIsActive()?'collapse':'collapse show'}}" id="rot-log">
+                                <div ng-show="loadingLog==1">
+                                    <i class="icon-spinner2 spinner"></i>
+                                    <span>Loading log...</span>
                                 </div>
-                            </form>
-
-                            <!-- View member modal -->
-                            <ng-include src="'/Include/PopupDocument'"></ng-include>
-                            <ng-include src="'/Include/PopupPassword'"></ng-include>
-                            <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
-                            <ng-include src="'/Include/PdfIViewer'" onload="finishLoading()"></ng-include>
-                            <!-- View member modal -->
-                            <!--/MEMBER DATA-->
-                            <!--CONFIRMATION THANK YOU-->
-
-                            <div ng-show="wizarno=='success'">
-                                <div class="col-md-12">
-
-                                    <div class="alert alert-success alert-styled-left">
-                                        Data successfully saved.
-                                    </div>
-                                </div>
+                                <ng-include src="'/Include/RotationLog'" onload="finishLoading()"></ng-include>
+                            </div>
+                            <div class="{{checkIsActive()?'collapse':'collapse show'}}" id="doc-sum">
+                                <ng-include src="'/Include/DocumentSummary'" onload="finishLoading()"></ng-include>
                             </div>
 
-                    </div>
+                        </div>
+                        <div class="col-md-12">
 
-                    <!-- /basic layout -->
-                </div>
-                <!-- /vertical form options -->
-          
+                            <div class="row" ng-show="model.DecissionInfo!=''">
+                                @*<div class="col-md-10">
+                                <label class="control-label">Value to decision ({{model.DecissionInfo}})</label>
+                                <input type="text" class="form-control" ng-model="model.Value" ng-required="wizarno=='product' && model.DecissionInfo!=''" maxlength="100" />*@
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row" ng-show="!isCompleteRotation() && checkIsActive()">
+                            <div class="col-md-12">
+                                <h3>Document</h3>
+                            </div>
+                            <button class="btn btn-flat" ng-show="checkIsFirstPerson() && checkIsActive()" style="margin-left:10px;background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="upload a document" ng-click="popupDocument()">
+                                <i class="icon-plus2"></i> Add
+                            </button>
+                        </div>
+                        <div class="row" ng-show="!isCompleteRotation() && checkIsActive()">
+                            <div style="border:groove grey;border-width:thin; min-height:66px; margin-top:10px" class="col-lg-12">
+                                <div style="height:5px"></div>
+                                <table class="table-xs table-hover datatable-highlight" style="font-size:small;width:100%">
+                                    <tbody>
+                                        <tr ng-show="docs.length==0"><td style="text-align:center"> You need to upload a pdf document</td></tr>
+                                        <tr style="vertical-align:central; cursor:pointer;" ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
+                                            <td style="max-width:90%" ng-click="viewDocument($index)" class="text-top">
+
+                                                <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="50" />
+                                                {{x.Document.FileName}}
+
+                                            </td>
+                                            <td style="height:50px;width:20%" class="text-top">
+                                                <!--<button class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="set up document" ng-click="removeDocument($index);">set up</button> -->
+                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
+                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and dignature" ng-click="revisedDocument($index);">Set Up</button>
+                                                <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr />
+                        <br />
+                        <div class="col-md-12" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
+                            <div class="text-center">
+                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- View member modal -->
+                <ng-include src="'/Include/PopupDocument'"></ng-include>
+                <ng-include src="'/Include/PopupPassword'"></ng-include>
+                <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
+                <ng-include src="'/Include/PdfIViewer'" onload="finishLoading()"></ng-include>
+
+                <!-- View member modal -->
+                <!--/MEMBER DATA-->
+                <!--CONFIRMATION THANK YOU-->
+            </div>
+
+            <!-- /basic layout -->
+        </div>
+        <!-- /vertical form options -->
+
     </div>
     <!-- /Page container -->
 
@@ -867,6 +879,13 @@
                                 return;
                             }
                             $scope.wizarno = 'success';
+                            $scope.model.Status = response.data;
+                            $scope.model.DefWorkflowNodeId = -1;
+
+                            setTimeout(function () {
+                                     $scope.wizarno = 'product';
+                            }, 1000);
+
                             $(window).off('beforeunload');
                         }
                     }, function (response) {
@@ -1132,13 +1151,16 @@
                 return bytes.toFixed(1) + ' ' + units[u];
             };
 
-            $scope.getStatusName = function (status) {
+            $scope.getStatusName = function (status, workflowId) {
                 switch (status) {
                     case 0:
                         return "Ongoing";
                         break;
                     case 1:
-                        return "Done";
+                        if(workflowId == $scope.model.FirstNodeId)
+                            return "Uploaded";
+                        else
+                            return "Done reviewing"
                         break;
                     case 2:
                         return "Pending";

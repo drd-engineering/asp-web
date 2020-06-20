@@ -309,6 +309,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\pages\tagging.css" />
     <Content Include="assets\js\plugins\transition.js" />
     <Content Include="assets\js\signature.js" />
     <Content Include="assets\js\signature_pad.min.js" />
@@ -3563,6 +3564,7 @@
     <None Include="Views\Company\Member.cshtml" />
     <Content Include="Views\Inbox\Index.cshtml" />
     <Content Include="Views\Include\PopupMemberRotation.cshtml" />
+    <Content Include="Views\Include\DocumentSummary.cshtml" />
     <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="doc\json.json" />
     <Content Include="doc\mgn\loading.pdf" />
