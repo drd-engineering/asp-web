@@ -53,7 +53,7 @@
                                     <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
                                     <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
                                     <td>{{x.RotationName}}</td>
-                                    <td width="175px">{{convertJsonDate(x.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                                    <td width="10%">{{getDateFormated(x.CreatedAt,1)}}</td>
                                 </tr>
                                 <tr>
                                 </tr>

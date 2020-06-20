@@ -230,17 +230,22 @@
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
                 $scope.products = [];
-                $http.post('@Url.Action("findRotations", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                        console.log("=-=");
+                        console.log($scope.products );
+                        console.log("=-=");
+                $http.post('@Url.Action("findRotations", "Rotation")', { criteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {
                         $scope.products = response.data;
+                        console.log(response.data);
+                        console.log(kriteria);
                         $scope.index = row * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;
                         $scope.findRotationsCountAll(kriteria);
                         $scope.products.forEach(
                             function (item) {
-                                item.CreatedAt = moment(item.CreatedAt).fromNow();
+                                item.CreatedAt = $scope.getDateFormated(item.CreatedAt,1);
                             }
                         );
                     }

@@ -169,7 +169,7 @@ namespace DRD.Service
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
+                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
                      orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {
@@ -209,7 +209,7 @@ namespace DRD.Service
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).Contains(x)))
+                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
                      orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {

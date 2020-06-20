@@ -249,7 +249,7 @@ namespace DRD.Service
                 if (db.Rotations != null)
                 {
                     var result = (from rotation in db.Rotations
-                                  where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).Contains(criteria)))
+                                  where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                                   orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                                   select new RotationData
                                   {
@@ -273,14 +273,16 @@ namespace DRD.Service
             // top criteria
             string[] tops = new string[] { };
             if (!string.IsNullOrEmpty(topCriteria))
+            {
                 tops = topCriteria.Split(' ');
+            }
             else
                 topCriteria = "";
             using (var db = new ServiceContext())
             {
                 if (db.Rotations == null) return null;
                 var result = (from rotation in db.Rotations
-                                where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).Contains(criteria)))
+                                where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                                 orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                                 select new RotationData
                                 {
@@ -510,7 +512,7 @@ namespace DRD.Service
                     (from rotationNode in db.RotationNodes
                      where rotationNode.Rotation.Status.Equals(Constant.RotationStatus.In_Progress) &&
                             rotationNode.UserId == userId && rotationNode.Status.Equals(status) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotationNode.Rotation.Subject).Contains(RotationUser)))
+                            (topCriteria == null || tops.All(RotationUser => (rotationNode.Rotation.Subject).ToLower().Contains(RotationUser.ToLower())))
                      select new RotationData
                      {
                          Id = rotationNode.Rotation.Id,

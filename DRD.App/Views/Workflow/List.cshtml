@@ -166,7 +166,7 @@
                         $scope.index = row * (page - 1);
                         $scope.products.forEach(
                             function (item) {
-                                item.CreatedAt = moment(item.CreatedAt).fromNow();
+                                item.CreatedAt = $scope.getDateFormated(item.CreatedAt);
                             }
                         );
                     }
