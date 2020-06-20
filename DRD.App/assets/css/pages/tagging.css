@@ -1,5 +1,5 @@
 .tag-container {
-    border: 1px solid black;
+    border: 1px solid darkgray;
     padding: 5px;
     display: flex;
     flex-wrap: wrap;
@@ -13,13 +13,16 @@
 
 .tag-item {
     align-items: center;
-    border: 1px solid black;
     border-radius: 5px;
     color: white;
     flex: 0 1 auto;
     padding: 7px;
     margin: 2px 3px 2px 3px;
-    background-color: cornflowerblue;
+    background-color: #075685;
+}
+.tag-item:hover{
+    cursor: pointer;
+    background-color: #1470a7;
 }
 .tag-item i {
     margin:0 0 0 4px;
