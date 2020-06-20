@@ -125,13 +125,13 @@
                     <div class="card-content" ng-show="showRotationStatus">
                         <!-- each rotation status -->
                         <div ng-show="listRotationStatus.length > 0" class="container">
-                            <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <button class="btn" style="background-color:white; border-radius:50%;padding:10px;margin-bottom:10px;" data-toggle="collapse" data-target="#filter-tag" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
-                            </a>
+                            </button>
                             <a class="btn" style="border-radius:50%;padding:10px;margin-bottom:10px;" ng-click="exportAllRotationStatusToCSV()">
                                 <i style="color:#075685" class="icon-file-download" data-toggle="tooltip" title="Export All Rotation Status as CSV"></i>
                             </a>
-                            <div class="collapse" id="collapseExample">
+                            <div class="collapse" id="filter-tag">
 
                                 <div class="row ">
                                     <div class="col-sm-12 col-md-4 col-lg-3">

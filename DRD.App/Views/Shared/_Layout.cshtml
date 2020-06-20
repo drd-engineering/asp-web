@@ -45,6 +45,9 @@
         <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
 
         <!-- /Custom JS-->
+   
+        
+        
         @RenderSection("Scripts", false/*required*/)
         <!-- /Custom JS-->
     </head>
@@ -75,7 +78,7 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="@(Model.user.ImageProfile!=null ? "/Images/Member/"+Model.user.EncryptedId+"/"+Model.user.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
+                                <img src="@(Model.user.ImageProfile!=null ? "/Images/Member/" + Model.user.EncryptedId+"/"+Model.user.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
                                 <span> @Model.user.Name </span>
                                 <i class="caret"></i>
                             </a>
@@ -114,7 +117,7 @@
                                     <!-- Main -->
                                     <li ng-repeat="x in menusFromController" ng-show="!loadMenu" class="{{x.Code == 0 ? 'divider' : (x.SecondaryKey == viewbagsubmenu ? 'active':'')}}" style="{{x.code==0?'height:1px;padding:5px':''}}">
                                         <a ng-show="x.Code!=0" href="{{x.UrlPage}}"><i class="{{x.Icon}}"></i> <span>{{x.Name }} </span></a>
-                                        <div ng-show="x.Code==0" style=" border-top: 1px groove #FCD097;width: 90%;height:1px;margin: auto;"></div>
+                                        <div ng-show="x.Code==0" style=" border-top: 1px groove #b5b5b5;width: 90%;height:1px;margin: auto;"></div>
                                     </li>
                                     <!-- /main -->
                                 </ul>

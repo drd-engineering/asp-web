@@ -48,6 +48,7 @@ namespace DRD.Service
                      CreatedAt = rotationNode.CreatedAt,
                      Status = rotationNode.Status,
                      Value = rotationNode.Value,
+                     WorkflowNodeId = rotationNode.WorkflowNodeId,
                      PrevWorkflowNodeId = rotationNode.PrevWorkflowNodeId,
                      SenderRotationNodeId = rotationNode.SenderRotationNodeId,
                      User = new UserInboxData

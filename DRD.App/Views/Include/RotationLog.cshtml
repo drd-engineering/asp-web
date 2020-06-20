@@ -7,7 +7,6 @@
 <br />
 <div style="border-bottom:dotted;border-bottom-width:1px;"></div>
 <div ng-repeat="x in rotationNodes">
-
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId && x.Status==0?(x.Id==model.RotationNodeId?'#FCD097': '#AFC9D8'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
@@ -61,7 +60,7 @@
                     <label class="style-note">{{x.Note}}</label>
                 </div>
             </td>
-            <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status)}}</label></td>
+            <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status,x.WorkflowNodeId)}}</label></td>
         </tr>
         @*<tr>
                 <td class="style-blank">&nbsp;</td>
@@ -75,58 +74,3 @@
             </tr>*@
     </table>
 </div>
-<div ng-show="sumDocuments.length>0">
-    <br />
-    <label class="control-label">Documents Summary</label><br />
-    <table class="table-xs table-bordered table-striped" style="font-size:medium;width:100%">
-        <thead>
-            <tr>
-                <th width="25px">#</th>
-                <th>File Name</th>
-                <th>Action Summaries</th>
-                <th width="125px" style="text-align:right">Size (bytes)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="x in sumDocuments" style="vertical-align:top;font-size:small">
-                <td width="25px">{{$index+1 + index}}</td>
-                <td><a ng-click="viewDocumentSummary(x)">{{x.Document.FileName}}</a></td>
-
-                <td>
-                    <span style="font-size:small;color:white">
-                        <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.FlagAction,2) && !validAction(x.FlagAction,64)">completed</span>
-                        <span style="background-color:#bb2124; padding:5px;" ng-show="validAction(x.FlagAction,64)">removed</span>
-                        <span style="background-color:#f0ad4e; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,2)">revised</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,1)">signed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,32)">stamped</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,4)">viewed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,8)">printed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,16)">downloaded</span>
-                    </span>
-                </td>
-                <td width="125px" style="text-align:right">{{humanFileSize(x.Document.FileSize,1024)}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div ng-show="sumAttachments.length>0">
-    <label class="control-label">Attachments Summary<a data-action="collapse"></a></label><br />
-    <table class="table-xs table-bordered table-striped" style="font-size:medium;width:100%">
-        <thead>
-            <tr>
-                <th width="25px">#</th>
-                <th>File Name</th>
-                <th width="125px" style="text-align:right">Size (bytes)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="x in sumAttachments" style="vertical-align:top;font-size:small">
-                <td width="25px">{{$index+1 + index}}</td>
-                <td><img ng-src="/Images/FileType/{{x.DocumentUpload.ExtFile}}.png" width="15" /> <a ng-click="downloadAttchment(x)">{{x.DocumentUpload.FileNameOri}}</a></td>
-                <td width="125px" style="text-align:right">{{x.DocumentUpload.FileSize | number}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<ng-include src="'/Include/PdfIViewer'"></ng-include>
