@@ -243,10 +243,6 @@
             $scope.initData = function () {
 
             }
-            $scope.gotoWf = function () {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'WORKFLOW'})[0].UrlPage.replace('list?','?');
-                location.href = url;
-            }
 
             $scope.getFlagPermission = function (val, bit) {
                 //var reult="";

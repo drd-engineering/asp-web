@@ -38,6 +38,7 @@
         <script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
         <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
         <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+        <script type="text/javascript" src="~/assets/js/nprogress.js"></script>
         <script src="~/Scripts/xpublic.js"></script>
         <!-- /theme JS files -->
         <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
@@ -168,6 +169,7 @@
         angular.element(document).ready(function () {
             $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
             $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
+            NProgress.done();
             $("#menu-content").show();
             $scope.getUnreadInbox();
         });
@@ -225,6 +227,11 @@
                sameElse: defaultDateTime
            });
         }
+
+        $(window).load(function () {
+            NProgress.done();
+        });
+
         /*--------------------------------------------------------------
         JS
         --------------------------------------------------------------*/

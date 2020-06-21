@@ -309,8 +309,9 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\nprogress.css" />
     <Content Include="assets\css\pages\tagging.css" />
-    <Content Include="assets\js\plugins\transition.js" />
+    <Content Include="assets\js\nprogress.js" />
     <Content Include="assets\js\signature.js" />
     <Content Include="assets\js\signature_pad.min.js" />
     <Content Include="assets\css\bak2\bootstrap.css" />
