@@ -20,13 +20,14 @@
     <script type="text/javascript" src="assets/js/plugins/visualization/d3/d3.min.js"></script>
     <script type="text/javascript" src="assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
     <!-- /theme JS files -->
- }
-@section Styles{ 
+}
+@section Styles{
     <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/pages/tagging.css" rel="stylesheet" type="text/css">
 }
 <body>
     <h4><a class="btn" href="/dashboard" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-home4"></i></a> @ViewBag.Title</h4>
-    <div class="page-container"  ng-controller="drdController">
+    <div class="page-container" ng-controller="drdController">
         <section id="dashboard-highlight">
             <div class="row">
 
@@ -122,9 +123,8 @@
                     </div>
 
                     <!-- CONTENT -->
-                    <div class="card-content" ng-show="showRotationStatus">
-                        <!-- each rotation status -->
-                        <div ng-show="listRotationStatus.length > 0" class="container">
+                    <div class="card-content">
+                        <div class="container">
                             <button class="btn" style="background-color:white; border-radius:50%;padding:10px;margin-bottom:10px;" data-toggle="collapse" data-target="#filter-tag" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <i style="color:#075685" class="icon-filter3" data-toggle="tooltip" title="Filter Rotation by Tag"></i>
                             </button>
@@ -132,26 +132,24 @@
                                 <i style="color:#075685" class="icon-file-download" data-toggle="tooltip" title="Export All Rotation Status as CSV"></i>
                             </a>
                             <div class="collapse" id="filter-tag">
-
                                 <div class="row ">
-                                    <div class="col-sm-12 col-md-4 col-lg-3">
-                                        <form>
-                                            <input type="text" class="form-control" ng-model="$parent.newTag" ng-keyup="($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList()" />
-                                            <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <span class="tag-item" ng-repeat="tag in tags">
-                                            {{tag}}
-                                            <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
-                                                <img src="~/Images/icon/reject.png" />
-                                            </button>
-                                        </span>
+                                    <div class="col-sm-12">
+                                        <div class="tag-container">
+                                            <span class="tag-item" ng-repeat="tag in model.Tags">
+                                                <span ng-click="changeTag($index)">{{tag}}</span><i class="note-icon-close" ng-click="removeTag($index)"></i>
+                                            </span>
+                                            <input id="newTag" type="text" class="form-control" ng-model="newTag"
+                                                   placeholder="Insert Tag Filter Here"
+                                                   ng-keydown="(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())"
+                                                   ng-keyup="($event.keyCode == 8 && backToLastTag())(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())" />
+                                        </div>
+                                        <div style="color:black;font-size:10px;align-self:end">use comma or enter to add filter by tag</div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- each rotation status -->
+                        <div ng-show="listRotationStatus.length > 0" class="container">
                             <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
                                 <thead>
                                     <tr>
@@ -172,7 +170,7 @@
                                         <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                         <td>
                                             <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.InboxStatus == 0? 'ongoing' : (usr.InboxStatus == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.InboxStatus == 0? ' border: 2px solid green' : (usr.InboxStatus == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
-                                            
+
                                         </td>
                                     </tr>
                                 </tbody>
@@ -224,7 +222,8 @@
             $scope.selectedCompany = "";
 
             //tag-related
-            $scope.tags = [];
+            $scope.model = {};
+            $scope.model.Tags = [];
             $scope.newTag = "";
 
             //monitoring
@@ -364,6 +363,7 @@
             $scope.setSelectedCompany = function (x) {
                 $scope.selectedCompany = x;
                 $scope.getDashboardRotationStatus();
+                $scope.getActivityCounter();
             }
 
             /*--------------------------------------------------------------
@@ -374,35 +374,87 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
-            /*--------------------------------------------------------------
-            TAGGING SYSTEM FILTER
-            --------------------------------------------------------------*/
+            /////////////////// TAG MANIPULATION ////////////////////////////
+            $scope.backCount = 0;
+            $("#newTag").bind("paste", function (e) {
+                // Short pause to wait for paste to complete
+                setTimeout(function () {
+                    $scope.tagPasteHandler();
+                }, 50);
+            });
+            $scope.changeTag = function (index) {
+                $scope.newTag = $scope.model.Tags[index];
+                $scope.model.Tags.splice(index, 1);
+                $scope.backCount = 0;
+                $("#newTag").focus();
+                $scope.getDashboardRotationStatus();
+            }
+            $scope.backToLastTag = function () {
+                if ($scope.newTag === "" && $scope.backCount < 1) { $scope.backCount += 1; return;}
+                if ($scope.newTag === "" && $scope.backCount > 0) {
+                    if ($scope.model.Tags.length < 1) { $scope.backCount = 0; return;}
+                    $scope.newTag = $scope.model.Tags[$scope.model.Tags.length - 1];
+                    $scope.model.Tags.splice($scope.model.Tags.length - 1, 1);
+                    $scope.backCount = 0;
+                    $scope.getDashboardRotationStatus();
+                }
+            }
+            $scope.tagPasteHandler = function () {
+                var splittedTag = $scope.newTag.split(/[\n,]+/);
+                if (splittedTag.length < 1) { return; }
+                if (splittedTag.length < 2) { $scope.newTag = splittedTag[0]; return;}
+                $scope.newTag = splittedTag[splittedTag.length - 1];
+                splittedTag.splice(splittedTag.length - 1, 1);
+                splittedTag.forEach(function (item, index) {
+                    item = item.replace(",","");
+                    var alreadyUsed = false;
+                    $scope.model.Tags.some(function (element, i) {
+                        if (item.toLowerCase() === element.toLowerCase()) {
+                            alreadyUsed = true;
+                            return;
+                        }
+                    })
+                    if (!alreadyUsed) {
+                        $scope.model.Tags.push(item);
+                    }
+                });
+                $scope.backCount = 0;
+                $scope.getDashboardRotationStatus();
+            }
             $scope.addTagList = function () {
-                if($scope.newTag.charAt($scope.newTag.length - 1)==",") $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                var splittedTag = $scope.newTag.split(/[\n,]+/);
+                if (splittedTag.length < 1) { $scope.newTag = ""; return; }
+                if (splittedTag.length < 2) { $scope.newTag = splittedTag[0];}
                 var alreadyUsed = false;
-                if ($scope.newTag != '') {
-                    $scope.tags.some(function (element, i) {
+                if ($scope.newTag != "" && $scope.newTag != ",") {
+                    $scope.newTag = $scope.newTag.replace(",", "");
+                    $scope.model.Tags.some(function (element, i) {
                         if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
                             alreadyUsed = true;
                             return;
                         }
                     })
                     if (!alreadyUsed) {
-                        $scope.tags.push($scope.newTag);
+                        $scope.model.Tags.push($scope.newTag);
+                        $scope.getDashboardRotationStatus();
                     }
                 }
+                $scope.backCount = 0;
                 $scope.newTag = "";
-                $scope.getDashboardRotationStatus();
             }
             $scope.removeTag = function (index) {
-                $scope.tags.splice(index, 1);
+                console.log("INDEX" +index);
+                $scope.model.Tags.splice(index, 1);
+                $scope.backCount = 0;
+                $scope.getDashboardRotationStatus();
             }
+            /////////////////// END TAG MANIPULATION ////////////////////////////
             /*--------------------------------------------------------------
             Dashboard Rotation Status
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: $scope.pageRotationStatus, pageSize: $scope.pageSizeRotationStatus }
+                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: $scope.pageRotationStatus, pageSize: $scope.pageSizeRotationStatus }
                 ).then(function (response) {
                     if (response.data) {
                         $scope.listRotationStatus = response.data;
@@ -414,7 +466,7 @@
                 });
             }
             $scope.dashboardRotationStatusCountAll = function () {
-                $http.post('@Url.Action("DashboardRotationStatusCountAll","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.tags }).then(function (response) {
+                $http.post('@Url.Action("DashboardRotationStatusCountAll","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.pageSizeRotationStatus);
@@ -430,7 +482,7 @@
             $scope.getDashboardRotationStatusPage = function (pageTarget) {
                 if ((pageTarget > $scope.rotationStatusPaging.length||pageTarget > $scope.rotationStatusPaging.length)) { return; }
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
+                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
                 ).then(function (response) {
                     if (response.data) {
                         var saved = $scope.rotationStatusPaging;
@@ -443,9 +495,6 @@
                     //error handle\
                         var x = 0;
                 });
-            }
-            $scope.showRotationStatus = function () {
-                return $scope.listRotationStatus.Count() > 0
             }
             /*--------------------------------------------------------------
             CSV Handling
@@ -502,7 +551,7 @@
                 }
             }
             $scope.exportRotationListToCSV = function () {
-                var filename = $scope.tags.toString() + "_" + $scope.selectedCompany.Name + "_RotationStatus";
+                var filename = $scope.model.Tags.toString() + "_" + $scope.selectedCompany.Name + "_RotationStatus";
                 $scope.exportCSVFile(null, $scope.listRotationStatus, null, filename);
             }
 
@@ -531,6 +580,7 @@
                 }, function (response) {
                 });
             }
+
 
             $scope.getStatusName = function (status) {
                 switch (status) {

@@ -150,7 +150,7 @@
                                                     <i class="icon-cross3 pull-right" onclick="removeActivityConfirmation('-xx-')"></i>
                                                     <i class="icon-loop4 pull-right" onclick="selectLink('node-activity-xx')" data-popup="tooltip" title="Select links" data-placement="bottom"></i>
                                                 </div>
-                                                <div class="node-activity-content-yy" >
+                                                <div class="node-activity-content-yy">
                                                     <span id="title-activity-xx" class="title-activity">Activity</span>
                                                 </div>
                                                 <div class="footer-yy">
@@ -293,12 +293,10 @@
                             <!--/MEMBER DATA-->
                             <!--CONFIRMATION THANK YOU-->
                             <div ng-show="wizarno=='success'">
-                                <div class="col-md-12">
-
-                                    <div class="alert alert-success alert-styled-left">
-                                        Data successfully saved. @*Click <a href='/home/productlist'>disini</a> untuk kembali ke list data.*@
-                                    </div>
+                                <div class="alert alert-success alert-styled-left">
+                                    Data successfully saved.<br>
                                 </div>
+                                This page will be redirected to Rotation List page in 10 seconds
                             </div>
                             <!--/CONFIRMATION THANK YOU-->
                             <!-- View member modal -->
@@ -425,6 +423,9 @@
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
+                            setTimeout(function () {
+                                  window.location.href = "/workflow/list";
+                                }, 10000);
                         }
                     }, function (response) {
                             btn.stop();
@@ -457,6 +458,9 @@
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
+                            setTimeout(function () {
+                                  window.location.href = "/workflow/list";
+                                }, 10000);
                         }
                     }, function (response) {
                         btn.stop();

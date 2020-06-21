@@ -36,51 +36,46 @@
 @section Styles
 {
     <link href="/assets/css/pages/rotation-list.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/pages/tagging.css" rel="stylesheet" type="text/css">
 }
 
 <body>
-            <h4><a href="/rotation/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
+    <h4><a href="/rotation/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
     <section class="panel" ng-controller="drdController">
         <!-- ROTATION FORM-->
         <div ng-show="wizarno=='product'">
             <form name="myForm" class="form-horizontal" autocomplete="off">
                 <fieldset>
                     <div class="row">
-                        <div style="padding:30px; border-radius:10px" class="col-md-12">
-                            <span class="tag-item" ng-repeat="tag in model.Tags">
-                                {{tag}}
-                                <button class="image-container-sm red-border" ng-click="($event.keyCode != 13) && removeTag($index)">
-                                    <img src="~/Images/icon/reject.png" />
-                                </button>
-                            </span>
-                        </div>
-                        <div class="col-sm-12 col-md-7 col-lg-5">
-                            <label class="control-label">Name <strong style="vertical-align:text-top; color:red"  data-toggle="tooltip" title="required">*</strong></label>
+                        <div class="col-sm-12 col-md-7 col-lg-7">
+                            <label class="control-label">Name <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
                             <input type="text" class="form-control" ng-model="model.Subject" ng-required="wizarno=='product'" maxlength="100" />
                         </div>
-                        <div class="col-sm-12 col-md-5 col-lg-3">
+                        <div class="col-sm-12 col-md-5 col-lg-5">
                             <label class="control-label">Workflow <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
                             <div class="input-group" style="cursor:pointer!important" ng-click="popupWorkflow()">
                                 <div>
                                     <input type="text" class="form-control" ng-model="workflow.Name" maxlength="50" readonly />
                                 </div>
-                                <span class="input-group-addon" ><i class="icon-opt"></i></span>
+                                <span class="input-group-addon"><i class="icon-opt"></i></span>
 
                             </div>
 
                         </div>
-                        <div class=" col-sm-12 col-md-4">
-                                <div>
-                                    <label class="control-label">Tags <small>(optional)</small></label>
-                                </div>
-                                <div>
-                                    <input type="text" class="form-control" ng-model="newTag" ng-keyup="(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())" />
-                                </div>
-                                <div>
-                                    <div style="color:black;font-size:10px;align-self:end">use comma or enter to insert tag/div>
-                                </div>
-                        </div>
+                        
+                        <div class="col-sm-12">
+                            <label class="control-label">Tags <small>(optional)</small></label>
+                            <div class="tag-container">
+                                <span class="tag-item" ng-repeat="tag in model.Tags">
+                                    <span ng-click="changeTag($index)">{{tag}}</span><i class="note-icon-close" ng-click="removeTag($index)"></i>
+                                </span>
+                                <input id="newTag" type="text" class="form-control" ng-model="newTag"
+                                       ng-keydown="(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())"
+                                       ng-keyup="($event.keyCode == 8 && backToLastTag())(($event.keyCode == 13 || $event.keyCode == 188 ) && addTagList())"/>
                             </div>
+                            <div style="color:black;font-size:10px;align-self:end">use comma or enter to insert tag</div>
+                        </div>
+
                         <div style="height:5px"></div>
 
                         <div class="col-md-12">
@@ -114,9 +109,9 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission : </span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                                    <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
+                                                    <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -205,7 +200,7 @@
             $scope.model.Id = 0;
             $scope.model.Status = "00";
             $scope.model.Tags = [];
-            $scope.users=[];
+            $scope.users = [];
             initValues();
 
             $(".control-warning").uniform({
@@ -244,7 +239,7 @@
                 }else{
 
                 }
-                
+
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
 
@@ -355,7 +350,7 @@
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
             $scope.popupWorkflow = function () {
-                
+
                 $scope.findWorkflows(null, 1, 20);
                 if ($scope.model.Status!='00'){
                     showInfo("Workflow data can not be changed.");
@@ -569,10 +564,57 @@
                         }
                     });
             }
+            /////////////////// TAG MANIPULATION ////////////////////////////
+            $scope.backCount = 0;
+            $("#newTag").bind("paste", function (e) {
+                // Short pause to wait for paste to complete
+                setTimeout(function () {
+                    $scope.tagPasteHandler();
+                }, 50);
+            });
+            $scope.changeTag = function (index) {
+                $scope.newTag = $scope.model.Tags[index];
+                $scope.model.Tags.splice(index, 1);
+                $scope.backCount = 0;
+                $("#newTag").focus();
+            }
+            $scope.backToLastTag = function () {
+                if ($scope.newTag === "" && $scope.backCount < 1) { $scope.backCount += 1; return;}
+                if ($scope.newTag === "" && $scope.backCount > 0) {
+                    if ($scope.model.Tags.length < 1) { $scope.backCount = 0; return;}
+                    $scope.newTag = $scope.model.Tags[$scope.model.Tags.length - 1];
+                    $scope.model.Tags.splice($scope.model.Tags.length - 1, 1);
+                    $scope.backCount = 0;
+                }
+            }
+            $scope.tagPasteHandler = function () {
+                var splittedTag = $scope.newTag.split(/[\n,]+/);
+                if (splittedTag.length < 1) { return; }
+                if (splittedTag.length < 2) { $scope.newTag = splittedTag[0]; return;}
+                $scope.newTag = splittedTag[splittedTag.length - 1];
+                splittedTag.splice(splittedTag.length - 1, 1);
+                splittedTag.forEach(function (item, index) {
+                    item = item.replace(",","");
+                    var alreadyUsed = false;
+                    $scope.model.Tags.some(function (element, i) {
+                        if (item.toLowerCase() === element.toLowerCase()) {
+                            alreadyUsed = true;
+                            return;
+                        }
+                    })
+                    if (!alreadyUsed) {
+                        $scope.model.Tags.push(item);
+                    }
+                });
+                $scope.backCount = 0;
+            }
             $scope.addTagList = function () {
-                if($scope.newTag.charAt($scope.newTag.length - 1)==",") $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
+                var splittedTag = $scope.newTag.split(/[\n,]+/);
+                if (splittedTag.length < 1) { $scope.newTag = ""; return; }
+                if (splittedTag.length < 2) { $scope.newTag = splittedTag[0];}
                 var alreadyUsed = false;
-                if ($scope.newTag != '') {
+                if ($scope.newTag != "" && $scope.newTag != ",") {
+                    $scope.newTag = $scope.newTag.replace(",", "");
                     $scope.model.Tags.some(function (element, i) {
                         if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
                             alreadyUsed = true;
@@ -583,12 +625,15 @@
                         $scope.model.Tags.push($scope.newTag);
                     }
                 }
+                $scope.backCount = 0;
                 $scope.newTag = "";
             }
             $scope.removeTag = function (index) {
                 console.log("INDEX" +index);
                 $scope.model.Tags.splice(index, 1);
+                $scope.backCount = 0;
             }
+            /////////////////// TAG MANIPULATION ////////////////////////////
         });
 
 

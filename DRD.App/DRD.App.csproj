@@ -309,6 +309,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\pages\tagging.css" />
     <Content Include="assets\js\plugins\transition.js" />
     <Content Include="assets\js\signature.js" />
     <Content Include="assets\js\signature_pad.min.js" />

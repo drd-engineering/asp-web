@@ -47,7 +47,7 @@ namespace DRD.Service
                 memberItem.Id = x.Id;
                 memberItem.CompanyId = x.CompanyId;
                 memberItem.UserId = x.UserId;
-                memberItem.Company = companyService.GetCompanyItem(memberItem.CompanyId);
+                memberItem.Company = companyService.GetCompany(memberItem.CompanyId);
                 memberItem.User = contactService.getContact(memberItem.UserId);
                 memberItem.User.EncryptedId = Utilities.Encrypt(memberItem.UserId.ToString());
 

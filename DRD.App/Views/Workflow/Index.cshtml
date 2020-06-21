@@ -293,14 +293,11 @@
                             <!--/MEMBER DATA-->
                             <!--CONFIRMATION THANK YOU-->
                             <div ng-show="wizarno=='success'">
-                                <div class="col-md-12">
-
-                                    <div class="alert alert-success alert-styled-left">
-                                        Data successfully saved. @*Click <a href='/home/productlist'>disini</a> untuk kembali ke list data.*@
-                                    </div>
+                                <div class="alert alert-success alert-styled-left">
+                                    Data successfully saved.<br>
                                 </div>
+                                This page will be redirected to Rotation List page in 10 seconds
                             </div>
-                            <!--/CONFIRMATION THANK YOU-->
                             <!-- View member modal -->
                             <ng-include src="'/Include/PopupWorkflow'"></ng-include>
                             <ng-include src="'/Include/PopupProject'"></ng-include>
@@ -425,6 +422,9 @@
                             window.scrollTo(0, 0);
                             $scope.wizarno = 'success';
                             digramScope.clearDiagram();
+                            setTimeout(function () {
+                                  window.location.href = "/workflow/list";
+                                }, 10000);
                         }
                     }, function (response) {
                             btn.stop();

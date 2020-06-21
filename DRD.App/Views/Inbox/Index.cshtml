@@ -384,6 +384,14 @@
                     var x = 0;
                 });
             };
+            /*--------------------------------------------------------------
+            CONVERT JSON DATE
+            --------------------------------------------------------------*/
+            $scope.convertJsonDate = function (val) {
+                if (val == undefined)
+                    return '';
+                return new Date(parseInt(val.substr(6)));
+            }
             // Settings anno scope with data given
             $scope.setAnnos = function (givenItem) {
                 $scope.annos = [];
