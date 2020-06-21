@@ -228,7 +228,7 @@
                     $scope.model.Id=product.Id;
                     $scope.model.Subject=product.Subject;
                     $scope.model.Status = product.Status;
-                    $scope.model.CompanyName = product.CompanyRotation.Name;
+                    $scope.model.CompanyName = product.CompanyRotation == null?null:product.CompanyRotation.Name;
                     $scope.model.Remark= product.Remark;
                     $scope.workflow=product.Workflow;
                     $scope.users = product.RotationUsers;
@@ -551,6 +551,7 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.usages;
+
                         }
                     });
             }

@@ -1,5 +1,7 @@
 ﻿@{
     Layout = null;
+        ViewBag.Title = "Register Your Account";
+        ViewBag.Submenu = "LOGIN";
 }
 <!-- Global stylesheets -->
 <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -43,7 +45,7 @@
 <!-- Google map -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY&libraries=visualization,drawing,geometry,places"></script>
 
-
+<title>DRD - @ViewBag.Title</title>
 <script src="~/Scripts/autocomplete/autocomplete.min.js"></script>
 <link href="~/Scripts/autocomplete/autocomplete.min.css" rel="stylesheet" />
 
@@ -52,7 +54,7 @@
 <script src="~/Scripts/angular-google-maps.min.js"></script>
 <!-- /Google map -->
 
-<script src="/assets/js/jquery.autocomplete.js" ></script>
+<script src="/assets/js/jquery.autocomplete.js"></script>
 
 <style>
     .dd-option-image, .dd-selected-image {
@@ -141,12 +143,35 @@
         margin-left: 10px !important;
     }
 
-    .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-    .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-    .autocomplete-selected { background: #F0F0F0; }
-    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-    .autocomplete-group { padding: 2px 5px; }
-    .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+    .autocomplete-suggestions {
+        border: 1px solid #999;
+        background: #FFF;
+        overflow: auto;
+    }
+
+    .autocomplete-suggestion {
+        padding: 2px 5px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .autocomplete-selected {
+        background: #F0F0F0;
+    }
+
+    .autocomplete-suggestions strong {
+        font-weight: normal;
+        color: #3399FF;
+    }
+
+    .autocomplete-group {
+        padding: 2px 5px;
+    }
+
+        .autocomplete-group strong {
+            display: block;
+            border-bottom: 1px solid #000;
+        }
 </style>
 
 <body class="login-container" ng-app="drdApp" style="margin-top:-50px;">
@@ -166,7 +191,7 @@
                         </div>
                         <div class="panel-body">
                             <!--MEMBER DATA-->
-                            <form name="myForm" class="form-horizontal" >
+                            <form name="myForm" class="form-horizontal">
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="col-md-12">
@@ -199,7 +224,7 @@
                                                         Company (optional)
                                                         <small class="display-block text-light">select from registered company, to make new company please contact us</small>
                                                     </label>
-                                                    <input type="text" id="autocomplete-company" class="form-control input-field-darker autocomplete-suggestion autocomplete-selected" 
+                                                    <input type="text" id="autocomplete-company" class="form-control input-field-darker autocomplete-suggestion autocomplete-selected"
                                                            placeholder="not selected" ng-model="model.CompanyName" maxlength="50" />
                                                 </div>
                                             </div>
@@ -345,7 +370,7 @@
                         $scope.companyAll = $.map(response.data, function (dataItem) {
                             return { value: dataItem.Name, data: dataItem.Id };
                         });
-                        $scope.autocompleteCompany(); 
+                        $scope.autocompleteCompany();
                     }
                 });
             }

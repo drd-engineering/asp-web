@@ -76,7 +76,7 @@ namespace DRD.App.Controllers
         public ActionResult IsAdminOrOwnerofCompany()
         {
             InitializeAPI();
-            var data = userService.IsAdminOrOwnerofCompany(user.Id);
+            var data = userService.IsAdminOrOwnerofAnyCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

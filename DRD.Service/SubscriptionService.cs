@@ -192,25 +192,19 @@ namespace DRD.Service
             {
                 Usage usage = getCompanyUsageById(usageId);
 
-                //check expiration date
                 if (usage != null)
                 {
                     var package = GetCompanyPackage(usage.PackageId);
+                    //check usage with package limitation
                     if (!IsValid(package, usage))
                     {
                         DeactivateActiveUsage(usageId);
                         return false;
                     }
                 }
-                var member =
-                    (from memberdb in db.Members
-                     join company in db.Companies on memberdb.CompanyId equals company.Id
-                     where memberdb.UserId == userId
-                     select new
-                     {
-                         Id = memberdb.Id
-                     }).FirstOrDefault();
-                return (usage != null) && (member != null);
+                UserService userService = new UserService();
+
+                return (usage != null) && (userService.IsAdminOrOwnerofAnyCompany(userId));
             }
         }
 

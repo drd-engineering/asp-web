@@ -291,7 +291,7 @@ namespace DRD.Service
                                     Status = rotation.Status,
                                     WorkflowId = rotation.Workflow.Id,
                                     WorkflowName = rotation.Workflow.Name,
-                                    CompanyId = rotation.CompanyId.Value,
+                                    CompanyId = rotation.CompanyId == null ? 0 : rotation.CompanyId.Value,
                                     UserId = rotation.UserId,
                                     CreatedAt = rotation.DateCreated,
                                     UpdatedAt = rotation.DateUpdated,
