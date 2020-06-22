@@ -1,10 +1,6 @@
-﻿    using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DRD.Models
 {
@@ -31,7 +27,8 @@ namespace DRD.Models
         public bool IsActive { get; set; } // IsActive
         public DateTime CreatedAt { get; set; } // DateCreated
 
-        public User() {
+        public User()
+        {
             Id = RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
         }
 

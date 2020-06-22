@@ -1,7 +1,6 @@
-﻿using System;
+﻿using DRD.Models.API;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DRD.Models.API;
 
 namespace DRD.Models
 {
@@ -35,7 +34,7 @@ namespace DRD.Models
         public string UserId { get; set; } // UserId (length: 50)
         public System.DateTime CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
-        public long DocumentId {set; get;}
+        public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }
 
         [ForeignKey("DocumentId")]
@@ -53,7 +52,7 @@ namespace DRD.Models
             StrokeWidth = 4;
             Opacity = 1;
             Flag = 0;
-           // Annotate = new JsonAnnotate();
+            // Annotate = new JsonAnnotate();
         }
     }
 }

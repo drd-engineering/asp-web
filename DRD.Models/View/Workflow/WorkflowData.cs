@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DRD.Models.View
 {
@@ -20,7 +16,7 @@ namespace DRD.Models.View
         public bool IsUsed { get; set; }
 
         // Reverse navigation
-/*        public JsonWorkflowProject Project { get; set; }*/
+        /*        public JsonWorkflowProject Project { get; set; }*/
         public ICollection<WorkflowNodeData> WorkflowNodes { get; set; }
         public ICollection<WorkflowNodeLinkData> WorkflowNodeLinks { get; set; }
     }

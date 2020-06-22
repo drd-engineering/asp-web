@@ -1,9 +1,4 @@
-﻿using DRD.Models.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DRD.Models.View
 {
@@ -12,15 +7,15 @@ namespace DRD.Models.View
         public List<Menu> menus;
 
         public UserMenu()
-        {        
-            menus= new List<Menu>();
+        {
+            menus = new List<Menu>();
             menus.Add(new Menu(
-                Code: "2049", 
+                Code: "2049",
                 SecondaryKey: null,
-                Name: "Storage", 
+                Name: "Storage",
                 Icon: null,
-                UrlPage: null, 
-                ChildCount: 1, 
+                UrlPage: null,
+                ChildCount: 1,
                 ParentCode: "0",
                 ItemType: 0,
                 ObjectName: null,
@@ -248,4 +243,3 @@ namespace DRD.Models.View
         }
     }
 }
-  

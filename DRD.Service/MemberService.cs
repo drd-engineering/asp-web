@@ -1,17 +1,11 @@
-﻿using System;
+﻿using DRD.Models;
+using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-using DRD.Models;
-using DRD.Models.API;
-using DRD.Models.Custom;
-using DRD.Models.View;
-
-using DRD.Service;
-using DRD.Service.Context;
 
 namespace DRD.Service
 {
@@ -411,7 +405,8 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 Member theUser = db.Members.FirstOrDefault(m => m.Id == memberId && m.UserId == userId && m.isCompanyAccept && !m.isMemberAccept);
-                if (theUser != null) {
+                if (theUser != null)
+                {
                     theUser.isMemberAccept = true;
                     db.SaveChanges();
                     return true;

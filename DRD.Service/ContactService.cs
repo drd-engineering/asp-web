@@ -1,15 +1,12 @@
 ﻿
+using DRD.Models;
+using DRD.Models.API;
+using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using DRD.Service.Context;
-using DRD.Models.Custom;
-using DRD.Models.API;
-using DRD.Models;
-using DRD.Models.View;
 using System.Linq.Expressions;
 
 namespace DRD.Service
@@ -60,21 +57,22 @@ namespace DRD.Service
                               }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
                 ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
                 int counter = 0;
-                
+
                 foreach (ContactItem x in result)
-                
+
                 {
                     listReturned.Items.Add(x);
                     counter = counter + 1;
                 }
 
                 listReturned.Count = counter;
-                
+
                 return listReturned;
             }
         }
 
-        public long GetTotalPersonalContact(UserSession user) {
+        public long GetTotalPersonalContact(UserSession user)
+        {
             using (var db = new ServiceContext())
             {
                 // Scenario:
@@ -91,7 +89,7 @@ namespace DRD.Service
                                   ImageProfile = User.ImageProfile
                               }
                               ).Count();
-                
+
                 return result;
             }
         }
@@ -127,8 +125,8 @@ namespace DRD.Service
 
                 var result = (from Member in db.Members
                               join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == CompanyIdOfUser 
-                              && User.Id != user.Id 
+                              where Member.CompanyId == CompanyIdOfUser
+                              && User.Id != user.Id
                               && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Email).Contains(x)))
                               select new ContactItem
                               {
@@ -139,7 +137,7 @@ namespace DRD.Service
                                   ImageProfile = User.ImageProfile
                               }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
-                ContactList listReturned = new ContactList { Type = "Company", Items = new List<ContactItem>(), CompanyName = companyName};
+                ContactList listReturned = new ContactList { Type = "Company", Items = new List<ContactItem>(), CompanyName = companyName };
                 int counter = 0;
                 foreach (ContactItem x in result)
                 {
@@ -151,7 +149,8 @@ namespace DRD.Service
             }
         }
 
-        public long CountMemberOfCompany(long CompanyIdOfUser) {
+        public long CountMemberOfCompany(long CompanyIdOfUser)
+        {
             using (var db = new ServiceContext())
             {
                 var MemberOfCompany = db.Members.Where(memberItem => memberItem.CompanyId == CompanyIdOfUser).ToList();
@@ -179,15 +178,18 @@ namespace DRD.Service
             }
         }
         // list all company that relate to the user (a member)
-        public ICollection<CompanyItem> GetListOfCompany(UserSession user) {
-            using (var db = new ServiceContext()) {
+        public ICollection<CompanyItem> GetListOfCompany(UserSession user)
+        {
+            using (var db = new ServiceContext())
+            {
                 long[] CompanyIds = db.Members.Where(member => member.UserId == user.Id).Select(c => c.CompanyId).ToArray();
 
                 var Companies = db.Companies.Where(company => CompanyIds.Contains(company.Id)).ToList();
 
                 List<CompanyItem> companyItems = new List<CompanyItem>();
 
-                foreach (Company c in Companies) {
+                foreach (Company c in Companies)
+                {
                     CompanyItem item = new CompanyItem();
 
                     item.Name = c.Name;

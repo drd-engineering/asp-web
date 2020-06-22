@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using DRD.Models;
-using DRD.Models.Custom;
-
-namespace DRD.Models.View
+﻿namespace DRD.Models.View
 {
     public class RotationUserItem
     {

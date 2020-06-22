@@ -1,10 +1,8 @@
 ﻿using DRD.Models;
 using DRD.Models.API;
-using DRD.Models.View;
 using DRD.Service.Context;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace DRD.Service
@@ -28,7 +26,7 @@ namespace DRD.Service
                     if (packageType.Equals(Constant.PackageItem.User))
                         result.User += additional;
                     if (packageType.Equals(Constant.PackageItem.Workflow))
-                        result.Workflow+= additional;
+                        result.Workflow += additional;
                 }
                 else
                 {

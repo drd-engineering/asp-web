@@ -1,14 +1,12 @@
-﻿using System;
+﻿using DRD.Models;
+using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service.Context;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.IO;
-
-using DRD.Models;
-using DRD.Models.View;
-using DRD.Models.Custom;
-using DRD.Models.API;
-using DRD.Service.Context;
 
 namespace DRD.Service
 {
@@ -72,7 +70,8 @@ namespace DRD.Service
                                 WorkflowNodeItem.element = elementname + "-" + 0;
                             else if (elementname == "end")
                                 WorkflowNodeItem.element = elementname + "-" + 1;
-                            else {
+                            else
+                            {
                                 WorkflowNodeItem.element = getSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + dmid;
                                 dmid++;
                             }
@@ -89,7 +88,8 @@ namespace DRD.Service
                             WorkflowNodeItem.width = workflowNode.Width;
                             WorkflowNodeItem.height = workflowNode.Height;
                             User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.UserId).FirstOrDefault();
-                            if (user != null) {
+                            if (user != null)
+                            {
                                 WorkflowNodeItem.user = new WorkflowNodeUser
                                 {
                                     id = user.Id,
@@ -150,7 +150,7 @@ namespace DRD.Service
             return FindWorkflows(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem ,bool>> criteria)
+        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem, bool>> criteria)
         {
             int skip = pageSize * (page - 1);
             Expression<Func<WorkflowItem, string>> ordering = WorkflowItem => "DateCreated desc, IsTemplate desc, Name";
@@ -164,7 +164,7 @@ namespace DRD.Service
                 tops = topCriteria.Split(' ');
             else
                 topCriteria = "";
-                
+
             using (var db = new ServiceContext())
             {
                 var result =
@@ -186,7 +186,7 @@ namespace DRD.Service
                 if (result != null)
                 {
                     MenuService menuService = new MenuService();
-                    for (var i = 0; i<result.Count(); i++)
+                    for (var i = 0; i < result.Count(); i++)
                     {
                         var item = result.ElementAt(i);
                         item.Key = menuService.EncryptData(item.Id);
@@ -239,7 +239,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 // validity subscription type
-                var creator = db.Users.FirstOrDefault(user => user.Id == WorkflowItem.CreatorId);                
+                var creator = db.Users.FirstOrDefault(user => user.Id == WorkflowItem.CreatorId);
                 var actCount = WorkflowItem.WorkflowNodes.Count(workflow => workflow.symbolCode.Equals("ACTIVITY"));
 
                 if (WorkflowItem.Id != 0)
@@ -351,7 +351,7 @@ namespace DRD.Service
             Symbol values = File.ReadAllLines(path)
                                            .Select(v => Symbol.FromCsv(v))
                                            .Where(c => c.Code.Equals(code)).FirstOrDefault();
-                                           
+
             return values;
         }
         public static Symbol getSymbolsFromCsvById(int id)

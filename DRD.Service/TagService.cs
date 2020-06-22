@@ -1,14 +1,7 @@
-﻿using System;
+﻿using DRD.Models;
+using DRD.Service.Context;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity.Infrastructure;
-using System.Linq.Expressions;
-
-using DRD.Models;
-using DRD.Models.API;
-using DRD.Models.Custom;
-using DRD.Service.Context;
-using DRD.Models.View;
 
 namespace DRD.Service
 {

@@ -15,9 +15,9 @@ namespace DRD.Models
         public string ExtFile { get; set; } // ExtFile (length: 20)
         public string Version { get; set; } // Version (length: 20)
 
-        public int CxSignature  { get; set; }
+        public int CxSignature { get; set; }
         public int CxInitial { get; set; }
-        public int CxAnnotate { get; set; } 
+        public int CxAnnotate { get; set; }
 
         public int RowCount { get; set; }
         public DateTime? DateCreated { get; set; }

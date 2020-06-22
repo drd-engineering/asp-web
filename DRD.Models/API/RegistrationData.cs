@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DRD.Models.API
+﻿namespace DRD.Models.API
 {
     public class Register
     {
@@ -12,6 +6,6 @@ namespace DRD.Models.API
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public long? CompanyId{get;set;}
+        public long? CompanyId { get; set; }
     }
 }

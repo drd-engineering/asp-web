@@ -1,15 +1,10 @@
-﻿using System;
+﻿using DRD.Models;
+using DRD.Models.View;
+using DRD.Service.Context;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using DRD.Models;
-using DRD.Models.View;
-using DRD.Models.API;
-using DRD.Models.Custom;
-
-using DRD.Service.Context;
-
-using Newtonsoft.Json;
 
 
 namespace DRD.Service
@@ -18,7 +13,7 @@ namespace DRD.Service
     {
 
 
-        
+
         private static RotationNodeDoc DeepCopy(RotationNodeDoc source)
         {
 
@@ -28,7 +23,7 @@ namespace DRD.Service
 
         }
 
-        
+
 
         private List<RotationNodeDoc> assignNodeDocs(ServiceContext db, long rnId, long memId, long curRnId, IDocumentService docSvr)
         {
@@ -59,7 +54,7 @@ namespace DRD.Service
                          //         UserId = dm.UserId,
                          //         FlagAction = dm.FlagAction,
                          //     }).FirstOrDefault(),
-                         
+
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
                               select new DocumentElement
@@ -117,7 +112,7 @@ namespace DRD.Service
             return result;// rotationNode.RotationNodeDocs;
         }
         private List<RotationNodeUpDoc> assignNodeUpDocs(ServiceContext db, long rnId)
-        {   
+        {
             //rotationNode.RotationNodeUpDocs =
             var result =
                 (from ud in db.RotationNodeUpDocs
@@ -191,10 +186,10 @@ namespace DRD.Service
                         newItem.Rotation = product;
                         newItem.WorkflowNodeId = ep.Id;
                         var wfl = db.WorkflowNodes.FirstOrDefault(c => c.Id == ep.WorkflowNodeId);
-                        
+
                         if (!startPersonAded)
                         {
-                            var checkIsStartNode = (from  workflowNode in db.WorkflowNodes
+                            var checkIsStartNode = (from workflowNode in db.WorkflowNodes
                                                     join wfndLink in db.WorkflowNodeLinks on workflowNode.Id equals wfndLink.WorkflowNodeId
                                                     where workflowNode.WorkflowId == wfl.WorkflowId
                                                     && workflowNode.SymbolCode == 0
@@ -249,7 +244,8 @@ namespace DRD.Service
                     }
                 }
                 // kalau jumlah sama harus di cek setiap elemennya apakah tidak berubah
-                else {
+                else
+                {
                     var rotationUserOld = db.RotationUsers.Where(c => c.Rotation.Id == product.Id).ToList();
                     int v = 0;
                     foreach (RotationUser userItem in rotationUserOld)
@@ -273,36 +269,36 @@ namespace DRD.Service
                 }
                 // Tags
                 var tagItemListInDb = db.TagItems.Where(tagitemdb => tagitemdb.RotationId == product.Id).ToList();
-                if(prod.Tags != null)
-                foreach (string tag in prod.Tags)
-                {
-                    var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));
-                    if (tagfromDB == null)
+                if (prod.Tags != null)
+                    foreach (string tag in prod.Tags)
                     {
-                        tagfromDB = new Tag();
-                        tagfromDB.Name = tag;
-                        db.Tags.Add(tagfromDB);
-                        db.SaveChanges();
+                        var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));
+                        if (tagfromDB == null)
+                        {
+                            tagfromDB = new Tag();
+                            tagfromDB.Name = tag;
+                            db.Tags.Add(tagfromDB);
+                            db.SaveChanges();
+                        }
+                        var tagItemFromDb = tagItemListInDb.FirstOrDefault(tagitemdb => tagitemdb.TagId == tagfromDB.Id && tagitemdb.RotationId == product.Id);
+                        if (tagItemFromDb == null)
+                        {
+                            tagItemFromDb = new TagItem();
+                            tagItemFromDb.RotationId = product.Id;
+                            tagItemFromDb.Rotation = product;
+                            tagItemFromDb.TagId = tagfromDB.Id;
+                            tagItemFromDb.Tag = tagfromDB;
+                            db.TagItems.Add(tagItemFromDb);
+                            product.TagItems.Add(tagItemFromDb);
+                        }
+                        else
+                        {
+                            tagItemListInDb.Remove(tagItemFromDb);
+                        }
                     }
-                    var tagItemFromDb = tagItemListInDb.FirstOrDefault(tagitemdb => tagitemdb.TagId == tagfromDB.Id && tagitemdb.RotationId == product.Id);
-                    if(tagItemFromDb == null)
-                    {
-                        tagItemFromDb = new TagItem();
-                        tagItemFromDb.RotationId = product.Id;
-                        tagItemFromDb.Rotation = product;
-                        tagItemFromDb.TagId = tagfromDB.Id;
-                        tagItemFromDb.Tag = tagfromDB;
-                        db.TagItems.Add(tagItemFromDb);
-                        product.TagItems.Add(tagItemFromDb);
-                    }
-                    else
-                    {
-                        tagItemListInDb.Remove(tagItemFromDb);
-                    }
-                }
                 if (tagItemListInDb.Count() != 0)
                 {
-                    foreach(var item in tagItemListInDb)
+                    foreach (var item in tagItemListInDb)
                     {
                         db.TagItems.Remove(item);
                     }
@@ -336,6 +332,6 @@ namespace DRD.Service
         //    }
         //    return result.Count() > 0;
         //}
-        
+
     }
 }

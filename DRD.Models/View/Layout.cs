@@ -1,5 +1,4 @@
-﻿using DRD.Models.API;
-using DRD.Models.Custom;
+﻿using DRD.Models.Custom;
 using System.Collections.Generic;
 
 
@@ -23,4 +22,4 @@ namespace DRD.Models.View
             isLayout = true;
         }
     }
-}   
+}

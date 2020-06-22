@@ -1,8 +1,7 @@
-﻿using System.Web.Mvc;
-using DRD.Service;
+﻿using DRD.Models.Custom;
 using DRD.Models.View;
-using DRD.Models.Custom;
-using System.Collections.Generic;
+using DRD.Service;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -40,9 +39,9 @@ namespace DRD.App.Controllers
         public ActionResult GetPersonalContact(string topCriteria, int page, int pageSize)
         {
             InitializeAPI();
-            
+
             ContactList data = contactService.GetPersonalContact(login.GetUser(this), topCriteria, page, pageSize);
-            return  Json(data, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Contact/GetContactFromCompany/Id
@@ -53,7 +52,8 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetCompaniesData() {
+        public ActionResult GetCompaniesData()
+        {
             InitializeAPI();
             var data = contactService.GetListOfCompany(login.GetUser(this));
             return Json(data, JsonRequestBehavior.AllowGet);

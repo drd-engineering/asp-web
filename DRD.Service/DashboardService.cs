@@ -1,7 +1,6 @@
 ﻿using DRD.Models.View;
 using DRD.Service.Context;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace DRD.Service

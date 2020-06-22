@@ -206,33 +206,6 @@ p {
 .red-border {
     border-color: #ff8799 !important;
 }
-.pagination a {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
-    transition: background-color .3s;
-    border-radius: 50%;
-    font-size: 14px;
-}
-
-    .pagination a.active {
-        font-weight: 700;
-    }
-
-    .pagination a:hover:not(.active) {
-        background-color: #ddd;
-    }
-
-.pagination-container {
-    text-align: center;
-}
-
-p.pagination-info {
-    margin-top: 10px;
-    font-weight: 300;
-    color: #8F8C8C;
-    letter-spacing: 2px;
-}
 
 .image-container-sm:hover .tooltiptext {
     visibility: visible;

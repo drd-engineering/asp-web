@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -20,8 +19,8 @@ namespace DRD.Models
         public int SymbolCode { get; set; } // SymbolId
 
         // Foreign keys
-        public virtual WorkflowNode FirstNode{ get; set; } // FK_WorkflowNodeLink_WorkflowNode
-        public virtual WorkflowNode EndNode{ get; set; } // FK_WorkflowNodeLink_WorkflowNode
+        public virtual WorkflowNode FirstNode { get; set; } // FK_WorkflowNodeLink_WorkflowNode
+        public virtual WorkflowNode EndNode { get; set; } // FK_WorkflowNodeLink_WorkflowNode
         public virtual WorkflowNode WorkflowNode { get; set; } // FK_WorkflowNodeLink_WorkflowNode
         public virtual WorkflowNode WorkflowNodeTo { get; set; } // FK_WorkflowNodeLink_WorkflowNode1
     }

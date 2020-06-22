@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
-using System.Web;
+using System.Text;
 
 namespace DRD.Service
 {
@@ -63,7 +61,7 @@ namespace DRD.Service
             return cipherText;
         }
 
-        
+
     }
 }
 

@@ -76,7 +76,7 @@ namespace DRD.Service
                      //     DateStamp = rotationNodeRemark.DateStamp,
                      // }).ToList(),
                  }).ToList();
-            
+
             rotation.AccessType = (int)Constant.AccessType.noAccess;
 
             foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
@@ -91,8 +91,8 @@ namespace DRD.Service
                     }
                     //readonly access for other user in node or rotation creator
                     else if (!rotation.AccessType.Equals((int)Constant.AccessType.responsible) || rotation.CreatorId == userId)
-                    { 
-                        rotation.AccessType = (int) Constant.AccessType.readOnly;
+                    {
+                        rotation.AccessType = (int)Constant.AccessType.readOnly;
                     }
                 }
 
@@ -282,21 +282,21 @@ namespace DRD.Service
             {
                 if (db.Rotations == null) return null;
                 var result = (from rotation in db.Rotations
-                                where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
-                                orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
-                                select new RotationData
-                                {
-                                    Id = rotation.Id,
-                                    Subject = rotation.Subject,
-                                    Status = rotation.Status,
-                                    WorkflowId = rotation.Workflow.Id,
-                                    WorkflowName = rotation.Workflow.Name,
-                                    CompanyId = rotation.CompanyId,
-                                    UserId = rotation.UserId,
-                                    CreatedAt = rotation.DateCreated,
-                                    UpdatedAt = rotation.DateUpdated,
-                                    DateStarted = rotation.DateUpdated,
-                                }).Skip(skip).Take(take).ToList();
+                              where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
+                              orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
+                              select new RotationData
+                              {
+                                  Id = rotation.Id,
+                                  Subject = rotation.Subject,
+                                  Status = rotation.Status,
+                                  WorkflowId = rotation.Workflow.Id,
+                                  WorkflowName = rotation.Workflow.Name,
+                                  CompanyId = rotation.CompanyId,
+                                  UserId = rotation.UserId,
+                                  CreatedAt = rotation.DateCreated,
+                                  UpdatedAt = rotation.DateUpdated,
+                                  DateStarted = rotation.DateUpdated,
+                              }).Skip(skip).Take(take).ToList();
                 foreach (RotationData resultItem in result)
                 {
                     resultItem.StatusDescription = constant.getRotationStatusName(resultItem.Status);
@@ -630,7 +630,7 @@ namespace DRD.Service
                         }
                     }
                 }
-                result = result.OrderBy(c=> c.WorkflowNodeId).ToList();
+                result = result.OrderBy(c => c.WorkflowNodeId).ToList();
                 return result;
             }
         }
@@ -818,7 +818,7 @@ namespace DRD.Service
                                     Name = rotation.Workflow.Name
                                 }
                             });
-                if(tags != null)
+                if (tags != null)
                     data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
                 if (pageSize > 0 && skip >= 0)
                     data = data.Skip(skip).Take(pageSize);
@@ -829,13 +829,13 @@ namespace DRD.Service
                     foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
                     {
                         var rNode = (from rotationNode in db.RotationNodes
-                                    where rotationNode.Rotation.Id == x.Id
-                                    && rotationNode.UserId == y.Id
-                                    select new RotationNodeInboxData
-                                    {
-                                        CreatedAt = rotationNode.CreatedAt,
-                                        Status = rotationNode.Status
-                                    }).FirstOrDefault();
+                                     where rotationNode.Rotation.Id == x.Id
+                                     && rotationNode.UserId == y.Id
+                                     select new RotationNodeInboxData
+                                     {
+                                         CreatedAt = rotationNode.CreatedAt,
+                                         Status = rotationNode.Status
+                                     }).FirstOrDefault();
                         if (rNode != null)
                         {
                             y.InboxStatus = rNode.Status;

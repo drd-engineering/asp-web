@@ -1,5 +1,4 @@
-﻿using DRD.Models.API;
-using DRD.Models.Custom;
+﻿using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
 using System.Collections.Generic;
@@ -20,7 +19,8 @@ namespace DRD.App.Controllers
 
         public bool Initialize()
         {
-            if (login.CheckLogin(this)) { 
+            if (login.CheckLogin(this))
+            {
                 user = login.GetUser(this);
                 layout.menus = login.GetMenus(this, layout.activeId);
                 layout.user = login.GetUser(this);
@@ -128,7 +128,8 @@ namespace DRD.App.Controllers
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        public ActionResult ExportAllRotationStatusToCSV(long companyId, string companyName) {
+        public ActionResult ExportAllRotationStatusToCSV(long companyId, string companyName)
+        {
             InitializeAPI();
             var data = rotationService.GetRelatedToCompany(companyId, null, 0, -1);
             StringBuilder sb = new StringBuilder();
@@ -143,26 +144,26 @@ namespace DRD.App.Controllers
                 sb.Append(rtd.DateStarted.ToString() + ',');
                 sb.Append(rtd.DateUpdated.ToString() + ',');
                 sb.Append(rtd.Creator.Name + ',');
-                sb.Append(rtd.Workflow.Name+ ',');
+                sb.Append(rtd.Workflow.Name + ',');
                 foreach (var tagname in rtd.Tags)
                 {
                     sb.Append(tagname + " | ");
                 }
                 sb.Append(",");
                 var users = new List<RotationDashboard.UserDashboard>(rtd.RotationUsers);
-                for (var i = 0; i<users.Count;  i++)
+                for (var i = 0; i < users.Count; i++)
                 {
                     if (i == 0)
                     {
                         if (users[i].InboxStatus == -99)
                         {
-                            sb.Append(",,"+ users[i].Name + " | ");
+                            sb.Append(",," + users[i].Name + " | ");
                             continue;
                         }
                     }
                     if (users[i].InboxStatus == 0)
                     {
-                        sb.Append(","+ users[i].Name + ",");
+                        sb.Append("," + users[i].Name + ",");
                     }
                     sb.Append(users[i].Name + " | ");
                 }

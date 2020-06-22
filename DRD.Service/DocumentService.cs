@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-
-using DRD.Models;
+﻿using DRD.Models;
 using DRD.Models.View;
 using DRD.Service.Context;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace DRD.Service
 {
     public class DocumentService : IDocumentService
     {
- 
+
         public static ElementType GetElementTypeFromCsvByCode(string code)
         {
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
@@ -877,10 +876,10 @@ namespace DRD.Service
                 else document = Update(prod, companyId, rotationId);
                 if (document.Id != 0)
                     result = document.Id;
-                document.DocumentElements= SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
-                document.DocumentUsers= CreateDocumentUser(document.Id);
+                document.DocumentElements = SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
+                document.DocumentUsers = CreateDocumentUser(document.Id);
                 document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
-                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id , FlagPermission = 6};
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id, FlagPermission = 6 };
             }
             return document;
         }
@@ -1103,7 +1102,7 @@ namespace DRD.Service
 
                 document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.UserEmail = newDocument.UserEmail;
-                
+
                 // NEW
                 document.ExpiryDay = newDocument.ExpiryDay;
                 document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;

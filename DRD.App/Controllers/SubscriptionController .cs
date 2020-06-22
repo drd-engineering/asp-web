@@ -1,11 +1,9 @@
 ﻿
-using System.Web.Mvc;
-
 using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
-
 using DRD.Service;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {

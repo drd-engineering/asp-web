@@ -1,14 +1,11 @@
-﻿using System;
+﻿using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
-using DRD.Models;
-using DRD.Models.Custom;
-using DRD.Models.View;
-using DRD.Service;
 
 namespace DRD.App.Controllers
 {
@@ -118,7 +115,7 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        
+
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult Upload(int idx)
         {
@@ -174,10 +171,10 @@ namespace DRD.App.Controllers
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
-            
+
             // assign uneditable data
             //user.Email = userSession.Email;
-            
+
             //user.CompanyId = userSession.CompanyId;
 
             UserService userService = new UserService();
@@ -192,7 +189,7 @@ namespace DRD.App.Controllers
             data.Add(MoveFromTemp(user, ret1.ImageProfile));
             data.Add(MoveFromTemp(user, ret1.ImageSignature));
             data.Add(MoveFromTemp(user, ret1.ImageStamp));
-            
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         private int MoveFromTemp(UserProfile user, string location)

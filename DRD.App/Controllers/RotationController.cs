@@ -1,10 +1,9 @@
-﻿using System.Web.Mvc;
-
-using DRD.Models;
-using DRD.Models.View;
-using DRD.Models.Custom;
-using DRD.Service;
+﻿using DRD.Models;
 using DRD.Models.API;
+using DRD.Models.Custom;
+using DRD.Models.View;
+using DRD.Service;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -86,7 +85,7 @@ namespace DRD.App.Controllers
         public ActionResult Start(long rotationId, long subscriptionId)
         {
             InitializeAPI();
-            
+
             var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
