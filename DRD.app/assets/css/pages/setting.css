@@ -1,0 +1,45 @@
+div.box {
+    width: 100%;
+    background-color: antiquewhite;
+    margin: 10px 0px;
+}
+
+    div.box > .box-item {
+        width: 90%;
+        background-color: aqua;
+        margin: auto;
+        max-width: 730px;
+        height: 70px;
+        border: solid 0.2px grey;
+        margin-top: -1px;
+        display: flex;
+    }
+
+        div.box > .box-item > .box-image {
+            display: flex;
+            position: relative;
+            align-self: flex-start;
+            height: 100%;
+            width: 70px;
+            background-color: brown;
+        }
+
+        div.box > .box-item > .box-info {
+            display: flex;
+            position: relative;
+            flex-grow: 1;
+            height: 100%;
+            width: 70px;
+            background-color: brown;
+        }
+
+        div.box > .box-item > .box-action {
+            height: 100%;
+            width: 200px;
+            background-color: brown;
+        }
+
+.image-small-center {
+    height: 20px;
+    vertical-align: middle;
+}

@@ -44,3 +44,13 @@ div.row.padding-bottom{
 div.col-md-12.padding-bottom{
     padding-bottom: 20px;
 }
+
+@media only screen and (max-width: 600px) {
+    .content{
+        padding:0px;
+    }
+    div.row{
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+}

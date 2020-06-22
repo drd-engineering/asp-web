@@ -123,6 +123,7 @@
                 $http.post('@Url.Action("GetInboxList", "Inbox")', { page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
+                        console.log($scope.products);
                         $scope.index = row * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;

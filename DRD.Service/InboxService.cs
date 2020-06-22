@@ -130,6 +130,7 @@ namespace DRD.Service
                     {
                         Id = c.Rotation.Id,
                         Subject = c.Rotation.Subject,
+                        CreatorId = c.Rotation.CreatorId,
                         Status = c.Status,
                         CompanyId = c.Rotation.CompanyId,
                         WorkflowId = c.Rotation.WorkflowId,

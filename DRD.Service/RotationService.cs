@@ -77,22 +77,20 @@ namespace DRD.Service
                      // }).ToList(),
                  }).ToList();
 
-            rotation.AccessType = (int)Constant.AccessType.noAccess;
+            //if owner has access to readonly
+            rotation.AccessType = rotation.CreatorId == userId ? (int)Constant.AccessType.readOnly : (int)Constant.AccessType.noAccess;
 
             foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
             {
                 //set page access to specific user
                 if (rotationNode.User.Id == userId)
                 {
+                        rotation.AccessType = (int)Constant.AccessType.readOnly;
                     // responsible access for the current user
                     if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
                     {
                         rotation.AccessType = (int)Constant.AccessType.responsible;
-                    }
-                    //readonly access for other user in node or rotation creator
-                    else if (!rotation.AccessType.Equals((int)Constant.AccessType.responsible) || rotation.CreatorId == userId)
-                    {
-                        rotation.AccessType = (int)Constant.AccessType.readOnly;
+                        break;
                     }
                 }
 

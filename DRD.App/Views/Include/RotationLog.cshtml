@@ -6,7 +6,7 @@
 
 <br />
 <div style="border-bottom:dotted;border-bottom-width:1px;"></div>
-<div ng-repeat="x in rotationNodes">
+<div class="table-responsive" ng-repeat="x in rotationNodes">
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId && x.Status==0?(x.Id==model.RotationNodeId?'#FCD097': '#AFC9D8'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
