@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-sm-12 col-md-5 col-lg-5">
                             <label class="control-label">Workflow <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
-                            <div class="input-group" style="cursor:pointer!important" ng-click="popupWorkflow()">
+                            <div class="input-group" style="cursor:pointer;pointer-events: all" ng-click="popupWorkflow()">
                                 <div>
                                     <input type="text" class="form-control" ng-model="workflow.Name" maxlength="50" readonly />
                                 </div>
@@ -76,12 +76,14 @@
                             <div style="color:black;font-size:10px;align-self:end">use comma or enter to insert tag</div>
                         </div>
 
-                        <div style="height:5px"></div>
 
-                        <div class="col-md-12">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
                             <label class="control-label">Description <small>(optional)</small></label><br />
                             <textarea class="control-label" ng-model="model.Remark" rows="3"></textarea>
                         </div>
+
+                    </div>
+                    <div class="row">
 
                         <div class="col-md-12">
                             <div class="row" style="align-content:center">
@@ -109,9 +111,9 @@
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission : </span>
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                                    <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
+                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
                                                 @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                                    <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
+                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -120,6 +122,7 @@
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </fieldset>
                 <!-- SUBMIT BUTTON -->
