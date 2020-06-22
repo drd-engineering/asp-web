@@ -40,7 +40,7 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
-            var isAdminandHasCompany = userService.IsAdminOrOwnerofCompany(user.Id);
+            var isAdminandHasCompany = userService.IsAdminOrOwnerofAnyCompany(user.Id);
             if (isAdminandHasCompany)
             {
                 return View(layout);

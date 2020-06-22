@@ -318,12 +318,17 @@ namespace DRD.Service
             InboxService inboxService = new InboxService();
             /*MemberService memberService = new MemberService();*/
             List<int> returnValue = new List<int>();
+            if (returnItem != null)
+            {
             foreach (ActivityItem act in returnItem)
             {
                 returnValue.Add(inboxService.CreateInbox(act));
                 /*MemberService.sendEmailInbox(act);*/
             }
+
             return returnValue[0];
+            }
+            return -6;
         }
 
         // subscription Id is either userId or companyId
@@ -331,6 +336,7 @@ namespace DRD.Service
         {
             if (!subscriptionService.IsSubscriptionValid(userId, usageId))
             {
+                System.Diagnostics.Debug.WriteLine("INVALID SUBSCRIPTION");
                 return null;
             }
             List<ActivityItem> retvalues = new List<ActivityItem>();

@@ -222,6 +222,8 @@
                                 showInfo("Rotation quota is not enough, please check on my plan.");
                             else if (response.data == -5)
                                 showInfo("Workflow doesnt has start node");
+                            else if (response.data == -6)
+                                showInfo("Your subscription is invalid");
                             else {
                                 showSuccess("Successful data process.");
                                 $scope.findRotations($scope.kriteria, $scope.page, $scope.row);
@@ -240,6 +242,7 @@
             $scope.findRotations = function (kriteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
+                $scope.products = [];
                 $http.post('@Url.Action("findRotations", "Rotation")', { criteria: kriteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {

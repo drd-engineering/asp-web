@@ -453,7 +453,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public bool IsAdminOrOwnerofCompany(long userId)
+        public bool IsAdminOrOwnerofAnyCompany(long userId)
         {
             using (var db = new ServiceContext())
             {
@@ -462,7 +462,19 @@ namespace DRD.Service
                     && memberItem.isCompanyAccept && memberItem.isMemberAccept);
                 var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
 
-                return countAsAdmin > 0 && countAsOwner > 0;
+                return countAsAdmin > 0 || countAsOwner > 0;
+            }
+        }
+        public bool IsAdminOrOwnerofSpecificCompany(long userId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
+                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
+                    && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.CompanyId==companyId);
+                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.Id==companyId && companyItem.IsActive);
+
+                return countAsAdmin > 0 || countAsOwner > 0;
             }
         }
     }

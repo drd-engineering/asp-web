@@ -310,7 +310,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\pages\for-all-page.css" />
-    <Content Include="assets\js\plugins\transition.js" />
+    <Content Include="assets\css\nprogress.css" />
+    <Content Include="assets\js\nprogress.js" />
     <Content Include="assets\js\signature.js" />
     <Content Include="assets\js\signature_pad.min.js" />
     <Content Include="assets\css\bak2\bootstrap.css" />
@@ -3565,6 +3566,7 @@
     <Content Include="Views\Inbox\Index.cshtml" />
     <Content Include="Views\Include\PopupMemberRotation.cshtml" />
     <Content Include="Views\Include\DocumentSummary.cshtml" />
+    <Content Include="Views\Error\404.cshtml" />
     <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="doc\json.json" />
     <Content Include="doc\mgn\loading.pdf" />

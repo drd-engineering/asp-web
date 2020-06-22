@@ -367,8 +367,7 @@ namespace DRD.Service
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
             EmailService emailService = new EmailService();
 
-            string body = string.Empty;
-            body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
+            string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/InboxNotif.html"));
 
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
@@ -377,6 +376,7 @@ namespace DRD.Service
             {
                 user = db.Users.FirstOrDefault(c => c.Id == inbox.UserId);
             }
+
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_SENDER_}", inbox.prevUserName + " (" + inbox.prevUserEmail + ")");
             body = body.Replace("{_NAME_}", user.Name);
@@ -387,7 +387,9 @@ namespace DRD.Service
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-            var task = emailService.Send(senderEmail, senderName, user.Email, "Inbox Reception", body, false, new string[] { });
+            System.Diagnostics.Debug.WriteLine(senderEmail + senderName + user.Email + "Inbox Reception");
+
+            var task = emailService.Send(senderEmail, senderName, user.Email, "You have a task in DRD", body, false, new string[] { });
         }
     }
 }

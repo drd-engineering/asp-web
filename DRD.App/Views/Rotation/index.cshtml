@@ -229,7 +229,7 @@
                     $scope.model.Id=product.Id;
                     $scope.model.Subject=product.Subject;
                     $scope.model.Status = product.Status;
-                    $scope.model.CompanyName = product.CompanyRotation.Name;
+                    $scope.model.CompanyName = product.CompanyRotation == null?null:product.CompanyRotation.Name;
                     $scope.model.Remark= product.Remark;
                     $scope.workflow=product.Workflow;
                     $scope.users = product.RotationUsers;
@@ -243,10 +243,6 @@
 
             $scope.initData = function () {
 
-            }
-            $scope.gotoWf = function () {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'WORKFLOW'})[0].UrlPage.replace('list?','?');
-                location.href = url;
             }
 
             $scope.getFlagPermission = function (val, bit) {
@@ -552,6 +548,7 @@
                     .then(function (response) {
                         if (response.data) {
                             $scope.SubscriptionList = response.data.usages;
+
                         }
                     });
             }

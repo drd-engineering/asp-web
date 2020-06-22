@@ -45,7 +45,7 @@ namespace DRD.Service
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Menu.csv");
             bool hasCompany = userService.HasCompany(userId);
-            bool isCompanyMember = userService.IsAdminOrOwnerofCompany(userId);
+            bool isCompanyMember = userService.IsAdminOrOwnerofAnyCompany(userId);
 
             List<Menu> values = File.ReadAllLines(path)
                                            .Select(v => Menu.FromCsv(v))
