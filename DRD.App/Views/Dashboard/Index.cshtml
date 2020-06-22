@@ -22,12 +22,12 @@
     <!-- /theme JS files -->
 }
 @section Styles{
-    <link href="/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/pages/tagging.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/pages/for-all-page.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
 }
 <body>
     <h4><a class="btn" href="/dashboard" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-home4"></i></a> @ViewBag.Title</h4>
-    <div class="page-container" ng-controller="drdController">
+    <section ng-controller="drdController">
         <section id="dashboard-highlight">
             <div class="row">
 
@@ -177,14 +177,20 @@
                             </table>
                         </div>
                         <div ng-show="listRotationStatus.length > 0" class="pagination-container">
-                            <div style="padding-bottom:20px;padding-top:20px" class="pagination">
-                                <a data-toggle="tooltip" title="first page" ng-click="getDashboardRotationStatusPage(1)">&lt;&lt;</a>
-                                <a data-toggle="tooltip" title="previous page" ng-click="getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
+                            <div class="pagination">
+                                <a class="{{pageRotationStatus > 1?'':'disable'}}" data-toggle="tooltip" title="first page" 
+                                   ng-click="pageRotationStatus > 1 getDashboardRotationStatusPage(1)">&lt;&lt;</a>
+                                <a class="{{pageRotationStatus > 1?'':'disable'}}" data-toggle="tooltip" title="previous page" 
+                                   ng-click="pageRotationStatus > 1 && getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
+
                                 <a ng-repeat="rtsp in rotationStatusPaging | limitTo : pageRotationStatus+3>rotationStatusPaging.length?rotationStatusPaging.length:pageRotationStatus+3 : pageRotationStatus-4<0?0:pageRotationStatus-4" ng-click="getDashboardRotationStatusPage(rtsp)" class="{{rtsp == pageRotationStatus ? 'active':''}}">
                                     {{rtsp}}
                                 </a>
-                                <a data-toggle="tooltip" title="next page" ng-click="getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
-                                <a data-toggle="tooltip" title="last page" ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
+
+                                <a class="{{pageRotationStatus < rotationStatusPaging.length?'':'disable'}}" data-toggle="tooltip" title="next page" 
+                                   ng-click="pageRotationStatus < rotationStatusPaging.length && getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
+                                <a class="{{pageRotationStatus < rotationStatusPaging.length?'':'disable'}}" data-toggle="tooltip" title="last page" 
+                                   ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length) && pageRotationStatus < rotationStatusPaging.length"> &gt; &gt;</a>
                             </div>
                         </div>
                         <div ng-show="listRotationStatus.length == 0" class="container" style="text-align:center">
@@ -197,7 +203,7 @@
 
         </section>
 
-    </div>
+    </section>
 
     <script>
 
@@ -480,7 +486,6 @@
                 });
             }
             $scope.getDashboardRotationStatusPage = function (pageTarget) {
-                if ((pageTarget > $scope.rotationStatusPaging.length||pageTarget > $scope.rotationStatusPaging.length)) { return; }
                 $http.post('@Url.Action("GetDashboardRotationStatus", "Dashboard")',
                     { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
                 ).then(function (response) {

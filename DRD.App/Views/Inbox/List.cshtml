@@ -20,55 +20,66 @@
 
 @section Styles
 {
-    <link href="/assets/css/pages/inbox-list.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/pages/inbox-list.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/pages/for-all-page.css" rel="stylesheet" type="text/css">
 }
 
-<body @*ng-app="drdApp"*@>
+<body>
 
     <h4><a class="btn" href="/inbox/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-envelope"></i></a> @ViewBag.Title</h4>
     <!-- Page container -->
-    <div class="page-container" ng-controller="drdController">
-
-        <div class="content">
-            <div calss="row">
-                <div class="panel panel-flat">
-                    <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
-                        Loading Inbox Data
-                    </div>
-                    <div ng-show="!hasInbox && completeLoad" style="text-align:center;padding:50px;">
-                        You don't have an inbox yet
-                    </div>
-                    <div class="table-responsive" ng-show="isView && hasInbox && completeLoad">
-                        <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
-                            <thead>
-                                <tr style="background-color:white;">
-                                    <th width="200">Sender</th>
-                                    <th>Message</th>
-                                    <th>Rotation</th>
-                                    <th width="175px">Created</th>
-                                </tr>
-                            </thead>
-                            <tbody style="width:95%">
-                                <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
-                                    <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
-                                    <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
-                                    <td>{{x.RotationName}}</td>
-                                    <td width="10%">{{getDateFormated(x.CreatedAt,1)}}</td>
-                                </tr>
-                                <tr>
-                                </tr>
-                            </tbody>
-                        </table>
+    <section ng-controller="drdController">
+        <!-- Content area -->
+        <div calss="row">
+            <div class="panel panel-flat">
+                <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
+                    Loading Inbox Data
+                </div>
+                <div ng-show="!hasInbox && completeLoad" style="text-align:center;padding:50px;">
+                    You don't have an inbox yet
+                </div>
+                <div class="table-responsive" ng-show="isView && hasInbox && completeLoad">
+                    <table class="table-xxs table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                        <thead>
+                            <tr style="background-color:white;">
+                                <th width="200">Sender</th>
+                                <th>Message</th>
+                                <th>Rotation</th>
+                                <th width="175px">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody style="width:95%">
+                            <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
+                                <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
+                                <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
+                                <td>{{x.RotationName}}</td>
+                                <td width="10%">{{getDateFormated(x.CreatedAt,1)}}</td>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-show="hasInbox" class="pagination-container">
+                    <div class="pagination">
+                        <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="first page"
+                            ng-click="page > 1 && changePageInbox(kriteria, 1, row)">&lt;&lt;</a>
+                        <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
+                            ng-click="page > 1 && changePageInbox(kriteria, page - 1, row)">&lt;</a>
+                        <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
+                            ng-click="changePageInbox(kriteria, rot, row)">
+                            {{rot}}
+                        </a>
+                        <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
+                            ng-click="page < paging.length && changePageInbox(kriteria, page + 1, row)">&gt;</a>
+                        <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="last page"
+                            ng-click="page < paging.length && changePageInbox(kriteria, paging.length, row)"> &gt; &gt;</a>
                     </div>
                 </div>
             </div>
-            <!-- /LIST -->
         </div>
-        <!-- /content area -->
-
-    </div>
-    <!-- /page container -->
-
+    </section>
+    
     <script type="text/javascript">
 
 
@@ -130,7 +141,7 @@
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         $scope.hasInbox = jumlahData > 0;
                         for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
+                            $scope.paging.push(i);
                         }
                         $scope.page = "1";
                     }
