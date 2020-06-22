@@ -823,6 +823,7 @@ namespace DRD.Service
                 var result = data.ToList();
                 foreach (RotationDashboard x in result)
                 {
+                    x.InboxId = db.Inboxes.Where(inbox => inbox.RotationId == x.Id).FirstOrDefault().Id;
                     x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
                     foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
                     {

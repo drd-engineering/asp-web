@@ -150,7 +150,7 @@
                         </div>
                         <!-- each rotation status -->
                         <div ng-show="listRotationStatus.length > 0" class="container table-responsive">
-                            <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                            <table class="table-xxs table-borderless datatable-highlight dataTable table-hover"  style="font-size:small;width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 14%">Workflow Name</th>
@@ -162,7 +162,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style="height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
+                                    <tr ng-click="openInbox(y.InboxId)" style="cursor:pointer; height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
                                         <td>{{y.Workflow.Name}}</td>
                                         <td>{{y.Subject}} </td>
                                         <td>{{getStatusName(y.Status)}}</td>
@@ -310,6 +310,9 @@
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
+            $scope.openInbox = function (id) {
+                location.href = "/inbox?id=" + id;
+            }
             $scope.convertJsonDate = function (val) {
                 if (val == undefined)
                     return '';
