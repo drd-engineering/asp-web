@@ -52,6 +52,20 @@ namespace DRD.App.Controllers
             layout.obj = product;
             return View(layout);
         }
+        
+        public ActionResult GetInboxDetail(long id)
+        {
+            if(!Initialize())
+                return Json(-1, JsonRequestBehavior.AllowGet);
+ 
+            var data = inboxService.GetInboxItem(id, user.Id);
+            //page authorization check if user has no access
+            if(data.AccessType.Equals((int)Constant.AccessType.noAccess))
+                return Json(-2, JsonRequestBehavior.AllowGet);
+            
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
 
         public ActionResult List()
         {
