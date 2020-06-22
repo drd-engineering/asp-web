@@ -1,9 +1,4 @@
 ﻿using DRD.Models.API;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DRD.Models.View
 {
@@ -17,9 +12,9 @@ namespace DRD.Models.View
         public bool isCompanyAccept { get; set; }
         public bool isMemberAccept { get; set; }
         public bool IsAdministrator { get; set; } // IsActive
-        
+
         public ContactItem User { get; set; }
-        public SmallCompanyData Company{ get; set; }
+        public SmallCompanyData Company { get; set; }
 
         public MemberItem()
         {

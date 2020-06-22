@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Net;
-using DRD.Models.Custom;
+﻿using DRD.Models.Custom;
 using DRD.Models.View;
-
 using DRD.Service;
+using System.Collections.Generic;
+using System.Net;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -82,7 +78,7 @@ namespace DRD.App.Controllers
         public ActionResult AcceptInvitation(long memberId)
         {
             InitializeAPI();
-            if(user == null)
+            if (user == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
@@ -96,7 +92,7 @@ namespace DRD.App.Controllers
         public ActionResult GetAcceptedMember(long companyId)
         {
             InitializeAPI();
-            
+
             MemberList data = memberService.getAcceptedMember(companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -114,14 +110,14 @@ namespace DRD.App.Controllers
             InitializeAPI();
 
             MemberList data = memberService.getWaitingMember(companyId);
-                        
+
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult addMemberToCompany(long companyId, long userId)
         {
             InitializeAPI();
 
-            bool data = memberService.addMemberToCompany(userId,companyId);
+            bool data = memberService.addMemberToCompany(userId, companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

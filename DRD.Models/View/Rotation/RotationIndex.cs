@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DRD.Models.API;
 using DRD.Models.Custom;
-using DRD.Models.API;
+using System.Collections.Generic;
 
 namespace DRD.Models.View
 {
@@ -34,7 +34,7 @@ namespace DRD.Models.View
         {
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
             RotationUsers = new System.Collections.Generic.List<RotationUserItem>();
-            
+
         }
     }
 }

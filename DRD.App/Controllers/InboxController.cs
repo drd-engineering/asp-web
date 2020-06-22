@@ -1,13 +1,8 @@
-﻿    using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-using DRD.Models.API;
+﻿using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -41,12 +36,12 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult Index(long id)
         {
-            if(!Initialize())
+            if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
- 
+
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
             //page authorization check if user has no access
-            if(product.AccessType.Equals((int)Constant.AccessType.noAccess))
+            if (product.AccessType.Equals((int)Constant.AccessType.noAccess))
                 return RedirectToAction("Index", "Dashboard");
             //user have access
             layout.obj = product;

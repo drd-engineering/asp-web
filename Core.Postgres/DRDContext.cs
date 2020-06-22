@@ -38,143 +38,538 @@ namespace Core.Postgres
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             List<User> listOfUserCreated = new List<User>();
-            listOfUserCreated.Add(new User { Id = -1, Name = "user 1", Phone = "081111111111", Email = "a@hotmail.com",
-                OfficialIdNo = 1111111111111111, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -1,
+                Name = "user 1",
+                Phone = "081111111111",
+                Email = "a@hotmail.com",
+                OfficialIdNo = 1111111111111111,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -2, Name = "user 2", Phone = "081111111112", Email = "b@hotmail.com",
-                OfficialIdNo = 1111111111111112, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -2,
+                Name = "user 2",
+                Phone = "081111111112",
+                Email = "b@hotmail.com",
+                OfficialIdNo = 1111111111111112,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -14, Name = "user 14", Phone = "081111111113", Email = "c@hotmail.com",
-                OfficialIdNo = 1111111111111113, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -14,
+                Name = "user 14",
+                Phone = "081111111113",
+                Email = "c@hotmail.com",
+                OfficialIdNo = 1111111111111113,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -4, Name = "user 4", Phone = "081111111114", Email = "d@hotmail.com",
-                OfficialIdNo = 1111111111111114, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -4,
+                Name = "user 4",
+                Phone = "081111111114",
+                Email = "d@hotmail.com",
+                OfficialIdNo = 1111111111111114,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -5, Name = "user 5", Phone = "081111111115", Email = "e@hotmail.com",
-                OfficialIdNo = 1111111111111115, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -5,
+                Name = "user 5",
+                Phone = "081111111115",
+                Email = "e@hotmail.com",
+                OfficialIdNo = 1111111111111115,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -16, Name = "user 16", Phone = "081111111116", Email = "f@hotmail.com",
-                OfficialIdNo = 1111111111111116, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -16,
+                Name = "user 16",
+                Phone = "081111111116",
+                Email = "f@hotmail.com",
+                OfficialIdNo = 1111111111111116,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -7, Name = "user 7", Phone = "081111111117", Email = "g@hotmail.com",
-                OfficialIdNo = 1111111111111117, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -7,
+                Name = "user 7",
+                Phone = "081111111117",
+                Email = "g@hotmail.com",
+                OfficialIdNo = 1111111111111117,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -8, Name = "user 8", Phone = "081111111118", Email = "h@hotmail.com",
-                OfficialIdNo = 1111111111111118, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -8,
+                Name = "user 8",
+                Phone = "081111111118",
+                Email = "h@hotmail.com",
+                OfficialIdNo = 1111111111111118,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -9, Name = "user 9", Phone = "081111111119", Email = "i@hotmail.com",
-                OfficialIdNo = 1111111111111119, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -9,
+                Name = "user 9",
+                Phone = "081111111119",
+                Email = "i@hotmail.com",
+                OfficialIdNo = 1111111111111119,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -10, Name = "user 10", Phone = "081111111121", Email = "j@hotmail.com",
-                OfficialIdNo = 1111111111111121, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
+            listOfUserCreated.Add(new User
+            {
+                Id = -10,
+                Name = "user 10",
+                Phone = "081111111121",
+                Email = "j@hotmail.com",
+                OfficialIdNo = 1111111111111121,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
             });
-            listOfUserCreated.Add(new User { Id = -11, Name = "user 11", Phone = "081111111122", Email = "k@hotmail.com",
-                OfficialIdNo = 1111111111111122, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -11,
+                Name = "user 11",
+                Phone = "081111111122",
+                Email = "k@hotmail.com",
+                OfficialIdNo = 1111111111111122,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
-            listOfUserCreated.Add(new User { Id = -12, Name = "user 12", Phone = "081111111123", Email = "l@hotmail.com",
-                OfficialIdNo = 1111111111111123, ImageProfile = "danilova.jpg", Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png", ImageInitials = "danilovainit.png", ImageStamp = "danilovastmp.png", ImageKtp1 = "danilovaktp1.png", ImageKtp2 = "danilovaktp2.png",
-                IsActive = true, CreatedAt = DateTime.Now
+            listOfUserCreated.Add(new User
+            {
+                Id = -12,
+                Name = "user 12",
+                Phone = "081111111123",
+                Email = "l@hotmail.com",
+                OfficialIdNo = 1111111111111123,
+                ImageProfile = "danilova.jpg",
+                Password = "kapandeadline",
+                ImageSignature = "danilovasgn.png",
+                ImageInitials = "danilovainit.png",
+                ImageStamp = "danilovastmp.png",
+                ImageKtp1 = "danilovaktp1.png",
+                ImageKtp2 = "danilovaktp2.png",
+                IsActive = true,
+                CreatedAt = DateTime.Now
             });
             modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3], listOfUserCreated[4], listOfUserCreated[5]);
             modelBuilder.Entity<User>().HasData(listOfUserCreated[6], listOfUserCreated[7], listOfUserCreated[8], listOfUserCreated[9], listOfUserCreated[10], listOfUserCreated[11]);
 
             List<Company> listOfCompanyCreated = new List<Company>();
             listOfCompanyCreated.Add(
-                new Company { Id = -1, Code = "DG23JJKL3L", Name = "PT perusahaan 1", Phone = "0214556372", Email = "sempoasupport@sempoa.com",
-                    Descr = "a company dummy", Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe", PostalCode = "122122", IsActive = true,
-                    OwnerId = listOfUserCreated[0].Id, CreatedAt = DateTime.Now });
+                new Company
+                {
+                    Id = -1,
+                    Code = "DG23JJKL3L",
+                    Name = "PT perusahaan 1",
+                    Phone = "0214556372",
+                    Email = "sempoasupport@sempoa.com",
+                    Descr = "a company dummy",
+                    Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe",
+                    PostalCode = "122122",
+                    IsActive = true,
+                    OwnerId = listOfUserCreated[0].Id,
+                    CreatedAt = DateTime.Now
+                });
             listOfCompanyCreated.Add(
-                new Company { Id = -2, Code = "DG23JJ2PDO", Name = "PT perusahaan 2", Phone = "0218229103", Email = "sempuasupport@sempua.com",
-                    Descr = "a company dummy", Address = "jalan haha nomor 2, haha, kota haha, provinsi haha", PostalCode = "211211", IsActive = true, 
-                    OwnerId = listOfUserCreated[2].Id, CreatedAt = DateTime.Now });
+                new Company
+                {
+                    Id = -2,
+                    Code = "DG23JJ2PDO",
+                    Name = "PT perusahaan 2",
+                    Phone = "0218229103",
+                    Email = "sempuasupport@sempua.com",
+                    Descr = "a company dummy",
+                    Address = "jalan haha nomor 2, haha, kota haha, provinsi haha",
+                    PostalCode = "211211",
+                    IsActive = true,
+                    OwnerId = listOfUserCreated[2].Id,
+                    CreatedAt = DateTime.Now
+                });
             listOfCompanyCreated.Add(
-                new Company { Id = -4, Code = "DG23JE4PDO", Name = "PT perusahaan 4", Phone = "0218229103", Email = "siminsupport@sempua.com",
-                    Descr = "a company dummy", Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu", PostalCode = "221211", IsActive = true,
-                    OwnerId = listOfUserCreated[4].Id, CreatedAt = DateTime.Now });
+                new Company
+                {
+                    Id = -4,
+                    Code = "DG23JE4PDO",
+                    Name = "PT perusahaan 4",
+                    Phone = "0218229103",
+                    Email = "siminsupport@sempua.com",
+                    Descr = "a company dummy",
+                    Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu",
+                    PostalCode = "221211",
+                    IsActive = true,
+                    OwnerId = listOfUserCreated[4].Id,
+                    CreatedAt = DateTime.Now
+                });
             listOfCompanyCreated.Add(
-                new Company { Id = -5, Code = "DG23JJKL3L", Name = "PT perusahaan 5", Phone = "0214556372", Email = "sempoasupport@sempoa.com",
-                    Descr = "a company dummy", Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe", PostalCode = "122122", IsActive = true,
-                    OwnerId = listOfUserCreated[0].Id, CreatedAt = DateTime.Now });
+                new Company
+                {
+                    Id = -5,
+                    Code = "DG23JJKL3L",
+                    Name = "PT perusahaan 5",
+                    Phone = "0214556372",
+                    Email = "sempoasupport@sempoa.com",
+                    Descr = "a company dummy",
+                    Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe",
+                    PostalCode = "122122",
+                    IsActive = true,
+                    OwnerId = listOfUserCreated[0].Id,
+                    CreatedAt = DateTime.Now
+                });
 
             // Owner
-            Member member6 = new Member { Id = -6, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = false };
-            Member member11 = new Member { Id = -11, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[2].Id, IsAdministrator = false };
-            Member member13 = new Member { Id = -13, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id, IsAdministrator = false };
-            Member member26 = new Member { Id = -26, CompanyId = listOfCompanyCreated[3].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = false };
-            
-            // Member biasa
-            Member member1 = new Member { Id = -1, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true,
-                isMemberAccept = true, UserId = listOfUserCreated[2].Id, IsAdministrator = true  };
-            Member member7 = new Member { Id = -7, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
-            Member member8 = new Member { Id = -8, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
-            Member member18 = new Member { Id = -18, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[1].Id,IsAdministrator = false };
-            Member member19 = new Member { Id = -19, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[5].Id,IsAdministrator = false };
-            Member member20 = new Member { Id = -20, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[6].Id,IsAdministrator = false };
-            Member member21 = new Member { Id = -21, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[7].Id,IsAdministrator = false };
-            Member member22 = new Member { Id = -22, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[8].Id,IsAdministrator = false };
-            Member member23 = new Member { Id = -23, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[9].Id,IsAdministrator = false };
-            Member member24 = new Member { Id = -24, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[10].Id,IsAdministrator = false };
-            Member member25 = new Member { Id = -25, CompanyId = listOfCompanyCreated[0].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[11].Id,IsAdministrator = false };
+            Member member6 = new Member
+            {
+                Id = -6,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[0].Id,
+                IsAdministrator = false
+            };
+            Member member11 = new Member
+            {
+                Id = -11,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[2].Id,
+                IsAdministrator = false
+            };
+            Member member13 = new Member
+            {
+                Id = -13,
+                CompanyId = listOfCompanyCreated[2].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[4].Id,
+                IsAdministrator = false
+            };
+            Member member26 = new Member
+            {
+                Id = -26,
+                CompanyId = listOfCompanyCreated[3].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[0].Id,
+                IsAdministrator = false
+            };
 
-            Member member2 = new Member { Id = -2, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true,
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id, IsAdministrator = false  };
-            Member member3 = new Member { Id = -3, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true };
-            Member member4 = new Member { Id = -4, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
-            Member member5 = new Member { Id = -5, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[5].Id,IsAdministrator = false };
-            Member member15 = new Member { Id = -15, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[1].Id,IsAdministrator = false };
-            Member member16 = new Member { Id = -16, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[6].Id,IsAdministrator = false };
-            Member member17 = new Member { Id = -17, CompanyId = listOfCompanyCreated[1].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[7].Id,IsAdministrator = false };
-            
-            Member member9 = new Member { Id = -9, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[5].Id, IsAdministrator = true  };
-            Member member10 = new Member { Id = -10, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[0].Id, IsAdministrator = true  };
-            Member member12 = new Member { Id = -12, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[3].Id,IsAdministrator = false };
-            Member member14 = new Member { Id = -14, CompanyId = listOfCompanyCreated[2].Id, IsActive = true, isCompanyAccept = true, 
-                isMemberAccept = true, UserId = listOfUserCreated[4].Id,IsAdministrator = false };
+            // Member biasa
+            Member member1 = new Member
+            {
+                Id = -1,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[2].Id,
+                IsAdministrator = true
+            };
+            Member member7 = new Member
+            {
+                Id = -7,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[4].Id,
+                IsAdministrator = false
+            };
+            Member member8 = new Member
+            {
+                Id = -8,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[3].Id,
+                IsAdministrator = false
+            };
+            Member member18 = new Member
+            {
+                Id = -18,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[1].Id,
+                IsAdministrator = false
+            };
+            Member member19 = new Member
+            {
+                Id = -19,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[5].Id,
+                IsAdministrator = false
+            };
+            Member member20 = new Member
+            {
+                Id = -20,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[6].Id,
+                IsAdministrator = false
+            };
+            Member member21 = new Member
+            {
+                Id = -21,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[7].Id,
+                IsAdministrator = false
+            };
+            Member member22 = new Member
+            {
+                Id = -22,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[8].Id,
+                IsAdministrator = false
+            };
+            Member member23 = new Member
+            {
+                Id = -23,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[9].Id,
+                IsAdministrator = false
+            };
+            Member member24 = new Member
+            {
+                Id = -24,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[10].Id,
+                IsAdministrator = false
+            };
+            Member member25 = new Member
+            {
+                Id = -25,
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[11].Id,
+                IsAdministrator = false
+            };
+
+            Member member2 = new Member
+            {
+                Id = -2,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[3].Id,
+                IsAdministrator = false
+            };
+            Member member3 = new Member
+            {
+                Id = -3,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[0].Id,
+                IsAdministrator = true
+            };
+            Member member4 = new Member
+            {
+                Id = -4,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[4].Id,
+                IsAdministrator = false
+            };
+            Member member5 = new Member
+            {
+                Id = -5,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[5].Id,
+                IsAdministrator = false
+            };
+            Member member15 = new Member
+            {
+                Id = -15,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[1].Id,
+                IsAdministrator = false
+            };
+            Member member16 = new Member
+            {
+                Id = -16,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[6].Id,
+                IsAdministrator = false
+            };
+            Member member17 = new Member
+            {
+                Id = -17,
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[7].Id,
+                IsAdministrator = false
+            };
+
+            Member member9 = new Member
+            {
+                Id = -9,
+                CompanyId = listOfCompanyCreated[2].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[5].Id,
+                IsAdministrator = true
+            };
+            Member member10 = new Member
+            {
+                Id = -10,
+                CompanyId = listOfCompanyCreated[2].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[0].Id,
+                IsAdministrator = true
+            };
+            Member member12 = new Member
+            {
+                Id = -12,
+                CompanyId = listOfCompanyCreated[2].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[3].Id,
+                IsAdministrator = false
+            };
+            Member member14 = new Member
+            {
+                Id = -14,
+                CompanyId = listOfCompanyCreated[2].Id,
+                IsActive = true,
+                isCompanyAccept = true,
+                isMemberAccept = true,
+                UserId = listOfUserCreated[4].Id,
+                IsAdministrator = false
+            };
 
             BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
             BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Corporate" };

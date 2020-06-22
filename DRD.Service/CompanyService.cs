@@ -176,7 +176,7 @@ namespace DRD.Service
                 return result;
             }
         }
-        
+
         /// <summary>
         /// Obtain all company available in DRD 
         /// </summary>
@@ -209,7 +209,7 @@ namespace DRD.Service
                 var ownedCompany = GetAllCompanyDetailByOwnerId(userId);
                 // merge two list of company
                 List<CompanyItem> listReturn = new List<CompanyItem>();
-                listReturn.AddRange(ownedCompany); 
+                listReturn.AddRange(ownedCompany);
                 listReturn.AddRange(managedCompany);
                 return listReturn;
             }
@@ -285,7 +285,8 @@ namespace DRD.Service
             {
                 var result = (from cmpny in db.Companies
                               where cmpny.OwnerId == userId && cmpny.IsActive
-                              select new SmallCompanyData {
+                              select new SmallCompanyData
+                              {
                                   Id = cmpny.Id,
                                   Code = cmpny.Code,
                                   Name = cmpny.Name,
@@ -442,7 +443,7 @@ namespace DRD.Service
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName , item.email, senderName + "Member Invitation", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName, item.email, senderName + "Member Invitation", body, false, new string[] { });
             }
             // belum register jadi pengguna jadi ya invite aja.
             else if (item.status == 0)
@@ -458,7 +459,7 @@ namespace DRD.Service
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName , item.email, senderName + "DRD Invitation", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName, item.email, senderName + "DRD Invitation", body, false, new string[] { });
             }
         }
     }

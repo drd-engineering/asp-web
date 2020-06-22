@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DRD.Models.Custom
+﻿namespace DRD.Models.Custom
 {
     public class WorkflowNodeItem
     {
@@ -22,6 +16,6 @@ namespace DRD.Models.Custom
         public string posTop { get; set; } // PosTop (length: 10)
         public string width { get; set; } // Width (length: 10)
         public string height { get; set; } // Height (length: 10)
-        public WorkflowNodeUser user{ get; set; }
+        public WorkflowNodeUser user { get; set; }
     }
 }

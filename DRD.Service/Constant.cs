@@ -20,15 +20,15 @@ namespace DRD.Service
         public const string CONSTRING_USER = "DrdUserContext";
         public const string API_KEY = "AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY";
         public static readonly IList<String> RESTRICTED_FOLDER_NAME = new ReadOnlyCollection<string>(new List<String> { ">", "<", ":", "\"", "/", "\\", "|", "?", "*" });
-        
+
         /// Constructor
-        public Constant(){}
-        
+        public Constant() { }
+
         public enum RotationStatus
         {
             Open = 0,
             In_Progress = 1,
-            Pending= 2,
+            Pending = 2,
             Signed = 3,
             Revision = 5,
             Altered = 6,
@@ -38,7 +38,7 @@ namespace DRD.Service
             Waiting_For_Response = 10,
             Accepted = 11,
             Expired = 97
-        }        
+        }
 
         public enum AccessType
         {

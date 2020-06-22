@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Contexts;
-using System.Web;
-using System.Web.Mvc;
-
-using DRD.Models;
+﻿using DRD.Models;
 using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
-
 using DRD.Service;
+using System.Collections.Generic;
+using System.Net;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -66,11 +60,11 @@ namespace DRD.App.Controllers
             if (!Initialize())
                 return RedirectToAction("Index", "LoginController");
             var company = companyService.GetCompany(id);
-            if(company == null)
+            if (company == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            if(!memberService.checkIsAdmin(user.Id, id))
+            if (!memberService.checkIsAdmin(user.Id, id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
@@ -82,7 +76,7 @@ namespace DRD.App.Controllers
         {
             InitializeAPI();
             var data = companyService.AddMembers(companyId, user.Id, emails);
-            foreach(AddMemberResponse item in data)
+            foreach (AddMemberResponse item in data)
             {
                 companyService.SendEmailAddMember(item);
             }

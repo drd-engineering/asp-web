@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DRD.Models
+﻿namespace DRD.Models
 {
 
     public class DocumentInboxData
     {
-        
+
         public long Id { get; set; } // Id (Primary key)
         public string Extention { get; set; } // Title (length: 500)
         public string Description { get; set; } // Descr

@@ -50,9 +50,9 @@ namespace DRD.Service
             List<Menu> values = File.ReadAllLines(path)
                                            .Select(v => Menu.FromCsv(v))
                                            .ToList();
-            if(!hasCompany)
+            if (!hasCompany)
                 values.Remove(values.Find(v => v.SecondaryKey.Equals("DASHBOARD")));
-            if(!isCompanyMember)
+            if (!isCompanyMember)
                 values.Remove(values.Find(v => v.SecondaryKey.Equals("COMPANY")));
             return values;
         }

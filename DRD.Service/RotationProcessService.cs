@@ -305,7 +305,7 @@ namespace DRD.Service
 
                 InboxService inboxService = new InboxService();
                 foreach (ActivityItem act in retvalues)
-                { 
+                {
                     inboxService.GenerateNewInbox(act);
                 }
                 return retvalues;
@@ -544,7 +544,7 @@ namespace DRD.Service
             rot.DateUpdated = DateTime.Now;
             foreach (RotationNode rotationNode in rot.RotationNodes)
             {
-                if(rotationNode.Status.Equals(previousStatus))
+                if (rotationNode.Status.Equals(previousStatus))
                     rotationNode.Status = status;
             }
         }

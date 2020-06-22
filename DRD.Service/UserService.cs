@@ -140,7 +140,7 @@ namespace DRD.Service
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-            var task = emailService.Send(senderEmail, senderName , user.Email, "User Registration", body, false, new string[] { });
+            var task = emailService.Send(senderEmail, senderName, user.Email, "User Registration", body, false, new string[] { });
         }
         public UserSession Login(string username, string password)
         {
@@ -372,7 +372,7 @@ namespace DRD.Service
                 var emailfrom = configGenerator.GetConstant("EMAIL_USER")["value"];
                 var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
 
-                var task = emailService.Send(emailfrom, emailfromdisplay , emailUser, "DRD User Reset Password", body, false, new string[] { });
+                var task = emailService.Send(emailfrom, emailfromdisplay, emailUser, "DRD User Reset Password", body, false, new string[] { });
                 return 1;
             }
         }
@@ -394,11 +394,11 @@ namespace DRD.Service
 
                 // for test case, can be deprecated if needed
                 if (User.Id < 0)
-                if (User.Password.Equals(password))
-                    equals = true;
-                else
-                if (User.Password.Equals(Utilities.Encrypt(password)))
-                    equals = true;
+                    if (User.Password.Equals(password))
+                        equals = true;
+                    else
+                    if (User.Password.Equals(Utilities.Encrypt(password)))
+                        equals = true;
 
                 return equals;
             }
@@ -457,10 +457,10 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId 
-                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive 
+                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
+                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
                     && memberItem.isCompanyAccept && memberItem.isMemberAccept);
-                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive );
+                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
 
                 return countAsAdmin > 0 && countAsOwner > 0;
             }

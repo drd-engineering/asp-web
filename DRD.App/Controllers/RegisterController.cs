@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using DRD.Models;
-using DRD.Service.Context;
+﻿using DRD.Models.API;
 using DRD.Service;
-using DRD.Models.API;
+using DRD.Service.Context;
+using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
@@ -74,7 +66,7 @@ namespace DRD.App.Controllers
             var data = service.GetAllCompany();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
         // GET: Register/CheckEmail
         // Check whenever an email is already used
         public ActionResult CheckEmail(string email)
@@ -83,7 +75,7 @@ namespace DRD.App.Controllers
             var data = service.CheckEmailAvailability(email);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

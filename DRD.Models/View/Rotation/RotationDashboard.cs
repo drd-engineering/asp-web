@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DRD.Models.View
+﻿namespace DRD.Models.View
 {
     public class RotationDashboard
     {
@@ -18,7 +14,7 @@ namespace DRD.Models.View
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<string> Tags { get; set; }
         public virtual System.Collections.Generic.ICollection<UserDashboard> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
-        public virtual UserDashboard Creator {get;set;}
+        public virtual UserDashboard Creator { get; set; }
         public virtual WorkflowDashboard Workflow { get; set; }
 
         public class WorkflowDashboard

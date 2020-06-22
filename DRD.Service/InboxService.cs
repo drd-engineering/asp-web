@@ -1,15 +1,13 @@
-﻿using DRD.Models.Custom;
+﻿using DRD.Models;
+using DRD.Models.API;
+using DRD.Models.View;
 using DRD.Service.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using DRD.Models;
-using DRD.Models.API;
-using DRD.Models.View;
-
 namespace DRD.Service
-{   
+{
     public class InboxService
     {
         /// <summary>
@@ -19,8 +17,9 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public List<InboxList> GetInboxList(long userId, int skip, int take) {
-            using (var db = new ServiceContext()) 
+        public List<InboxList> GetInboxList(long userId, int skip, int take)
+        {
+            using (var db = new ServiceContext())
             {
                 if (db.Inboxes != null)
                 {
@@ -105,7 +104,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inbox = db.Inboxes.Where(i =>  i.Id == inboxId).FirstOrDefault();
+                    var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
                     return inbox.ActivityId;
                 }
                 return -1;
@@ -242,11 +241,11 @@ namespace DRD.Service
                         inboxItem.LastStatus = "REVIEW";
                         UpdatePreviousInbox(activity);
                     }
-                    else 
+                    else
                     {
                         inboxItem.LastStatus = "UPLOAD";
                         inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
-                        if(activity.PreviousUserId != activity.UserId)
+                        if (activity.PreviousUserId != activity.UserId)
                         {
                             Inbox inboxItem2;
                             inboxItem2 = new Inbox();
@@ -360,7 +359,7 @@ namespace DRD.Service
 
             }
         }
-            public void sendemailactiviity(Inbox inbox)
+        public void sendemailactiviity(Inbox inbox)
         {
 
             var configGenerator = new AppConfigGenerator();
@@ -379,7 +378,7 @@ namespace DRD.Service
                 user = db.Users.FirstOrDefault(c => c.Id == inbox.UserId);
             }
             body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_SENDER_}", inbox.prevUserName + " ("+inbox.prevUserEmail+")");
+            body = body.Replace("{_SENDER_}", inbox.prevUserName + " (" + inbox.prevUserEmail + ")");
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_ACTION_}", inbox.LastStatus);
             body = body.Replace("{_MESSAGE_}", inbox.DateNote);

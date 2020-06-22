@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using DRD.Models;
-
-namespace DRD.Service
+﻿namespace DRD.Service
 {
     public interface IMemberDepositTrxService
     {

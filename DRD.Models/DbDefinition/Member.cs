@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -16,7 +15,7 @@ namespace DRD.Models
         public bool isCompanyAccept { get; set; }
         public bool isMemberAccept { get; set; }
         public bool IsAdministrator { get; set; } // IsActive
-        
+
         public Member()
         {
             IsAdministrator = false;

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
-using DRD.Models.View;
-using DRD.Service;
 
 namespace DRD.Service
 {
@@ -46,7 +40,7 @@ namespace DRD.Service
                 {
                     attach = new Attachment(filename);
                     mail.Attachments.Add(attach);
-                }   
+                }
             }
 
             var configGenerator = new AppConfigGenerator();
@@ -54,7 +48,7 @@ namespace DRD.Service
             var emailport = configGenerator.GetConstant("EMAIL_PORT")["value"];
             var emailuser = configGenerator.GetConstant("EMAIL_USER")["value"];
             var emailpassword = configGenerator.GetConstant("EMAIL_PASSWORD")["value"];
-            
+
             //send the message
             SmtpClient smtp = new SmtpClient();
             smtp.Host = emailsmtp;// "smtp.gmail.com";
@@ -103,7 +97,7 @@ namespace DRD.Service
                 client.Send(message);
             }
             catch (Exception ex)
-            { 
+            {
                 ex.ToString();
             }
         }
@@ -142,7 +136,7 @@ namespace DRD.Service
         public string CreateHtmlBody(string path)
         {
             string body = string.Empty;
-            using(StreamReader reader = new StreamReader(path))
+            using (StreamReader reader = new StreamReader(path))
             {
                 body = reader.ReadToEnd();
             }

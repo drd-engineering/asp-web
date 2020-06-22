@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
@@ -8,7 +7,7 @@ namespace DRD.Models
     public class Tag
     {
         [Key]
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

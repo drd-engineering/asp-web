@@ -29,7 +29,7 @@ namespace DRD.Models.API
         public RotationData()
         {
             RotationNodes = new List<RotationNode>();
-            
+
         }
     }
 }

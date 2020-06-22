@@ -16,7 +16,7 @@ namespace DRD.Models.API
         public System.DateTime? StartedAt { get; set; }
         public long? StorageLimit { get; set; }
         public int? TotalAdministrators { get; set; }
-        public decimal? TotalPrice { get; set; } 
+        public decimal? TotalPrice { get; set; }
         public int? TotalRotation { get; set; }
         public int? TotalRotationStarted { get; set; }
         public long? TotalStorage { get; set; }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DRD.Models.View
 {
@@ -22,11 +18,11 @@ namespace DRD.Models.View
         public string ImageKtp1 { get; set; }
         public string ImageKtp2 { get; set; }
         public long OfficialIdNo { get; set; }
-        
+
         public string Password { get; set; } // Password (length: 20)
 
         public DateTime CreatedAt { get; set; }
-        
+
         public bool IsActive { get; set; } // IsActive
 
         //public long? CompanyId { get; set; }

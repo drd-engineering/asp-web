@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DRD.Models.View
+﻿namespace DRD.Models.View
 {
     public class CounterInboxData
     {
@@ -22,7 +16,7 @@ namespace DRD.Models.View
         /// </summary>
         public class CountedItem
         {
-            public int Read{ get; set; }
+            public int Read { get; set; }
             public int Unread { get; set; }
         }
     }

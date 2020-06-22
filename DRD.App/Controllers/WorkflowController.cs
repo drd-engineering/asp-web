@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Web;
-using System.Web.Mvc;
-
-using DRD.Models;
-using DRD.Models.Custom;
+﻿using DRD.Models.Custom;
 using DRD.Models.View;
-using DRD.Models.API;
 using DRD.Service;
+using System.Web.Mvc;
 
 
 namespace DRD.App.Controllers
