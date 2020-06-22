@@ -15,15 +15,34 @@ namespace DRD.App.Controllers
 
     public class ProfileController : Controller
     {
+        LoginController login = new LoginController();
+        UserSession user;
+        Layout layout = new Layout();
+
+        public bool Initialize()
+        {
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                layout.menus = login.GetMenus(this, layout.activeId);
+                layout.user = login.GetUser(this);
+                return true;
+            }
+            return false;
+        }
+
+        public void InitializeAPI()
+        {
+            user = login.GetUser(this);
+            login.CheckLogin(this);
+        }
+
         // GET: Profile
         public ActionResult Index()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, 0);
-            layout.user = login.GetUser(this);
+            if (!Initialize())
+                return RedirectToAction("Index", "LoginController");
+            
             layout.obj = login.GetUser(this);
             layout.activeId = 0;
 
@@ -33,17 +52,13 @@ namespace DRD.App.Controllers
         // GET: Profile/MemberList/
         public ActionResult UserList()
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
+            InitializeAPI();
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
             var strmenu = login.ManipulateMenu(this, userSession);
             // end decription menu
 
-            Layout layout = new Layout();
-            layout.activeId = int.Parse(strmenu);
-            layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = login.GetUser(this);
 
             return View(layout);

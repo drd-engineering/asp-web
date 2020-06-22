@@ -1,0 +1,188 @@
+﻿@model DRD.Models.View.Layout
+@{
+    ViewBag.Title = "Setting";
+}
+
+
+<link href="/assets/css/pages/setting.css" rel="stylesheet" type="text/css">
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular-sanitize.min.js"></script>
+
+<link href="/assets/vendors/bootstrap-switch/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
+<script src="/assets/vendors/bootstrap-switch/bootstrap-switch.js"></script>
+
+
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+
+
+<body>
+
+    <h4>
+        <a class="btn" href="/setting" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-user"></i></a> @ViewBag.Title
+    </h4>
+
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+
+        <!-- Basic layout-->
+        <div class="panel">
+            <div class="panel-body no-border" id="content" style="display:none;">
+
+                <!--USER DATA-->
+
+                <form name="userProfileForm" class="form-horizontal" autocomplete="off" id="userProfileForm">
+
+                    <div>
+
+
+                        <!--TAB MENU NAV-->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+                            <li class="nav-item active">
+                                <a class="nav-link active" id="company-tab" data-toggle="tab" data-target="#company-setting" role="tab" aria-controls="company-setting" aria-selected="true" ng-click="getCompanySetting()">Company</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="company-tab" data-toggle="tab" data-target="#notification-setting" role="tab" aria-controls="notification-setting" aria-selected="false" ng-click="getNotificationSetting()">Notification</a>
+                            </li>
+
+                        </ul>
+                        <!--END OF TAB MENU NAV-->
+                        <!--CONTENT TAB MENU -->
+                        <div class="tab-content" id="myTabContent">
+
+                            <!--CONTENT TAB MENU :: COMPANY  -->
+                            <div ng-show="wizarno=='company'" id="company-setting" role="tabpanel" aria-labelledby="company-setting-tab">
+                                <ng-include src="'/Setting/Company'"></ng-include>
+                            </div>
+                            <!--END OF CONTENT TAB MENU :: COMPANY  -->
+                            <!--CONTENT TAB MENU :: NOTIFICATION -->
+                            <div ng-show="wizarno=='notification'" id="notification-setting" role="tabpanel" aria-labelledby="notification-setting-tab">
+
+                                <ng-include src="'/Setting/Notification'"></ng-include>
+                            </div>
+                        </div>
+                        <!--CONTENT TAB MENU :: NOTIFICATION-->
+                        <!--END OF CONTENT TAB MENU-->
+                    </div>
+                </form>
+                <!--/MEMBER DATA-->
+                <!--CONFIRMATION THANK YOU-->
+                <div ng-show="notif =='success'">
+                    <div class="col-md-12">
+                        <div class="alert alert-success alert-styled-left">
+                            <p ng-bind-html="infoSuccess" compile-template></p>
+                        </div>
+                    </div>
+                </div>
+                <ng-include src="'/Include/PopupSignature'" onload="finishLoading()"></ng-include>
+                <!--/CONFIRMATION THANK YOU-->
+            </div>
+        </div>
+        <!-- /basic layout -->
+
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+
+
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngSanitize', 'ngFileUpload', 'ngOnlyNumberApp', 'signature'])
+        myApp.directive('compileTemplate', function ($compile, $parse) {
+            return {
+                link: function (scope, element, attr) {
+                    var parsed = $parse(attr.ngBindHtml);
+                    function getStringValue() { return (parsed(scope) || '').toString(); }
+
+                    //Recompile if the template changes
+                    scope.$watch(getStringValue, function () {
+                        $compile(element, null, -9999)(scope);  //The -9999 makes it skip directives so that we do not recompile ourselves
+                    });
+                }
+            }
+        })
+        myApp.directive('onFinishRender', function ($timeout) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function () {
+                            scope.$emit('ngRepeatBindRoutesFinished');
+                        });
+                    }
+                }
+            }
+        });
+        myApp.controller("drdController", function ($scope, $sce, Upload, $location, $http, $filter) {
+
+            $scope.model = {};
+            $scope.wizarno = 'company';
+            $scope.model.Id = 0;
+            $scope.model.EncryptedId = "";
+            $scope.model.LoginId = null;
+            $scope.noImage = "no_picture.png";
+            $scope.model.ImageProfile = $scope.noImage;
+            $scope.model.ImageSignature = $scope.noImage;
+            $scope.model.ImageInitials = $scope.noImage;
+            $scope.model.ImageStamp = $scope.noImage;
+            $scope.model.ImageKtp1 = $scope.noImage;
+            $scope.model.ImageKtp2 = $scope.noImage;
+            $scope.model.OfficialIdNo = null;
+            $scope.master = {};
+            $scope.model.IsActive = true;
+            $scope.isUploadImage0 = false;
+            $scope.infoSuccess = "Data saved successfully.";
+            $scope.creatorLevels = [{ Id: 0 }, { Id: 1 }, { Id: 2 }, { Id: 3 }, { Id: 4 }, { Id: 5 }];
+            $scope.model.CreatorLevel = "0";
+            var signatureNo = 0; // ?
+
+
+            $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
+                $(".control-primary").uniform({
+                    radioClass: 'choice',
+                    wrapperClass: 'border-primary-600 text-primary-800'
+                });
+            });
+
+
+            /*--------------------------------------------------------------
+            INIT DATA
+            --------------------------------------------------------------*/
+            angular.element(document).ready(function () {
+                console.log($scope.wizarno);
+
+                $('#content').show();
+
+            });
+            $scope.getCompanySetting = function () {
+                $scope.wizarno = "company";
+                console.log($scope.wizarno);
+            }
+
+            $scope.getNotificationSetting = function () {
+                $scope.wizarno = "notification";
+                console.log($scope.wizarno);
+
+            }
+
+
+
+        });
+
+
+        $(function () {
+        });
+
+
+        $(document).ready(function () {
+            $('#checkbox1').bootstrapSwitch();
+        })
+
+    </script>
+
+</body>

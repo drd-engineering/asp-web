@@ -1,0 +1,133 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<fieldset>
+    <div class="row flexible-row">
+        <div class="col-md-3 vertically-center">
+            <div class="image-wrapper">
+
+                <img ng-src="/Images/Member/{{model.ImageProfile}}" class="image-content"
+                     ngf-drop="uploadFiles(0,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(0,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row input-group">
+                <div class="col-md-10">
+                    <label class="control-label">Name</label>
+                    <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
+                </div>
+            </div>
+
+            <div class="row input-group">
+                <div class="col-md-3">
+                    <label class="control-label">Phone</label>
+                    <input type="text" class="form-control" ng-model="model.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number ng-readonly="model.Id!=0" />
+                </div>
+                <div class="col-md-7">
+                    <label class="control-label">Email</label>
+                    <input type="email" class="form-control" ng-model="model.Email" ng-required="wizarno=='product'" maxlength="50" ng-readonly="model.Id!=0" />
+                </div>
+
+            </div>
+            <div class="row input-group">
+                <div class="col-md-10">
+                    <label class="control-label">ID No (KTP)</label>
+                    <input type="text" class="form-control" ng-model="model.OfficialIdNo" ng-required="wizarno=='product'" maxlength="50" ng-only-number />
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <hr />
+
+    <h4>Identity</h4>
+    <div class="row input-group" ng-show="isUserProfile()">
+
+        <div class="col-md-3">
+            <label class="control-label">KTP</label>
+            <div class="image-wrapper">
+                <img ng-src="/Images/Member/{{model.ImageKtp1}}" class="image-content"
+                     ngf-drop="uploadFiles(4,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(4,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="control-label">KTP Pose</label>
+            <div class="image-wrapper">
+
+                <img ng-src="/Images/Member/{{model.ImageKtp2}}" class="image-content"
+                     ngf-drop="uploadFiles(5,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(5,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <div class="row input-group" ng-show="isUserProfile()">
+
+
+        <div class="col-md-3">
+            <!-- Input Header -->
+            <label class="control-label">Signature</label>
+            <span class="pull-right"><a ng-click="signaturePad(0)"><i class="icon-pencil7"></i></a></span>
+
+            <div class="image-wrapper">
+                <img ng-src="/Images/Member/{{model.ImageSignature}}" class="image-content"
+                     ngf-drop="uploadFiles(1,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(1,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
+                     id="signaturepad" />
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <!-- Input Header -->
+            <label class="control-label">Initial</label>
+            <span class="pull-right"><a ng-click="signaturePad(1)"><i class="icon-pencil7"></i></a></span>
+            <div class="image-wrapper">
+                <img ng-src="/Images/Member/{{model.ImageInitials}}" class="image-content"
+                     ngf-drop="uploadFiles(2,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(2,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill"
+                     id="initialpad" />
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <!-- Input Header -->
+            <label class="control-label">Private Stamp</label>
+            <div class="image-wrapper">
+
+                <img ng-src="/Images/Member/{{model.ImageStamp}}" class="image-content"
+                     ngf-drop="uploadFiles(3,$file, $invalidFiles)"
+                     ngf-select="uploadFiles(3,$file, $invalidFiles)"
+                     ngf-pattern="'image/*'"
+                     accept="image/*"
+                     ngf-max-height="1000" ngf-max-size="1MB" style="object-fit:fill" />
+            </div>
+        </div>
+    </div>
+
+</fieldset>
