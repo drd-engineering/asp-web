@@ -55,6 +55,21 @@ div.col-md-12.padding-bottom{
     }
 }
 
+.btn-circle {
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #075685;
+}
+
+.btn-circle:hover {
+    color: white;
+    background-color: #2287c3;
+}
+
 .btn {
     min-width: 75px;
 }
