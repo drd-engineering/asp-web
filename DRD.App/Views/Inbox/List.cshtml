@@ -120,7 +120,7 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                $scope.getInboxList($scope.page, $scope.row);
+                $scope.getInboxList($scope.criteria, $scope.page, $scope.row);
                 $(".content-wrapper").show();
             });
 
@@ -142,7 +142,7 @@
                         $scope.index = row * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;
-                        $scope.InboxCountAll();
+                        $scope.InboxCountAll(criteria);
                     }
                     $scope.hasInbox = $scope.products.length > 0;
                 }, function (response) {
@@ -150,9 +150,10 @@
                     var x = 0;
                 });
             }
-            $scope.InboxCountAll = function () {
-                $http.post('@Url.Action("CountAll", "Inbox")', { }).then(function (response) {
+            $scope.InboxCountAll = function (criteria) {
+                $http.post('@Url.Action("CountAll", "Inbox")', { criteria: criteria }).then(function (response) {
                     if (response.data) {
+                        $scope.paging = [];
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         $scope.hasInbox = jumlahData > 0;
@@ -168,8 +169,8 @@
                     $scope.completeLoad = true;
                 });
             }
-            $scope.changePageInbox = function ( page, row) {
-                $http.post('@Url.Action("GetInboxList", "Inbox")', { page: page, pageSize: row }).then(function (response) {
+            $scope.changePageInbox = function ( criteria, page, row) {
+                $http.post('@Url.Action("GetInboxList", "Inbox")', { criteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);

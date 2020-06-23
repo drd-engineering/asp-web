@@ -61,7 +61,10 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
-
+        /// <summary>
+        /// Page inbox list
+        /// </summary>
+        /// <returns></returns>
         public ActionResult List()
         {
             if (!Initialize())
@@ -75,18 +78,18 @@ namespace DRD.App.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult GetInboxList(int page, int pageSize)
+        public ActionResult GetInboxList(string criteria, int page, int pageSize)
         {
             Initialize();
             int skip = pageSize * (page - 1);
-            var data = inboxService.GetInboxList(user.Id, skip, pageSize);
+            var data = inboxService.GetInboxList(user.Id, criteria, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CountAll()
+        public ActionResult CountAll(string criteria)
         {
             Initialize();
-            var data = inboxService.CountAll(user.Id);
+            var data = inboxService.CountAll(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
