@@ -184,21 +184,25 @@
                     password: $scope.password
                 }).then(function (response) {
                     if (response.data) {
-                        if (response.data == -1)
+                        if (response.data == -1) {
+                            $scope.load = false;
                             showInfo('Invalid username and password!');
-                        else if (response.data == 1)
+                        }
+                        else if (response.data == 1) {
+                            $scope.load = false;
                             window.location = "/";
-                        else if (response.data == 2)
+                        }
+                        else if (response.data == 2) {
+                            $scope.load = false;
                             window.location = "/appzone/appzonelist";
+                        }
                     }
                 }, function (response) {
-                        $scope.load = false;
+                    $scope.load = false;
                     //error handle\
                     var x = 0;
                 });
             }
-
-
         });
 
 
