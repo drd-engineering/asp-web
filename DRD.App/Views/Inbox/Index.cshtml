@@ -64,7 +64,7 @@
                     Data successfully saved.
                 </div>
 
-                <div style="padding-left:40px; padding-right:40px">
+                <div style="padding-left:20px; padding-right:20px">
                     <h4 style="margin-bottom:0px;margin-top:20px">Rotation : {{model.Subject}}</h4>
                     {{currentRotationNode.WorkflowNode.Caption}}
                     <div ng-show="model.Tags.length>0" style="margin-top:5px">
@@ -208,6 +208,7 @@
             $scope.wizarno = 'product';
             $scope.master = {};
             $scope.model.IsActive = true;
+            $scope.model.accessType = 0;
             $scope.model.Image = "no_picture.png";
             $scope.docFileName = "";
             $scope.fileTypeImage = "no_document.png";
@@ -278,6 +279,8 @@
                     $scope.model.DecissionInfo = product.DecissionInfo;
                     $scope.model.UserId = product.UserId;
                     $scope.model.Tags= product.Tags;
+                                    $scope.model.accessType = product.AccessType;
+                                    console.log($scope.model.accessType );
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.workflow = product.Workflow;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
@@ -666,11 +669,11 @@
             };
 
             $scope.checkIsFirstPerson = function () {
-                return $scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId;
+                return $scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId && $scope.model.accessType !=1;
             };
 
             $scope.checkIsActive = function () {
-                return $scope.model.Status == '00';
+                return $scope.model.Status == '00'  && $scope.model.accessType !=1;
             };
 
             $scope.openPrintDocument = function (idx, fileName) {

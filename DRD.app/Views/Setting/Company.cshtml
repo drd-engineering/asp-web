@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = null;
+}
+
+<h3>Registered</h3>
+
+<div style="border-bottom:dotted;border-bottom-width:1px;"></div>
+<div ng-repeat="x in companyList">
+    <table class="style-table" style="font-size:medium;">
+        <tr style="border-bottom:dotted;border-bottom-width:1px;">
+            <td class="style-foto" rowspan="2" style="padding:10px">
+                <img alt="" src="/Images/Member/{{x}}/{{x}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
+            </td>
+            <td class="style-name" style="padding:10px">
+                <span style="color:black;"><b>{{x.Name}}</b></span><br/>
+                <span style="font-size:x-small"> </span>
+
+                <!--Remark-->
+                <div ng-show="x.RotationNodeRemarks.length>0" style="font-size:x-small">
+                    <span><u>Remarks:</u></span>
+                    <span ng-repeat="d in x.RotationNodeRemarks">
+                        <br /><span>{{convertJsonDate(d.DateStamp) | date:'dd/MM/yyyy HH:mm:ss'}}: <i>{{d.Remark}}</i></span>
+                    </span>
+                </div>
+
+                <!--Note-->
+                <div ng-show="x.Note!=null">
+                    <br />
+                    <label class="style-note">{{x.Note}}</label>
+                </div>
+            </td>
+            <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status,x.WorkflowNodeId)}}</label></td>
+        </tr>
+
+    </table>
+</div>

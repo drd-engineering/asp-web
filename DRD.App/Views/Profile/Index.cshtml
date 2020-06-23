@@ -1,6 +1,6 @@
 ﻿@model DRD.Models.View.Layout
 @{
-    ViewBag.Title = "My Profile";
+    ViewBag.Title = "Profile";
 }
 
 <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
@@ -141,6 +141,11 @@
 
 
 <body>
+
+    <h4>
+        <a class="btn" href="/profile" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-user"></i></a> @ViewBag.Title
+    </h4>
+
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Page content -->
@@ -149,17 +154,6 @@
 
             <!-- Main content -->
             <div class="content-wrapper">
-                <!-- Page header -->
-                <div class="page-header page-header-default">
-                    <div class="page-header-content">
-                        <div class="page-title">
-                            <h4><i class="icon-user position-left"></i> My Profile</h4>
-                        </div>
-
-                    </div>
-
-                </div>
-                <!-- /page header -->
                 <!-- Horizontal form options -->
                 <!-- Content area -->
                 <div class="content" id="content" style="display:none;">
@@ -405,6 +399,7 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
+                console.log($scope);
                 if ($scope.model.LoginId == null)
                     $scope.getUserSession();
 

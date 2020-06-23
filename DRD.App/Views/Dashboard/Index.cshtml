@@ -45,7 +45,7 @@
                                         <div class="col-md-2">
 
                                         </div>
-                                        <div class="col-md-4 " style="align-items:flex-end;">
+                                        <div class="col-md-4 push-left" style="align-items:flex-end;">
                                             <!-- SELECT -->
                                             <select class="card-filter select-lg pull-right" ng-model="selectedCompany" ng-options="x.Name for x in companyOwned" ng-change="setSelectedCompany(selectedCompany)"></select>
                                         </div>
@@ -161,8 +161,8 @@
                             </div>
                         </div>
                         <!-- each rotation status -->
-                        <div ng-show="listRotationStatus.length > 0" class="container">
-                            <table class="table-xxs table-borderless datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+                        <div ng-show="listRotationStatus.length > 0" class="container table-responsive">
+                            <table class="table-xxs table-borderless datatable-highlight dataTable table-hover"  style="font-size:small;width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 14%">Workflow Name</th>
@@ -174,7 +174,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style="height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
+                                    <tr ng-click="openInbox(y.InboxId)" style="cursor:pointer; height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
                                         <td>{{y.Workflow.Name}}</td>
                                         <td>{{y.Subject}} </td>
                                         <td>{{getStatusName(y.Status)}}</td>
@@ -284,77 +284,12 @@
                         var counter = response.data;
                         $.jGrowl.defaults.closer = false;
                         var val = counter.New.Inbox - counter.Old.Inbox;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' inbox', {
-                                header: 'Inbox Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
                         val = counter.New.InProgress - counter.Old.InProgress;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' in progress', {
-                                header: 'In Progress Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-
                         val = counter.New.Signed - counter.Old.Signed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' signed', {
-                                header: 'Signed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
                         val = counter.New.Declined - counter.Old.Declined;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' declined', {
-                                header: 'Declined Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-danger'
-                            });
-                        }
-                        val = counter.New.Completed - counter.Old.Completed;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' completed', {
-                                header: 'Completed Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
+                        val = counter.New.Completed - counter.Old.Completed
                         val = counter.New.Altered - counter.Old.Altered;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' altered', {
-                                header: 'Altered Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
                         val = counter.New.Revised - counter.Old.Revised;
-                        if (val > 0) {
-                            $.jGrowl(val + ' item' + (val > 1 ? 's' : '') + ' revised', {
-                                header: 'Revised Notification',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
-                            });
-                        }
-                        if (counter.New.DepositBalance != counter.Old.DepositBalance) {
-                            $.jGrowl("DRD Point " + $filter('number')(counter.New.DepositBalance, 0), {
-                                header: 'DRD Point ',
-                                //sticky: true,
-                                life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-success-400'
-                            });
-                        }
                     }
                     else {
                         clearInterval($scope.xtimer);
@@ -407,6 +342,9 @@
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
+            $scope.openInbox = function (id) {
+                location.href = "/inbox?id=" + id;
+            }
             $scope.convertJsonDate = function (val) {
                 if (val == undefined)
                     return '';

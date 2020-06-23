@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SettingService.cs" />
     <Compile Include="SymbolService.cs" />
     <Compile Include="TagService.cs" />
     <Compile Include="XFEncryptionHelper.cs" />

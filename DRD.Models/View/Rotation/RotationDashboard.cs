@@ -3,6 +3,7 @@
     public class RotationDashboard
     {
         public long Id { get; set; } // Id (Primary key)
+        public long InboxId { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
         public System.DateTime DateCreated { get; set; } // DateCreated
