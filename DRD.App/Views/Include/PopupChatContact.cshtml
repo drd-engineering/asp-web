@@ -13,14 +13,14 @@
 
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && findMembers(kriteria, page, row)" class="form-control" ng-model="kriteria" placeholder="Enter nomor/name/email/phone" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && findMembers(criteria, page, row)" class="form-control" ng-model="criteria" placeholder="Enter nomor/name/email/phone" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findMembers(kriteria, page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="findMembers(criteria, page, row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="page" class="form-control" ng-change="changePageMember(kriteria, page, row)">
+                    <select ng-model="page" class="form-control" ng-change="changePageMember(criteria, page, row)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>

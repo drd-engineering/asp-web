@@ -42,9 +42,9 @@
             <div class="row">
                 <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && findRotations(kriteria, page, row)">
+                        <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && findRotations(criteria, page, row)">
                         <span class="input-group-btn">
-                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findRotations(kriteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
+                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findRotations(criteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
                                 <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
                                 <div class="ladda-progress" style="width: 0px;"></div>
                             </button>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div style="height:10px" ng-init="findRotations(kriteria, page, row)"></div>
+            <div style="height:10px" ng-init="findRotations(criteria, page, row)"></div>
             <!-- LIST -->
             <div calss="row">
                 <div class="panel panel-flat">
@@ -95,17 +95,17 @@
                     <div ng-show="hasRotation" class="pagination-container">
                         <div class="pagination">
                             <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="first page"
-                               ng-click="page > 1 && changePageRotations(kriteria, 1, row)">&lt;&lt;</a>
+                               ng-click="page > 1 && changePageRotations(criteria, 1, row)">&lt;&lt;</a>
                             <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
-                               ng-click="page > 1 && changePageRotations(kriteria, page - 1, row)">&lt;</a>
+                               ng-click="page > 1 && changePageRotations(criteria, page - 1, row)">&lt;</a>
                             <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
-                               ng-click="changePageRotations(kriteria, rot, row)">
+                               ng-click="changePageRotations(criteria, rot, row)">
                                 {{rot}}
                             </a>
                             <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
-                               ng-click="page < paging.length && changePageRotations(kriteria, page + 1, row)">&gt;</a>
+                               ng-click="page < paging.length && changePageRotations(criteria, page + 1, row)">&gt;</a>
                             <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="last page"
-                               ng-click="page < paging.length && changePageRotations(kriteria, paging.length, row)"> &gt; &gt;</a>
+                               ng-click="page < paging.length && changePageRotations(criteria, paging.length, row)"> &gt; &gt;</a>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
             $scope.products = [];
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -226,7 +226,7 @@
                                 showInfo("Your subscription is invalid");
                             else {
                                 showSuccess("Successful data process.");
-                                $scope.findRotations($scope.kriteria, $scope.page, $scope.row);
+                                $scope.findRotations($scope.criteria, $scope.page, $scope.row);
                             }
                         } else
                             showInfo("process data error.");
@@ -239,18 +239,18 @@
             /*--------------------------------------------------------------
             GET ASSET ITEM
             --------------------------------------------------------------*/
-            $scope.findRotations = function (kriteria, page, row) {
+            $scope.findRotations = function (criteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
                 $scope.products = [];
-                $http.post('@Url.Action("findRotations", "Rotation")', { criteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("findRotations", "Rotation")', { criteria: criteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;
-                        $scope.findRotationsCountAll(kriteria);
+                        $scope.findRotationsCountAll(criteria);
                         $scope.products.forEach(
                             function (item) {
                                 item.CreatedAt = $scope.getDateFormated(item.CreatedAt,1);
@@ -264,8 +264,8 @@
                     var x = 0;
                 });
             }
-            $scope.findRotationsCountAll = function (kriteria) {
-                $http.post('@Url.Action("FindRotationCountAll", "Rotation")', { topCriteria: kriteria }).then(function (response) {
+            $scope.findRotationsCountAll = function (criteria) {
+                $http.post('@Url.Action("FindRotationCountAll", "Rotation")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -279,10 +279,10 @@
                     var x = 0;
                 });
             }
-            $scope.changePageRotations = function (kriteria, page, row) {
+            $scope.changePageRotations = function (criteria, page, row) {
                 if ((page > $scope.paging.length || page < 1)) { return; }
                 $scope.products = [];
-                $http.post('@Url.Action("FindRotations", "Rotation")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("FindRotations", "Rotation")', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);

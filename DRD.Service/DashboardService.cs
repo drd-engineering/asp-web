@@ -1,4 +1,4 @@
-﻿using DRD.Models.View;
+﻿using DRD.Models.API;
 using DRD.Service.Context;
 using System;
 using System.Linq;
@@ -26,53 +26,75 @@ namespace DRD.Service
         {
             _connString = Constant.CONSTRING;
         }
+        /// <summary>
+        /// Obtain counter of Rotation divided by status and older counter
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="counter"></param>
+        /// <param name="companyId">default value is 0, if you are not specify company id it will search for personal rotation</param>
+        /// <returns></returns>
+        public CounterRotation GetActivityCounter(long userId, CounterRotation counter, long companyId = 0)
+        {
+            using (var db = new ServiceContext())
+            {
+                // Personal
+                if (companyId < 1)
+                {
+                    counter.Old.InProgress = counter.New.InProgress;
+                    counter.Old.Completed = counter.New.Completed;
+                    counter.Old.Rejected = counter.New.Rejected;
 
-        public CounterItem GetActivityCounter(long memberId, CounterItem counter, long companyId)
+                    var rotations = db.Rotations.Where(c => c.UserId == userId).ToList();
+                    if (rotations != null)
+                    {
+                        counter.New.InProgress = rotations.Count(c => c.Status == (int)Constant.RotationStatus.In_Progress);
+                        counter.New.Completed = rotations.Count(c => c.Status == (int)Constant.RotationStatus.Completed);
+                        counter.New.Rejected = rotations.Count(c => c.Status == (int)Constant.RotationStatus.Declined);
+                    }
+                    return counter;
+                }
+                /// EXECUTE ONLY IF COMPANY ID IS > 0
+                CompanyService companyService = new CompanyService();
+
+                counter.Old.InProgress = counter.New.InProgress;
+                counter.Old.Completed = counter.New.Completed;
+                counter.Old.Rejected = counter.New.Rejected;
+
+                var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
+                
+                if (rotationsCompany  != null)
+                {
+                    counter.New.InProgress = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.In_Progress);
+                    counter.New.Completed = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.Completed);
+                    counter.New.Rejected = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.Declined);
+                }
+                return counter;
+            }
+        }
+        /// <summary>
+        /// Obtain Subscription status limit of storage and other things that has a limit
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public SubscriptionLimit GetCompanySubscriptionLimit(SubscriptionLimit storage, long companyId)
         {
             using (var db = new ServiceContext())
             {
                 CompanyService companyService = new CompanyService();
                 SubscriptionService subscriptionService = new SubscriptionService();
 
-                counter.Old.InProgress = counter.New.InProgress;
-                counter.Old.Completed = counter.New.Completed;
-                counter.Old.StorageLimit = counter.New.StorageLimit;
-                counter.Old.TotalStorage = counter.New.TotalStorage;
+                storage.Old.StorageLimit = storage.New.StorageLimit;
+                storage.Old.TotalStorage = storage.New.TotalStorage;
 
-                var rotation = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
                 var storages = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId: companyId);
 
-                if (rotation != null)
-                {
-                    counter.New.InProgress = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.In_Progress));
-                    counter.New.Completed = rotation.Count(c => c.Status.Equals(Constant.RotationStatus.Completed));
-                }
                 if (storages != null)
                 {
-                    counter.New.StorageLimit = storages.StorageLimit.Value;
-                    counter.New.TotalStorage = storages.TotalStorage.Value;
+                    storage.New.StorageLimit = storages.StorageLimit.Value;
+                    storage.New.TotalStorage = storages.TotalStorage.Value;
                 }
-                return counter;
-            }
-        }
-
-        public CounterItem GetActivityCounter(long memberId, CounterItem counter)
-        {
-            using (var db = new ServiceContext())
-            {
-                counter.Old.InProgress = counter.New.InProgress;
-                counter.Old.Completed = counter.New.Completed;
-
-                var rotationNodes = db.RotationNodes.Where(c => c.MemberId == memberId).ToList();
-                if (rotationNodes != null)
-                {
-                    long[] Ids = (from c in rotationNodes select c.Rotation.Id).ToArray();
-                    var rot = db.Rotations.Where(c => Ids.Contains(c.Id) || c.UserId == memberId).ToList();
-
-                    counter.New.InProgress = rot.Count(c => c.Status == 1);
-                    counter.New.Completed = rot.Count(c => c.Status == 90);
-                }
-                return counter;
+                return storage;
             }
         }
 

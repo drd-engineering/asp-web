@@ -30,6 +30,19 @@
     <!-- Page container -->
     <section ng-controller="drdController">
         <!-- Content area -->
+        <div class="row">
+            <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && getInboxList(criteria, page, row)">
+                    <span class="input-group-btn">
+                        <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getInboxList(criteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
+                            <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
+                            <div class="ladda-progress" style="width: 0px;"></div>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
         <div calss="row">
             <div class="panel panel-flat">
                 <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
@@ -63,17 +76,17 @@
                 <div ng-show="hasInbox" class="pagination-container">
                     <div class="pagination">
                         <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="first page"
-                            ng-click="page > 1 && changePageInbox(kriteria, 1, row)">&lt;&lt;</a>
+                            ng-click="page > 1 && changePageInbox(criteria, 1, row)">&lt;&lt;</a>
                         <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
-                            ng-click="page > 1 && changePageInbox(kriteria, page - 1, row)">&lt;</a>
+                            ng-click="page > 1 && changePageInbox(criteria, page - 1, row)">&lt;</a>
                         <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
-                            ng-click="changePageInbox(kriteria, rot, row)">
+                            ng-click="changePageInbox(criteria, rot, row)">
                             {{rot}}
                         </a>
                         <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
-                            ng-click="page < paging.length && changePageInbox(kriteria, page + 1, row)">&gt;</a>
+                            ng-click="page < paging.length && changePageInbox(criteria, page + 1, row)">&gt;</a>
                         <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="last page"
-                            ng-click="page < paging.length && changePageInbox(kriteria, paging.length, row)"> &gt; &gt;</a>
+                            ng-click="page < paging.length && changePageInbox(criteria, paging.length, row)"> &gt; &gt;</a>
                     </div>
                 </div>
             </div>
@@ -86,13 +99,16 @@
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+            // pagination
+            $scope.paging = [];
+            $scope.criteria = "";
+            $scope.page = 1;
+            $scope.row = 20;
+
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];
-            $scope.paging = [];
-            $scope.kriteria = "";
-            $scope.page = 1;
-            $scope.row = 20;
+
             $scope.currPage = 0;
             $scope.isView = false;
             $scope.index = 0;
@@ -104,7 +120,7 @@
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                $scope.GetInboxList($scope.page, $scope.row);
+                $scope.getInboxList($scope.page, $scope.row);
                 $(".content-wrapper").show();
             });
 
@@ -119,8 +135,8 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
-            $scope.GetInboxList = function (page, row) {
-                $http.post('@Url.Action("GetInboxList", "Inbox")', { page: page, pageSize: row }).then(function (response) {
+            $scope.getInboxList = function (criteria, page, row) {
+                $http.post('@Url.Action("GetInboxList", "Inbox")', { criteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);

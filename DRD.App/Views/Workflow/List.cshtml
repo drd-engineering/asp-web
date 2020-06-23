@@ -30,9 +30,9 @@
             <div class="row">
                 <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && findWorkflows(kriteria, page, row)">
+                        <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && findWorkflows(criteria, page, row)">
                         <span class="input-group-btn">
-                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findWorkflows(kriteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
+                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="findWorkflows(criteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
                                 <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
                                 <div class="ladda-progress" style="width: 0px;"></div>
                             </button>
@@ -49,7 +49,7 @@
             </div>
             <div style="height:10px"></div>
             <!-- LIST -->
-            <div calss="row" ng-init="findWorkflows(kriteria, page, row)">
+            <div calss="row" ng-init="findWorkflows(criteria, page, row)">
                 <div class="panel panel-flat">
                     <div ng-show="!hasWorkflow" style="text-align:center;padding:50px;">
                         You don't have a workflow yet or there is no match workflow with the search criteria.
@@ -77,17 +77,17 @@
                     <div ng-show="hasWorkflow" class="pagination-container">
                         <div class="pagination">
                             <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="first page"
-                               ng-click="page > 1 && changePageWorkflows(kriteria, 1, row)">&lt;&lt;</a>
+                               ng-click="page > 1 && changePageWorkflows(criteria, 1, row)">&lt;&lt;</a>
                             <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
-                               ng-click="page > 1 && changePageWorkflows(kriteria, page - 1, row)">&lt;</a>
+                               ng-click="page > 1 && changePageWorkflows(criteria, page - 1, row)">&lt;</a>
                             <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
-                               ng-click="changePageWorkflows(kriteria, rot, row)">
+                               ng-click="changePageWorkflows(criteria, rot, row)">
                                 {{rot}}
                             </a>
                             <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
-                               ng-click="page < paging.length && changePageWorkflows(kriteria, page + 1, row)">&gt;</a>
+                               ng-click="page < paging.length && changePageWorkflows(criteria, page + 1, row)">&gt;</a>
                             <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="last page"
-                               ng-click="page < paging.length && changePageWorkflows(kriteria, paging.length, row)"> &gt; &gt;</a>
+                               ng-click="page < paging.length && changePageWorkflows(criteria, paging.length, row)"> &gt; &gt;</a>
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
             $scope.products = [];
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -138,13 +138,13 @@
             /*--------------------------------------------------------------
                 POPUP WORKFLOW
             --------------------------------------------------------------*/
-            $scope.findWorkflows = function (kriteria, page, row) {
+            $scope.findWorkflows = function (criteria, page, row) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.findWorkflowsCountAll(kriteria);
+                        $scope.findWorkflowsCountAll(criteria);
                         $scope.isView = true;
                     }
                     $scope.hasWorkflow = $scope.products.length > 0;
@@ -153,9 +153,9 @@
                     var x = 0;
                 });
             }
-            $scope.findWorkflowsCountAll = function (kriteria) {
+            $scope.findWorkflowsCountAll = function (criteria) {
                 $scope.paging = [];
-                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: kriteria }).then(function (response) {
+                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -168,9 +168,9 @@
                     var x = 0;
                 });
             }
-            $scope.changePageWorkflows = function (kriteria, page, row) {
+            $scope.changePageWorkflows = function (criteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);

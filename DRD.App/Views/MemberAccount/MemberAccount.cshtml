@@ -222,7 +222,7 @@
             $scope.banks = [];
             $scope.bankCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -337,16 +337,16 @@
                 
             }
 
-            $scope.getLiteBanks = function (kriteria, page, row) {
+            $scope.getLiteBanks = function (criteria, page, row) {
                 $scope.banks = [];
-                $http.post('@Url.Action("GetLiteAll", "bank")', { topCriteria: kriteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetLiteAll", "bank")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.banks = response.data;
 
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getBankCount(kriteria);
+                        $scope.getBankCount(criteria);
 
                         $scope.isView = true;
                     }
@@ -356,9 +356,9 @@
                 });
             }
 
-            $scope.changePageBanks = function (kriteria, page, row) {
+            $scope.changePageBanks = function (criteria, page, row) {
                 $scope.banks = [];
-                $http.post('@Url.Action("GetLiteAll", "bank")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("GetLiteAll", "bank")', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.banks = response.data;
                         $scope.index = row * (page - 1);
@@ -369,8 +369,8 @@
                 });
             }
 
-            $scope.getBankCount = function (kriteria) {
-                $http.post('@Url.Action("GetLiteAllCount", "bank")', { topCriteria: kriteria}).then(function (response) {
+            $scope.getBankCount = function (criteria) {
+                $http.post('@Url.Action("GetLiteAllCount", "bank")', { topCriteria: criteria}).then(function (response) {
                     if (response.data) {
 
                         var jumlahData = response.data;

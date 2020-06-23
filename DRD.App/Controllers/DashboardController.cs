@@ -1,5 +1,6 @@
 ﻿using DRD.Models.Custom;
 using DRD.Models.View;
+using DRD.Models.API;
 using DRD.Service;
 using System.Collections.Generic;
 using System.Text;
@@ -47,55 +48,66 @@ namespace DRD.App.Controllers
             layout.user = user;
             layout.activeId = 0;
             var hasCompany = userService.HasCompany(user.Id);
-            if (hasCompany) return View(layout);
-            return RedirectToAction("List", "Inbox");
+            if (!hasCompany) return RedirectToAction("List", "Inbox"); 
+            
+            return View(layout);
         }
-
-        public ActionResult GetRotationFromAllCompany()
+        /// <summary>
+        /// API to obtain how many rotation that user logged in has, devided by status of the rotation
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetActivityCounterUser()
         {
             Initialize();
-            CounterItem counter = (CounterItem)Session["_COUNTER_"];
+            CounterRotation counter = (CounterRotation)Session["_COUNTERACTIVITY_"];
             if (counter == null)
-                counter = new CounterItem();
+                counter = new CounterRotation();
 
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
             var data = dashboardService.GetActivityCounter(user.Id, counter);
-            Session["_COUNTER_"] = data;
+            Session["_COUNTERACTIVITY_"] = data;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult GetActivityCounter()
+        /// <summary>
+        /// API to obtain how many rotation that company has, devided by status of the rotation
+        /// </summary>
+        /// <param name="CompanyId">Company Id related to user Id as the owner</param>
+        /// <returns></returns>
+        public ActionResult GetActivityCounterCompany(long companyId)
         {
             Initialize();
-            CounterItem counter = (CounterItem)Session["_COUNTER_"];
+            CounterRotation counter = (CounterRotation)Session["_COUNTERACTIVITY_"];
             if (counter == null)
-                counter = new CounterItem();
+                counter = new CounterRotation();
 
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = dashboardService.GetActivityCounter(user.Id, counter);
-            Session["_COUNTER_"] = data;
+            var data = dashboardService.GetActivityCounter(user.Id, counter, companyId);
+            Session["_COUNTERACTIVITY_"] = data;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult GetActivityCounterCompany(long CompanyId)
+        /// <summary>
+        /// API to obtain how the status of subscription a company has including usage and remainings
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public ActionResult GetCompanySubscriptionLimit(long companyId)
         {
             Initialize();
-            CounterItem counter = (CounterItem)Session["_COUNTER_"];
+            SubscriptionLimit counter = (SubscriptionLimit)Session["_SUBSCRIPTIONLIMIT_"];
             if (counter == null)
-                counter = new CounterItem();
+                counter = new SubscriptionLimit();
 
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = dashboardService.GetActivityCounter(user.Id, counter, CompanyId);
-            Session["_COUNTER_"] = data;
+            var data = dashboardService.GetCompanySubscriptionLimit(counter, companyId);
+            Session["_SUBSCRIPTIONLIMIT_"] = data;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
         /// <summary>
         /// API to obtain Rotation status of a Company 
         /// </summary>

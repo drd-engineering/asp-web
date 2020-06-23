@@ -198,6 +198,7 @@
     <Compile Include="API\DocUploadResult.cs" />
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
+    <Compile Include="API\SubscriptionLimit.cs" />
     <Compile Include="API\SmallCompanyData.cs" />
     <Compile Include="Custom\DocumentInboxData.cs" />
     <Compile Include="Custom\DocumentElementInboxData.cs" />
@@ -264,7 +265,7 @@
     <Compile Include="View\Contact\ContactData.cs" />
     <Compile Include="View\Contact\ContactItem.cs" />
     <Compile Include="View\Contact\ContactList.cs" />
-    <Compile Include="View\Dashboard\CounterItem.cs" />
+    <Compile Include="API\CounterRotation.cs" />
     <Compile Include="View\Layout.cs" />
     <Compile Include="View\Rotation\ActivityItem.cs" />
     <Compile Include="API\RotationData.cs" />
@@ -285,7 +286,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="View\Dashboard\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

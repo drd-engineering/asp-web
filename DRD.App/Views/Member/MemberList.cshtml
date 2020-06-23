@@ -58,9 +58,9 @@
                                 <div class="col-lg-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                        <input type="text" class="form-control" ng-model="kriteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(kriteria, page, row)">
+                                        <input type="text" class="form-control" ng-model="criteria" placeholder="Entering data search criteria" ng-keyup="$event.keyCode == 13 && getLiteProducts(criteria, page, row)">
                                         <span class="input-group-btn">
-                                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(criteria, page, row)" style="width:120px">
                                                 <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                                 <div class="ladda-progress" style="width: 0px;"></div>
                                             </button>
@@ -87,7 +87,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="pull-right">
-                                <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                <select ng-model="page" class="form-control" ng-change="changePage(criteria, page, row)">
                                     <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                 </select>
                             </div>
@@ -153,7 +153,7 @@
             $scope.products = [];
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -182,11 +182,11 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
-            $scope.getLiteProducts = function (kriteria, page, row) {
+            $scope.getLiteProducts = function (criteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
                 $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll", "Member")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("GetLiteAll", "Member")', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
                     btn.stop();
                     if (response.data) {
                         $scope.products = response.data;
@@ -194,7 +194,7 @@
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getProductCount(kriteria);
+                        $scope.getProductCount(criteria);
 
                         $scope.isView = true;
 
@@ -208,9 +208,9 @@
                 });
             }
 
-            $scope.changePage = function (kriteria, page, row) {
+            $scope.changePage = function (criteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll", "Member")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("GetLiteAll", "Member")', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
@@ -223,8 +223,8 @@
                 });
             }
 
-            $scope.getProductCount = function (kriteria) {
-                $http.post('@Url.Action("GetLiteAllCount", "Member")', { topCriteria: kriteria }).then(function (response) {
+            $scope.getProductCount = function (criteria) {
+                $http.post('@Url.Action("GetLiteAllCount", "Member")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
 
                         var jumlahData = response.data;

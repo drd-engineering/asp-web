@@ -12,14 +12,14 @@
             </div>
 
             <div class="input-group">
-                <input type="text" ng-keyup="$event.keyCode == 13 && findMembersRotation($parent.kriteria, $parent.page, $parent.row, $parent.rotationId)" class="form-control" ng-model="$parent.kriteria" placeholder="Enter nomor/name/email/phone" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && findMembersRotation($parent.criteria, $parent.page, $parent.row, $parent.rotationId)" class="form-control" ng-model="$parent.criteria" placeholder="Enter nomor/name/email/phone" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findMembersRotation($parent.kriteria, $parent.page, $parent.row, $parent.rotationId)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="findMembersRotation($parent.criteria, $parent.page, $parent.row, $parent.rotationId)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="$parent.page" class="form-control" ng-change="changePageMemberRotation($parent.kriteria, $parent.page, $parent.row, $parent.rotationId)">
+                    <select ng-model="$parent.page" class="form-control" ng-change="changePageMemberRotation($parent.criteria, $parent.page, $parent.row, $parent.rotationId)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>

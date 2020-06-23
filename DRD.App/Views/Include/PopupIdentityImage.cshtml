@@ -13,14 +13,14 @@
 
             @*<div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteStamps(st_kriteria, st_page, row)" class="form-control" ng-model="st_kriteria" placeholder="Enter stamp descr" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteStamps(st_criteria, st_page, row)" class="form-control" ng-model="st_criteria" placeholder="Enter stamp descr" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="getLiteStamps(st_kriteria, st_page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="getLiteStamps(st_criteria, st_page, row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="st_page" class="form-control" ng-change="changePageStamps(st_kriteria, st_page, row)">
+                    <select ng-model="st_page" class="form-control" ng-change="changePageStamps(st_criteria, st_page, row)">
                         <option value="{{x.value}}" ng-repeat="x in st_paging">{{x.text}}</option>
                     </select>
                 </span>

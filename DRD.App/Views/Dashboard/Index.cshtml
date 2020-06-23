@@ -57,7 +57,7 @@
                             <div class="card-content">
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="row vertical-align-row" ng-click="linkPage('INPROGRESS')">
                                                 <div class="col-sm-6 vertical-align-content">
                                                     <div class="card-image-lg round-img">
@@ -69,13 +69,10 @@
                                                     <div class="card-content-lg">
                                                         <h1>{{counter.New.InProgress}}</h1>
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
-
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="row vertical-align-row" ng-click="linkPage('COMPLETED')">
                                                 <div class="col-sm-6 vertical-align-content">
                                                     <div class="card-image-lg round-img">
@@ -86,6 +83,21 @@
                                                 <div class="col-sm-6">
                                                     <div class="card-content-lg">
                                                         <h1>{{counter.New.Completed}}</h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="row vertical-align-row" ng-click="linkPage('Rejected')">
+                                                <div class="col-sm-6 vertical-align-content">
+                                                    <div class="card-image-lg round-img">
+                                                        <img src="~/assets/ongoing.png" />
+                                                        <p>Rejected</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="card-content-lg">
+                                                        <h1>{{counter.New.InProgress}}</h1>
                                                     </div>
 
                                                 </div>
@@ -179,7 +191,7 @@
                         <div ng-show="listRotationStatus.length > 0" class="pagination-container">
                             <div class="pagination">
                                 <a class="{{pageRotationStatus > 1?'':'disable'}}" data-toggle="tooltip" title="first page" 
-                                   ng-click="pageRotationStatus > 1 getDashboardRotationStatusPage(1)">&lt;&lt;</a>
+                                   ng-click="pageRotationStatus > 1 && getDashboardRotationStatusPage(1)">&lt;&lt;</a>
                                 <a class="{{pageRotationStatus > 1?'':'disable'}}" data-toggle="tooltip" title="previous page" 
                                    ng-click="pageRotationStatus > 1 && getDashboardRotationStatusPage(pageRotationStatus - 1)">&lt;</a>
 
@@ -190,7 +202,7 @@
                                 <a class="{{pageRotationStatus < rotationStatusPaging.length?'':'disable'}}" data-toggle="tooltip" title="next page" 
                                    ng-click="pageRotationStatus < rotationStatusPaging.length && getDashboardRotationStatusPage(pageRotationStatus + 1)">&gt;</a>
                                 <a class="{{pageRotationStatus < rotationStatusPaging.length?'':'disable'}}" data-toggle="tooltip" title="last page" 
-                                   ng-click="getDashboardRotationStatusPage(rotationStatusPaging.length) && pageRotationStatus < rotationStatusPaging.length"> &gt; &gt;</a>
+                                   ng-click="pageRotationStatus < rotationStatusPaging.length && getDashboardRotationStatusPage(rotationStatusPaging.length)"> &gt; &gt;</a>
                             </div>
                         </div>
                         <div ng-show="listRotationStatus.length == 0" class="container" style="text-align:center">
@@ -216,7 +228,7 @@
 
             //pagination
             $scope.productCount = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.rotationStatusPaging = [];
             $scope.pageRotationStatus = 1;
             $scope.pageSizeRotationStatus = 10;
@@ -235,10 +247,16 @@
             //monitoring
             $scope.listRotationStatus = [];
 
+            //Ga dipake semua banget
             $scope.counter = {
-                Old: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
-                New: { Inbox: 0, InProgress: 0, Pending: 0, Declined: 0, Completed: 0, Pending: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
+                Old: { InProgress: 0, Pending: 0, Rejected: 0, Completed: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 },
+                New: { InProgress: 0, Pending: 0, Rejected: 0, Completed: 0, Altered: 0, Contact: 0, DrDriveDesc: '0GB', Document: 0 }
             };
+            
+            $scope.companySubscription = {
+                Old: { StorageLimit: 0, TotalStorage: 0, AdminLimit: 0, TotalAdmin: 0 },
+                New: { StorageLimit: 0, TotalStorage: 0, AdminLimit: 0, TotalAdmin: 0 },
+            }
 
             $scope.$on("$destroy", function (event) {
                 clearInterval(xtimer);
@@ -256,12 +274,11 @@
 
             angular.element(document).ready(function () {
                 $scope.getCompanyOwned();
-                $scope.getActivityCounter();
                 $("#content").show();
             });
             $scope.getActivityCounter = function () {
                 $scope.products = [];
-                $http.post('@Url.Action("GetActivityCounter", "Dashboard")', {}).then(function (response) {
+                $http.post('@Url.Action("GetActivityCounterCompany", "Dashboard")', {companyId: $scope.selectedCompany.Id}).then(function (response) {
                     if (response.data) {
                         $scope.counter = response.data;
                         var counter = response.data;
@@ -356,18 +373,33 @@
                     var x = 0;
                 });
             }
-
+            $scope.getCompanySubscriptionLimit = function () {
+                $http.post('@Url.Action("GetCompanySubscriptionLimit", "Dashboard")', { companyId: $scope.selectedCompany.Id }).then(function (response) {
+                    if (response.data) {
+                        $scope.companySubscription = response.data;
+                        console.log($scope.companySubscription);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            };
             $scope.getCompanyOwned = function () {
                 $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
                     if (response.data) {
                         $scope.companyOwned = response.data;
                         $scope.selectedCompany = $scope.companyOwned[0];
                         $scope.getDashboardRotationStatus();
+                        $scope.getActivityCounter();
+                        // Belum di tampilkan
+                        $scope.getCompanySubscriptionLimit();
+
                     }
                 })
             }
             $scope.setSelectedCompany = function (x) {
                 $scope.selectedCompany = x;
+                $scope.getCompanySubscriptionLimit();
                 $scope.getDashboardRotationStatus();
                 $scope.getActivityCounter();
             }
@@ -449,7 +481,6 @@
                 $scope.newTag = "";
             }
             $scope.removeTag = function (index) {
-                console.log("INDEX" +index);
                 $scope.model.Tags.splice(index, 1);
                 $scope.backCount = 0;
                 $scope.getDashboardRotationStatus();
@@ -562,12 +593,10 @@
 
             // export to csv all the rotation status
             $scope.exportAllRotationStatusToCSV = function () {
-                console.log("exporting csv");
                 $http.post('@Url.Action("ExportAllRotationStatusToCSV", "Dashboard")',
                     { companyId: $scope.selectedCompany.Id, companyName: $scope.selectedCompany.Name }
                 ).then(function (response) {
                     var filename = $scope.selectedCompany.Name + "_AllRotationStatus";
-                    console.log(response.data)
                     $scope.exportCSVFile(null, $scope.listRotationStatus, response.data, filename);
                 }, function (response) {
                         //error handle

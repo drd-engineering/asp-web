@@ -1765,7 +1765,7 @@
     $scope.members = [];
     $scope.memberCount = [];
     $scope.paging = [];
-    $scope.kriteria = "";
+    $scope.criteria = "";
     $scope.page = 1;
     $scope.row = 20;
     $scope.currPage = 0;
@@ -1802,15 +1802,15 @@
         $("#modal_select_member_rotation").modal("show");
     }
 
-    $scope.findMembersRotation = function (kriteria, page, row, rotationId) {
+    $scope.findMembersRotation = function (criteria, page, row, rotationId) {
         $scope.page = 1;
         $scope.members = [];
         
-        $http.post('/Member/FindMembersRotation', { topCriteria: kriteria, page: page, pageSize: row , rotationId : rotationId }).then(function (response) {
+        $http.post('/Member/FindMembersRotation', { topCriteria: criteria, page: page, pageSize: row , rotationId : rotationId }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
-                $scope.findMembersRotationCountAll(kriteria, rotationId);
+                $scope.findMembersRotationCountAll(criteria, rotationId);
                 $scope.isView = true;
             }
         }, function (response) {
@@ -1818,9 +1818,9 @@
             var x = 0;
         });
     }
-    $scope.findMembersRotationCountAll = function (kriteria, rotationId) {
+    $scope.findMembersRotationCountAll = function (criteria, rotationId) {
         $scope.paging = [];
-        $http.post('/Member/FindMembersRotationCountAll', { topCriteria: kriteria, rotationId : rotationId }).then(function (response) {
+        $http.post('/Member/FindMembersRotationCountAll', { topCriteria: criteria, rotationId : rotationId }).then(function (response) {
             if (response.data) {
                 var jumlahData = response.data;
                 var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -1834,9 +1834,9 @@
             var x = 0;
         });
     }
-    $scope.changePageMemberRotation = function (kriteria, page, row, rotationId) {
+    $scope.changePageMemberRotation = function (criteria, page, row, rotationId) {
         $scope.products = [];
-        $http.post('/Member/FindMembersRotation', { topCriteria: kriteria, page: page, pageSize: row , rotationId:rotationId}).then(function (response) {
+        $http.post('/Member/FindMembersRotation', { topCriteria: criteria, page: page, pageSize: row , rotationId:rotationId}).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
@@ -1861,7 +1861,7 @@
     $scope.stamps = [];
     $scope.stampCount = [];
     $scope.st_paging = [];
-    $scope.st_kriteria = "";
+    $scope.st_criteria = "";
     $scope.st_page = 1;
     //$scope.row = 20;
     $scope.st_currPage = 0;
@@ -1889,16 +1889,16 @@
         foto.src = "/Images/Stamp/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
     }
 
-    $scope.getLiteStamps = function (kriteria, page, row) {
+    $scope.getLiteStamps = function (criteria, page, row) {
         $scope.stamps = [];
-        $http.post('/Stamp/GetLiteAll', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Stamp/GetLiteAll', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.stamps = response.data;
 
                 $scope.index = row * (page - 1);
 
                 $scope.st_paging = [];
-                $scope.getStampCount(kriteria);
+                $scope.getStampCount(criteria);
 
                 $scope.isView = true;
             }
@@ -1908,9 +1908,9 @@
         });
     }
 
-    $scope.changePageStamp = function (kriteria, page, row) {
+    $scope.changePageStamp = function (criteria, page, row) {
         $scope.stamps = [];
-        $http.post('/Stamp/GetLiteAll', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Stamp/GetLiteAll', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.stamps = response.data;
                 $scope.st_index = row * (page - 1);
@@ -1921,8 +1921,8 @@
         });
     }
 
-    $scope.getStampCount = function (kriteria) {
-        $http.post('/Stamp/GetLiteAllCount', { topCriteria: kriteria }).then(function (response) {
+    $scope.getStampCount = function (criteria) {
+        $http.post('/Stamp/GetLiteAllCount', { topCriteria: criteria }).then(function (response) {
             if (response.data) {
 
                 var jumlahData = response.data;
