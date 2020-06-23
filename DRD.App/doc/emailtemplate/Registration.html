@@ -11,9 +11,50 @@
     <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel="stylesheet">
     <!-- <![endif]-->
 
-    <title>DRD Regstration Successful</title>
+    <title>Regstration DRD Successful</title>
 
     <style type="text/css">
+        .focus-text{
+            color:#FD9816;
+            margin:0px 5px 0px 5px;
+            font-size:16px;
+        }
+        .focus-button{
+            border-radius:15px;
+        }
+        .focus-button a{
+            color: white;
+            padding: 18px 12px;
+            border-radius: 15px;
+            font-family: 'Work Sans', Calibri, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            background-color: #FD9816;
+        }
+        .focus-button a:hover{
+            color: white;
+            background-color: #ffaf48;
+        }
+        .additional-button{
+            border-radius:20px;
+        }
+        .additional-button  a {
+            color: white;
+            padding: 22px 9px;
+            border-radius: 15px;
+            font-family: 'Work Sans', Calibri, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            background-color: #075685;
+        }
+        .additional-button a:hover{
+            color: white;
+            background-color: #5D90AE;
+        }
         body {
             width: 100%;
             background-color: #ffffff;
@@ -192,7 +233,7 @@
 
                                 <tr>
                                     <td align="center" height="70" style="height:70px;">
-                                        <a href="http://drdaccess.com"
+                                        <a href="{_URL_}"
                                             style="display: block; border-style: none !important; border: 0 !important;"><img
                                                 width="100" border="0" style="display: block; width: 100px;"
                                                 src="{_URL_}/images/emailhtml/logo.png" alt="" /></a>
@@ -214,19 +255,9 @@
 
     <!-- big image section -->
     <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="ffffff" class="bg_color">
-
         <tr>
             <td align="center">
                 <table border="0" align="center" width="590" cellpadding="0" cellspacing="0" class="container590">
-                    <!-- <tr>
-
-                        <td align="center" class="section-img">
-                            <a href=""
-                                style=" border-style: none !important; display: block; border: 0 !important;"><img
-                                    src="https://assets.entrepreneur.com/content/3x2/2000/20190605175530-shutterstock-422281279-crop.jpeg?format=jpg&width=500&crop=16:9" style="display: block; width: 590px;"
-                                    width="590" border="0" alt="" /></a>
-                        </td>
-                    </tr> -->
                     <tr>
                         <td height="20" style="font-size: 20px; line-height: 20px;">&nbsp;</td>
                     </tr>
@@ -234,10 +265,7 @@
                         <td align="center"
                             style="color: #343434; font-size: 24px; font-family: Quicksand, Calibri, sans-serif; font-weight:700;letter-spacing: 3px; line-height: 35px;"
                             class="main-header">
-
-
                             <div style="line-height: 35px">
-
                                 WELCOME to <span style="color: #5caad2;">DRD</span>
 
                             </div>
@@ -274,10 +302,12 @@
 
                                         <div style="line-height: 24px">
 
-                                            Hi, {_NAME_}!
+                                            Hi, <span class="focus-text">{_NAME_}</span>!
                                             Thank you for signing up for DRD! We’re excited to help you to manage your
-                                            documents. Your member ID is <strong>{_NUMBER_}</strong> and your temporary
-                                            login password is <strong>{_PASSWORD_}</strong>
+                                            documents. Your member ID is
+                                            <span class="focus-text"><strong>{_NUMBER_}</strong></span> 
+                                            and your temporary login password is 
+                                            <span class="focus-text"><strong>{_PASSWORD_}</strong></span>
 
                                         </div>
                                     </td>
@@ -336,8 +366,6 @@
 
     <!-- ======= 3 columns features ======= -->
     <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="ffffff" class="bg_color">
-
-
         <tr>
             <td align="center">
                 <table border="0" align="center" width="590" cellpadding="0" cellspacing="0" class="container590">
@@ -347,11 +375,8 @@
                             style="color: #343434; font-size: 24px; font-family: Quicksand, Calibri, sans-serif; font-weight:700;letter-spacing: 3px; line-height: 35px;"
                             class="main-header">
                             <!-- ======= section text ====== -->
-
                             <div style="line-height: 35px">
-
                                 Here’s what to do next:
-
                             </div>
                         </td>
                     </tr>
@@ -366,16 +391,16 @@
                     <tr>
                         <td>
                             <table border="0" width="170" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
-
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <!-- ======= image ======= -->
                                     <td align="center">
                                         <a href="{_URL_}"
-                                            style=" border-style: none !important; display: block; border: 0 !important;"><img
-                                                src="{_URL_}/images/emailhtml/lock.svg" style="display: block; width: 170PX;" width="170"
-                                                border="0" alt="" /></a>
+                                           style=" border-style: none !important; display: block; border: 0 !important;">
+                                            <img src="{_URL_}/images/emailhtml/lock.svg" style="display: block; width: 170PX;" width="170"
+                                                 border="0" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -384,37 +409,34 @@
                                 </tr>
 
                                 <tr>
-                                    <td align="center"
-                                        style="font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 500; line-height: 20px;background-color:aquamarine; padding:10px; border-radius:10%; color:black;">
+                                    <td align="center" class="additional-button">
                                         <!-- ======= section text ====== -->
-
-                                        <div style="line-height: 20px">
-                                            <a href="_URL_" style="text-decoration: none;color:black;">
-                                                Change Your Password
-                                            </a>
-                                        </div>
+                                        <a href="{_URL_}/Login/ChangePassword" style="text-decoration: none;">
+                                            Change Your Password
+                                        </a>
                                     </td>
                                 </tr>
 
                             </table>
                             <table border="0" width="40" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <td width="40" height="50" style="font-size: 50px; line-height: 50px;"></td>
                                 </tr>
                             </table>
                             <table border="0" width="170" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <!-- ======= image ======= -->
                                     <td align="center">
                                         <a href="{_URL_}"
-                                            style=" border-style: none !important; display: block; border: 0 !important;"><img
-                                                src="{_URL_}/images/emailhtml/account.svg" style="display: block; width: 170PX;" width="170"
-                                                border="0" alt="" /></a>
+                                           style=" border-style: none !important; display: block; border: 0 !important;">
+                                            <img src="{_URL_}/images/emailhtml/account.svg" style="display: block; width: 170PX;" width="170"
+                                                 border="0" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -423,39 +445,35 @@
                                 </tr>
 
                                 <tr>
-                                    <td align="center"
-                                        style="color: #333333; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 500; line-height: 20px;background-color:aquamarine; padding:10px; border-radius:10%; color:black;">
+                                    <td align="center" class="additional-button">
                                         <!-- ======= section text ====== -->
-
-                                        <div style="line-height: 20px">
-
-                                            <a href="{_URL_}" style="text-decoration: none;color:black;">Setup your signature and ID verification</a>
-
-                                        </div>
+                                        <a href="{_URL_}/Profile" style="text-decoration: none;">
+                                            Setup your Signature
+                                        </a>
                                     </td>
                                 </tr>
 
                             </table>
-
                             <table border="0" width="40" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <td width="40" height="50" style="font-size: 50px; line-height: 50px;"></td>
                                 </tr>
                             </table>
 
                             <table border="0" width="170" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <!-- ======= image ======= -->
                                     <td align="center">
                                         <a href="{_URL_}"
-                                            style=" border-style: none !important; display: block; border: 0 !important;"><img
-                                                src="{_URL_}/images/emailhtml/help.svg" style="display: block; width: 170PX;" width="170"
-                                                border="0" alt="" /></a>
+                                           style=" border-style: none !important; display: block; border: 0 !important;">
+                                            <img src="{_URL_}/images/emailhtml/help.svg" style="display: block; width: 170PX;" width="170"
+                                                 border="0" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -464,15 +482,11 @@
                                 </tr>
 
                                 <tr>
-                                    <td align="center"
-                                        style="color: #333333; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 500; line-height: 20px;background-color:aquamarine; padding:10px; border-radius:10%; color:black;">
+                                    <td align="center" class="additional-button">
                                         <!-- ======= section text ====== -->
-
-                                        <div style="line-height: 20px">
-
-                                            
-                                            <a href="{_URL_}"  style="text-decoration: none;color:black;">Check the tutorial to use our product</a>
-                                        </div>
+                                        <a href="{_URL_}" style="text-decoration: none;">
+                                            Check the tutorial to use our product
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -608,7 +622,7 @@
                                                         style="color: #333333; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 600; mso-line-height-rule: exactly; line-height: 23px;">
                     
                                                         Email us: <br /> <a href="mailto:"
-                                                            style="color: #888888; font-size: 14px; font-family: 'Hind Siliguri', Calibri, Sans-serif; font-weight: 400;">boy.adiputro@drdaccess.com</a>
+                                                            style="color: #888888; font-size: 14px; font-family: 'Hind Siliguri', Calibri, Sans-serif; font-weight: 400;">admin@drdaccess.com</a>
                                                         </div>
                                             </tr>
                                             <tr>
@@ -701,7 +715,7 @@
                                             <tr>
                                                 <td align="center">
                                                     <a style="font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;color: #5caad2; text-decoration: none;font-weight:bold;"
-                                                        href="https://drdaccess.com">drdaccess.com</a>
+                                                        href="{_URL_}">drdaccess.com</a>
                                                 </td>
                                             </tr>
                                         </table>
