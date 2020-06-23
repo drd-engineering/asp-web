@@ -267,6 +267,7 @@
             $scope.findRotationsCountAll = function (criteria) {
                 $http.post('@Url.Action("FindRotationCountAll", "Rotation")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
+                        $scope.paging = [];
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
                         for (var i = 1; i <= jumlahPage; i++) {
