@@ -53,7 +53,7 @@ namespace DRD.Service
                 /// EXECUTE ONLY IF COMPANY ID IS FILLED
                 CompanyService companyService = new CompanyService();
 
-                var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
+                var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.CompanyId == companyId).ToList();
                 if (rotationsCompany  != null)
                 {
                     counter.New.InProgress = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.In_Progress);

@@ -69,10 +69,10 @@ namespace DRD.Service
         {
             return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
         }
-        public enum SubscriptionType
+        public enum SubscriptionType : byte
         {
             PERSONAL = 1,
-            BUSINESS = 2
+            BUSINESS = 0
         }
         public enum EnumContentType
         {

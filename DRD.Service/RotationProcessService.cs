@@ -352,8 +352,9 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyIdStarted = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive).CompanyId;
-                rt.CompanyId = companyIdStarted;
+                var companyUsage = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
+                rt.CompanyId = companyUsage.CompanyId;
+                rt.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
 
@@ -389,7 +390,7 @@ namespace DRD.Service
                     retvalues.Add(CreateActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
                 }
                 db.SaveChanges();
-                subscriptionService.AddUsage(Constant.PackageItem.Rotation_Started, 1, companyIdStarted);
+                subscriptionService.AddUsage(Constant.PackageItem.Rotation_Started, 1, companyUsage.CompanyId);
                 return retvalues;
             }
         }
