@@ -90,7 +90,7 @@ namespace DRD.Service
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && &&
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId &&
                         (criteria.Equals("") || allCriteria.All(crtr => (inbox.DateNote).ToLower().Contains(
                             crtr.ToLower())))).ToList().Count();
                     return inboxesCount;
