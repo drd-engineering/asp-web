@@ -389,15 +389,19 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var User = db.Users.FirstOrDefault(c => c.Id == id);
+
+                System.Diagnostics.Debug.WriteLine(User.Password);
+                System.Diagnostics.Debug.WriteLine(Utilities.Encrypt(password));
+                System.Diagnostics.Debug.WriteLine(password);
+
                 if (User == null)
                     return equals;  // invalid User
 
                 // for test case, can be deprecated if needed
-                if (User.Id < 0)
-                    if (User.Password.Equals(password))
+                if (User.Id < 0 && User.Password.Equals(password))
+                {
                         equals = true;
-                    else
-                    if (User.Password.Equals(Utilities.Encrypt(password)))
+                }else if (User.Password.Equals(Utilities.Encrypt(password)))
                         equals = true;
 
                 return equals;

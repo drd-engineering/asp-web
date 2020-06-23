@@ -228,6 +228,7 @@
             $scope.curentUser;
             $scope.passwordType = 0;
             $scope.passwordcheck = false;
+            $scope.passwordError = false;
             $scope.isRevising = false;
             $scope.isUploading = false;
             $scope.docIdx = 0;
@@ -365,7 +366,7 @@
                     }
 
                 }
-            }
+            };
             $scope.initData = function () {
 
             };
@@ -374,19 +375,24 @@
                 var val = document.getElementById("thePassword");
                 val.value = "";
                 $scope.thePassword = "";
+                $scope.passwordError = false;
                 $("#modal_password").modal("show");
             };
             $scope.setPassword = function () {
                 var val = document.getElementById("thePassword");
                 var thePassword = val.value;
+                console.log("PASSWORD");
+                console.log(thePassword);
                 $http.post('/user/ValidationPassword', { userId: $scope.model.UserId, password: thePassword }).then(function (response) {
-                    if (response.data == true) {
+                console.log(response.data);
+                    if (response.data) {
+                        console.log("IN SET PASSWORD");
                         $scope.passwordcheck = true;
-                        $scope.submitActivityProcess(1);
                         return true;
-                    } else
+                    } else {
                         $scope.passwordcheck = false;
-                    return;
+                        return false;
+                    }
                 }, function (response) {
                     //error handle\
                     var x = 0;
@@ -769,6 +775,16 @@
             --------------------------------------------------------------*/
             $scope.submitActivity = function (bit) {
                 $scope.checkSignOrStamp();
+                if ($scope.passwordType == 5 && bit == 1) {
+                    $scope.showPasswordModal();
+                } else {
+                    $scope.triggerSubmitSwal(bit);
+                }
+            }
+
+
+            $scope.triggerSubmitSwal = function (bit) {
+                $scope.setPassword();
                 var eventString = "";
                 if (bit == 1)
                     eventString = "Submit";
@@ -793,14 +809,25 @@
                         setTimeout(function () {
                             if (isConfirm) {
                                 if ($scope.passwordType == 5 && bit == 1) {
-                                    $scope.showPasswordModal();
+
+                                    console.log("here" +$scope.passwordcheck);
+                                    if ($scope.passwordcheck) {
+
+                                $scope.submitActivityProcess(bit);
+                                        $scope.passwordError = false;
+                                        $("#modal_password").modal("hide");
+                                    } else {
+                                        $scope.passwordError = true;
+                                    }
                                 } else {
-                                    $scope.submitActivityProcess(bit);
+                                $scope.submitActivityProcess(bit);
+
                                 }
                             }
                             swal.close();
                         }, 500);
                     });
+            };
 
             $scope.submitActivityProcess = function (bit) {
                 var rotNodeDocs = [];
@@ -907,7 +934,7 @@
                         var x = 0;
                     });
             };
-            };
+
             $scope.processActivity = function (bit) {
                 //var iframe=document.getElementById('xpdfIFrame');
                 //var iframeView=document.getElementById('xpdfIFrameView');
