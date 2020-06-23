@@ -5,7 +5,7 @@
     $scope.members = [];
     $scope.memberCount = [];
     $scope.paging = [];
-    $scope.kriteria = "";
+    $scope.criteria = "";
     $scope.page = 1;
     $scope.row = 20;
     $scope.currPage = 0;
@@ -1283,16 +1283,16 @@
     /*--------------------------------------------------------------
                 POPUP MEMBER
             --------------------------------------------------------------*/
-    $scope.getLiteMembers = function (kriteria, page, row) {
+    $scope.getLiteMembers = function (criteria, page, row) {
         $scope.members = [];
-        $http.post('/Member/GetLiteAll2', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Member/GetLiteAll2', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
 
                 $scope.index = row * (page - 1);
 
                 $scope.paging = [];
-                $scope.getMemberCount(kriteria);
+                $scope.getMemberCount(criteria);
 
                 $scope.isView = true;
             }
@@ -1302,9 +1302,9 @@
         });
     }
 
-    $scope.changePage = function (kriteria, page, row) {
+    $scope.changePage = function (criteria, page, row) {
         $scope.products = [];
-        $http.post('/Member/GetLiteAll2', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Member/GetLiteAll2', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
@@ -1315,8 +1315,8 @@
         });
     }
 
-    $scope.getMemberCount = function (kriteria) {
-        $http.post('/Member/GetLiteAllCount2', { topCriteria: kriteria }).then(function (response) {
+    $scope.getMemberCount = function (criteria) {
+        $http.post('/Member/GetLiteAllCount2', { topCriteria: criteria }).then(function (response) {
             if (response.data) {
 
                 var jumlahData = response.data;

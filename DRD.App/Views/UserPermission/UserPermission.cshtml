@@ -333,7 +333,7 @@
             $scope.companies = [];
             $scope.companyCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -488,16 +488,16 @@
                 }
             }
 
-            $scope.getLiteCompanies = function (kriteria, page, row) {
+            $scope.getLiteCompanies = function (criteria, page, row) {
                 $scope.companies = [];
-                $http.post('@Url.Action("GetLitePermissionAll", "company")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("GetLitePermissionAll", "company")', { topCriteria: criteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
                     if (response.data) {
                         $scope.companies = response.data;
 
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getCompanyCount(kriteria);
+                        $scope.getCompanyCount(criteria);
 
                         $scope.isView = true;
                     }
@@ -507,9 +507,9 @@
                 });
             }
 
-            $scope.changePageCompanies = function (kriteria, page, row) {
+            $scope.changePageCompanies = function (criteria, page, row) {
                 $scope.companies = [];
-                $http.post('@Url.Action("GetLitePermissionAll", "company")', { topCriteria: kriteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
+                $http.post('@Url.Action("GetLitePermissionAll", "company")', { topCriteria: criteria, page: page, pageSize: row, criteria:'' }).then(function (response) {
                     if (response.data) {
                         $scope.companies = response.data;
                         $scope.index = row * (page - 1);
@@ -520,8 +520,8 @@
                 });
             }
 
-            $scope.getCompanyCount = function (kriteria) {
-                $http.post('@Url.Action("GetLitePermissionAllCount", "company")', { topCriteria: kriteria, criteria:'' }).then(function (response) {
+            $scope.getCompanyCount = function (criteria) {
+                $http.post('@Url.Action("GetLitePermissionAllCount", "company")', { topCriteria: criteria, criteria:'' }).then(function (response) {
                     if (response.data) {
 
                         var jumlahData = response.data;

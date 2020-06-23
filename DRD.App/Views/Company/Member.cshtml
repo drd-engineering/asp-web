@@ -43,8 +43,8 @@
                                     <div class="col-lg-6">
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="icon-search4"></i></span>
-                                            <input type="text" class="form-control btn-process" ng-model="kriteria"
-                                                   placeholder="Find members" ng-keyup="$event.keyCode == 13 && searchAcceptedMember(kriteria, page, row)">
+                                            <input type="text" class="form-control btn-process" ng-model="criteria"
+                                                   placeholder="Find members" ng-keyup="$event.keyCode == 13 && searchAcceptedMember(criteria, page, row)">
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
             $scope.emails = "";
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.notiftime = 6000;
             $scope.row = 20;

@@ -188,9 +188,9 @@ namespace DRD.App.Controllers
             string folder = "doc/company/temp"; // fileType = 0
 
             var targetdir = "/" + folder + "/";
-            bool exists = System.IO.Directory.Exists(Server.MapPath(targetdir));
+            bool exists = Directory.Exists(Server.MapPath(targetdir));
             if (!exists)
-                System.IO.Directory.CreateDirectory(Server.MapPath(targetdir));
+                Directory.CreateDirectory(Server.MapPath(targetdir));
 
             string filenameori = string.Empty;
             string _filename = string.Empty;

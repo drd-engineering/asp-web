@@ -13,14 +13,14 @@
 
             <div class="input-group">
                 <span class="input-group-addon"><i class="icon-search4"></i></span>
-                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteBanks(kriteria, page, row)" class="form-control" ng-model="kriteria" placeholder="Enter project name" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && getLiteBanks(criteria, page, row)" class="form-control" ng-model="criteria" placeholder="Enter project name" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="getLiteBanks(kriteria, page, row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="getLiteBanks(criteria, page, row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="page" class="form-control" ng-change="changePageBanks(kriteria, page, row)">
+                    <select ng-model="page" class="form-control" ng-change="changePageBanks(criteria, page, row)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>

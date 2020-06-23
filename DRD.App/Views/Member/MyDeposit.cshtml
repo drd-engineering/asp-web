@@ -83,7 +83,7 @@
 
                         <div class="col-md-6">
                             <br />
-                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(kriteria, page, row)" style="width:120px">
+                            <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getLiteProducts(criteria, page, row)" style="width:120px">
                                 <span class="ladda-label">Process</span><span class="ladda-spinner"></span>
                                 <div class="ladda-progress" style="width: 0px;"></div>
                             </button>
@@ -91,7 +91,7 @@
                         <div class="col-md-6">
                             <br />
                             <div class="pull-right">
-                                <select ng-model="page" class="form-control" ng-change="changePage(kriteria, page, row)">
+                                <select ng-model="page" class="form-control" ng-change="changePage(criteria, page, row)">
                                     <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                                 </select>
                             </div>
@@ -154,7 +154,7 @@
             $scope.products = [];
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -181,7 +181,7 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
-            $scope.getLiteProducts = function (kriteria, page, row) {
+            $scope.getLiteProducts = function (criteria, page, row) {
                 var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();
                 $scope.products = [];
@@ -193,7 +193,7 @@
                         $scope.index = row * (page - 1);
 
                         $scope.paging = [];
-                        $scope.getProductCount(kriteria);
+                        $scope.getProductCount(criteria);
 
                         $scope.isView = true;
 
@@ -207,7 +207,7 @@
                 });
             }
 
-            $scope.changePage = function (kriteria, page, row) {
+            $scope.changePage = function (criteria, page, row) {
                 $scope.products = [];
                 $http.post('@Url.Action("GetById", "MemberDepositTrx")', { page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
@@ -222,7 +222,7 @@
                 });
             }
 
-            $scope.getProductCount = function (kriteria) {
+            $scope.getProductCount = function (criteria) {
                 $http.post('@Url.Action("GetByIdCount", "MemberDepositTrx")', {  }).then(function (response) {
                     if (response.data) {
 

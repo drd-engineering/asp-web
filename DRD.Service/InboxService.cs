@@ -14,16 +14,27 @@ namespace DRD.Service
         /// Obtain all inbox data related to user as many as pageSize
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="criteria"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public List<InboxList> GetInboxList(long userId, int skip, int take)
+        public List<InboxList> GetInboxList(long userId, string criteria, int skip, int take)
         {
+            // all criteria
+            string[] allCriteria = new string[] { };
+            if (!string.IsNullOrEmpty(criteria))
+            {
+                allCriteria = criteria.Split(' ');
+            }
+            else
+                criteria = "";
             using (var db = new ServiceContext())
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
+                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId && 
+                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.DateNote).ToLower().Contains(
+                            crtr.ToLower())))).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
                     List<InboxList> result = new List<InboxList>();
                     foreach (Inbox i in inboxes)
                     {
@@ -59,15 +70,29 @@ namespace DRD.Service
                 return null;
             }
         }
-
-        public int CountAll(long userId)
+        /// <summary>
+        /// Count all inbox related to criteria. If criteria empty it will return all the inbox
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        public int CountAll(long userId, string criteria)
         {
+            // all criteria
+            string[] allCriteria = new string[] { };
+            if (!string.IsNullOrEmpty(criteria))
+            {
+                allCriteria = criteria.Split(' ');
+            }
+            else
+                criteria = "";
             using (var db = new ServiceContext())
             {
                 if (db.Inboxes != null)
                 {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId).ToList().Count();
-
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId &&
+                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.DateNote).ToLower().Contains(
+                            crtr.ToLower())))).ToList().Count();
                     return inboxesCount;
                 }
                 return 0;
@@ -260,7 +285,7 @@ namespace DRD.Service
                             inboxItem2.RotationId = activity.RotationId;
                             inboxItem2.CreatedAt = DateTime.Now;
                             db.Inboxes.Add(inboxItem2);
-                            sendemailactiviity(inboxItem2);
+                            sendemailactivity(inboxItem2);
                         }
                     }
                     inboxItem.prevUserEmail = activity.PreviousEmail;
@@ -269,7 +294,7 @@ namespace DRD.Service
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
                     var dbsave = db.SaveChanges();
-                    sendemailactiviity(inboxItem);
+                    sendemailactivity(inboxItem);
                     return dbsave;
                 }
             }
@@ -332,13 +357,13 @@ namespace DRD.Service
                     {
                         inbox.DateNote = "You need to review " + activity.RotationName;
                         inbox.LastStatus = "REVIEW";
-                        sendemailactiviity(inbox);
+                        sendemailactivity(inbox);
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
                         inbox.DateNote = "You need to revise " + activity.RotationName;
                         inbox.LastStatus = "REVISION";
-                        sendemailactiviity(inbox);
+                        sendemailactivity(inbox);
                     }
                     else if (activity.LastActivityStatus.Equals("REJECT"))
                     {
@@ -360,7 +385,7 @@ namespace DRD.Service
 
             }
         }
-        public void sendemailactiviity(Inbox inbox)
+        public void sendemailactivity(Inbox inbox)
         {
 
             var configGenerator = new AppConfigGenerator();

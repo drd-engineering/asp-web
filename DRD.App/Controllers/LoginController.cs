@@ -46,10 +46,15 @@ namespace DRD.App.Controllers
             controller.Session["_USER_LOGIN_"] = user;
         }
 
+        /// <summary>
+        /// API LOGOUT Clear session of a user logged in
+        /// </summary>
         public void Logout()
         {
             Session["_USER_LOGIN_"] = null;
-            Session["_COUNTER_"] = null;
+            Session["_COUNTERACTIVITY_"] = null;
+            Session["_SUBSCRIPTIONLIMIT_"] = null;
+            Session["_COUNTERINBOX_"] = null;
             Response.Redirect("/Login");
         }
 

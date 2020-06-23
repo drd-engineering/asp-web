@@ -47,7 +47,7 @@
                             <div class="row">
                                 <div class="col-lg-12" style="width:100% !important;">
                                     <!-- SELECT -->
-                                    <select class="card-filter" ng-model="companySelected" ng-options="x.Name for x in companyOwned" ng-change="getProducts(kriteria, page, row, companySelected.Id)"></select>
+                                    <select class="card-filter" ng-model="companySelected" ng-options="x.Name for x in companyOwned" ng-change="getProducts(criteria, page, row, companySelected.Id)"></select>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +124,7 @@
             $scope.products = [];
             $scope.productCount = [];
             $scope.paging = [];
-            $scope.kriteria = "";
+            $scope.criteria = "";
             $scope.page = 1;
             $scope.row = 20;
             $scope.currPage = 0;
@@ -154,7 +154,7 @@
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
                 $scope.getCompanyOwned();
-                /*$scope.getProducts($scope.kriteria, $scope.page, $scope.row, $scope.companySelected.Id);*/
+                /*$scope.getProducts($scope.criteria, $scope.page, $scope.row, $scope.companySelected.Id);*/
             });
             /*--------------------------------------------------------------
             GET ALL COMPANY FILTER FOR USER ONLY SHOW DOCUMENT THAT RELATED
@@ -185,12 +185,12 @@
             /*--------------------------------------------------------------
             GET PRODUCT
             --------------------------------------------------------------*/
-            $scope.getProducts = function (kriteria, page, row, companyId) {
+            $scope.getProducts = function (criteria, page, row, companyId) {
                 /*var btn = Ladda.create(document.querySelector('.btn-process'));
                 btn.start();*/
-                console.log(kriteria, page, row, companyId)
+                console.log(criteria, page, row, companyId)
                 $scope.products = [];
-                $http.post('@Url.Action("GetCompanyDocument", "document")', { searchKeyword: kriteria, page: page, pageSize: row, companyId: companyId }).then(function (response) {
+                $http.post('@Url.Action("GetCompanyDocument", "document")', { searchKeyword: criteria, page: page, pageSize: row, companyId: companyId }).then(function (response) {
                     if (response.data) {
                         console.log(response.data);
                         $scope.products = response.data;
@@ -269,7 +269,7 @@
                     if (response.data) {
                         $scope.isCheckedAll = false;
                         $scope.checkedAll();
-                        $scope.getLiteProducts($scope.kriteria, $scope.page, $scope.row);
+                        $scope.getLiteProducts($scope.criteria, $scope.page, $scope.row);
                     }
                 }, function (response) {
                     //error handle\
@@ -290,9 +290,9 @@
                 });
             }
 
-            $scope.changePage = function (kriteria, page, row) {
+            $scope.changePage = function (criteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetLiteAll", "document")', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('@Url.Action("GetLiteAll", "document")', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         $scope.index = row * (page - 1);
@@ -305,8 +305,8 @@
                 });
             }
 
-            $scope.getProductCount = function (kriteria) {
-                $http.post('@Url.Action("GetLiteAllCount", "document")', { topCriteria: kriteria }).then(function (response) {
+            $scope.getProductCount = function (criteria) {
+                $http.post('@Url.Action("GetLiteAllCount", "document")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
 
                         var jumlahData = response.data;

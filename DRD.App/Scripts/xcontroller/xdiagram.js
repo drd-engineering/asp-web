@@ -5,7 +5,7 @@
     $scope.members = [];
     $scope.memberCount = [];
     $scope.paging = [];
-    $scope.kriteria = "";
+    $scope.criteria = "";
     $scope.page = 1;
     $scope.row = 20;
     $scope.currPage = 0;
@@ -1552,18 +1552,18 @@
         $scope.memberIdx = idx;
         $scope.members = [];
         $scope.page = "1";
-        $scope.kriteria = "";
+        $scope.criteria = "";
         $("#modal_select_member").modal("show");
     }
 
-    $scope.findMembers = function (kriteria, page, row) {
+    $scope.findMembers = function (criteria, page, row) {
         $scope.page = 1;
         $scope.members = [];
-        $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Member/FindMembers', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
-                $scope.findMembersCountAll(kriteria);
+                $scope.findMembersCountAll(criteria);
                 $scope.isView = true;
             }
         }, function (response) {
@@ -1571,9 +1571,9 @@
             var x = 0;
         });
     }
-    $scope.findMembersCountAll = function (kriteria) {
+    $scope.findMembersCountAll = function (criteria) {
         $scope.paging = [];
-        $http.post('/Member/FindMembersCountAll', { topCriteria: kriteria }).then(function (response) {
+        $http.post('/Member/FindMembersCountAll', { topCriteria: criteria }).then(function (response) {
             if (response.data) {
                 var jumlahData = response.data;
                 var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -1587,9 +1587,9 @@
             var x = 0;
         });
     }
-    $scope.changePageMember = function (kriteria, page, row) {
+    $scope.changePageMember = function (criteria, page, row) {
         $scope.products = [];
-        $http.post('/Member/FindMembers', { topCriteria: kriteria, page: page, pageSize: row }).then(function (response) {
+        $http.post('/Member/FindMembers', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
             if (response.data) {
                 $scope.members = response.data;
                 $scope.index = row * (page - 1);
