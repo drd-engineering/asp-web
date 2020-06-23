@@ -64,7 +64,7 @@ namespace DRD.App.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            if (!memberService.checkIsAdmin(user.Id, id))
+            if (!memberService.checkIsAdmin(user.Id, id) && !memberService.checkIsOwner(user.Id, id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -30,10 +31,10 @@ namespace DRD.App.Controllers
             }
             return false;
         }
-        public void InitializeAPI()
+        public bool InitializeAPI()
         {
             user = login.GetUser(this);
-            login.CheckLogin(this);
+             return login.CheckLogin(this);
         }
 
         /// <summary>
@@ -48,10 +49,6 @@ namespace DRD.App.Controllers
 
             layout.obj = login.GetUser(this);
             layout.activeId = 0;
-
-            System.Diagnostics.Debug.WriteLine("THIS IS LAYOUT :: "+ layout);
-            if(layout != null)
-            System.Diagnostics.Debug.WriteLine("THIS IS LAYOUT not null :: "+ layout.user.ImageProfile + layout.user.EncryptedId );
 
             return View(layout);
         }
@@ -79,14 +76,31 @@ namespace DRD.App.Controllers
             return View();
         }
 
-        // redundant with the login method
-        public ActionResult GetUserLogin()
+        public ActionResult getCompanySetting()
         {
-            UserService userService = new UserService();
-            long id = login.GetUser(this).Id;
-            var data = userService.GetById(id, id);
+            if (!InitializeAPI())
+                return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
+            var data = settingService.getCompanySetting(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        // accept company invitation
+        public ActionResult AcceptCompanyInvitation(long companyId)
+        {
+            if (!InitializeAPI())
+                return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
+            var data = settingService.acceptCompany(companyId, user.Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult RejectCompanyInvitation(long companyId)
+        {
+            if (!InitializeAPI())
+                return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
+            var data = settingService.resetState(companyId, user.Id);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         // GET Profile/GetData
         public ActionResult GetData()
         {

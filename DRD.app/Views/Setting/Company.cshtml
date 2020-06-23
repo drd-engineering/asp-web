@@ -3,34 +3,45 @@
     Layout = null;
 }
 
-<h3>Registered</h3>
+<h3>Company List</h3>
 
 <div style="border-bottom:dotted;border-bottom-width:1px;"></div>
-<div ng-repeat="x in companyList">
-    <table class="style-table" style="font-size:medium;">
+<div ng-repeat="x in companySetting.companies">
+    <table class="style-table table-hover" style="font-size:medium;">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
-                <img alt="" src="/Images/Member/{{x}}/{{x}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
+                <i alt="" class="icon-library2" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
             </td>
-            <td class="style-name" style="padding:10px">
+            <td class="style-name" style="padding:10px; min-width:300px">
                 <span style="color:black;"><b>{{x.Name}}</b></span><br/>
                 <span style="font-size:x-small"> </span>
 
                 <!--Remark-->
-                <div ng-show="x.RotationNodeRemarks.length>0" style="font-size:x-small">
-                    <span><u>Remarks:</u></span>
-                    <span ng-repeat="d in x.RotationNodeRemarks">
-                        <br /><span>{{convertJsonDate(d.DateStamp) | date:'dd/MM/yyyy HH:mm:ss'}}: <i>{{d.Remark}}</i></span>
-                    </span>
+                <div style="font-size:x-small">
+                    <span> Owner : {{x.OwnerName}}</span>
+                    <br />
+                    <span ng-show="x.Role == 'Administrator'"> You are Administrator</span>
                 </div>
 
-                <!--Note-->
-                <div ng-show="x.Note!=null">
-                    <br />
-                    <label class="style-note">{{x.Note}}</label>
-                </div>
             </td>
-            <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status,x.WorkflowNodeId)}}</label></td>
+            <td class="style-status push-left" rowspan="2" style="padding:10px">
+                <button class="btn btn-drd-1-bordered pull-right" ng-click="deleteCompany(x.Id)">
+                    Delete
+                </button>
+                <button class="btn btn-drd-1 pull-right"  ng-show="x.Status" ng-click="acceptCompany(x.Id)">
+                    Confirm
+                </button>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div ng-show="companySetting.companies.length<1">
+    <table class="style-table table-hover" style="font-size:medium;">
+        <tr >
+            <td style="text-align:center;padding-top:20px"> You are not a member of any company
+            </td>
         </tr>
 
     </table>

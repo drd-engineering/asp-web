@@ -211,6 +211,7 @@
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />
     <Compile Include="DbDefinition\Price.cs" />
+    <Compile Include="View\Setting\CompanySettingData.cs" />
     <Compile Include="View\CounterInboxData.cs" />
     <Compile Include="View\Document\DocumentItem.cs" />
     <Compile Include="View\ElementType.cs" />
