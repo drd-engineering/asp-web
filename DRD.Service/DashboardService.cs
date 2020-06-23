@@ -32,18 +32,15 @@ namespace DRD.Service
         /// <param name="memberId"></param>
         /// <param name="counter"></param>
         /// <param name="companyId">default value is 0, if you are not specify company id it will search for personal rotation</param>
-        /// <returns></returns>
-        public CounterRotation GetActivityCounter(long userId, CounterRotation counter, long companyId = 0)
+        /// <returns>the counting result is filled in value from counteRrotation.new </returns>
+        public CounterRotation GetActivityCounter(long userId, long companyId = 0)
         {
+            var counter = new CounterRotation();
             using (var db = new ServiceContext())
             {
                 // Personal
-                if (companyId < 1)
+                if (companyId == 0)
                 {
-                    counter.Old.InProgress = counter.New.InProgress;
-                    counter.Old.Completed = counter.New.Completed;
-                    counter.Old.Rejected = counter.New.Rejected;
-
                     var rotations = db.Rotations.Where(c => c.UserId == userId).ToList();
                     if (rotations != null)
                     {
@@ -53,15 +50,10 @@ namespace DRD.Service
                     }
                     return counter;
                 }
-                /// EXECUTE ONLY IF COMPANY ID IS > 0
+                /// EXECUTE ONLY IF COMPANY ID IS FILLED
                 CompanyService companyService = new CompanyService();
 
-                counter.Old.InProgress = counter.New.InProgress;
-                counter.Old.Completed = counter.New.Completed;
-                counter.Old.Rejected = counter.New.Rejected;
-
                 var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.SubscriptionOf == companyId).ToList();
-                
                 if (rotationsCompany  != null)
                 {
                     counter.New.InProgress = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.In_Progress);
@@ -76,17 +68,14 @@ namespace DRD.Service
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="companyId"></param>
-        /// <returns></returns>
-        public SubscriptionLimit GetCompanySubscriptionLimit(SubscriptionLimit storage, long companyId)
+        /// <returns>the counting result is filled in value from subscriptionLimit.new</returns>
+        public SubscriptionLimit GetCompanySubscriptionLimit(long companyId)
         {
             using (var db = new ServiceContext())
             {
                 CompanyService companyService = new CompanyService();
                 SubscriptionService subscriptionService = new SubscriptionService();
-
-                storage.Old.StorageLimit = storage.New.StorageLimit;
-                storage.Old.TotalStorage = storage.New.TotalStorage;
-
+                var storage = new SubscriptionLimit();
                 var storages = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId: companyId);
 
                 if (storages != null)
