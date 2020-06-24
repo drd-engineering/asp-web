@@ -61,10 +61,9 @@ namespace DRD.Service
             string[] listOfEmail = emails.Split(',');
             using (var db = new ServiceContext())
             {
-                Member admin = db.Members.Where(member => member.UserId == userId && member.CompanyId == companyId && member.IsAdministrator).FirstOrDefault();
-                if (admin == null)
+                if (!memberService.checkIsAdmin(userId, companyId) && !memberService.checkIsOwner(userId, companyId))
                 {
-                    // user editting member is not administrator
+                    // user editting member is not administrator or owner
                     retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
                 }
                 else
@@ -130,15 +129,6 @@ namespace DRD.Service
                 db.SaveChanges();
 
                 return result;
-            }
-        }
-
-        public bool CheckIsOwner(long userId, long companyId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
-                return owner == null ? false : true;
             }
         }
 

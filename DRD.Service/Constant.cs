@@ -23,7 +23,20 @@ namespace DRD.Service
 
         /// Constructor
         public Constant() { }
+        public enum InivitationStatus
+        {
+            Connected = 0,
+            Pending = 1,
+            Inactive = 2
+        }
 
+        public enum MemberRole
+        {
+            Not_Member = 0,
+            Member = 1,
+            Administrator = 2,
+            Owner = 3
+        }
         public enum RotationStatus
         {
             Open = 0,

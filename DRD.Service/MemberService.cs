@@ -92,6 +92,15 @@ namespace DRD.Service
             }
         }
 
+        public bool checkIsOwner(long userId, long companyId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
+                return owner == null ? false : true;
+            }
+        }
+
         public List<MemberItem> getAdministrators(long CompanyId)
         {
             using (var db = new ServiceContext())

@@ -97,37 +97,20 @@
 
             $scope.model = {};
             $scope.wizarno = 'company';
-            $scope.model.Id = 0;
-            $scope.model.EncryptedId = "";
-            $scope.model.LoginId = null;
-            $scope.noImage = "no_picture.png";
-            $scope.model.ImageProfile = $scope.noImage;
-            $scope.model.ImageSignature = $scope.noImage;
-            $scope.model.ImageInitials = $scope.noImage;
-            $scope.model.ImageStamp = $scope.noImage;
-            $scope.model.ImageKtp1 = $scope.noImage;
-            $scope.model.ImageKtp2 = $scope.noImage;
-            $scope.model.OfficialIdNo = null;
-            $scope.master = {};
-            $scope.model.IsActive = true;
-            $scope.isUploadImage0 = false;
-            $scope.infoSuccess = "Data saved successfully.";
-            $scope.creatorLevels = [{ Id: 0 }, { Id: 1 }, { Id: 2 }, { Id: 3 }, { Id: 4 }, { Id: 5 }];
-            $scope.model.CreatorLevel = "0";
-            var signatureNo = 0; // ?
-
+            $scope.companySetting = {};
+            $scope.companySetting.companies = [];
 
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                console.log($scope.wizarno);
-
+                $scope.getCompanySetting();
                 $('#content').show();
 
             });
             $scope.getCompanySetting = function () {
                 $scope.wizarno = "company";
+                $scope.getCompanySettingFromServer();
                 console.log($scope.wizarno);
             }
 
@@ -138,6 +121,47 @@
             }
 
 
+            //:::::::::: API FUNCTION SECTION :::::::::::::::::::::
+            $scope.getCompanySettingFromServer = function () {
+                
+                $http.post('@Url.Action("getCompanySetting", "Setting")', { }).then(function (response) {
+                    if (response.data) {
+                        $scope.companySetting = response.data;
+                        console.log(response.data);
+                    }
+                }, function (response) {
+                        console.log(response);
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.acceptCompany = function (companyId) {
+                
+                $http.post('@Url.Action("AcceptCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
+                    if (response.data) {
+                        $scope.getCompanySettingFromServer();
+                    }
+                }, function (response) {
+                        console.log(response);
+                    //error handle\
+                    var x = 0;
+                });
+            }
+
+            $scope.deleteCompany = function (companyId) {
+
+                $http.post('@Url.Action("RejectCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
+                    if (response.data) {
+                        $scope.getCompanySettingFromServer();
+                    }
+                }, function (response) {
+                        console.log(response);
+                    //error handle\
+                    var x = 0;
+                });
+            }
+            //:::::::::: END OF API FUNCTION SECTION :::::::::::::::::::::
 
         });
 

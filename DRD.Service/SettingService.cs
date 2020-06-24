@@ -17,6 +17,57 @@ namespace DRD.Service
 {
     public class SettingService
     {
+        public CompanySettingData getCompanySetting(long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                CompanySettingData companyData = new CompanySettingData();
+                var pendingData = (from member in db.Members
+                            orderby member.isMemberAccept
+                            join company in db.Companies on  member.CompanyId equals company.Id
+                            join user in db.Users on company.OwnerId equals user.Id
+                            where member.UserId == userId && member.isCompanyAccept && member.IsActive && company.OwnerId != member.UserId
+                                   select new CompanyItemMember
+                            {
+                                Id = company.Id,
+                                Name = company.Name,
+                                OwnerId = company.OwnerId,
+                                OwnerName = user.Name,
+                                       Role = member.isMemberAccept ? (member.IsAdministrator ? Constant.MemberRole.Administrator.ToString() : Constant.MemberRole.Member.ToString()) : Constant.MemberRole.Not_Member.ToString(),
+                                Status = member.isMemberAccept ? (int)Constant.InivitationStatus.Connected : (int)Constant.InivitationStatus.Pending
+                            }).ToList();
+                if (pendingData != null)
+                {
+                    companyData.companies = pendingData;
+                }
+                return companyData;
+            }
+        }
 
+        public int acceptCompany(long companyId, long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
+                member.isMemberAccept = true;
+                db.SaveChanges();
+                return (int) System.Net.HttpStatusCode.OK;
+            }
+        }
+
+        public int resetState(long companyId, long userId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
+                member.IsActive = false;
+                //reset state
+                member.isCompanyAccept = false;
+                member.IsAdministrator = false;
+                member.isMemberAccept = false;
+                db.SaveChanges();
+                return (int)System.Net.HttpStatusCode.OK;
+            }
+        }
     }
 }
