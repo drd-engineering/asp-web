@@ -77,6 +77,8 @@ namespace DRD.Service
                 document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.UserEmail = newDocument.UserEmail;
                 document.CreatedAt = DateTime.Now;
+                document.UpdatedAt = DateTime.Now;
+
 
                 // NEW
                 document.ExpiryDay = newDocument.ExpiryDay;
