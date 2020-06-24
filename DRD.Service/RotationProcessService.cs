@@ -462,7 +462,11 @@ namespace DRD.Service
                     var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == memberId);
                     if (docm != null)
                     {
-                        docm.FlagAction = rnc.FlagAction;
+                        if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                            ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                        else if (docm.FlagAction != rnc.FlagAction) docSvr.DocumentUpdatedByRotation(rnc.DocumentId);
+                        docm.FlagAction |= rnc.FlagAction;
                         // Also Document permission updating related to Rotation User that have permission
                         docm.FlagPermission |= rotationUser.FlagPermission;
                     }
@@ -471,7 +475,10 @@ namespace DRD.Service
                         DocumentUser docmem = new DocumentUser();
                         docmem.DocumentId = rnc.Document.Id;
                         docmem.UserId = memberId;
-                        docmem.FlagAction = rnc.FlagAction;
+                        if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                            ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                        else if (rnc.FlagAction != 0) docSvr.DocumentUpdatedByRotation(rnc.DocumentId); docmem.FlagAction |= rnc.FlagAction; 
                         docmem.FlagPermission = 6; // default view, add annotate
                         // Also Document permission updating related to Rotation User that have permission
                         docmem.FlagPermission |= rotationUser.FlagPermission;
