@@ -243,6 +243,14 @@
            });
         }
 
+        function convertJsonDate(val) {
+                if (val == undefined)
+                    return null;
+                if (val instanceof Date)
+                    return val;
+                return new Date(parseInt(val.substr(6)));
+        };
+
         $(window).load(function () {
             NProgress.done();
         });

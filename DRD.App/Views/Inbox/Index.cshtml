@@ -402,6 +402,7 @@
                     return '';
                 return new Date(parseInt(val.substr(6)));
             }
+
             // Settings anno scope with data given
             $scope.setAnnos = function (givenItem) {
                 $scope.annos = [];
@@ -1621,21 +1622,6 @@
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
-            $scope.convertJsonDate = function (val) {
-                if (val == undefined)
-                    return null;
-                if (val instanceof Date)
-                    return val;
-                return new Date(parseInt(val.substr(6)));
-            };
-            function convertJsonDate(val) {
-                if (val == undefined)
-                    return null;
-                if (val instanceof Date)
-                    return val;
-                return new Date(parseInt(val.substr(6)));
-            };
-
 
             $scope.getUpdatedInbox = function () {
                 const queryString = window.location.search;
