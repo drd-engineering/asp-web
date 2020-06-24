@@ -313,6 +313,9 @@
     <Content Include="assets\css\pages\for-all-page.css" />
     <Content Include="assets\css\nprogress.css" />
     <Content Include="assets\css\pages\setting.css" />
+    <Content Include="assets\js\core\app.js" />
+    <Content Include="assets\js\core\app.min.js" />
+    <Content Include="assets\js\core\moment.js" />
     <Content Include="assets\js\nprogress.js" />
     <Content Include="assets\js\constant.js" />
     <Content Include="assets\js\signature.js" />
@@ -3653,7 +3656,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="assets\js\core\" />
     <Folder Include="assets\js\pages\" />
     <Folder Include="doc\company\temp\" />
     <Folder Include="doc\drdrive\" />

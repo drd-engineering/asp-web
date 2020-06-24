@@ -3,6 +3,7 @@ using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace DRD.App.Controllers
 {
@@ -37,9 +38,10 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
 
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
+
             //page authorization check if user has no access
             if (product.AccessType.Equals((int)Constant.AccessType.noAccess))
                 return RedirectToAction("Index", "Dashboard");
@@ -68,7 +70,9 @@ namespace DRD.App.Controllers
         public ActionResult List()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+            {
+                return RedirectToAction("Index", "login", new { redirectUrl = "Inbox/List"});
+            }
             return View(layout);
         }
 

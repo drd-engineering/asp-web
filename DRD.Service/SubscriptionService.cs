@@ -9,38 +9,64 @@ namespace DRD.Service
 {
     public class SubscriptionService
     {
-        public bool AddUsage(Constant.PackageItem packageType, long additionalUsage, long companyId)
+        UserService userService = new UserService();
+
+        public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(Constant.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false)
         {
             using (var db = new ServiceContext())
             {
-                var result = GetCompanyUsage(companyId);
-                if (packageType != Constant.PackageItem.Storage)
+                System.Diagnostics.Debug.WriteLine("LALALA: " + packageType.ToString() + companyId + " :: "+additional+addAfterSubscriptionValid);
+                Usage usage = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                BusinessPackage package = db.BusinessPackages.Where(c => c.Id == usage.PackageId && c.IsActive).FirstOrDefault();
+                int additionalUsage = 0;
+
+                if (!packageType.Equals(Constant.BusinessPackageItem.Storage))
                 {
-                    int additional = (int)additionalUsage;
-                    if (packageType.Equals(Constant.PackageItem.Administrator))
-                        result.Administrator += additional;
-                    if (packageType.Equals(Constant.PackageItem.Rotation))
-                        result.Rotation += additional;
-                    if (packageType.Equals(Constant.PackageItem.Rotation_Started))
-                        result.RotationStarted += additional;
-                    if (packageType.Equals(Constant.PackageItem.User))
-                        result.User += additional;
-                    if (packageType.Equals(Constant.PackageItem.Workflow))
-                        result.Workflow += additional;
+                    additionalUsage = (int)additional;
                 }
-                else
+
+                if (!checkExpired(package, usage).Equals(Constant.BusinessUsageStatus.OK))
                 {
-                    result.Storage += additionalUsage;
+                    return Constant.BusinessUsageStatus.EXPIRED;
                 }
+
+                switch (packageType)
+                {
+                    case Constant.BusinessPackageItem.Administrator:
+                        if (!package.IsExceedLimitAllowed && package.Administrator != Constant.ALLOW_EXCEED_LIMIT && usage.Administrator + additionalUsage > package.Administrator)
+                            return Constant.BusinessUsageStatus.ADMINISTRATOR_EXCEED_LIMIT;
+                        else if (addAfterSubscriptionValid.Value)
+                            usage.Administrator += additionalUsage;
+                        break;
+                    case Constant.BusinessPackageItem.Rotation_Started:
+                        if (!package.IsExceedLimitAllowed && package.RotationStarted != Constant.ALLOW_EXCEED_LIMIT && usage.RotationStarted + additionalUsage > package.RotationStarted)
+                            return Constant.BusinessUsageStatus.ROTATION_STARTED_EXCEED_LIMIT;
+                        else if (addAfterSubscriptionValid.Value)
+                            usage.RotationStarted += additionalUsage;
+                        break;
+                    case Constant.BusinessPackageItem.Member:
+                        if (!package.IsExceedLimitAllowed && package.Member != Constant.ALLOW_EXCEED_LIMIT && usage.Member + additionalUsage > package.Member)
+                            return Constant.BusinessUsageStatus.MEMBER_EXCEED_LIMIT;
+                        else if (addAfterSubscriptionValid.Value)
+                            usage.Member += additionalUsage;
+                        break;
+                    case Constant.BusinessPackageItem.Storage:
+                        if (!package.IsExceedLimitAllowed && package.Storage != Constant.ALLOW_EXCEED_LIMIT && usage.Storage + additional > package.Storage)
+                            return Constant.BusinessUsageStatus.STORAGE_EXCEED_LIMIT;
+                        else if (addAfterSubscriptionValid.Value)
+                            usage.Storage += additional.Value;
+                        break;
+                }
+              
                 db.SaveChanges();
             }
-            return true;
+            return Constant.BusinessUsageStatus.OK;
         }
 
-        public bool DeactivateActiveUsage(long companyId)
+        public Usage DeactivateActiveUsage(long companyId)
         {
             Usage planBusiness = EditBusinessPackage(companyId, null, null, null, IsActive: false);
-            return planBusiness != null;
+            return planBusiness;
         }
 
         public Usage EditBusinessPackage(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
@@ -50,10 +76,13 @@ namespace DRD.Service
                 Usage planBusiness = (from c in db.Usages
                                       where c.CompanyId == companyId && c.IsActive
                                       select c).FirstOrDefault();
-                planBusiness.Administrator = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.Administrator);
-                planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
-                planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
-                db.SaveChanges();
+                if (planBusiness != null)
+                {
+                    planBusiness.Administrator = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.Administrator);
+                    planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
+                    planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
+                    db.SaveChanges();
+                }
                 return planBusiness;
             }
         }
@@ -76,19 +105,15 @@ namespace DRD.Service
                             ExpiredAt = usage == null ? DateTime.MinValue : usage.ExpiredAt,
                             IsActive = usage == null ? false : usage.IsActive,
                             PackageName = package == null ? null : package.Name,
-                            RotationLimit = package == null ? 0 : package.Rotation,
                             RotationStartedLimit = package == null ? 0 : package.RotationStarted,
                             StartedAt = usage == null ? DateTime.MinValue : usage.StartedAt,
                             StorageLimit = package == null ? 0 : package.Storage,
                             TotalAdministrators = usage == null ? 0 : usage.Administrator,
                             TotalPrice = price == null ? 0 : price.Total,
-                            TotalRotation = usage == null ? 0 : usage.Rotation,
                             TotalRotationStarted = usage == null ? 0 : usage.RotationStarted,
                             TotalStorage = usage == null ? 0 : usage.Storage,
-                            TotalUsers = usage == null ? 0 : usage.User,
-                            TotalWorkflow = usage == null ? 0 : usage.Workflow,
-                            UsersLimit = package == null ? 0 : package.User,
-                            WorkflowLimit = package == null ? 0 : package.Workflow,
+                            TotalUsers = usage == null ? 0 : usage.Member,
+                            UsersLimit = package == null ? 0 : package.Member,
                         }).FirstOrDefault();
             }
         }
@@ -184,43 +209,69 @@ namespace DRD.Service
             }
         }
 
-        public bool IsSubscriptionValid(long userId, long usageId)
+        public Constant.BusinessUsageStatus IsSubscriptionValid(long userId, long usageId)
         {
             using (var db = new ServiceContext())
             {
                 Usage usage = getCompanyUsageById(usageId);
-
+                //check if having any active usage
+                if (usage == null) return Constant.BusinessUsageStatus.NO_ACTIVE_PLAN;
                 if (usage != null)
                 {
                     var package = GetCompanyPackage(usage.PackageId);
                     //check usage with package limitation
-                    if (!IsValid(package, usage))
+                    Constant.BusinessUsageStatus validStatus = IsValid(package, usage);
+                    if ( validStatus != Constant.BusinessUsageStatus.OK)
                     {
-                        DeactivateActiveUsage(usageId);
-                        return false;
+                        return validStatus;
                     }
                 }
-                UserService userService = new UserService();
-
-                return (usage != null) && (userService.IsAdminOrOwnerofAnyCompany(userId));
+                //check if authorizeed admin or owner
+                if (!userService.IsAdminOrOwnerofSpecificCompany(userId,companyId:usage.CompanyId)) return Constant.BusinessUsageStatus.NOT_AUTHORIZED;
+                return Constant.BusinessUsageStatus.OK;
             }
         }
 
-        public bool IsValid(BusinessPackage package, Usage usage)
+        public Constant.BusinessUsageStatus IsValid(BusinessPackage package, Usage usage)
         {
             if (!package.IsExceedLimitAllowed)
             {
-                if (package.Administrator != -99 && usage.Administrator > package.Administrator) return false;
-                if (package.Rotation != -99 && usage.Rotation > package.Rotation) return false;
-                if (package.RotationStarted != -99 && usage.RotationStarted > package.RotationStarted) return false;
-                if (package.Storage != -99 && usage.Storage > package.Storage) return false;
-                if (package.User != -99 && usage.User > package.User) return false;
+                if (package.Administrator != Constant.ALLOW_EXCEED_LIMIT && usage.Administrator > package.Administrator) return Constant.BusinessUsageStatus.ADMINISTRATOR_EXCEED_LIMIT;
+                if (package.RotationStarted != Constant.ALLOW_EXCEED_LIMIT && usage.RotationStarted > package.RotationStarted) return Constant.BusinessUsageStatus.ROTATION_STARTED_EXCEED_LIMIT;
+                if (package.Storage != Constant.ALLOW_EXCEED_LIMIT && usage.Storage > package.Storage) return Constant.BusinessUsageStatus.STORAGE_EXCEED_LIMIT;
+                if (package.Member != Constant.ALLOW_EXCEED_LIMIT && usage.Member > package.Member) return Constant.BusinessUsageStatus.MEMBER_EXCEED_LIMIT;
             }
-            if (!package.IsExpirationDateExtendedAutomatically)
+
+
+            return checkExpired(package,usage);
+        }
+
+        public Constant.BusinessUsageStatus checkExpired(BusinessPackage package, Usage usage)
+        {
+            if (!package.IsExpirationDateExtendedAutomatically && usage.ExpiredAt < DateTime.Now)
             {
-                if (usage.ExpiredAt < DateTime.Now) return false;
+                DeactivateActiveUsage(usage.CompanyId);
+                return Constant.BusinessUsageStatus.EXPIRED;
             }
-            return true;
+            if (package.IsExpirationDateExtendedAutomatically && usage.ExpiredAt < DateTime.Now)
+            {
+                ExtendUsage(usage.Id);
+            }
+            return Constant.BusinessUsageStatus.OK;
+        }
+
+        public void ExtendUsage(long companyId)
+        {
+            Usage oldUsage = DeactivateActiveUsage(companyId);
+            BusinessPackage businessPackage = getCompanyPackageByCompany(companyId);
+            using (var db = new ServiceContext())
+            {
+                DateTime extendedTime = oldUsage.ExpiredAt.AddDays(businessPackage.Duration);
+                Usage newUsage = new Usage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
+
+                db.Usages.Add(newUsage);
+                db.SaveChanges();
+            }
         }
     }
 }

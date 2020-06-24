@@ -15,7 +15,7 @@ namespace DRD.Service
         private UserService userService = new UserService();
         // POST/GET AcceptMember/memberId
         // return user id if member accepted, return -1 if member not found.
-        public long AcceptMember(long memberId)
+        public int AcceptMember(long memberId)
         {
             using (var db = new ServiceContext())
             {
@@ -23,8 +23,10 @@ namespace DRD.Service
                 if (memberSearch != null)
                 {
                     memberSearch.isCompanyAccept = true;
-                    db.SaveChanges();
-                    return memberSearch.UserId;
+                    var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1);
+                    if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                        db.SaveChanges();
+                    return (int) subscriptionStatus;
                 }
                 else
                     return -1;

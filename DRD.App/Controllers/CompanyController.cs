@@ -39,7 +39,7 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             var isAdminandHasCompany = userService.IsAdminOrOwnerofAnyCompany(user.Id);
             if (isAdminandHasCompany)
             {
@@ -58,7 +58,7 @@ namespace DRD.App.Controllers
         public ActionResult Member(long id)
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             var company = companyService.GetCompany(id);
             if (company == null)
             {

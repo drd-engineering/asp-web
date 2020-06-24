@@ -34,7 +34,7 @@ namespace DRD.App.Controllers
         public ActionResult New()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             WorkflowItem product = new WorkflowItem();
             layout.obj = product;
 
@@ -44,7 +44,7 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             WorkflowItem product = new WorkflowItem();
             product = workflowService.GetById(id);
             layout.obj = product;
@@ -56,7 +56,7 @@ namespace DRD.App.Controllers
         public ActionResult List()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             return View(layout);
         }
         public ActionResult GetById(long id)

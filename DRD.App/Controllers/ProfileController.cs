@@ -38,7 +38,7 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             
             layout.obj = login.GetUser(this);
             layout.activeId = 0;
@@ -53,7 +53,6 @@ namespace DRD.App.Controllers
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
-            var strmenu = login.ManipulateMenu(this, userSession);
             // end decription menu
 
             layout.user = login.GetUser(this);
@@ -85,19 +84,11 @@ namespace DRD.App.Controllers
 
             // begin decription menu
             UserSession userSession = login.GetUser(this);
-            var strmenu = login.ManipulateSubMenu(this, userSession);
             // end decription menu
 
             UserProfile user = new UserProfile();
-            string[] ids = strmenu.Split(',');
-            if (ids.Length > 1 && !ids[1].Equals("0"))
-            {
-                UserService userService = new UserService();
-                user = userService.GetById(int.Parse(ids[1]), userSession.Id);
-            }
-
+           
             Layout layout = new Layout();
-            layout.activeId = int.Parse(ids[0]);
             layout.menus = login.GetMenus(this, layout.activeId);
             layout.user = userSession;
             layout.obj = user;

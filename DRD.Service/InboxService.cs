@@ -10,6 +10,19 @@ namespace DRD.Service
 {
     public class InboxService
     {
+
+        public bool checkIdExist(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                
+                    var inboxesCount = db.Inboxes.Where(inbox => inbox.Id == id).FirstOrDefault();
+
+                    return inboxesCount != null;
+                
+            }
+        }
+
         /// <summary>
         /// Obtain all inbox data related to user as many as pageSize
         /// </summary>
@@ -18,6 +31,7 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
+        /// 
         public List<InboxList> GetInboxList(long userId, string criteria, int skip, int take)
         {
             // all criteria
@@ -233,6 +247,10 @@ namespace DRD.Service
                 {
                     Inbox inboxItem;
                     inboxItem = new Inbox();
+                    while (checkIdExist(inboxItem.Id))
+                    {
+                        inboxItem.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                    }
                     inboxItem.IsUnread = true;
                     if (activity.RotationNodeId < 0)
                     {
@@ -275,6 +293,10 @@ namespace DRD.Service
                         {
                             Inbox inboxItem2;
                             inboxItem2 = new Inbox();
+                            while (inboxItem2.Id == inboxItem.Id || checkIdExist(inboxItem2.Id))
+                            {
+                                inboxItem2.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                            }
                             inboxItem2.IsUnread = true;
                             inboxItem2.LastStatus = "ROTATION";
                             inboxItem2.DateNote = "You have rotation - " + activity.RotationName;

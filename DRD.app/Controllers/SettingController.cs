@@ -45,7 +45,7 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
 
             layout.obj = login.GetUser(this);
             layout.activeId = 0;
