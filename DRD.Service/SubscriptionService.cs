@@ -11,7 +11,7 @@ namespace DRD.Service
     {
         UserService userService = new UserService();
 
-        public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(Constant.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false)
+        public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(Constant.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false, bool reset = false)
         {
             using (var db = new ServiceContext())
             {
@@ -33,28 +33,28 @@ namespace DRD.Service
                 switch (packageType)
                 {
                     case Constant.BusinessPackageItem.Administrator:
-                        if (!package.IsExceedLimitAllowed && package.Administrator != Constant.ALLOW_EXCEED_LIMIT && usage.Administrator + additionalUsage > package.Administrator)
+                        if (!package.IsExceedLimitAllowed && package.Administrator != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Administrator + additionalUsage > package.Administrator) || (reset && additionalUsage > package.Administrator)))
                             return Constant.BusinessUsageStatus.ADMINISTRATOR_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
-                            usage.Administrator += additionalUsage;
+                            usage.Administrator = reset ? additionalUsage : additionalUsage + usage.Administrator;
                         break;
                     case Constant.BusinessPackageItem.Rotation_Started:
-                        if (!package.IsExceedLimitAllowed && package.RotationStarted != Constant.ALLOW_EXCEED_LIMIT && usage.RotationStarted + additionalUsage > package.RotationStarted)
+                        if (!package.IsExceedLimitAllowed && package.RotationStarted != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.RotationStarted + additionalUsage > package.RotationStarted) || (reset && additionalUsage > package.RotationStarted)))
                             return Constant.BusinessUsageStatus.ROTATION_STARTED_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
-                            usage.RotationStarted += additionalUsage;
+                            usage.RotationStarted = reset? additionalUsage: additionalUsage + usage.RotationStarted;
                         break;
                     case Constant.BusinessPackageItem.Member:
-                        if (!package.IsExceedLimitAllowed && package.Member != Constant.ALLOW_EXCEED_LIMIT && usage.Member + additionalUsage > package.Member)
+                        if (!package.IsExceedLimitAllowed && package.Member != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Member + additionalUsage > package.Member) || (reset && additionalUsage > package.Member)))
                             return Constant.BusinessUsageStatus.MEMBER_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
-                            usage.Member += additionalUsage;
+                            usage.Member = reset ? additionalUsage : additionalUsage + usage.Member;
                         break;
                     case Constant.BusinessPackageItem.Storage:
-                        if (!package.IsExceedLimitAllowed && package.Storage != Constant.ALLOW_EXCEED_LIMIT && usage.Storage + additional > package.Storage)
+                        if (!package.IsExceedLimitAllowed && package.Storage != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Storage + additionalUsage > package.Storage) || (reset && additionalUsage > package.Storage)))
                             return Constant.BusinessUsageStatus.STORAGE_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
-                            usage.Storage += additional.Value;
+                            usage.Storage = reset ? additionalUsage : additionalUsage + usage.Storage;
                         break;
                 }
               

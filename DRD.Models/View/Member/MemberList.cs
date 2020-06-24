@@ -4,6 +4,7 @@ namespace DRD.Models.View
 {
     public class MemberList
     {
+        public string status { get; set; }
         public ICollection<MemberItem> members { set; get; }
 
         public long addMember(MemberItem memberItem)
