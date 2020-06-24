@@ -80,14 +80,12 @@ namespace DRD.App.Controllers
             InitializeAPI();
             if (user == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                return RedirectToAction("Index", "LoginController");
             }
             var data = memberService.AcceptInvitation(user.Id, memberId);
-            if (data)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.OK);
-            }
-            else return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (!data) return RedirectToAction("Index", "LoginController");
+            
+            return RedirectToAction("Index", "Setting");
         }
         public ActionResult GetAcceptedMember(long companyId)
         {

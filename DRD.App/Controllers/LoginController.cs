@@ -13,6 +13,8 @@ namespace DRD.App.Controllers
     {
         public ActionResult Index()
         {
+            if (this.Session["_USER_LOGIN_"] != null)
+                return RedirectToAction("Index", "DashboardController");
             return View();
         }
 
