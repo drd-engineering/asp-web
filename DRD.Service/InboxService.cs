@@ -409,8 +409,6 @@ namespace DRD.Service
             body = body.Replace("{_ACTION_}", inbox.LastStatus);
             body = body.Replace("{_MESSAGE_}", inbox.DateNote);
 
-            body = body.Replace("//images", "/images");
-
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
             System.Diagnostics.Debug.WriteLine(senderEmail + senderName + user.Email + "Inbox Reception");
