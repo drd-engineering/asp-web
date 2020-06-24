@@ -541,10 +541,6 @@
 
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
                 var doc = $scope.docs[idx];
-                if (!$scope.checkIsFirstPerson()) {
-                    $scope.model.FlagAction |= 2;
-                    doc.FlagAction |= 2;
-                }
                 $scope.setAnnos(doc.Document.DocumentElements);
                 if (iframe.contentWindow == null)
                     return;
@@ -563,7 +559,6 @@
 
 
             $scope.closePdf = function () {
-                console.log("revise");
                 if ($scope.isRevising) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                     if (items != [] && items != null && items != undefined) {
@@ -583,6 +578,10 @@
                             function (isConfirm) {
                                 if (isConfirm) {
                                     $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                    if (!$scope.checkIsFirstPerson()) {
+                                        $scope.model.FlagAction |= 2;
+                                        $scope.docs[$scope.selectedIdx].FlagAction |= 2;
+                                    }
                                     $scope.$apply();
                                     if ($scope.fromSelectDoc) {
                                         $("#modal_select_document").modal("show");
@@ -608,9 +607,7 @@
                 }
                 $scope.isRevising = false;
                 $scope.isUploading = false;
-                console.log($scope.isRevising );
-
-
+                console.log($scope.isRevising);
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
