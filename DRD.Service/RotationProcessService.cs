@@ -369,7 +369,7 @@ namespace DRD.Service
                 }
 
                 //check rotation started limit or add when limit passed
-                var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, companyIdStarted, 1, true);
+                var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, rt.CompanyId.Value, additional:1, addAfterSubscriptionValid: true);
            
 
                 if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK) )

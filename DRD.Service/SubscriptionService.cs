@@ -15,7 +15,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                System.Diagnostics.Debug.WriteLine("LALALA: " + packageType.ToString() + companyId + " :: "+additional+addAfterSubscriptionValid);
+
                 Usage usage = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 BusinessPackage package = db.BusinessPackages.Where(c => c.Id == usage.PackageId && c.IsActive).FirstOrDefault();
                 int additionalUsage = 0;
