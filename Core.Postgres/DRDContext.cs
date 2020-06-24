@@ -571,9 +571,9 @@ namespace Core.Postgres
                 IsAdministrator = false
             };
 
-            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
-            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Corporate" };
-            BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Enterprise" };
+            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,CreatedAt=DateTime.Now,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
+            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted = -99, CreatedAt = DateTime.Now, IsPublic = true, Member = -99, Storage = 100000000, Administrator = 2, Name = "Corporate" };
+            BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted = -99, CreatedAt = DateTime.Now, IsPublic = true, Member = -99, Storage = 100000000, Administrator = 2, Name = "Enterprise" };
 
             Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
             Price price2 = new Price { Id = -2, CreatedAt = DateTime.Now, Total = 31241256, PackageId = package2.Id };
