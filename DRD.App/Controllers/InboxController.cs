@@ -38,7 +38,7 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             if (!Initialize())
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Index", "login", new { redirectUrl = "Inbox?id="+id });
 
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
 
