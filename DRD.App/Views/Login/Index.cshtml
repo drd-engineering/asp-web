@@ -185,21 +185,21 @@
                     password: $scope.password
                 }).then(function (response) {
                     if (response.data) {
-                        if (response.data == -1)
+                        if (response.data == -1) {
                             showInfo('Invalid username and password!');
                         else if (response.data == 1)
                             window.location = $scope.redirectUrl;
                         else if (response.data == 2)
                             window.location = "/appzone/appzonelist";
+                        }
+                        $scope.load = false;
                     }
                 }, function (response) {
-                        $scope.load = false;
+                    $scope.load = false;
                     //error handle\
                     var x = 0;
                 });
             }
-
-
         });
 
 

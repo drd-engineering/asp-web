@@ -354,8 +354,9 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyIdStarted = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive).CompanyId;
-                rt.CompanyId = companyIdStarted;
+                var companyUsage = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
+                rt.CompanyId = companyUsage.CompanyId;
+                rt.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
                 rt.DateUpdated = DateTime.Now;
                 rt.DateStarted = DateTime.Now;
 
@@ -369,14 +370,14 @@ namespace DRD.Service
 
                 //check rotation started limit or add when limit passed
                 var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, companyIdStarted, 1, true);
-            System.Diagnostics.Debug.WriteLine("LALALA: before check  " + rotationStartedLimitStatus);
+           
 
                 if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK) )
                 {
                     retvalues.Add(createActivityResult((int)rotationStartedLimitStatus, rotationStartedLimitStatus.ToString()));
                     return retvalues;
                 }
-            System.Diagnostics.Debug.WriteLine("LALALA: after check  " + rotationStartedLimitStatus);
+            
 
                 
                 long rotId = rt.Id;
@@ -384,7 +385,7 @@ namespace DRD.Service
                 // send to all activity under start node +
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
-            System.Diagnostics.Debug.WriteLine("LALALA: INSIDE  " + workflowNodeLink.WorkflowNodeToId);
+            
                     RotationNode rtnode = new RotationNode();
                     //rtnode.Rotation = rt;
                     rtnode.RotationId = rt.Id;
@@ -478,7 +479,11 @@ namespace DRD.Service
                     var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == memberId);
                     if (docm != null)
                     {
-                        docm.FlagAction = rnc.FlagAction;
+                        if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                            ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                        else if (docm.FlagAction != rnc.FlagAction) docSvr.DocumentUpdatedByRotation(rnc.DocumentId);
+                        docm.FlagAction |= rnc.FlagAction;
                         // Also Document permission updating related to Rotation User that have permission
                         docm.FlagPermission |= rotationUser.FlagPermission;
                     }
@@ -487,7 +492,10 @@ namespace DRD.Service
                         DocumentUser docmem = new DocumentUser();
                         docmem.DocumentId = rnc.Document.Id;
                         docmem.UserId = memberId;
-                        docmem.FlagAction = rnc.FlagAction;
+                        if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                            ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                        else if (rnc.FlagAction != 0) docSvr.DocumentUpdatedByRotation(rnc.DocumentId); docmem.FlagAction |= rnc.FlagAction; 
                         docmem.FlagPermission = 6; // default view, add annotate
                         // Also Document permission updating related to Rotation User that have permission
                         docmem.FlagPermission |= rotationUser.FlagPermission;

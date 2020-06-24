@@ -14,6 +14,47 @@
     <title>Material Design for Bootstrap</title>
 
     <style type="text/css">
+        .focus-text{
+            color:#FD9816;
+            margin:0px 5px 0px 5px;
+            font-size:16px;
+        }
+        .focus-button{
+            border-radius:15px;
+        }
+        .focus-button a{
+            color: white;
+            padding: 18px 12px;
+            border-radius: 15px;
+            font-family: 'Work Sans', Calibri, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            background-color: #FD9816;
+        }
+        .focus-button a:hover{
+            color: white;
+            background-color: #ffaf48;
+        }
+        .additional-button{
+            border-radius:20px;
+        }
+        .additional-button  a {
+            color: white;
+            padding: 22px 9px;
+            border-radius: 15px;
+            font-family: 'Work Sans', Calibri, sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            background-color: #075685;
+        }
+        .additional-button a:hover{
+            color: white;
+            background-color: #5D90AE;
+        }
         body {
             width: 100%;
             background-color: #ffffff;
@@ -165,9 +206,8 @@
     <table style="display:none!important;">
         <tr>
             <td>
-                <div
-                    style="overflow:hidden;display:none;font-size:1px;color:#ffffff;line-height:1px;font-family:Arial;maxheight:0px;max-width:0px;opacity:0;">
-                    Pre-header for the newsletter template
+                <div style="overflow:hidden;display:none;font-size:1px;color:#ffffff;line-height:1px;font-family:Arial;maxheight:0px;max-width:0px;opacity:0;">
+                    email design by pandaranger
                 </div>
             </td>
         </tr>
@@ -188,14 +228,15 @@
                         <td align="center">
 
                             <table border="0" align="center" width="590" cellpadding="0" cellspacing="0"
-                                class="container590">
+                                   class="container590">
 
                                 <tr>
                                     <td align="center" height="70" style="height:70px;">
                                         <a href=""
-                                            style="display: block; border-style: none !important; border: 0 !important;"><img
-                                                width="100" border="0" style="display: block; width: 100px;"
-                                                src="{_URL_}/images/emailhtml/logo.png" alt="" /></a>
+                                           style="display: block; border-style: none !important; border: 0 !important;">
+                                            <img width="100" border="0" style="display: block; width: 100px;"
+                                                 src="{_URL_}images/emailhtml/logo.png" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
                             </table>
@@ -211,7 +252,6 @@
         </tr>
     </table>
     <!-- end header -->
- 
     <!-- big image section -->
 
     <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="ffffff" class="bg_color">
@@ -242,7 +282,7 @@
                     <tr>
                         <td align="center">
                             <table border="0" width="40" align="center" cellpadding="0" cellspacing="0"
-                                bgcolor="eeeeee">
+                                   bgcolor="eeeeee">
                                 <tr>
                                     <td height="2" style="font-size: 2px; line-height: 2px;">&nbsp;</td>
                                 </tr>
@@ -257,7 +297,7 @@
                     <tr>
                         <td align="center">
                             <table border="0" width="400" align="center" cellpadding="0" cellspacing="0"
-                                class="container590">
+                                   class="container590">
                                 <tr>
                                     <td align="center"
                                         style="color: #888888; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;">
@@ -265,9 +305,9 @@
 
                                         <div style="line-height: 24px">
 
-                                            Hi, {_NAME_}!
-                                            <br>
-                                            {_MESSAGE_} from <strong>{_SENDER_}</strong> 
+                                            Hi, <span class="focus-text">{_NAME_}</span>!
+                                            <br />
+                                            <span class="focus-text">{_MESSAGE_}</span> from <span class="focus-text" style="text-decoration:none;"><strong>{_SENDER_}</strong></span>
 
                                         </div>
                                     </td>
@@ -284,16 +324,17 @@
 
 
                             <table border="0" width="170" align="center" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <!-- ======= image ======= -->
                                     <td align="center">
                                         <a href=""
-                                            style=" border-style: none !important; display: block; border: 0 !important;"><img
-                                                src="{_URL_}/images/emailhtml/review.svg" style="display: block; width: 170PX;" width="170"
-                                                border="0" alt="" /></a>
+                                           style=" border-style: none !important; display: block; border: 0 !important;">
+                                            <img src="{_URL_}images/emailhtml/review.svg" style="display: block; width: 170PX;" width="170"
+                                                 border="0" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -302,15 +343,11 @@
                                 </tr>
 
                                 <tr>
-                                    <td align="center"
-                                        style="color: #333333; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 500; line-height: 20px;">
+                                    <td align="center" class="focus-button">
                                         <!-- ======= section text ====== -->
-
-                                        <div style="line-height: 20px">
-                                            <a href="{_URL_}" class="main-button" style="background-color:aquamarine; padding:10px; border-radius:5px; text-decoration: none;color:black;">
-                                                {_ACTION_}
-                                            </a>
-                                        </div>
+                                        <a href="{_URL_}Inbox/List/" style="text-decoration: none;">
+                                            {_ACTION_}
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -325,17 +362,17 @@
                     <tr>
                         <td align="center">
                             <table border="0" width="400" align="center" cellpadding="0" cellspacing="0"
-                                class="container590">
+                                   class="container590">
                                 <tr>
                                     <td align="center"
                                         style="color: #888888; font-size: 16px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;">
 
 
                                         <div style="line-height: 24px">
-                                            <br>
+                                            <br />
                                             If you have any inquiry please, contact us and we’ll be glad to solve your
                                             problem
-                                            <br><br>
+                                            <br /><br />
                                         </div>
                                     </td>
                                 </tr>
@@ -351,8 +388,6 @@
     </table>
 
     <!-- end section -->
-
-
     <!-- contact section -->
     <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="ffffff" class="bg_color">
 
@@ -370,21 +405,22 @@
         <tr>
             <td align="center">
                 <table border="0" align="center" width="590" cellpadding="0" cellspacing="0"
-                    class="container590 bg_color">
+                       class="container590 bg_color">
 
                     <tr>
                         <td>
                             <table border="0" width="300" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <!-- logo -->
                                     <td align="left">
                                         <a href="{_URL_}"
-                                            style="display: block; border-style: none !important; border: 0 !important;"><img
-                                                width="80" border="0" style="display: block; width: 80px;"
-                                                src="{_URL_}/images/emailhtml/logo.png" alt="" /></a>
+                                           style="display: block; border-style: none !important; border: 0 !important;">
+                                            <img width="80" border="0" style="display: block; width: 80px;"
+                                                 src="{_URL_}images/emailhtml/logo.png" alt="" />
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -397,11 +433,11 @@
                                         style="color: #888888; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 23px;"
                                         class="text_color">
 
-                                        <h3>PT Artha Amita Sempurna </h3><br>
-                                        <strong>Alamanda Tower </strong> Lt. 23 Unit A <br>
-                                        Jl. TB Simatupang Kav 23-24 <br>
-                                        Jakarta 12430 <br>
-                                        +622127824028 | +62217508909 <br>
+                                        <h3>PT Artha Amita Sempurna </h3><br />
+                                        <strong>Alamanda Tower </strong> Lt. 23 Unit A <br />
+                                        Jl. TB Simatupang Kav 23-24 <br />
+                                        Jakarta 12430 <br />
+                                        +622127824028 | +62217508909 <br />
 
 
                                     </td>
@@ -410,16 +446,16 @@
                             </table>
 
                             <table border="0" width="2" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <td width="2" height="10" style="font-size: 10px; line-height: 10px;"></td>
                                 </tr>
                             </table>
 
                             <table border="0" width="200" align="right" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <td class="hide" height="45" style="font-size: 45px; line-height: 45px;">&nbsp;</td>
@@ -434,11 +470,10 @@
                                     <td>
                                         <table border="0" align="right" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <div
-                                                    style="color: #333333; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 600; mso-line-height-rule: exactly; line-height: 23px;">
+                                                <div style="color: #333333; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; font-weight: 600; mso-line-height-rule: exactly; line-height: 23px;">
 
                                                     Email us: <br /> <a href="mailto:"
-                                                        style="color: #888888; font-size: 14px; font-family: 'Hind Siliguri', Calibri, Sans-serif; font-weight: 400;">boy.adiputro@drdaccess.com</a>
+                                                                        style="color: #888888; font-size: 14px; font-family: 'Hind Siliguri', Calibri, Sans-serif; font-weight: 400;">boy.adiputro@drdaccess.com</a>
                                                 </div>
                                             </tr>
                                             <tr>
@@ -447,23 +482,26 @@
                                             <tr>
                                                 <td>
                                                     <a href="https://www.facebook.com/mdbootstrap"
-                                                        style="display: block; border-style: none !important; border: 0 !important;"><img
-                                                            width="24" border="0" style="display: block;"
-                                                            src="http://i.imgur.com/Qc3zTxn.png" alt=""></a>
+                                                       style="display: block; border-style: none !important; border: 0 !important;">
+                                                        <img width="24" border="0" style="display: block;"
+                                                             src="http://i.imgur.com/RBRORq1.png" alt="" />
+                                                    </a>
                                                 </td>
                                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                                 <td>
                                                     <a href="https://twitter.com/MDBootstrap"
-                                                        style="display: block; border-style: none !important; border: 0 !important;"><img
-                                                            width="24" border="0" style="display: block;"
-                                                            src="http://i.imgur.com/RBRORq1.png" alt=""></a>
+                                                       style="display: block; border-style: none !important; border: 0 !important;">
+                                                        <img width="24" border="0" style="display: block;"
+                                                             src="http://i.imgur.com/Qc3zTxn.png" alt="" />
+                                                    </a>
                                                 </td>
                                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                                 <td>
                                                     <a href="https://plus.google.com/u/0/b/107863090883699620484/107863090883699620484/posts"
-                                                        style="display: block; border-style: none !important; border: 0 !important;"><img
-                                                            width="24" border="0" style="display: block;"
-                                                            src="http://i.imgur.com/Wji3af6.png" alt=""></a>
+                                                       style="display: block; border-style: none !important; border: 0 !important;">
+                                                        <img width="24" border="0" style="display: block;"
+                                                             src="http://i.imgur.com/Wji3af6.png" alt="" />
+                                                    </a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -483,8 +521,6 @@
 
     </table>
     <!-- end section -->
-
-
     <!-- footer ====== -->
     <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="f4f4f4">
 
@@ -500,8 +536,8 @@
                     <tr>
                         <td>
                             <table border="0" align="left" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <td align="left"
                                         style="color: #aaaaaa; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;">
@@ -515,16 +551,16 @@
                             </table>
 
                             <table border="0" align="left" width="5" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
                                 <tr>
                                     <td height="20" width="5" style="font-size: 20px; line-height: 20px;">&nbsp;</td>
                                 </tr>
                             </table>
 
                             <table border="0" align="right" cellpadding="0" cellspacing="0"
-                                style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
-                                class="container590">
+                                   style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"
+                                   class="container590">
 
                                 <tr>
                                     <td align="center">
@@ -532,7 +568,7 @@
                                             <tr>
                                                 <td align="center">
                                                     <a style="font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif; line-height: 24px;color: #5caad2; text-decoration: none;font-weight:bold;"
-                                                        href="https://drdaccess.com">drdaccess.com</a>
+                                                       href="https://drdaccess.com">drdaccess.com</a>
                                                 </td>
                                             </tr>
                                         </table>

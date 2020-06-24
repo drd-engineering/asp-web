@@ -10,7 +10,6 @@ namespace DRD.Service
 {
     public class DocumentService : IDocumentService
     {
-
         public static ElementType GetElementTypeFromCsvByCode(string code)
         {
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
@@ -78,6 +77,8 @@ namespace DRD.Service
                 document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.UserEmail = newDocument.UserEmail;
                 document.CreatedAt = DateTime.Now;
+                document.UpdatedAt = DateTime.Now;
+
 
                 // NEW
                 document.ExpiryDay = newDocument.ExpiryDay;
@@ -1149,6 +1150,35 @@ namespace DRD.Service
             if (package.Storage < (newDocument.FileSize - oldDocument.FileSize))
                 throw new NotImplementedException();
             return true;
+        }
+        /// <summary>
+        /// Update the status updatedat of document 
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns>status db save</returns>
+        public int DocumentUpdatedByRotation(long documentId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var docitem = db.Documents.FirstOrDefault(d => d.Id == documentId);
+                docitem.UpdatedAt = DateTime.Now;
+                return db.SaveChanges();
+            }
+        }
+        /// <summary>
+        /// Make the document not currently in rotation
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns>status db save</returns>
+        public int DocumentRemovedofRevisedFromRotation(long documentId)
+        {
+            using (var db = new ServiceContext())
+            {
+                var docitem = db.Documents.FirstOrDefault(d => d.Id == documentId);
+                docitem.IsCurrent = false;
+                docitem.UpdatedAt = DateTime.Now;
+                return db.SaveChanges();
+            }
         }
     }
 }

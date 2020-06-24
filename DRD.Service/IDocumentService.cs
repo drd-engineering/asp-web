@@ -8,6 +8,8 @@ namespace DRD.Service
     {
         DocumentInboxData Create(DocumentInboxData document, long companyId, long rotationId);
         DocumentInboxData Update(DocumentInboxData document, long companyId, long rotationId);
+        int DocumentUpdatedByRotation(long documentId);
+        int DocumentRemovedofRevisedFromRotation(long documentId);
         //void DoRevision(Document document);
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);

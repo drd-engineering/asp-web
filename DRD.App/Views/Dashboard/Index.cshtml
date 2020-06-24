@@ -32,7 +32,7 @@
             <div class="row">
 
                 <!-- DASHBOARD - ROTATION -->
-                <div class="col-sm-8 col-md-6 col-lg-4" id="dashboard-rotation">
+                <div class="col-sm-12 col-md-8 col-lg-4" id="dashboard-rotation">
                     <div class="panel highlight-container">
                         <div class="highlight-card">
                             <!-- HEADER -->
@@ -280,6 +280,7 @@
                 $scope.products = [];
                 $http.post('@Url.Action("GetActivityCounterCompany", "Dashboard")', {companyId: $scope.selectedCompany.Id}).then(function (response) {
                     if (response.data) {
+                        console.log($scope.counter);
                         $scope.counter = response.data;
                         var counter = response.data;
                         $.jGrowl.defaults.closer = false;
@@ -443,6 +444,7 @@
             $scope.dashboardRotationStatusCountAll = function () {
                 $http.post('@Url.Action("DashboardRotationStatusCountAll","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags }).then(function (response) {
                     if (response.data) {
+                        $scope.rotationStatusPaging = [];
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.pageSizeRotationStatus);
                         for (var i = 1; i <= jumlahPage; i++) {

@@ -66,9 +66,15 @@ namespace DRD.App.Controllers
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = dashboardService.GetActivityCounter(user.Id, counter);
-            Session["_COUNTERACTIVITY_"] = data;
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var data = dashboardService.GetActivityCounter(user.Id);
+            if (counter.New != data.New)
+            {
+                counter.Old = counter.New;
+                counter.New = data.New;
+            }
+
+            Session["_COUNTERACTIVITY_"] = counter;
+            return Json(counter, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// API to obtain how many rotation that company has, devided by status of the rotation
@@ -85,9 +91,14 @@ namespace DRD.App.Controllers
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = dashboardService.GetActivityCounter(user.Id, counter, companyId);
-            Session["_COUNTERACTIVITY_"] = data;
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var data = dashboardService.GetActivityCounter(user.Id, companyId);
+            if (counter.New != data.New)
+            {
+                counter.Old = counter.New;
+                counter.New = data.New;
+            }
+            Session["_COUNTERACTIVITY_"] = counter;
+            return Json(counter, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// API to obtain how the status of subscription a company has including usage and remainings
@@ -104,9 +115,14 @@ namespace DRD.App.Controllers
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = dashboardService.GetCompanySubscriptionLimit(counter, companyId);
-            Session["_SUBSCRIPTIONLIMIT_"] = data;
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var data = dashboardService.GetCompanySubscriptionLimit(companyId);
+            if (counter.New != data.New)
+            {
+                counter.Old = counter.New;
+                counter.New = data.New;
+            }
+            Session["_SUBSCRIPTIONLIMIT_"] = counter;
+            return Json(counter, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// API to obtain Rotation status of a Company 

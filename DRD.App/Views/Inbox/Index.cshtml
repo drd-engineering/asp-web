@@ -131,7 +131,7 @@
                                             <td style="height:50px;width:20%" class="text-top">
                                                 <!--<button class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="set up document" ng-click="removeDocument($index);">set up</button> -->
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
-                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and dignature" ng-click="revisedDocument($index);">Set Up</button>
+                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="revisedDocument($index);">Set Up</button>
                                                 <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</button>
                                             </td>
                                         </tr>
@@ -541,10 +541,6 @@
 
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
                 var doc = $scope.docs[idx];
-                if (!$scope.checkIsFirstPerson()) {
-                    $scope.model.FlagAction |= 2;
-                    doc.FlagAction |= 2;
-                }
                 $scope.setAnnos(doc.Document.DocumentElements);
                 if (iframe.contentWindow == null)
                     return;
@@ -563,7 +559,6 @@
 
 
             $scope.closePdf = function () {
-                console.log("revise");
                 if ($scope.isRevising) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                     if (items != [] && items != null && items != undefined) {
@@ -583,6 +578,10 @@
                             function (isConfirm) {
                                 if (isConfirm) {
                                     $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                    if (!$scope.checkIsFirstPerson()) {
+                                        $scope.model.FlagAction |= 2;
+                                        $scope.docs[$scope.selectedIdx].FlagAction |= 2;
+                                    }
                                     $scope.$apply();
                                     if ($scope.fromSelectDoc) {
                                         $("#modal_select_document").modal("show");
@@ -608,9 +607,7 @@
                 }
                 $scope.isRevising = false;
                 $scope.isUploading = false;
-                console.log($scope.isRevising );
-
-
+                console.log($scope.isRevising);
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -1015,6 +1012,29 @@
             /*--------------------------------------------------------------
                 POPUP DOC
             --------------------------------------------------------------*/
+            $scope.canClosePdf = function () {
+                var itsCanClose = document.getElementById('xpdfIFrame').contentWindow.angular.element("#xpdfController").scope().canClosePdf();
+                if (!itsCanClose) {
+                    swal({
+                            title: "Information",
+                            text: "There is still unassign member in Document Annotation",
+                            type: "warning",
+                            showCancelButton: false,
+                            closeOnConfirm: true,
+                            closeOnCancel: true,
+                            confirmButtonColor: "#2196F3",
+                            showLoaderOnConfirm: true,
+                            confirmButtonText: "Yes ",
+                            cancelButtonText: "No",
+                        },
+                            function (isConfirm) {
+                                if (isConfirm) {
+                                    console.log("assigning member again");
+                                }
+                            });
+                }
+                return itsCanClose;
+            }
             $scope.documentIdx=-1;
             $scope.editDocument = function (idx) {
                 $('#criteria').val("");

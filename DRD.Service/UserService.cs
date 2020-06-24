@@ -136,8 +136,6 @@ namespace DRD.Service
             body = body.Replace("{_NUMBER_}", "" + user.Id);
             body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
 
-            body = body.Replace("//images", "/images");
-
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
             var task = emailService.Send(senderEmail, senderName, user.Email, "User Registration", body, false, new string[] { });
