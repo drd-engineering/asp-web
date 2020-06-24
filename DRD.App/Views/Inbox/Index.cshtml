@@ -189,7 +189,7 @@
         myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter) {
             // modal document
             $scope.fromSelectDoc = false;
-            $scope.companyId = -1;
+            $scope.companyId = 0;
             $scope.document = {};
             $scope.documents = [];
             $scope.documentCount = [];
@@ -265,9 +265,10 @@
             }
 
             function assignProdut(product) {
-                                if (product.id != 0) {
+                if (product.id != 0) {
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
+                    $scope.companyId = product.CompanyId;
                     $scope.model.RotationNodeId = product.RotationNodeId;
                     $scope.model.FirstNodeId = product.FirstNodeId;
                     $scope.model.DefWorkflowNodeId = product.DefWorkflowNodeId;
@@ -281,7 +282,6 @@
                     $scope.model.UserId = product.UserId;
                     $scope.model.Tags= product.Tags;
                                     $scope.model.accessType = product.AccessType;
-                                    console.log($scope.model.accessType );
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.workflow = product.Workflow;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
@@ -381,12 +381,8 @@
             $scope.setPassword = function () {
                 var val = document.getElementById("thePassword");
                 var thePassword = val.value;
-                console.log("PASSWORD");
-                console.log(thePassword);
                 $http.post('/user/ValidationPassword', { userId: $scope.model.UserId, password: thePassword }).then(function (response) {
-                console.log(response.data);
                     if (response.data) {
-                        console.log("IN SET PASSWORD");
                         $scope.passwordcheck = true;
                         return true;
                     } else {
@@ -607,7 +603,6 @@
                 }
                 $scope.isRevising = false;
                 $scope.isUploading = false;
-                console.log($scope.isRevising);
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -807,7 +802,6 @@
                             if (isConfirm) {
                                 if ($scope.passwordType == 5 && bit == 1) {
 
-                                    console.log("here" +$scope.passwordcheck);
                                     if ($scope.passwordcheck) {
 
                                 $scope.submitActivityProcess(bit);
@@ -1029,7 +1023,6 @@
                         },
                             function (isConfirm) {
                                 if (isConfirm) {
-                                    console.log("assigning member again");
                                 }
                             });
                 }
@@ -1202,7 +1195,7 @@
                     return bytes + ' B';
                 }
                 var units = si
-                    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+                    ? ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
                     : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
                 var u = -1;
                 do {
@@ -1309,21 +1302,45 @@
                         url: '/updownfile/xuploadastemporary?idx=' + idx + '&fileType=0&companyId=' + $scope.companyId,
                         data: { FileUploaded: file }
                     });
-
                     file.upload.then(function (response) {
-                        //$timeout(function () {
-                        file.result = response.data;
-                        if (file.result.idx == -2) {
-                            showInfo("Invalid plan Used.");
+                        if (response.data.status == "ADMINISTRATOR_EXCEED_LIMIT") {
+                            showInfo("The number of administrators exceed limit, upgrade your subscription");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        } else if (file.result.idx == -4) {
-                            showInfo("Document quota is insufficient.");
+                        } else if (response.data.status == "MEMBER_EXCEED_LIMIT") {
+                            showInfo("The number of members in this company exceed limit, upgrade your subscription.");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        } else {
+                        }else if (response.data.status == "ROTATION_STARTED_EXCEED_LIMIT") {
+                            showInfo("The number of rotation using this subscription is exceeding the limit, upgrade your subscription");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        }else if (response.data.status == "NO_ACTIVE_PLAN") {
+                            showInfo("this subscription is invalid");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        }else if (response.data.status == "NOT_AUTHORIZED") {
+                            showInfo("You are not authorized to use this subscription.");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        }else if (response.data.status == "EXPIRED") {
+                            showInfo("This subscription is expired. Buy new subscription");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        }else if (response.data.status == "STORAGE_EXCEED_LIMIT") {
+                            showInfo("The storage is full, upgrade your subscription.");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data.status == "OK") {
+                            
+                            file.result = response.data;
                             if (file.result) {
                                 $scope.model.FileName = file.result.filename;
                                 $scope.model.Extention = file.result.fileext;
@@ -1342,6 +1359,11 @@
                                 $(window).off('beforeunload');
                                 document.querySelector('.submit-document').disabled = false;
                             }
+                        }else {
+                            showError("Error when upload file " );
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
                         }
                         //});
                     }, function (response) {
@@ -1459,7 +1481,43 @@
                         rotationId: $scope.rotationId
                     }).then(function (response) {
                         btn.stop();
-                        if (response.data) {
+                        if (response.data == "ADMINISTRATOR_EXCEED_LIMIT") {
+                            showInfo("The number of administrators exceed limit, upgrade your subscription");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "MEMBER_EXCEED_LIMIT") {
+                            showInfo("The number of members in this company exceed limit, upgrade your subscription.");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "ROTATION_STARTED_EXCEED_LIMIT") {
+                            showInfo("The number of rotation using this subscription is exceeding the limit, upgrade your subscription");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "NO_ACTIVE_PLAN") {
+                            showInfo("this subscription is invalid");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "NOT_AUTHORIZED") {
+                            showInfo("You are not authorized to use this subscription.");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "EXPIRED") {
+                            showInfo("This subscription is expired. Buy new subscription");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        } else if (response.data == "STORAGE_EXCEED_LIMIT") {
+                            showInfo("The storage is full, upgrade your subscription.");
+                            $scope.resetFileUploadDetails();
+                            $scope.progressValueUploadFile = "Failed";
+                            return;
+                        }
+                        else if (response.data.status == "OK") {
                             response.data.Extention = $scope.tempDoc.Document.Extention;
                             $scope.tempDoc.Document = response.data;
                             $scope.tempDoc.DocumentId = response.data.Id;
@@ -1467,6 +1525,8 @@
                             $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
+                        } else {
+                            showInfo("An error has occurred");
                         }
                     }, function (response) {
                         //error handle\
@@ -1582,7 +1642,6 @@
                 const urlParams = new URLSearchParams(queryString);
                 const inboxId = urlParams.get('id');
                 $http.post('/inbox/GetInboxDetail', { id: inboxId }).then(function (response) {
-                    console.log(response);
                     if (response.data) {
                         if (response.data == -1 || response.data == -2) {
                             showError("");

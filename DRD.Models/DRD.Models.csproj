@@ -231,7 +231,7 @@
     <Compile Include="DbDefinition\Inbox.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
-    <Compile Include="DbDefinition\Usage.cs" />
+    <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="View\ErrorInfo.cs" />
     <Compile Include="View\List\InboxItem.cs" />
     <Compile Include="View\Member\MemberItem.cs" />

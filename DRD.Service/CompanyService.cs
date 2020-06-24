@@ -139,11 +139,11 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                Usage Usage = new Usage();
+                BusinessUsage Usage = new BusinessUsage();
                 SubscriptionService subscriptionService = new SubscriptionService();
 
                 Company company = GetCompanyDb(companyId);
-                Usage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
+                BusinessUsage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
                 BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
                 Price price = subscriptionService.getActivePricePackage(package.Id);
 
@@ -254,7 +254,7 @@ namespace DRD.Service
                     if (subscription != null)
                     {
                         company.SubscriptionId = subscription.Id;
-                        Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                        BusinessUsage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                         company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                     }
                     company.IsActive = x.IsActive;
@@ -310,7 +310,7 @@ namespace DRD.Service
                 if (subscription != null)
                 {
                     company.SubscriptionId = subscription.Id;
-                    Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                    BusinessUsage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                     company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                 }
                 company.IsActive = result.IsActive;

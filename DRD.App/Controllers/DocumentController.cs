@@ -261,11 +261,12 @@ namespace DRD.App.Controllers
             {
                 var srv = new DocumentService();
                 var data = srv.Save(prod, companyId, rotationId);
+                data.status = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var data = Constant.DocumentUploadStatus.OK.ToString();
+                var data = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }

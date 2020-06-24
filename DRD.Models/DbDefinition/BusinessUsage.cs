@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
-    [Table("Usages", Schema = "public")]
-    public class Usage
+    [Table("BusinessUsages", Schema = "public")]
+    public class BusinessUsage
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
@@ -21,11 +21,11 @@ namespace DRD.Models
         public long PackageId { get; set; }
         public long Storage { get; set; } = 0;
 
-        public Usage()
+        public BusinessUsage()
         {
             IsActive = true;
         }
-        public Usage(Usage usage, DateTime startedAt, DateTime expiredAt)
+        public BusinessUsage(BusinessUsage usage, DateTime startedAt, DateTime expiredAt)
         {
             IsActive = true;
             PriceId = usage.PriceId;

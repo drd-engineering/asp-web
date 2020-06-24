@@ -87,12 +87,12 @@ namespace DRD.App.Controllers
             try
             {
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
-    
-                // check storage quota
-                var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, newDocument.FileSize, true);
-                var status = ((Constant.BusinessUsageStatus)SubscriptionStatus).ToString();
 
-                if (SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                // check storage quota
+                Constant.BusinessUsageStatus SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, newDocument.FileSize, true);
+                var status = SubscriptionStatus.ToString();
+
+                if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                 {
                     return status; //The used rotation exceeds the data packet quota number
                 }
@@ -223,9 +223,9 @@ namespace DRD.App.Controllers
                 {
                     // check storage quota
                     var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, file.ContentLength);
-                    result.status = ((Constant.BusinessUsageStatus)SubscriptionStatus).ToString();
+                    result.status = SubscriptionStatus.ToString();
 
-                    if (SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                    if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                     {
                         result.idx = (int)SubscriptionStatus;
                         return Json(result, JsonRequestBehavior.AllowGet); //The used rotation exceeds the data packet quota number

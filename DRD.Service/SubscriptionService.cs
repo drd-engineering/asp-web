@@ -16,7 +16,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                Usage usage = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                BusinessUsage usage = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 BusinessPackage package = db.BusinessPackages.Where(c => c.Id == usage.PackageId && c.IsActive).FirstOrDefault();
                 int additionalUsage = 0;
 
@@ -63,17 +63,17 @@ namespace DRD.Service
             return Constant.BusinessUsageStatus.OK;
         }
 
-        public Usage DeactivateActiveUsage(long companyId)
+        public BusinessUsage DeactivateActiveUsage(long companyId)
         {
-            Usage planBusiness = EditBusinessPackage(companyId, null, null, null, IsActive: false);
+            BusinessUsage planBusiness = EditBusinessPackage(companyId, null, null, null, IsActive: false);
             return planBusiness;
         }
 
-        public Usage EditBusinessPackage(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
+        public BusinessUsage EditBusinessPackage(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
         {
             using (var db = new ServiceContext())
             {
-                Usage planBusiness = (from c in db.Usages
+                BusinessUsage planBusiness = (from c in db.Usages
                                       where c.CompanyId == companyId && c.IsActive
                                       select c).FirstOrDefault();
                 if (planBusiness != null)
@@ -187,24 +187,24 @@ namespace DRD.Service
 
         public BusinessPackage getCompanyPackageByCompany(long companyId)
         {
-            Usage usage = GetCompanyUsage(companyId);
+            BusinessUsage usage = GetCompanyUsage(companyId);
             return GetCompanyPackage(usage.PackageId);
         }
 
-        public Usage GetCompanyUsage(long companyId)
+        public BusinessUsage GetCompanyUsage(long companyId)
         {
             using (var db = new ServiceContext())
             {
-                Usage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                BusinessUsage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 return plan;
             }
         }
 
-        public Usage getCompanyUsageById(long id)
+        public BusinessUsage getCompanyUsageById(long id)
         {
             using (var db = new ServiceContext())
             {
-                Usage plan = db.Usages.Where(c => c.Id == id).FirstOrDefault();
+                BusinessUsage plan = db.Usages.Where(c => c.Id == id).FirstOrDefault();
                 return plan;
             }
         }
@@ -213,7 +213,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                Usage usage = getCompanyUsageById(usageId);
+                BusinessUsage usage = getCompanyUsageById(usageId);
                 //check if having any active usage
                 if (usage == null) return Constant.BusinessUsageStatus.NO_ACTIVE_PLAN;
                 if (usage != null)
@@ -232,7 +232,7 @@ namespace DRD.Service
             }
         }
 
-        public Constant.BusinessUsageStatus IsValid(BusinessPackage package, Usage usage)
+        public Constant.BusinessUsageStatus IsValid(BusinessPackage package, BusinessUsage usage)
         {
             if (!package.IsExceedLimitAllowed)
             {
@@ -246,7 +246,7 @@ namespace DRD.Service
             return checkExpired(package,usage);
         }
 
-        public Constant.BusinessUsageStatus checkExpired(BusinessPackage package, Usage usage)
+        public Constant.BusinessUsageStatus checkExpired(BusinessPackage package, BusinessUsage usage)
         {
             if (!package.IsExpirationDateExtendedAutomatically && usage.ExpiredAt < DateTime.Now)
             {
@@ -262,12 +262,12 @@ namespace DRD.Service
 
         public void ExtendUsage(long companyId)
         {
-            Usage oldUsage = DeactivateActiveUsage(companyId);
+            BusinessUsage oldUsage = DeactivateActiveUsage(companyId);
             BusinessPackage businessPackage = getCompanyPackageByCompany(companyId);
             using (var db = new ServiceContext())
             {
                 DateTime extendedTime = oldUsage.ExpiredAt.AddDays(businessPackage.Duration);
-                Usage newUsage = new Usage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
+                BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
 
                 db.Usages.Add(newUsage);
                 db.SaveChanges();
