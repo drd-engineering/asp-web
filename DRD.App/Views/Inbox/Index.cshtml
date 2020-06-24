@@ -1012,6 +1012,29 @@
             /*--------------------------------------------------------------
                 POPUP DOC
             --------------------------------------------------------------*/
+            $scope.canClosePdf = function () {
+                var itsCanClose = document.getElementById('xpdfIFrame').contentWindow.angular.element("#xpdfController").scope().canClosePdf();
+                if (!itsCanClose) {
+                    swal({
+                            title: "Information",
+                            text: "There is still unassign member in Document Annotation",
+                            type: "warning",
+                            showCancelButton: false,
+                            closeOnConfirm: true,
+                            closeOnCancel: true,
+                            confirmButtonColor: "#2196F3",
+                            showLoaderOnConfirm: true,
+                            confirmButtonText: "Yes ",
+                            cancelButtonText: "No",
+                        },
+                            function (isConfirm) {
+                                if (isConfirm) {
+                                    console.log("assigning member again");
+                                }
+                            });
+                }
+                return itsCanClose;
+            }
             $scope.documentIdx=-1;
             $scope.editDocument = function (idx) {
                 $('#criteria').val("");
