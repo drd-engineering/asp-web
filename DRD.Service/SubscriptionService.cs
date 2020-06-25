@@ -16,7 +16,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                BusinessUsage usage = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                BusinessUsage usage = db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 BusinessPackage package = db.BusinessPackages.Where(c => c.Id == usage.PackageId && c.IsActive).FirstOrDefault();
                 int additionalUsage = 0;
 
@@ -73,7 +73,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                BusinessUsage planBusiness = (from c in db.Usages
+                BusinessUsage planBusiness = (from c in db.BusinessUsages
                                       where c.CompanyId == companyId && c.IsActive
                                       select c).FirstOrDefault();
                 if (planBusiness != null)
@@ -92,7 +92,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 return (from company in db.Companies
-                        join usage in db.Usages on company.Id equals usage.CompanyId
+                        join usage in db.BusinessUsages on company.Id equals usage.CompanyId
                         join price in db.Prices on usage.PriceId equals price.Id
                         join package in db.BusinessPackages on usage.PackageId equals package.Id
                         where company.Id == companyId && usage.IsActive
@@ -135,7 +135,7 @@ namespace DRD.Service
 
                 var adminSubscription = (from member in db.Members
                                          join company in db.Companies on member.CompanyId equals company.Id
-                                         join usage in db.Usages on company.Id equals usage.CompanyId
+                                         join usage in db.BusinessUsages on company.Id equals usage.CompanyId
                                          join package in db.BusinessPackages on usage.PackageId equals package.Id
                                          where member.UserId == userId && usage.IsActive && member.IsAdministrator
                                          select new ActiveUsage
@@ -149,7 +149,7 @@ namespace DRD.Service
                                          }).ToList();
                 returnList.usages = adminSubscription;
                 var ownerSubscriptions = (from company in db.Companies
-                                          join usage in db.Usages on company.Id equals usage.CompanyId
+                                          join usage in db.BusinessUsages on company.Id equals usage.CompanyId
                                           join package in db.BusinessPackages on usage.PackageId equals package.Id
                                           where company.OwnerId == userId && usage.IsActive
                                           select new ActiveUsage
@@ -195,7 +195,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                BusinessUsage plan = db.Usages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+                BusinessUsage plan = db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 return plan;
             }
         }
@@ -204,7 +204,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                BusinessUsage plan = db.Usages.Where(c => c.Id == id).FirstOrDefault();
+                BusinessUsage plan = db.BusinessUsages.Where(c => c.Id == id).FirstOrDefault();
                 return plan;
             }
         }
@@ -269,7 +269,7 @@ namespace DRD.Service
                 DateTime extendedTime = oldUsage.ExpiredAt.AddDays(businessPackage.Duration);
                 BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
 
-                db.Usages.Add(newUsage);
+                db.BusinessUsages.Add(newUsage);
                 db.SaveChanges();
             }
         }

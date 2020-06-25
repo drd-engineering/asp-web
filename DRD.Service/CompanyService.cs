@@ -161,8 +161,8 @@ namespace DRD.Service
                     lastSubscription.ExpiredAt = DateTime.Now;
                 }
 
-                long result = db.Usages.Add(Usage).Id;
-                db.Usages.Add(lastSubscription);
+                long result = db.BusinessUsages.Add(Usage).Id;
+                db.BusinessUsages.Add(lastSubscription);
                 db.SaveChanges();
 
                 return result;
@@ -254,7 +254,7 @@ namespace DRD.Service
                     if (subscription != null)
                     {
                         company.SubscriptionId = subscription.Id;
-                        BusinessUsage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                        BusinessUsage usage = db.BusinessUsages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                         company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                     }
                     company.IsActive = x.IsActive;
@@ -310,7 +310,7 @@ namespace DRD.Service
                 if (subscription != null)
                 {
                     company.SubscriptionId = subscription.Id;
-                    BusinessUsage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                    BusinessUsage usage = db.BusinessUsages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                     company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                 }
                 company.IsActive = result.IsActive;

@@ -354,7 +354,7 @@ namespace DRD.Service
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyUsage = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
+                var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
                 rt.CompanyId = companyUsage.CompanyId;
                 rt.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
                 rt.DateUpdated = DateTime.Now;
