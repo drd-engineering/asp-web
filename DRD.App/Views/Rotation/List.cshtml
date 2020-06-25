@@ -213,7 +213,6 @@
                     }).then(function (response) {
 
                         if (response.data) {
-                            console.log(response.data);
                             if (response.data.status == "OK") {
                                 showSuccess("Successful data process.");
                                 $scope.findRotations($scope.criteria, $scope.page, $scope.row);

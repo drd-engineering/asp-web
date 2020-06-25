@@ -275,7 +275,13 @@
                                         <div class="col-md-12">
                                             <div class="text-right">
                                                 @*<span class="input-group-btn">*@
-                                                <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                <button ng-show="!isUsed" class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="deleteWorkflow()" style="width:120px;margin-right:10px">
+                                                    <span class="ladda-label">&nbsp;&nbsp;Delete&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                    <div class="ladda-progress" style="width: 0px;"></div>
+                                                </button>
+
+
+                                                <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px;margin-right:10px">
                                                     <span class="ladda-label">&nbsp;&nbsp;Save&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                     <div class="ladda-progress" style="width: 0px;"></div>
                                                 </button>
@@ -647,6 +653,36 @@
             /*--------------------------------------------------------------
                 END POPUP MEMBER
             --------------------------------------------------------------*/
+             $scope.deleteWorkflow = function () {
+                var workflowId = $scope.model.Id;
+                $http.post('@Url.Action("DeleteWorkflow", "Workflow")', { id: workflowId })
+                    .then(function (response) {
+                        if (response.data == "OK") {
+                            $.jGrowl('You have succefully delete a workflow', {
+                                header: "Rotation deleted",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-info'
+                            });
+                            window.location.href = 'workflow/list';
+                        } else if(response.data == "NOT_FOUND") {
+                            $.jGrowl('Workflow not found', {
+                                header: "Delete failed",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-danger'
+                            });
+                        }
+                         else if(response.data == "USED_IN_ROTATION") {
+                            $.jGrowl('Workflow has already been used in rotation', {
+                                header: "Delete failed",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-danger'
+                            });
+                        }
+                    });
+            }
         });
         $(document).ready(function () {
 

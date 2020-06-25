@@ -141,6 +141,10 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <button ng-show="model.CompanyName== null" class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="deleteRotation()" style="width:120px">
+                                                <span class="ladda-label">&nbsp;&nbsp;Delete&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                <div class="ladda-progress" style="width: 0px;"></div>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -552,6 +556,39 @@
                         }
                     });
             }
+
+            $scope.deleteRotation = function () {
+                var rotationId = $scope.model.Id;
+                $http.post('@Url.Action("DeleteRotation", "Rotation")', { id: rotationId })
+                    .then(function (response) {
+                        if (response.data == "OK") {
+                            $.jGrowl('You have succefully delete a rotation', {
+                                header: "Rotation deleted",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-info'
+                            });
+                            
+                            window.location.href = 'rotation/list';
+                        } else if(response.data == "NOT_FOUND") {
+                            $.jGrowl('Rotation not found', {
+                                header: "Delete failed",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-danger'
+                            });
+                        }
+                         else if(response.data == "ERROR_ROTATION_ALREADY_STARTED") {
+                            $.jGrowl('Rotation has already started', {
+                                header: "Delete failed",
+                                //sticky: true,
+                                life: $scope.notiftime,
+                                theme: 'alert-styled-right bg-danger'
+                            });
+                        }
+                    });
+            }
+
             $scope.addTagList = function () {
                 $scope.newTag = $scope.newTag.substring(0, $scope.newTag.length - 1);
                 var alreadyUsed = false;

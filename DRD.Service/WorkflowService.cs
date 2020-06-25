@@ -364,5 +364,25 @@ namespace DRD.Service
 
             return values;
         }
+
+        public string Delete(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var workflow = db.Workflows.Where(i => i.Id == id).FirstOrDefault();
+
+                //check if workflow exist
+                if (workflow == null) return Constant.WorkflowStatus.NOT_FOUND.ToString();
+
+                //check if workflow is already being used
+                var rotationNode = db.Rotations.Where(c => c.WorkflowId == id).FirstOrDefault();
+                if (rotationNode != null) return Constant.WorkflowStatus.USED_IN_ROTATION.ToString();
+
+                workflow.IsActive = false;
+                workflow.DateUpdated = DateTime.Now;
+                db.SaveChanges();
+                return Constant.WorkflowStatus.OK.ToString();
+            }
+        }
     }
 }
