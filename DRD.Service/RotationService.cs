@@ -716,21 +716,9 @@ namespace DRD.Service
                     dElmItem.CreatedAt = delm.CreatedAt;
                     dElmItem.UpdatedAt = delm.UpdatedAt;
                     dElmItem.ElementTypeId = delm.ElementTypeId;
-                    if (delm.ElementId == usrId
-                        && (delm.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
-                            || delm.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE))
-                    {
-                        DocumentUserInboxData dUsrMtch = item.Document.DocumentUsers.FirstOrDefault(dU => dU.UserId == usrId && dU.DocumentId == dElmItem.DocumentId);
-                        dUsrMtch.FlagPermission |= (int)Constant.EnumDocumentAction.SIGN;
-                    }
-                    if (delm.ElementId == usrId
-                        && (delm.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP))
-                    {
-                        DocumentUserInboxData dUsrMtch = item.Document.DocumentUsers.FirstOrDefault(dU => dU.UserId == usrId && dU.DocumentId == dElmItem.DocumentId);
-                        dUsrMtch.FlagPermission |= (int)Constant.EnumDocumentAction.PRIVATESTAMP;
-                    }
                     item.Document.DocumentElements.Add(dElmItem);
                 }
+                item.Document.DocumentUser = item.Document.DocumentUsers.FirstOrDefault(itmDocUsr => itmDocUsr.UserId == usrId);
                 result.Add(item);
             }
             return result;

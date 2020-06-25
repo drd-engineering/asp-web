@@ -226,7 +226,8 @@
             $scope.loadingLog = 1;
             $scope.selectedIdx;
             $scope.curentUser;
-            $scope.passwordType = 0;
+            // 1 need sign, 32 need stamp
+            $scope.needPass = 0;
             $scope.passwordcheck = false;
             $scope.passwordError = false;
             $scope.isRevising = false;
@@ -305,8 +306,7 @@
                                 $scope.updocs = sender.RotationNodeUpDocs;
                         }
                     }
-                    console.log($scope.docs);
-
+                    console.log($scope.sumDocuments);
                 } else {
                     // error response, 404 inbox
                 }
@@ -754,9 +754,15 @@
                     var doc = {};
                     doc.Document = $scope.docs[i].Document;
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 1) || $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32))) {
-                        //passwordtype = 5 ==> there is any document to be signed or stamped
-                        $scope.passwordType = 5;
+                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 1))) {
+                        // need sign
+                        $scope.needPass |= 1;
+                    }
+                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 32))) {
+                        // need stamp
+                        $scope.needPass |= 32;
+                    }
+                    if ($scope.needPass != 0) {
                         $scope.checkUserSignatureData();
                         return true;
                     }
@@ -768,7 +774,7 @@
             --------------------------------------------------------------*/
             $scope.submitActivity = function (bit) {
                 $scope.checkSignOrStamp();
-                if ($scope.passwordType == 5 && bit == 1) {
+                if (bit == 1 && $scope.needPass != 0) {
                     $scope.showPasswordModal();
                 } else {
                     $scope.triggerSubmitSwal(bit);
@@ -801,11 +807,7 @@
                     function (isConfirm) {
                         setTimeout(function () {
                             if (isConfirm) {
-                                if ($scope.passwordType == 5 && bit == 1) {
-<<<<<<< HEAD
-=======
-
->>>>>>> f1c85a77ce87c76b813ef8aaf76f532d8b621f5b
+                                if (bit == 1 && $scope.needPass != 0) {
                                     if ($scope.passwordcheck) {
                                         $scope.submitActivityProcess(bit);
                                         $scope.passwordError = false;
@@ -828,15 +830,15 @@
                     var doc = $scope.docs[i];
                     doc.Document = $scope.docs[i].Document;
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    if ((bit == 1) && ($scope.passwordType == 5) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
+                    if ((bit == 1) && (($scope.needPass & 1) == 1) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
                         doc.FlagAction |= 1;
                     }
 
-                    if ((bit == 1) && ($scope.passwordType == 5) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
+                    if ((bit == 1) && (($scope.needPass & 32) == 32) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
                         doc.FlagAction |= 32;
                     }
 
-                    if ((bit != 1 || $scope.passwordType != 5)) {
+                    if ((bit != 1 || $scope.needPass == 0)) {
                         doc.FlagAction = $scope.docs[i].FlagAction;
                     }
 

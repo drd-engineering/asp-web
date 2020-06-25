@@ -118,7 +118,7 @@ namespace DRD.Service
             PERSONAL = 1,
             BUSINESS = 0
         }
-       
+
         public enum EnumActivityAction
         {
             SUBMIT = 1,
@@ -146,22 +146,6 @@ namespace DRD.Service
             STAMP = 6,
             PRIVATESTAMP = 7
         }
-        public enum EnumDataHit
-        {
-            NEWS = 0,
-            VIDEO = 1,
-            PODCAST = 2,
-            BANNER = 3,
-            PARTNERPROMO = 4
-        }
-        public enum EnumInvitationStatus
-        {
-            REJECTEDBYMEMBER = 0,
-            REJECTEDBYCOMPANY = 1,
-            WAITINGFORMEMBER = 2,
-            WAITINGFORCOMPANY = 3,
-            ACCEPTEDBYMEMBER = 4,
-            ACCEPTEDBYCOMPANY = 5
-        }
+
     }
 }

@@ -88,19 +88,23 @@ namespace DRD.Service
                 {
                     if (el.ElementId == null) continue;
                     var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
-                    if (docUser == null) docUser = new DocumentUser();
+                    if (docUser == null)
+                    {
+                        docUser = new DocumentUser();
+                        db.DocumentUsers.Add(docUser);
+                    }
                     docUser.UserId = el.ElementId.Value;
                     docUser.DocumentId = el.DocumentId;
-                    docUser.FlagPermission = 6;
                     string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
-                    System.Diagnostics.Debug.WriteLine("[][][]ELEMENT TYPE ID " + el.ElementTypeId.ToString());
-                    if (("SIGNATURE,INITIAL").Contains(eltypename)) docUser.FlagPermission |= 1;
 
-                    if (("PRIVATESTAMP").Contains(eltypename)) docUser.FlagPermission |= 32;
+                    if (("SIGNATURE,INITIAL").Contains(eltypename))
+                        docUser.FlagPermission |= 1;
 
-                    db.DocumentUsers.Add(docUser);
+                    if (("PRIVATESTAMP").Contains(eltypename))
+                        docUser.FlagPermission |= 32;
+                    
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
 
                 // after save the value, then return value as api response data
                 foreach (DocumentUser du in createdOrUpdated)
@@ -881,7 +885,7 @@ namespace DRD.Service
                         da.Page = ep.Page;
                         da.ElementTypeId = ep.ElementTypeId;
 
-                        da.UserId = userEmail;
+                        da.UserId = da.UserId = string.IsNullOrEmpty(userEmail) ? da.UserId : userEmail;
                         da.CreatedAt = DateTime.Now;
                         db.DocumentElements.Add(da);
                     }

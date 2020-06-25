@@ -461,7 +461,7 @@ namespace DRD.Service
 
         private void InsertDoc(IEnumerable<RotationNodeDoc> docs, ServiceContext db, ref RotationNode rotationNode, IDocumentService docSvr)
         {
-            if (docs != null && docs.Count() > 0)
+            if (docs != null )
             {
                 foreach (RotationNodeDoc rnc in docs)
                 {
@@ -509,7 +509,7 @@ namespace DRD.Service
                         {
                             docElement.Add(new DocumentElementInboxData(x));
                         }
-                        docElement = docSvr.SaveAnnos(rnc.Document.Id, userId, docm.User.Email, docElement);
+                        docElement = docSvr.SaveAnnos(rnc.Document.Id, userId, "", docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
                         docSvr.Signature((long)rnc.Document.Id, userId, rotationNode.Rotation.Id);
