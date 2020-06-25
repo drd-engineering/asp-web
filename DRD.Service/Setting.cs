@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace DRD.Service
+{
+    public class Setting
+    {
+       
+        public enum Notification
+        {
+            ALLOW_EMAIL_ACTIVITY_RESPONSIBLE = 1,
+            ALLOW_EMAIL_ACTIVITY_REVIEWED = 2,
+            ALLOW_EMAIL_ACTIVITY_REJECTED = 4,
+            ALLOW_EMAIL_ACTIVITY_COMPLETED = 8,
+
+            ALLOW_EMAIL_COMPANY_INVITATION = 16,
+            ALLOW_EMAIL_COMPANNY_SUBSCRIPTION_STATUS = 32,
+            ALLOW_EMAIL_COMPANY_ROLE_UPDATE = 64,
+
+            ALLOW_EMAIL_MEMBER_REQUEST = 128,
+
+            ALLOW_NOTIFICATION_ACTIVITY_RESPONSIBLE = 256,
+            ALLOW_NOTIFICATION_ACTIVITY_REVIEWED = 512,
+            ALLOW_NOTIFICATION_ACTIVITY_REJECTED = 1024,
+            ALLOW_NOTIFICATION_ACTIVITY_COMPLETED = 2048,
+
+            ALLOW_NOTIFICATION_COMPANY_INVITATION = 4096,
+            ALLOW_NOTIFICATIONL_COMPANNY_SUBSCRIPTION_STATUS = 8192,
+            ALLOW_NOTIFICATION_COMPANY_ROLE_UPDATE = 16384,
+
+            ALLOW_NOTIFICATION_MEMBER_REQUEST = 32768
+
+        }
+
+    }
+}
