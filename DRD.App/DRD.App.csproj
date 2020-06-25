@@ -2783,6 +2783,7 @@
     <Content Include="doc\tnc\tnc_files\filelist.xml" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\background_login.jpg" />
     <Content Include="Images\back_reg2.jpg" />
     <Content Include="Images\Bank\creditcard.png" />
     <Content Include="Images\Diagram\canvas.png" />
