@@ -456,15 +456,15 @@ namespace DRD.Service
                     rotationNode.RotationNodeDocs.Add(dx);
 
                     // update flag action di master rotationNodeDoc member
-                    var memberId = rotationNode.UserId;
+                    var userId = rotationNode.UserId;
                     var rotationid = rotationNode.RotationId;
-                    var docm = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rnc.Document.Id && c.UserId == memberId);
-                    var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == memberId);
+                    var docm = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rnc.Document.Id && c.UserId == userId);
+                    var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == userId);
                     if (docm != null)
                     {
                         if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
                             ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
-                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                            docSvr.DocumentRemovedorRevisedFromRotation(rnc.DocumentId);
                         else if (docm.FlagAction != rnc.FlagAction) docSvr.DocumentUpdatedByRotation(rnc.DocumentId);
                         docm.FlagAction |= rnc.FlagAction;
                         // Also Document permission updating related to Rotation User that have permission
@@ -474,10 +474,10 @@ namespace DRD.Service
                     {
                         DocumentUser docmem = new DocumentUser();
                         docmem.DocumentId = rnc.Document.Id;
-                        docmem.UserId = memberId;
+                        docmem.UserId = userId;
                         if (((rnc.FlagAction & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
                             ((rnc.FlagAction & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
-                            docSvr.DocumentRemovedofRevisedFromRotation(rnc.DocumentId);
+                            docSvr.DocumentRemovedorRevisedFromRotation(rnc.DocumentId);
                         else if (rnc.FlagAction != 0) docSvr.DocumentUpdatedByRotation(rnc.DocumentId); docmem.FlagAction |= rnc.FlagAction; 
                         docmem.FlagPermission = 6; // default view, add annotate
                         // Also Document permission updating related to Rotation User that have permission
@@ -492,12 +492,12 @@ namespace DRD.Service
                         {
                             docElement.Add(new DocumentElementInboxData(x));
                         }
-                        docElement = docSvr.SaveAnnos(rnc.Document.Id, memberId, "CALLER", docElement);
+                        docElement = docSvr.SaveAnnos(rnc.Document.Id, userId, docm.User.Email, docElement);
                     }
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
-                        docSvr.Signature((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
+                        docSvr.Signature((long)rnc.Document.Id, userId, rotationNode.Rotation.Id);
                     if ((rnc.FlagAction & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
-                        docSvr.Stamp((long)rnc.Document.Id, memberId, rotationNode.Rotation.Id);
+                        docSvr.Stamp((long)rnc.Document.Id, userId, rotationNode.Rotation.Id);
                 }
                 db.SaveChanges();
             }

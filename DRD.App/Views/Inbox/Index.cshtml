@@ -265,7 +265,7 @@
             }
 
             function assignProdut(product) {
-                                if (product.id != 0) {
+                if (product.id != 0) {
                     $scope.model.Id = $scope.inboxId;
                     $scope.rotationId = product.Id;
                     $scope.model.RotationNodeId = product.RotationNodeId;
@@ -280,14 +280,13 @@
                     $scope.model.DecissionInfo = product.DecissionInfo;
                     $scope.model.UserId = product.UserId;
                     $scope.model.Tags= product.Tags;
-                                    $scope.model.accessType = product.AccessType;
-                                    console.log($scope.model.accessType );
+                    $scope.model.accessType = product.AccessType;
+                    console.log($scope.model.accessType );
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.workflow = product.Workflow;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.sumDocuments = product.SumRotationNodeDocs;
                     $scope.sumAttachments = product.SumRotationNodeUpDocs;
-
                     if ($scope.model.Status == 0) {
                         if ($scope.currentRotationNode.SenderRotationNodeId != null) {
                             var sender = angular.copy($scope.currentRotationNode);
@@ -306,6 +305,7 @@
                                 $scope.updocs = sender.RotationNodeUpDocs;
                         }
                     }
+                    console.log($scope.docs);
 
                 } else {
                     // error response, 404 inbox
@@ -806,19 +806,15 @@
                         setTimeout(function () {
                             if (isConfirm) {
                                 if ($scope.passwordType == 5 && bit == 1) {
-
-                                    console.log("here" +$scope.passwordcheck);
                                     if ($scope.passwordcheck) {
-
-                                $scope.submitActivityProcess(bit);
+                                        $scope.submitActivityProcess(bit);
                                         $scope.passwordError = false;
                                         $("#modal_password").modal("hide");
                                     } else {
                                         $scope.passwordError = true;
                                     }
                                 } else {
-                                $scope.submitActivityProcess(bit);
-
+                                    $scope.submitActivityProcess(bit);
                                 }
                             }
                             swal.close();
@@ -829,18 +825,17 @@
             $scope.submitActivityProcess = function (bit) {
                 var rotNodeDocs = [];
                 for (var i = 0; i < $scope.docs.length; i++) {
-                    var doc = {};
+                    var doc = $scope.docs[i];
                     doc.Document = $scope.docs[i].Document;
-
                     doc.DocumentId = $scope.docs[i].DocumentId;
                     if ((bit == 1) && ($scope.passwordType == 5) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
-                        var doc = $scope.docs[i];
                         doc.FlagAction |= 1;
                     }
-                    if (bit == 1 && $scope.passwordType == 5 && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
-                        var doc = $scope.docs[i];
+
+                    if ((bit == 1) && ($scope.passwordType == 5) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
                         doc.FlagAction |= 32;
                     }
+
                     if ((bit != 1 || $scope.passwordType != 5)) {
                         doc.FlagAction = $scope.docs[i].FlagAction;
                     }
@@ -915,14 +910,10 @@
                             $scope.wizarno = 'success';
                             $scope.model.Status = response.data;
                             $scope.model.DefWorkflowNodeId = -1;
-
                             $scope.getUpdatedInbox();
-
-
                             setTimeout(function () {
                                      $scope.wizarno = 'product';
                             }, 1000);
-
                             $(window).off('beforeunload');
                         }
                     }, function (response) {
@@ -1013,8 +1004,8 @@
                 POPUP DOC
             --------------------------------------------------------------*/
             $scope.canClosePdf = function () {
-                var itsCanClose = document.getElementById('xpdfIFrame').contentWindow.angular.element("#xpdfController").scope().canClosePdf();
-                if (!itsCanClose) {
+                var pdfCanClose = document.getElementById('xpdfIFrame').contentWindow.angular.element("#xpdfController").scope().canClosePdf();
+                if (!pdfCanClose) {
                     swal({
                             title: "Information",
                             text: "There is still unassign member in Document Annotation",
@@ -1024,7 +1015,7 @@
                             closeOnCancel: true,
                             confirmButtonColor: "#2196F3",
                             showLoaderOnConfirm: true,
-                            confirmButtonText: "Yes ",
+                            confirmButtonText: "OK ",
                             cancelButtonText: "No",
                         },
                             function (isConfirm) {
@@ -1033,7 +1024,7 @@
                                 }
                             });
                 }
-                return itsCanClose;
+                return pdfCanClose;
             }
             $scope.documentIdx=-1;
             $scope.editDocument = function (idx) {
@@ -1463,6 +1454,7 @@
                             response.data.Extention = $scope.tempDoc.Document.Extention;
                             $scope.tempDoc.Document = response.data;
                             $scope.tempDoc.DocumentId = response.data.Id;
+                            $scope.tempDoc.Document.IsCurrent = response.data.IsCurrent;
                             $scope.docs.push($scope.tempDoc);
                             $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');

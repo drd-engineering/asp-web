@@ -9,7 +9,7 @@ namespace DRD.Service
         DocumentInboxData Create(DocumentInboxData document, long companyId, long rotationId);
         DocumentInboxData Update(DocumentInboxData document, long companyId, long rotationId);
         int DocumentUpdatedByRotation(long documentId);
-        int DocumentRemovedofRevisedFromRotation(long documentId);
+        int DocumentRemovedorRevisedFromRotation(long documentId);
         //void DoRevision(Document document);
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
@@ -30,7 +30,7 @@ namespace DRD.Service
         long GetLiteByCreatorCount(long memberId, string topCriteria);
         long GetLiteByCreatorCount(long memberId, string topCriteria, string criteria);
         IEnumerable<DocumentItem> GetLiteByTopCriteria(long companyId, string topCriteria, int page, int pageSize, string order, string criteria);
-        int GetPermission(long memberId, long rotationNodeId, long documentId);
+        int GetPermission(long usrId, long rotationNodeId, long documentId);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);
@@ -39,8 +39,8 @@ namespace DRD.Service
         ICollection<DocumentUserInboxData> CreateDocumentUser(long documentId);
         int RequestDownloadDocument(string docName, long userId);
         int RequestPrintDocument(string docName, long userId);
-        void SendEmailSignature(Member member, string rotName, string docName, string numbers);
-        void SendEmailStamp(Member member, string rotName, string docName, string numbers);
+        void SendEmailSignature(User user, string rotName, string docName, string numbers);
+        void SendEmailStamp(User user, string rotName, string docName, string numbers);
         int Signature(long documentId, long memberId, long rotationId);
         int Stamp(long documentId, long memberId, long rotationId);
     }

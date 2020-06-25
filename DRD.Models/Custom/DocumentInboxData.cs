@@ -41,6 +41,7 @@
             //DocumentUser = new DocumentUser();
             DocumentElements = new System.Collections.Generic.List<DocumentElementInboxData>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
+            DocumentUsers = new System.Collections.Generic.List<DocumentUserInboxData>();
         }
     }
 }
