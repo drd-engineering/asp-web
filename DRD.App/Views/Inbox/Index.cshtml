@@ -143,10 +143,10 @@
                         <br />
                         <div class="col-md-12" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
                             <div class="text-center">
-                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" class="btn btn-danger btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" class="btn bg-grey-800 btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" ng-disabled="btnDisabled" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" ng-disabled="btnDisabled" class="btn btn-danger btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" data-spinner-color="#333" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" ng-disabled="btnDisabled" class="btn bg-grey-800 btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
                             </div>
                         </div>
                     </div>
@@ -232,8 +232,10 @@
             $scope.isRevising = false;
             $scope.isUploading = false;
             $scope.docIdx = 0;
+            $scope.btnDisabled = true;
             $scope.identities = [];
             initValues();
+
 
             //initDocumentValues();
 
@@ -290,6 +292,7 @@
 
                     if ($scope.model.Status == 0) {
                         if ($scope.currentRotationNode.SenderRotationNodeId != null) {
+                            $scope.btnDisabled = false;
                             var sender = angular.copy($scope.currentRotationNode);
                             // copy doc and updoc from sender
                             var sender = angular.copy($scope.rotationNodes.filter((subject) => subject.Id == $scope.currentRotationNode.SenderRotationNodeId)[0]);
@@ -372,6 +375,7 @@
             };
 
             $scope.showPasswordModal = function () {
+                $scope.btnDisabled = true;
                 var val = document.getElementById("thePassword");
                 val.value = "";
                 $scope.thePassword = "";
@@ -473,6 +477,7 @@
                 });
             };
             $scope.openDocumentSumarryViewer = function (iframe, arg, fileName) {
+                $scope.btnDisabled = true;
                 $scope.setAnnos(arg.Document.DocumentElements);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
@@ -490,6 +495,7 @@
                 DOCUMENT VIEW FUNCTION
             --------------------------------------------------------------*/
             $scope.viewDocument = function (idx) {
+                $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
                 // Reset everytime document want to open
@@ -505,6 +511,7 @@
                 });
             };
             $scope.openDocumentViewer = function (iframe, idx, fileName) {
+                $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
                 $scope.model.FlagAction |= 4;
                 doc.FlagAction |= 4;
@@ -520,6 +527,7 @@
                 DOCUMENT REVISED FUNCTION
             --------------------------------------------------------------*/
             $scope.revisedDocument = function (idx) {
+                $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
                 $scope.isRevising = true;
@@ -532,11 +540,13 @@
                     }
                 }, function (response) {
                     //error handle\
+                        $scope.btnDisabled = false;
                     var x = 0;
                 });
             };
 
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
+                $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
                 $scope.setAnnos(doc.Document.DocumentElements);
                 if (iframe.contentWindow == null)
@@ -573,6 +583,8 @@
                             cancelButtonText: "No",
                         },
                             function (isConfirm) {
+                                $scope.btnDisabled = false;
+                                alert($scope.btnDisabled );
                                 if (isConfirm) {
                                     $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
                                     if (!$scope.checkIsFirstPerson()) {
@@ -599,9 +611,10 @@
                         }
 
                 } else {
-                        $("#modal_pdf_viewer").modal("hide");
+                    $("#modal_pdf_viewer").modal("hide");
 
                 }
+                    $scope.btnDisabled = false;
                 $scope.isRevising = false;
                 $scope.isUploading = false;
             }
@@ -631,6 +644,7 @@
 
 
             $scope.openDocument = function (iframe, fileName, isNew) {
+                $scope.btnDisabled = true;
                 if (iframe.contentWindow == null)
                     return;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);
@@ -767,6 +781,7 @@
                 Submit Button Activity Function
             --------------------------------------------------------------*/
             $scope.submitActivity = function (bit) {
+                $scope.btnDisabled = true;
                 $scope.checkSignOrStamp();
                 if ($scope.passwordType == 5 && bit == 1) {
                     $scope.showPasswordModal();
@@ -777,6 +792,7 @@
 
 
             $scope.triggerSubmitSwal = function (bit) {
+                $scope.btnDisabled = true;
                 $scope.setPassword();
                 var eventString = "";
                 if (bit == 1)
@@ -817,6 +833,7 @@
                                 }
                             }
                             swal.close();
+
                         }, 500);
                     });
             };
@@ -905,6 +922,7 @@
                         if (response.data) {
                             if (response.data == -1) {
                                 showInfo("Transfer cannot be processed, balance insufficient of the sender. Please contact the sender");
+                                $scope.btnDisabled = false;
                                 return;
                             }
                             $scope.wizarno = 'success';
@@ -921,7 +939,8 @@
                             $(window).off('beforeunload');
                         }
                     }, function (response) {
-                        btn.stop();
+                            btn.stop();
+                            $scope.btnDisabled = false;
                         showInfo("An error has occurred, please try submitting again.");
                         var x = 0;
                     });
@@ -936,15 +955,18 @@
 
                 if (!$scope.isValidForm($scope.myForm)) {
                     showInfo("There is a problem, please press submit again.");
+                    $scope.btnDisabled = false;
                     return;
                 }
                 if ($scope.docs.length < 1) {
                     showInfo("You should add at least one document to continue.");
+                    $scope.btnDisabled = false;
                     return;
                 }
 
                 if ($scope.model.Value == undefined && $scope.model.DecissionInfo != '') {
                     showInfo("Required value for decission");
+                    $scope.btnDisabled = false;
                     return;
                 }
 
@@ -999,6 +1021,7 @@
                 //}
                 if ($scope.identities.length == 0) {
                     showInfo("No ID image found");
+                    $scope.btnDisabled = false;
                     return;
                 }
                 $("#modal_identity_image").modal("show");
@@ -1025,6 +1048,7 @@
                             function (isConfirm) {
                                 if (isConfirm) {
                                 }
+                                $scope.btnDisabled = false;
                             });
                 }
                 return itsCanClose;
@@ -1044,7 +1068,10 @@
                 $scope.annos = [];
                 $scope.fromSelectDoc = true;
                 $("#modal_select_document").modal("show");
-                $('#modal_select_document').on('hidden.bs.modal', $scope.fromSelectDoc=false);
+                $('#modal_select_document').on('hidden.bs.modal', function () {
+                    $scope.fromSelectDoc = false;
+                    $scope.btnDisabled = false;
+                });
             };
             $scope.setDocument = function (idx) {
                 if ($scope.docs.length>0){

@@ -362,7 +362,7 @@ namespace DRD.Service
             {
                 Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
                 //error not found
-                if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND;
+                if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
                 
                 //check subscription
                 var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
