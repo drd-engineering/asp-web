@@ -15,10 +15,8 @@ namespace DRD.Models
         public bool IsPublic { get; set; } = true;// IsDefault
         public int Administrator { get; set; } = -99;
         public int Duration { get; set; } = -99;
-        public int Rotation { get; set; } = -99;
         public int RotationStarted { get; set; }
-        public int User { get; set; } = -99;
-        public int Workflow { get; set; } = -99;
+        public int Member { get; set; } = -99;
         public long Storage { get; set; } = -99;
         public string Name { get; set; } // MemberId
         public System.DateTime? CreatedAt { get; set; } // ValidPackage

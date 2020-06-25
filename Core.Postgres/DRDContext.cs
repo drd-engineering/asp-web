@@ -29,7 +29,7 @@ namespace Core.Postgres
         public DbSet<Stamp> Stamps { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<TagItem> TagItems { get; set; }
-        public DbSet<Usage> Usages { get; set; }
+        public DbSet<BusinessUsage> Usages { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
@@ -571,17 +571,17 @@ namespace Core.Postgres
                 IsAdministrator = false
             };
 
-            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
-            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Corporate" };
-            BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive = true, Storage = 100000000, Administrator = 2, Name = "Enterprise" };
+            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,CreatedAt=DateTime.Now,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
+            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted = -99, CreatedAt = DateTime.Now, IsPublic = true, Member = -99, Storage = 100000000, Administrator = 2, Name = "Corporate" };
+            BusinessPackage package3 = new BusinessPackage { Id = -3, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted = -99, CreatedAt = DateTime.Now, IsPublic = true, Member = -99, Storage = 100000000, Administrator = 2, Name = "Enterprise" };
 
             Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
             Price price2 = new Price { Id = -2, CreatedAt = DateTime.Now, Total = 31241256, PackageId = package2.Id };
             Price price3 = new Price { Id = -3, CreatedAt = DateTime.Now, Total = 423566135, PackageId = package3.Id };
 
-            Usage usage1 = new Usage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, StartedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
-            Usage usage2 = new Usage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, StartedAt = DateTime.Now, PriceId = price2.Id };
-            Usage usage3 = new Usage { Id = -3, CompanyId = listOfCompanyCreated[2].Id, PackageId = package3.Id, StartedAt = DateTime.Now, PriceId = price3.Id };
+            BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, StartedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
+            BusinessUsage usage2 = new BusinessUsage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, StartedAt = DateTime.Now, PriceId = price2.Id };
+            BusinessUsage usage3 = new BusinessUsage { Id = -3, CompanyId = listOfCompanyCreated[2].Id, PackageId = package3.Id, StartedAt = DateTime.Now, PriceId = price3.Id };
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };
@@ -595,7 +595,7 @@ namespace Core.Postgres
 
             modelBuilder.Entity<BusinessPackage>().HasData(package1, package2, package3);
             modelBuilder.Entity<Price>().HasData(price1, price2, price3);
-            modelBuilder.Entity<Usage>().HasData(usage1, usage2, usage3);
+            modelBuilder.Entity<BusinessUsage>().HasData(usage1, usage2, usage3);
 
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
             modelBuilder.Entity<Contact>().HasData(contact1, contact2, contact3, contact4, contact5, contact6);

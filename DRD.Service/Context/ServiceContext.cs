@@ -10,7 +10,7 @@ namespace DRD.Service.Context
         }
 
         public DbSet<Company> Companies { get; set; }
-        public DbSet<Usage> Usages { get; set; }
+        public DbSet<BusinessUsage> BusinessUsages { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentElement> DocumentElements { get; set; }

@@ -257,15 +257,16 @@ namespace DRD.App.Controllers
             fileController.ControllerContext = new ControllerContext(this.Request.RequestContext, fileController);
 
             var moveDirResult = fileController.MoveFromTemporaryToActual(prod, companyId);
-            if (moveDirResult == 1)
+            if (moveDirResult.Equals(Constant.DocumentUploadStatus.OK.ToString()))
             {
                 var srv = new DocumentService();
                 var data = srv.Save(prod, companyId, rotationId);
+                data.status = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var data = 0;
+                var data = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }

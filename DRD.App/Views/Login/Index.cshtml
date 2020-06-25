@@ -74,7 +74,7 @@
                                 <div class="text-center" ">
                                     <img src="/Images/login_banner.png" width="100%" /><br /><br />
                                     <img  ng-show="load" style="left: 50%;top: 50%;width:100px; height:100px;" src="~/assets/spinner.gif">
-                                    <h5 class="content-group">{{load? 'Logging in' : 'Login' }} to your DRD account <small ng-show="!load" class="display-block">Enter your credentials below</small></h5>
+                                    <h5 class="content-group">{{load? 'Logging in' : 'Login' }} to your DRD account<small ng-show="!load" class="display-block">Enter your credentials below</small></h5>
                                 </div>
                                 <div style="padding-left:40px;padding-right:40px">
                                     <div ng-show="!load" class="form-group">
@@ -143,6 +143,7 @@
                 });
                 $scope.load = false;
                 $scope.isPasswordShown = false;
+                $scope.redirectUrl = '@(ViewBag.redirectUrl)';
             });
 
             $scope.initData = function () {
@@ -184,15 +185,13 @@
                     password: $scope.password
                 }).then(function (response) {
                     if (response.data) {
-                        if (response.data == -1) {
+                        if (response.data == -1) 
                             showInfo('Invalid username and password!');
-                        }
-                        else if (response.data == 1) {
-                            window.location = "/";
-                        }
-                        else if (response.data == 2) {
+                        else if (response.data == 1)
+                            window.location = $scope.redirectUrl;
+                        else if (response.data == 2)
                             window.location = "/appzone/appzonelist";
-                        }
+                        
                         $scope.load = false;
                     }
                 }, function (response) {

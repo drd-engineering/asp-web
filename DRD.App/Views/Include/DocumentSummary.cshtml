@@ -13,8 +13,9 @@
 
         <tbody>
             <tr ng-repeat="x in sumDocuments" style="vertical-align:top;font-size:small;cursor:pointer" ng-click="viewDocumentSummary(x)">
-                
-                <td><img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="13" /> {{x.Document.FileName}} 
+
+                <td class="push-left">
+                    <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="13" /> {{x.Document.FileName}}
                     <span style="font-size:small;color:white">
                         <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.FlagAction,2) && !validAction(x.FlagAction,64)">completed</span>
                         <span style="background-color:#bb2124; padding:5px;" ng-show="validAction(x.FlagAction,64)">removed</span>
@@ -25,8 +26,12 @@
                         <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,8)">printed</span>
                         <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,16)">downloaded</span>
                     </span>
+                    <br />
+                    <span style="font-size:10px;margin-left:40px;color:#aaaaaa">Last updated at {{convertJsonDate(x.Document.UpdatedAt)}}</span>
                 </td>
-                <td width="125px" style="text-align:right">{{humanFileSize(x.Document.FileSize,1024)}}</td>
+                <td width="125px" style="text-align:right">
+                    {{humanFileSize(x.Document.FileSize,1024)}}
+                </td>
             </tr>
         </tbody>
     </table>

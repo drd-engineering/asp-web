@@ -127,7 +127,6 @@
                 $http.post('@Url.Action("getCompanySetting", "Setting")', { }).then(function (response) {
                     if (response.data) {
                         $scope.companySetting = response.data;
-                        console.log(response.data);
                     }
                 }, function (response) {
                         console.log(response);
@@ -141,6 +140,26 @@
                 $http.post('@Url.Action("AcceptCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
                     if (response.data) {
                         $scope.getCompanySettingFromServer();
+                     $.jGrowl('you are now a member of this company", {
+                            header: 'Company invitation accepted',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }else if (response.data == "MEMBER_EXCEED_LIMIT") {
+                        $.jGrowl('company member limit exceeded', {
+                            header: 'Request Rejected',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-danger'
+                        });
+                    }else if (response.data == "ERROR_NOT_FOUND") {
+                        $.jGrowl("request not found", {
+                            header: 'Request Rejected',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-danger'
+                        });
                     }
                 }, function (response) {
                         console.log(response);
@@ -152,8 +171,28 @@
             $scope.deleteCompany = function (companyId) {
 
                 $http.post('@Url.Action("RejectCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
-                    if (response.data) {
+                    if (response.data == "OK") {
                         $scope.getCompanySettingFromServer();
+                        $.jGrowl('you reject an invitation", {
+                            header: 'Company invitation rejected',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-info'
+                        });
+                    }else if (response.data == "MEMBER_EXCEED_LIMIT") {
+                        $.jGrowl('company member limit exceeded', {
+                            header: 'Request Rejected',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-danger'
+                        });
+                    }else if (response.data == "ERROR_NOT_FOUND") {
+                        $.jGrowl("request not found", {
+                            header: 'Request Rejected',
+                            //sticky: true,
+                            life: $scope.notiftime,
+                            theme: 'alert-styled-right bg-danger'
+                        });
                     }
                 }, function (response) {
                         console.log(response);

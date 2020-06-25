@@ -38,7 +38,7 @@ namespace DRD.App.Controllers
         public ActionResult New()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
             Rotation product = new Rotation();
             layout.obj = product;
             return View(layout);
@@ -50,7 +50,7 @@ namespace DRD.App.Controllers
         public ActionResult List()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/List" });
             return View(layout);
         }
         /// <summary>
@@ -61,7 +61,7 @@ namespace DRD.App.Controllers
         public ActionResult Index(long id)
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "login", new { redirectUrl = "Rotation?id="+id });
             layout.obj = rotationService.GetRotationById(id, user.Id);
             return View(layout);
         }
@@ -86,6 +86,7 @@ namespace DRD.App.Controllers
         {
             InitializeAPI();
 
+            //TODO make response status work and using the object instead of the code variable
             var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }

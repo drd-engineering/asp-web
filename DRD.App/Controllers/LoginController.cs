@@ -11,8 +11,9 @@ namespace DRD.App.Controllers
 {
     public class LoginController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string redirectUrl = "/")
         {
+            ViewBag.redirectUrl = redirectUrl;
             if (this.Session["_USER_LOGIN_"] != null)
                 return RedirectToAction("Index", "DashboardController");
             return View();
@@ -65,7 +66,6 @@ namespace DRD.App.Controllers
         {
             if (controller.Session["_USER_LOGIN_"] == null)
             {
-                controller.Response.Redirect("/Login");
                 return false;
             }
             return true;
@@ -110,15 +110,6 @@ namespace DRD.App.Controllers
             return items;
         }
 
-        public string ManipulateMenu(Controller controller, UserSession user)
-        {
-            return "";
-        }
-
-        public string ManipulateSubMenu(Controller controller, UserSession user)
-        {
-            return "";
-        }
 
         // GET FUNCTION for change password
         public ActionResult UpdatePassword(String oldPassword, String newPassword)

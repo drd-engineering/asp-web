@@ -40,9 +40,9 @@ namespace DRD.App.Controllers
         public ActionResult Index()
         {
             if (!Initialize())
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             if (user == null)
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             Layout layout = new Layout();
             layout.menus = login.GetMenus(this, 0);
             layout.user = user;

@@ -40,7 +40,7 @@
 }
 
 <body>
-    <h4><a href="/rotation/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
+    <h4><a href="/rotation/list" class="btn" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
     <section class="panel" ng-controller="drdController">
         <!-- ROTATION FORM-->
         <div ng-show="wizarno=='product'">
@@ -533,22 +533,32 @@
                     {
                     }).then(function (response) {
                         if (response.data) {
-                            if (response.data == -1)
-                                showError("Invalid rotation.");
-                            else if (response.data == -2)
-                                showError("Invalid member plan.");
-                            else if (response.data == -3)
-                                showInfo("Your package plan has expired, please check on my plan.");
-                            else if (response.data == -4)
-                                showInfo("Rotation quota is not enough, please check on my plan.");
-                            else if (response.data == -5)
-                                showInfo("Workflow doesnt has start node");
-                            else {
-                                $scope.wizarno = 'started';
+                            if (response.data.status == "OK") {
                                 showSuccess("Successful data process.");
-                                setTimeout(function () {
-                                  window.location.href = "/rotation/list";
-                                }, 1000);
+                                $scope.findRotations($scope.criteria, $scope.page, $scope.row);
+                            }
+                            else if (response.data.status == "ERROR_WORKFLOW_START_NODE_NOT_FOUND")
+                                showError("You use an invalid workflow. Make another rotation with valid worfklow.");
+                            else if (response.data.status == "ERROR_ROTATION_ALREADY_STARTED") {
+                                showError("Rotation already started");
+                                $scope.findRotations($scope.criteria, $scope.page, $scope.row);
+                            }
+                            else if (response.data.status == "ADMINISTRATOR_EXCEED_LIMIT")
+                                showError("The number of administrators exceed limit, upgrade your subscription");
+                            else if (response.data.status == "MEMBER_EXCEED_LIMIT")
+                                showError("The number of members in this company exceed limit, upgrade your subscription");
+                            else if (response.data.status == "ROTATION_STARTED_EXCEED_LIMIT")
+                                showError("The number of rotation using this subscription is exceeding the limit, upgrade your subscription");
+                            else if (response.data.status == "NO_ACTIVE_PLAN")
+                                showError("this subscription is invalid");
+                            else if (response.data.status == "NOT_AUTHORIZED")
+                                showError("You are not authorized to use this subscription");
+                            else if (response.data.status == "EXPIRED")
+                                showError("This subscription is expired. Buy new subscription");
+                            else if (response.data.status == "STORAGE_EXCEED_LIMIT")
+                                showError("The storage is full, upgrade your subscription");
+                            else {
+                                
                             }
                         } else
                             showInfo("process data error.");

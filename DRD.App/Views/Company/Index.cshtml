@@ -692,10 +692,12 @@
             $scope.setAdmin = function () {
                 $http.post('@Url.Action("BecomeAdmin", "Member")', { companyId: $scope.CompanyList[$scope.companyIndex].Id, adminCandidate: $scope.administratorsList })
                     .then(function (response) {
-                        if (response.data) {
+                        if (response.data.status == "OK") {
                             $scope.administratorsList = response.data.members;
                             $scope.setMember();
                             $scope.setAdminsString();
+                        } else if (response.data.status == "ADMINISTRATOR_EXCEED_LIMIT") {
+                            showError("Administrator exceed the subscription limit");
                         }
                         else {
                             angular.element('#modal_manage_admin').modal('hide');

@@ -26,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -195,6 +197,7 @@
     <Compile Include="API\ActivePackageList.cs" />
     <Compile Include="API\ActiveUsageList.cs" />
     <Compile Include="API\AddMemberResponse.cs" />
+    <Compile Include="API\ResponseStatus.cs" />
     <Compile Include="API\DocUploadResult.cs" />
     <Compile Include="API\InboxList.cs" />
     <Compile Include="API\ListSubscription.cs" />
@@ -227,7 +230,7 @@
     <Compile Include="DbDefinition\Inbox.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
-    <Compile Include="DbDefinition\Usage.cs" />
+    <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="View\ErrorInfo.cs" />
     <Compile Include="View\List\InboxItem.cs" />
     <Compile Include="View\Member\MemberItem.cs" />

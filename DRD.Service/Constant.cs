@@ -17,17 +17,28 @@ namespace DRD.Service
         public const int DATA_TEMP2 = 2;
         public const int DATA_TEMP1 = 10;
         public const int TEST_DUPLICATION_COUNT = 10;
+        public const int ALLOW_EXCEED_LIMIT = -99;
         public const string CONSTRING_USER = "DrdUserContext";
         public const string API_KEY = "AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY";
         public static readonly IList<String> RESTRICTED_FOLDER_NAME = new ReadOnlyCollection<string>(new List<String> { ">", "<", ":", "\"", "/", "\\", "|", "?", "*" });
 
         /// Constructor
         public Constant() { }
+
+        public enum GENERAL
+        {
+            OK = 200,
+            NOT_FOUND = 404,
+            BAD_REQUEST = 500
+        }
+
+
         public enum InivitationStatus
         {
             Connected = 0,
             Pending = 1,
-            Inactive = 2
+            Inactive = 2,
+            ERROR_NOT_FOUND = 404
         }
 
         public enum MemberRole
@@ -39,6 +50,9 @@ namespace DRD.Service
         }
         public enum RotationStatus
         {
+            OK = 200,
+            ERROR_WORKFLOW_START_NODE_NOT_FOUND = -5,
+            ERROR_ROTATION_ALREADY_STARTED = -1,
             Open = 0,
             In_Progress = 1,
             Pending = 2,
@@ -64,14 +78,31 @@ namespace DRD.Service
             //fully access granted if there are multiple feature access in a pages
             fullAccess = 3
         }
-        public enum PackageItem
+        public enum BusinessPackageItem
         {
             Administrator = 0,
-            User = 1,
-            Rotation = 2,
-            Workflow = 3,
+            Member = 1,
             Rotation_Started = 4,
             Storage = 99
+        }
+        public enum BusinessUsageStatus
+        {
+            OK = 200,
+            ADMINISTRATOR_EXCEED_LIMIT = 2,
+            MEMBER_EXCEED_LIMIT = 3,
+            ROTATION_STARTED_EXCEED_LIMIT = 4,
+            NO_ACTIVE_PLAN = 5,
+            NOT_AUTHORIZED = 6,
+            EXPIRED = 7,
+            STORAGE_EXCEED_LIMIT = 99
+        }
+
+        public enum DocumentUploadStatus
+        {
+            OK = 1,
+            NOT_FOUND = 2,
+            SERVER_ERROR = 3
+
         }
 
         public static string getRotationStatusNameByCode(int statusCode)
@@ -87,13 +118,7 @@ namespace DRD.Service
             PERSONAL = 1,
             BUSINESS = 0
         }
-        public enum EnumContentType
-        {
-            ARTICLE = 1,
-            EVENT = 2,
-            PROFILE = 4,
-            INFORMATION = 8
-        }
+       
         public enum EnumActivityAction
         {
             SUBMIT = 1,

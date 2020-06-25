@@ -39,11 +39,6 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 Document document = new Document();
-                SubscriptionService subscriptionService = new SubscriptionService();
-                BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
-                Usage usage = subscriptionService.GetCompanyUsage(companyId);
-                // validate first
-                ValidateWithPlan(document, newDocument, package);
 
                 // mapping value
                 document.Extention = newDocument.Extention;
@@ -67,8 +62,7 @@ namespace DRD.Service
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;
 
-                // update subscription storage
-                usage.Storage = package.Storage - document.FileSize; // update storage limit
+               
 
                 document.RotationId = rotationId;
                 document.CompanyId = companyId;
@@ -1058,14 +1052,6 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
-                SubscriptionService subscriptionService = new SubscriptionService();
-                BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
-                Usage usage = subscriptionService.GetCompanyUsage(companyId);
-
-                // validation
-                ValidateWithPlan(document, newDocument, package);
-                Validate(newDocument);
-
 
                 // mapping value
                 document.Extention = newDocument.Extention;
@@ -1083,9 +1069,6 @@ namespace DRD.Service
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;
 
-                // update subscription storage
-                usage.Storage = (usage.Storage - document.FileSize) - newDocument.FileSize; // update storage limit
-
                 // update file size
                 document.FileSize = newDocument.FileSize;
                 document.UpdatedAt = DateTime.Now;
@@ -1099,29 +1082,6 @@ namespace DRD.Service
 
         }
 
-        // Currently, this method only used when Update Document
-        public bool Validate(DocumentInboxData document)
-        {
-            if (document.ExpiryDay < 0) throw new NotImplementedException();
-
-            // kalo isCurrent salah gimana? pindahin ke orang pertama itu di document service???
-            return true;
-        }
-
-        // Validate Document with Company's or Personal's Plan
-        public bool ValidateWithPlan(Document oldDocument, DocumentInboxData newDocument, BusinessPackage package)
-        {
-
-            if (!package.IsActive) throw new NotImplementedException();
-
-            // TANYAIN
-            //if (plan.SubscriptionName != "Business") throw new NotImplementedException();
-
-            // reach out the storage limit
-            if (package.Storage < (newDocument.FileSize - oldDocument.FileSize))
-                throw new NotImplementedException();
-            return true;
-        }
         /// <summary>
         /// Update the status updatedat of document 
         /// </summary>

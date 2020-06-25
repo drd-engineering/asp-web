@@ -312,47 +312,49 @@ namespace DRD.Service
             }
         }
 
-        public int Start(long userId, long rotationId, long subscriptionId)
+        public ResponseStatus Start(long userId, long rotationId, long subscriptionId)
         {
             var returnItem = StartProcess(userId, rotationId, subscriptionId);
             InboxService inboxService = new InboxService();
-            /*MemberService memberService = new MemberService();*/
             List<int> returnValue = new List<int>();
+
             if (returnItem != null)
             {
-            foreach (ActivityItem act in returnItem)
-            {
-                returnValue.Add(inboxService.CreateInbox(act));
-                /*MemberService.sendEmailInbox(act);*/
+                foreach (ActivityItem act in returnItem)
+                {
+                    returnValue.Add(inboxService.CreateInbox(act));
+                }
+
+                return new ResponseStatus() {code = returnItem[0].ExitCode , status = returnItem[0].ExitStatus };
             }
 
-            return returnValue[0];
-            }
-            return -6;
+            return new ResponseStatus() { code = -6 , status = "" };
         }
 
         // subscription Id is either userId or companyId
         public List<ActivityItem> StartProcess(long userId, long rotationId, long usageId)
         {
-            if (!subscriptionService.IsSubscriptionValid(userId, usageId))
-            {
-                System.Diagnostics.Debug.WriteLine("INVALID SUBSCRIPTION");
-                return null;
-            }
             List<ActivityItem> retvalues = new List<ActivityItem>();
+            Constant.BusinessUsageStatus subscriptionStatus = subscriptionService.IsSubscriptionValid(userId, usageId);
+            System.Diagnostics.Debug.WriteLine("LALALA: statbro " + subscriptionStatus);
+            if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+            {
+                retvalues.Add(createActivityResult((int)subscriptionStatus, subscriptionStatus.ToString()));
+                return retvalues;
+            }
 
             using (var db = new ServiceContext())
             {
                 var rt = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
                 if (!rt.Status.Equals((int)Constant.RotationStatus.Open))
                 {
-                    retvalues.Add(createActivityResult(-1));
+                    retvalues.Add(createActivityResult((int)Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED, Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString()));
                     return retvalues; //Invalid rotation
                 }
 
                 //update rotation
                 rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyUsage = db.Usages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
+                var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
                 rt.CompanyId = companyUsage.CompanyId;
                 rt.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
                 rt.DateUpdated = DateTime.Now;
@@ -362,15 +364,28 @@ namespace DRD.Service
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNode.WorkflowId == rt.WorkflowId && c.WorkflowNode.SymbolCode == 0).ToList();
                 if (workflowNodeLinks == null)
                 {
-                    retvalues.Add(createActivityResult(-5));
+                    retvalues.Add(createActivityResult((int)Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND, Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND.ToString()));
                     return retvalues; //Invalid rotation
                 }
 
+                //check rotation started limit or add when limit passed
+                var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, rt.CompanyId.Value, additional:1, addAfterSubscriptionValid: true);
+           
+
+                if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK) )
+                {
+                    retvalues.Add(createActivityResult((int)rotationStartedLimitStatus, rotationStartedLimitStatus.ToString()));
+                    return retvalues;
+                }
+            
+
+                
                 long rotId = rt.Id;
 
                 // send to all activity under start node +
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
+            
                     RotationNode rtnode = new RotationNode();
                     //rtnode.Rotation = rt;
                     rtnode.RotationId = rt.Id;
@@ -387,10 +402,10 @@ namespace DRD.Service
                     rtnode.CreatedAt = DateTime.Now;
                     db.RotationNodes.Add(rtnode);
                     db.SaveChanges();
-                    retvalues.Add(CreateActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId));
+                    retvalues.Add(CreateActivityResult(rtnode.UserId, userId, 1, rt.Subject, rtnode.Id, rotationId, exitStatus:Constant.RotationStatus.OK.ToString()));   
                 }
+
                 db.SaveChanges();
-                subscriptionService.AddUsage(Constant.PackageItem.Rotation_Started, 1, companyUsage.CompanyId);
                 return retvalues;
             }
         }
@@ -404,14 +419,15 @@ namespace DRD.Service
                 return ret;
             }
         }
-        private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId)
+        private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationNodeId, long rotationId, string exitStatus = null)
         {
             using (var db = new ServiceContext())
             {
-                ActivityItem ret = new ActivityItem();
+                System.Diagnostics.Debug.WriteLine("LALALA: "+rotationName+exitStatus);
+               ActivityItem ret = new ActivityItem();
                 ret.RotationId = rotationId;
                 ret.ExitCode = exitCode;
-
+                ret.ExitStatus = ret.ExitStatus == null ? Constant.RotationStatus.OK.ToString() : ret.ExitStatus;
                 var mem = db.Users.FirstOrDefault(c => c.Id == userId);
                 ret.UserId = userId;
                 ret.UserName = mem.Name;
@@ -427,10 +443,11 @@ namespace DRD.Service
                 return ret;
             }
         }
-        private ActivityItem createActivityResult(int exitCode)
+        private ActivityItem createActivityResult(int exitCode, string exitStatus = "")
         {
             ActivityItem ret = new ActivityItem();
             ret.ExitCode = exitCode;
+            ret.ExitStatus = exitStatus;
             return ret;
         }
 

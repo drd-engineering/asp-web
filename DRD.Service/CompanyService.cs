@@ -15,7 +15,7 @@ namespace DRD.Service
         private UserService userService = new UserService();
         // POST/GET AcceptMember/memberId
         // return user id if member accepted, return -1 if member not found.
-        public long AcceptMember(long memberId)
+        public string AcceptMember(long memberId)
         {
             using (var db = new ServiceContext())
             {
@@ -23,11 +23,13 @@ namespace DRD.Service
                 if (memberSearch != null)
                 {
                     memberSearch.isCompanyAccept = true;
-                    db.SaveChanges();
-                    return memberSearch.UserId;
+                    var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid:true);
+                    if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                        db.SaveChanges();
+                    return subscriptionStatus.ToString();
                 }
                 else
-                    return -1;
+                    return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
             }
         }
 
@@ -137,11 +139,11 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
 
-                Usage Usage = new Usage();
+                BusinessUsage Usage = new BusinessUsage();
                 SubscriptionService subscriptionService = new SubscriptionService();
 
                 Company company = GetCompanyDb(companyId);
-                Usage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
+                BusinessUsage lastSubscription = subscriptionService.getCompanyUsageById(subscriptionId);
                 BusinessPackage package = subscriptionService.getCompanyPackageByCompany(companyId);
                 Price price = subscriptionService.getActivePricePackage(package.Id);
 
@@ -159,8 +161,8 @@ namespace DRD.Service
                     lastSubscription.ExpiredAt = DateTime.Now;
                 }
 
-                long result = db.Usages.Add(Usage).Id;
-                db.Usages.Add(lastSubscription);
+                long result = db.BusinessUsages.Add(Usage).Id;
+                db.BusinessUsages.Add(lastSubscription);
                 db.SaveChanges();
 
                 return result;
@@ -252,7 +254,7 @@ namespace DRD.Service
                     if (subscription != null)
                     {
                         company.SubscriptionId = subscription.Id;
-                        Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                        BusinessUsage usage = db.BusinessUsages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                         company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                     }
                     company.IsActive = x.IsActive;
@@ -308,7 +310,7 @@ namespace DRD.Service
                 if (subscription != null)
                 {
                     company.SubscriptionId = subscription.Id;
-                    Usage usage = db.Usages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
+                    BusinessUsage usage = db.BusinessUsages.Where(y => y.Id == subscription.Id && y.IsActive).FirstOrDefault();
                     company.SubscriptionName = db.BusinessPackages.Where(package => package.Id == usage.PackageId).Select(i => i.Name).FirstOrDefault();
                 }
                 company.IsActive = result.IsActive;
@@ -354,16 +356,25 @@ namespace DRD.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns> return user id if member rejected, return -1 if member not found. </returns>
-        public long RejectMember(long memberId)
+        public string RejectMember(long memberId)
         {
             using (var db = new ServiceContext())
             {
                 Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-                if (memberSearch == null) return -1;
+                //error not found
+                if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND;
+                
+                //check subscription
+                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
+                if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                    return subscriptionStatus.ToString();
+
+                //rejectmember
                 memberSearch.IsActive = false;
                 memberSearch.isCompanyAccept = false;
                 db.SaveChanges();
-                return memberSearch.UserId;
+                return subscriptionStatus.ToString();
+
             }
         }
 

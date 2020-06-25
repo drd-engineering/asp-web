@@ -16,6 +16,9 @@ namespace DRD.App.Controllers
         private Layout layout = new Layout();
         private LoginController login = new LoginController();
         private UserSession user;
+
+        private SubscriptionService subscriptionService = new SubscriptionService();
+        
         public ActionResult DownloadAllDocumentfromCompany(long companyId)
         {
             var companyServ = new CompanyService();
@@ -69,7 +72,7 @@ namespace DRD.App.Controllers
             login.CheckLogin(this);
         }
 
-        public int MoveFromTemporaryToActual(DocumentInboxData newDocument, long companyId)
+        public String MoveFromTemporaryToActual(DocumentInboxData newDocument, long companyId)
         {
             string Tranfiles, ProcessedFiles;
             //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
@@ -80,9 +83,20 @@ namespace DRD.App.Controllers
             bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
             if (!exists)
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
+
             try
             {
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
+
+                // check storage quota
+                Constant.BusinessUsageStatus SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, newDocument.FileSize, true);
+                var status = SubscriptionStatus.ToString();
+
+                if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+                {
+                    return status; //The used rotation exceeds the data packet quota number
+                }
+                
                 if (System.IO.File.Exists(Tranfiles))
                 {
                     //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
@@ -94,13 +108,13 @@ namespace DRD.App.Controllers
                     //Need to move or overwrite the new file with actual file.
                     System.IO.File.Move(Tranfiles, ProcessedFiles);
                     System.IO.File.Delete(Tranfiles);
-                    return 1;
+                    return Constant.DocumentUploadStatus.OK.ToString();
                 }
-                return 0;
+                return Constant.DocumentUploadStatus.NOT_FOUND.ToString();
             }
             catch (Exception)
             {
-                return -1;
+                return Constant.DocumentUploadStatus.SERVER_ERROR.ToString();
             }
         }
 
@@ -208,18 +222,15 @@ namespace DRD.App.Controllers
                 if (file.ContentLength > 0)
                 {
                     // check storage quota
-                    var subscriptionService = new SubscriptionService();
-                    var usage = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId);
-                    if (usage == null)
+                    var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, file.ContentLength);
+                    result.status = SubscriptionStatus.ToString();
+
+                    if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                     {
-                        result.idx = -2;
-                        return Json(result, JsonRequestBehavior.AllowGet); //Invalid member plan
-                    }
-                    if (usage.StorageLimit - usage.TotalStorage < file.ContentLength)
-                    {
-                        result.idx = -4;
+                        result.idx = (int)SubscriptionStatus;
                         return Json(result, JsonRequestBehavior.AllowGet); //The used rotation exceeds the data packet quota number
                     }
+
                     _ext = Path.GetExtension(file.FileName);
                     var fileName = Path.GetFileName(file.FileName);
                     filenameori = fileName;

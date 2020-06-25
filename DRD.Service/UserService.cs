@@ -298,7 +298,7 @@ namespace DRD.Service
                 //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
                 var userBusinessPlan = (from member in db.Members
                                         join company in db.Companies on member.CompanyId equals company.Id
-                                        join usage in db.Usages on company.Id equals usage.CompanyId
+                                        join usage in db.BusinessUsages on company.Id equals usage.CompanyId
                                         where member.UserId == userId
                                         && member.IsAdministrator
                                         && usage.IsActive

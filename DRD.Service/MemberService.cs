@@ -13,6 +13,7 @@ namespace DRD.Service
     {
         private CompanyService companyService;
         private ContactService contactService;
+        private SubscriptionService subscriptionService = new SubscriptionService();
 
         public Member getMember(long memberId)
         {
@@ -426,6 +427,17 @@ namespace DRD.Service
         public MemberList BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
         {
             MemberList data = new MemberList();
+            int totalAdmin = 0;
+
+            if (adminCandidate!=null)
+                totalAdmin = adminCandidate.Count;
+
+            //check admin limit
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Administrator, companyId, totalAdmin, addAfterSubscriptionValid: true, reset: true);
+            data.status = subscriptionStatus.ToString();
+            if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK) || adminCandidate==null)
+                return data;
+
             using (var db = new ServiceContext())
             {
                 foreach (MemberItem x in adminCandidate)
