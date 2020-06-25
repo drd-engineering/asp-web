@@ -17,6 +17,7 @@ namespace DRD.Service
 {
     public class SettingService
     {
+        SubscriptionService subscriptionService = new SubscriptionService();
         public CompanySettingData getCompanySetting(long userId)
         {
             using (var db = new ServiceContext())
@@ -49,24 +50,36 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
+
+                if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND;
+
+                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
+                if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
+
+
                 member.isMemberAccept = true;
                 db.SaveChanges();
-                return (int) System.Net.HttpStatusCode.OK;
+                return subscriptionStatus.ToString();
             }
         }
 
-        public int resetState(long companyId, long userId)
+        public string resetState(long companyId, long userId)
         {
             using (var db = new ServiceContext())
             {
                 var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
+                if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND;
+
+                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, companyId, -1, addAfterSubscriptionValid: true);
+                if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
+
                 member.IsActive = false;
                 //reset state
                 member.isCompanyAccept = false;
                 member.IsAdministrator = false;
                 member.isMemberAccept = false;
                 db.SaveChanges();
-                return (int)System.Net.HttpStatusCode.OK;
+                return subscriptionStatus.ToString();
             }
         }
     }

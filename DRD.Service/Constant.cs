@@ -37,7 +37,8 @@ namespace DRD.Service
         {
             Connected = 0,
             Pending = 1,
-            Inactive = 2
+            Inactive = 2,
+            ERROR_NOT_FOUND = 404
         }
 
         public enum MemberRole
@@ -136,14 +137,5 @@ namespace DRD.Service
             REMOVE = 64,
         }
        
-        public enum EnumInvitationStatus
-        {
-            REJECTEDBYMEMBER = 0,
-            REJECTEDBYCOMPANY = 1,
-            WAITINGFORMEMBER = 2,
-            WAITINGFORCOMPANY = 3,
-            ACCEPTEDBYMEMBER = 4,
-            ACCEPTEDBYCOMPANY = 5
-        }
     }
 }
