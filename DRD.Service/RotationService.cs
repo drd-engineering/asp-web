@@ -674,6 +674,9 @@ namespace DRD.Service
                 item.Document.FileUrl = rndDb.Document.FileUrl;
                 item.Document.FileName = rndDb.Document.FileName;
                 item.Document.FileSize = rndDb.Document.FileSize;
+                item.Document.IsCurrent = rndDb.Document.IsCurrent;
+                item.Document.CreatedAt = rndDb.Document.CreatedAt;
+                item.Document.UpdatedAt = rndDb.Document.CreatedAt;
                 foreach (var dusr in rndDb.Document.DocumentUsers)
                 {
                     var dUsrItem = new DocumentUserInboxData();
