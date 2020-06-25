@@ -52,6 +52,8 @@ namespace DRD.App.Controllers
 
             WorkflowItem product = new WorkflowItem();
             product = workflowService.GetById(id);
+            if(product==null) return RedirectToAction("list", "workflow");
+
             layout.obj = product;
 
             return View(layout);

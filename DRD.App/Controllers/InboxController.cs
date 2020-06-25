@@ -43,8 +43,9 @@ namespace DRD.App.Controllers
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
 
             //page authorization check if user has no access
-            if (product.AccessType.Equals((int)Constant.AccessType.noAccess))
-                return RedirectToAction("Index", "Dashboard");
+            if (product == null || product.AccessType.Equals((int)Constant.AccessType.noAccess))
+                return RedirectToAction("Index", "Inbox");
+
             //user have access
             layout.obj = product;
             return View(layout);
@@ -56,6 +57,7 @@ namespace DRD.App.Controllers
                 return Json(-1, JsonRequestBehavior.AllowGet);
  
             var data = inboxService.GetInboxItem(id, user.Id);
+
             //page authorization check if user has no access
             if(data.AccessType.Equals((int)Constant.AccessType.noAccess))
                 return Json(-2, JsonRequestBehavior.AllowGet);

@@ -39,10 +39,12 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
+
             Rotation product = new Rotation();
             layout.obj = product;
             return View(layout);
         }
+
         /// <summary>
         /// Rotation List Page
         /// </summary>
@@ -53,6 +55,7 @@ namespace DRD.App.Controllers
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/List" });
             return View(layout);
         }
+
         /// <summary>
         /// Rotation Details Page by Id and user created
         /// </summary>
@@ -62,7 +65,11 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation?id="+id });
-            layout.obj = rotationService.GetRotationById(id, user.Id);
+            
+            var product =  rotationService.GetRotationById(id, user.Id);
+            if (product == null) return RedirectToAction("list", "rotation");
+
+            layout.obj = product;
             return View(layout);
         }
 
@@ -123,11 +130,13 @@ namespace DRD.App.Controllers
             var data = rotationService.FindRotationCountAll(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetUsersWorkflow(long id)
         {
             var data = rotationService.GetUsersWorkflow(id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult ProcessActivity(ProcessActivity param, int bit)
         {
             InitializeAPI();

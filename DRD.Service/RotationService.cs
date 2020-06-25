@@ -233,7 +233,7 @@ namespace DRD.Service
         /// <param name="creatorId"></param>
         /// <param name="topCriteria"></param>
         /// <returns></returns>
-        public int FindRotationCountAll(long creatorId, string topCriteria)
+        public int FindRotationCountAll(long creatorId, string topCriteria, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -247,7 +247,7 @@ namespace DRD.Service
                 if (db.Rotations != null)
                 {
                     var result = (from rotation in db.Rotations
-                                  where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
+                                  where rotation.CreatorId == creatorId && rotation.IsActive==isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                                   orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                                   select new RotationData
                                   {
@@ -266,7 +266,7 @@ namespace DRD.Service
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int skip, int take)
+        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int skip, int take, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -280,7 +280,7 @@ namespace DRD.Service
             {
                 if (db.Rotations == null) return null;
                 var result = (from rotation in db.Rotations
-                              where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
+                              where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                               orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                               select new RotationData
                               {
@@ -545,13 +545,13 @@ namespace DRD.Service
         /// <param name="id"></param>
         /// <param name="creatorId"></param>
         /// <returns></returns>
-        public RotationIndex GetRotationById(long id, long creatorId)
+        public RotationIndex GetRotationById(long id, long creatorId, bool isActive = true)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.Rotations
-                     where rotation.Id == id && rotation.CreatorId == creatorId
+                     where rotation.Id == id && rotation.IsActive==isActive && rotation.CreatorId == creatorId
                      select new RotationIndex
                      {
                          Id = rotation.Id,
