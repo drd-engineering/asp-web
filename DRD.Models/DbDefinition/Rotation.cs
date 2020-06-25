@@ -27,6 +27,8 @@ namespace DRD.Models
         public byte SubscriptionType { get; set; }
         public long SubscriptionOf { set; get; }
         public string DecissionInfo { get; set; }
+        public bool IsActive { get; set; }
+
         public virtual System.Collections.Generic.ICollection<TagItem> TagItems { get; set; }
         // Document summaries
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
@@ -46,6 +48,8 @@ namespace DRD.Models
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
             SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
+
+            IsActive = true;
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNode>();

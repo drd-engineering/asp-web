@@ -232,7 +232,7 @@ namespace DRD.Service
         /// <param name="creatorId"></param>
         /// <param name="topCriteria"></param>
         /// <returns></returns>
-        public int FindRotationCountAll(long creatorId, string topCriteria)
+        public int FindRotationCountAll(long creatorId, string topCriteria, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -246,7 +246,7 @@ namespace DRD.Service
                 if (db.Rotations != null)
                 {
                     var result = (from rotation in db.Rotations
-                                  where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
+                                  where rotation.CreatorId == creatorId && rotation.IsActive==isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                                   orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                                   select new RotationData
                                   {
@@ -265,7 +265,7 @@ namespace DRD.Service
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int skip, int take)
+        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int skip, int take, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -279,7 +279,7 @@ namespace DRD.Service
             {
                 if (db.Rotations == null) return null;
                 var result = (from rotation in db.Rotations
-                              where rotation.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
+                              where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
                               orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
                               select new RotationData
                               {
@@ -544,13 +544,13 @@ namespace DRD.Service
         /// <param name="id"></param>
         /// <param name="creatorId"></param>
         /// <returns></returns>
-        public RotationIndex GetRotationById(long id, long creatorId)
+        public RotationIndex GetRotationById(long id, long creatorId, bool isActive = true)
         {
             using (var db = new ServiceContext())
             {
                 var result =
                     (from rotation in db.Rotations
-                     where rotation.Id == id && rotation.CreatorId == creatorId
+                     where rotation.Id == id && rotation.IsActive==isActive && rotation.CreatorId == creatorId
                      select new RotationIndex
                      {
                          Id = rotation.Id,
@@ -974,267 +974,24 @@ namespace DRD.Service
                 return result;
             }
         }
-
-        /*public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize)
+        public string Delete(long id)
         {
-            return GetLiteAll(userId, topCriteria, page, pageSize, null, null);
-        }
-        public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
-        {
-            return GetLiteAll(userId, topCriteria, page, pageSize, order, null);
-        }
-        public IEnumerable<RotationData> GetLiteAll(long userId, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
-        {
-            int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
-
-            if (order != null)
-                ordering = order;
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
             using (var db = new ServiceContext())
             {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.User.Id == userId).ToList();
-                long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
-                var result =
-                    (from rotation in db.Rotations
-                     where (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new RotationData
-                     {
-                         Id = rotation.Id,
-                         Subject = rotation.Subject,
-                         Status = rotation.Status,
-                         WorkflowId = rotation.Workflow.Id,
-                         WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.UserId,
-                         StatusDescription = constant.getRotationStatusName(rotation.Status),
-                         CreatedAt = rotation.DateCreated,
-                         UpdatedAt = rotation.DateUpdated,
-                         DateStarted = rotation.DateUpdated,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+                var rotation = db.Rotations.Where(i => i.Id == id).FirstOrDefault();
 
-                return result;
+                //check if rotation exist
+                if (rotation == null)return Constant.RotationStatus.NOT_FOUND.ToString();
+
+                //check is already being used or not
+                if (rotation.CompanyId.HasValue) return Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString();
+
+                rotation.IsActive = false;
+                rotation.DateUpdated = DateTime.Now;
+                db.SaveChanges();
+                return Constant.RotationStatus.OK.ToString();
             }
         }
-        public long GetLiteAllCount(long userId, string topCriteria)
-        {
-            return GetLiteAllCount(userId, topCriteria, null);
-        }
-        public long GetLiteAllCount(long userId, string topCriteria, string criteria)
-        {
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = null;
-
-            using (var db = new ServiceContext())
-            {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.User.Id == userId).ToList();
-                long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
-
-                var result =
-                    (from rotation in db.Rotations
-                     where //_appZoneAccess.Contains(rotation.AppZone) &&
-                            (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new Rotation
-                     {
-                         Id = rotation.Id,
-                     }).Count();
-
-                return result;
-            }
-        }
-        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize)
-        {
-            return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, null, null);
-        }
-        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order)
-        {
-            return GetLiteStatusAll(userId, status, topCriteria, page, pageSize, order, null);
-        }
-        public IEnumerable<RotationData> GetLiteStatusAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
-        {
-            int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
-
-            if (order != null)
-                ordering = order;
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
-            var statuses = status.Split(',').Select(Int32.Parse).ToList();
-
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotation in db.Rotations
-                     where statuses.Contains(rotation.Status) &&
-                            (rotation.UserId == userId || rotation.RotationNodes.Any(RotationUser => RotationUser.User.Id == userId)) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new RotationData
-                     {
-                         Id = rotation.Id,
-                         Subject = rotation.Subject,
-                         Status = rotation.Status,
-                         WorkflowId = rotation.Workflow.Id,
-                         WorkflowName = rotation.Workflow.Name,
-                         UserId = rotation.UserId,
-                         StatusDescription = constant.getRotationStatusName(rotation.Status),
-                         CreatedAt = rotation.DateCreated,
-                         UpdatedAt = rotation.DateCreated,
-                         DateStarted = rotation.DateStarted,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
-                if (result != null)
-                {
-                    MenuService menuService = new MenuService();
-                    foreach (RotationData rotationItem in result)
-                    {
-                        rotationItem.Key = menuService.EncryptData(rotationItem.Id);
-                    }
-                }
-
-                return result;
-            }
-        }
-        public long GetLiteStatusAllCount(long userId, string status, string topCriteria)
-        {
-            return GetLiteStatusAllCount(userId, status, topCriteria, null);
-        }
-        public long GetLiteStatusAllCount(long userId, string status, string topCriteria, string criteria)
-        {
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = null;
-
-            using (var db = new ServiceContext())
-            {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.User.Id == userId).ToList();
-                long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
-                var statuses = status.Split(',').Select(Int32.Parse).ToList();
-                var result =
-                    (from rotation in db.Rotations
-                     where statuses.Contains(rotation.Status) &&
-                            (Ids.Contains(rotation.Id) || rotation.UserId == userId) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Subject).Contains(RotationUser)))
-                     select new Rotation
-                     {
-                         Id = rotation.Id,
-                     }).Count();
-
-                return result;
-            }
-        }
-        public IEnumerable<RotationData> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize, Expression<Func<RotationData, string>> order, Expression<Func<RotationData, bool>> criteria)
-        {
-            int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "IsTemplate desc, Name";
-
-            if (order != null)
-                ordering = order;
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
-            var statuses = status.Split(',').Select(Int32.Parse).ToList();
-
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotation in db.RotationNodes
-                     where rotation.User.Id == userId && statuses.Contains(rotation.Status) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Rotation.Subject).Contains(RotationUser)))
-                     select new RotationData
-                     {
-                         Id = rotation.Id,
-                         Subject = rotation.Rotation.Subject,
-                         Status = rotation.Rotation.Status,
-                         WorkflowId = rotation.Rotation.Workflow.Id,
-                         WorkflowName = rotation.Rotation.Workflow.Name,
-                         ActivityName = rotation.WorkflowNode.Caption,
-                         StatusDescription = constant.getRotationStatusName(rotation.Status),
-                         UserId = rotation.User.Id,
-                         CreatedAt = rotation.CreatedAt,
-                         UpdatedAt = rotation.UpdatedAt,
-                         DateStarted = rotation.DateRead,
-                     }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
-                if (result != null)
-                {
-                    MenuService menuService = new MenuService();
-                    foreach (RotationData rotationItem in result)
-                    {
-                        rotationItem.Key = menuService.EncryptData(rotationItem.Id);
-                    }
-                }
-
-                return result;
-            }
-        }
-        public IEnumerable<RotationData> GetNodeLiteAll(long userId, string status, string topCriteria, int page, int pageSize)
-        {
-            return GetNodeLiteAll(userId, status, topCriteria, page, pageSize, null, null);
-        }
-        public long GetNodeLiteAllCount(long userId, string status, string topCriteria, string criteria)
-        {
-            if (string.IsNullOrEmpty(criteria))
-                criteria = "1=1";
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = null;
-
-            var statuses = status.Split(',').Select(Int32.Parse).ToList();
-
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotation in db.RotationNodes
-                     where rotation.User.Id == userId && statuses.Contains(rotation.Status) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotation.Rotation.Subject).Contains(RotationUser)))
-                     select new RotationData
-                     {
-                         Id = rotation.Id,
-                     }).Count();
-
-                return result;
-            }
-        }
-        public long GetNodeLiteAllCount(long userId, string status, string topCriteria)
-        {
-            return GetNodeLiteAllCount(userId, status, topCriteria, null);
-        }*/
 
     }
 }

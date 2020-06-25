@@ -41,7 +41,7 @@ namespace DRD.Service
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.Id == id
+                     where workflow.Id == id && workflow.IsActive
                      select new WorkflowItem
                      {
                          Id = workflow.Id,
@@ -150,7 +150,7 @@ namespace DRD.Service
             return FindWorkflows(creatorId, topCriteria, page, pageSize, order, criteriaUsed);
         }
 
-        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem, bool>> criteria)
+        public ICollection<WorkflowItem> FindWorkflows(long creatorId, string topCriteria, int page, int pageSize, Expression<Func<WorkflowItem, string>> order, Expression<Func<WorkflowItem, bool>> criteria,bool isActive=true)
         {
             int skip = pageSize * (page - 1);
             Expression<Func<WorkflowItem, string>> ordering = WorkflowItem => "DateCreated desc, IsTemplate desc, Name";
@@ -169,7 +169,7 @@ namespace DRD.Service
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
+                     where workflow.CreatorId == creatorId && workflow.IsActive==isActive && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
                      orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {
@@ -196,7 +196,7 @@ namespace DRD.Service
                 return result;
             }
         }
-        public int FindWorkflowsCountAll(long creatorId, string topCriteria)
+        public int FindWorkflowsCountAll(long creatorId, string topCriteria, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -209,7 +209,7 @@ namespace DRD.Service
             {
                 var result =
                     (from workflow in db.Workflows
-                     where workflow.CreatorId == creatorId && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
+                     where workflow.CreatorId == creatorId && workflow.IsActive == isActive && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
                      orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {
@@ -363,6 +363,26 @@ namespace DRD.Service
                                            .Where(c => c.Id == id).FirstOrDefault();
 
             return values;
+        }
+
+        public string Delete(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+                var workflow = db.Workflows.Where(i => i.Id == id).FirstOrDefault();
+
+                //check if workflow exist
+                if (workflow == null) return Constant.WorkflowStatus.NOT_FOUND.ToString();
+
+                //check if workflow is already being used
+                var rotationNode = db.Rotations.Where(c => c.WorkflowId == id).FirstOrDefault();
+                if (rotationNode != null) return Constant.WorkflowStatus.USED_IN_ROTATION.ToString();
+
+                workflow.IsActive = false;
+                workflow.DateUpdated = DateTime.Now;
+                db.SaveChanges();
+                return Constant.WorkflowStatus.OK.ToString();
+            }
         }
     }
 }

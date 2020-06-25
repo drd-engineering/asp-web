@@ -140,7 +140,7 @@
                 $http.post('@Url.Action("AcceptCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
                     if (response.data) {
                         $scope.getCompanySettingFromServer();
-                     $.jGrowl('you are now a member of this company", {
+                     $.jGrowl('you are now a member of this company', {
                             header: 'Company invitation accepted',
                             //sticky: true,
                             life: $scope.notiftime,
@@ -173,7 +173,7 @@
                 $http.post('@Url.Action("RejectCompanyInvitation", "Setting")', { companyId: companyId }).then(function (response) {
                     if (response.data == "OK") {
                         $scope.getCompanySettingFromServer();
-                        $.jGrowl('you reject an invitation", {
+                        $.jGrowl('you reject an invitation', {
                             header: 'Company invitation rejected',
                             //sticky: true,
                             life: $scope.notiftime,

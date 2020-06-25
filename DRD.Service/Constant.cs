@@ -48,9 +48,17 @@ namespace DRD.Service
             Administrator = 2,
             Owner = 3
         }
+
+        public enum WorkflowStatus
+        {
+            OK = 200,
+            NOT_FOUND = 404,
+            USED_IN_ROTATION = 300
+        }
         public enum RotationStatus
         {
             OK = 200,
+            NOT_FOUND = 404,
             ERROR_WORKFLOW_START_NODE_NOT_FOUND = -5,
             ERROR_ROTATION_ALREADY_STARTED = -1,
             Open = 0,

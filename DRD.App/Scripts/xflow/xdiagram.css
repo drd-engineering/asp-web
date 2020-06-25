@@ -171,14 +171,14 @@
 }
 
 .start {
-    background-color: #a4c645;
+    background-color: #ff6c17;
     top: 20px;
     left: 50px;
     /*position: relative;*/
 }
 
 .end {
-    background-color: #e96060;
+    background-color: #eb3a3a;
     top: 200px;
     left: 50px
 }

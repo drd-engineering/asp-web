@@ -168,12 +168,6 @@
             stop: function (event, ui) { }
         });
 
-        $("#" + activityId).resizable({
-            resize: function (event, ui) {
-                $scope.refreshLines()
-            },
-        });
-
         $scope.addNode('node-activity-2', 'ACTIVITY', 'activity');
     }
 
@@ -319,11 +313,7 @@
             stop: function (event, ui) { }
         });
 
-        $("#" + activityId).resizable({
-            resize: function (event, ui) {
-                $scope.refreshLines()
-            },
-        });
+
     }
 
     $scope.initDecision = function (idNo) {
@@ -408,11 +398,7 @@
             stop: function (event, ui) { }
         });
 
-        $("#" + activityId).resizable({
-            resize: function (event, ui) {
-                $scope.refreshLines()
-            },
-        });
+
     }
 
     $scope.initTransfer = function (idNo) {
@@ -470,11 +456,7 @@
             stop: function (event, ui) { }
         });
 
-        $("#" + activityId).resizable({
-            resize: function (event, ui) {
-                $scope.refreshLines()
-            },
-        });
+  
     }
 
     $scope.initCase = function (idNo) {
@@ -530,11 +512,7 @@
             stop: function (event, ui) { }
         });
 
-        $("#" + activityId).resizable({
-            resize: function (event, ui) {
-                $scope.refreshLines()
-            },
-        });
+
     }
 
     $scope.initPararrel = function (idNo) {

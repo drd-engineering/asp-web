@@ -45,21 +45,21 @@ namespace DRD.Service
             }
         }
 
-        public int acceptCompany(long companyId, long userId)
+        public string acceptCompany(long companyId, long userId)
         {
             using (var db = new ServiceContext())
             {
                 var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
 
-                if (member == null) return (int)Constant.InivitationStatus.ERROR_NOT_FOUND;
+                if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
                 var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
-                if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return (int)subscriptionStatus;
+                if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
 
 
                 member.isMemberAccept = true;
                 db.SaveChanges();
-                return (int)subscriptionStatus;
+                return subscriptionStatus.ToString();
             }
         }
 
