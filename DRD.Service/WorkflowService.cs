@@ -227,6 +227,18 @@ namespace DRD.Service
             }
         }
 
+        private bool checkIdExist(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+
+                var count = db.Workflows.Where(i => i.Id == id).FirstOrDefault();
+
+                return count != null;
+
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -245,7 +257,13 @@ namespace DRD.Service
                 if (WorkflowItem.Id != 0)
                     product = db.Workflows.FirstOrDefault(workflow => workflow.Id == WorkflowItem.Id);
                 else
+                {
                     product = new Workflow();
+                    while (checkIdExist(product.Id))
+                    {
+                        product.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    }
+                }
 
                 product.Name = WorkflowItem.Name;
                 product.Description = WorkflowItem.Description;

@@ -3,11 +3,11 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DRD.Service
+namespace DRD.Models
 {
-    public class Utilities
+    public static class UtilitiesModel
     {
-        public static long RandomLongGenerator(long minimumValue = 0, long maximumValue = long.MaxValue)
+        public static long RandomLongGenerator(long minimumValue = 0, long maximumValue = 1000000000000000)
         {
             Random randomClass = new Random();
             byte[] buf = new byte[8];
@@ -19,7 +19,7 @@ namespace DRD.Service
 
         public static string Encrypt(string clearText)
         {
-            string EncryptionKey = Constant.ENCRYPT_KEY;
+            string EncryptionKey = ConstantModel.ENCRYPT_KEY;
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
@@ -40,7 +40,7 @@ namespace DRD.Service
         }
         public static string Decrypt(string cipherText)
         {
-            string EncryptionKey = Constant.ENCRYPT_KEY;
+            string EncryptionKey = ConstantModel.ENCRYPT_KEY;
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())

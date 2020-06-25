@@ -134,6 +134,18 @@ namespace DRD.Service
             return result;
         }
 
+        private bool checkIdExist(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+
+                var count = db.Rotations.Where(rotation => rotation.Id == id).FirstOrDefault();
+
+                return count != null;
+
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -150,8 +162,17 @@ namespace DRD.Service
                 }
                 else
                 {
+
                     product = new Rotation();
+
+                    while (checkIdExist(product.Id))
+                    {
+                        product.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    }
+
                 }
+
+                System.Diagnostics.Debug.WriteLine(prod.Id +" TESTES");
                 product.Subject = prod.Subject;
                 Workflow workflowitem = db.Workflows.FirstOrDefault(w => w.Id == prod.WorkflowId);
                 product.Workflow = workflowitem;
@@ -307,31 +328,6 @@ namespace DRD.Service
 
                 return product.Id;
             }
-
         }
-
-        //private bool decissionValue(string srcVal, string dstVal, string oprt)
-        //{
-        //    List<Comparator> objs = new List<Comparator>();
-
-        //    decimal src = 0;
-        //    decimal dst = 0;
-        //    bool issrcnum = decimal.TryParse(srcVal, out src);
-        //    bool isdstnum = decimal.TryParse(dstVal, out dst);
-
-        //    List<Comparator> result = null;
-        //    if (issrcnum && isdstnum)
-        //    {
-        //        objs.Add(new Comparator(src, dst));
-        //        result = (from c in objs select new Comparator { number1 = c.number1, number2 = c.number2, }).Where("number1" + oprt + "number2").ToList();
-        //    }
-        //    else
-        //    {
-        //        objs.Add(new Comparator(srcVal, dstVal));
-        //        result = (from c in objs select new Comparator { value1 = c.value1, value2 = c.value2, }).Where("value1" + oprt + "value2").ToList();
-        //    }
-        //    return result.Count() > 0;
-        //}
-
     }
 }

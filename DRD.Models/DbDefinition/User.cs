@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DRD.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,18 +35,8 @@ namespace DRD.Models
 
          public User()
         {
-            Id = RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
-            UserName = ""+Id;
-        }
-
-        private long RandomLongGenerator(long minimumValue, long maximumValue)
-        {
-            Random randomClass = new Random();
-            byte[] buf = new byte[8];
-            randomClass.NextBytes(buf);
-            long longRand = BitConverter.ToInt64(buf, 0);
-
-            return (Math.Abs(longRand % (maximumValue - minimumValue)) + minimumValue);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID);
+            UserName = "" + Id;
         }
     }
 }

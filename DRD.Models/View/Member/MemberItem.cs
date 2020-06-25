@@ -21,5 +21,6 @@ namespace DRD.Models.View
             User = new ContactItem();
             Company = new SmallCompanyData();
         }
+
     }
 }

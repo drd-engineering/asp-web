@@ -11,7 +11,7 @@ namespace DRD.Service
     public class InboxService
     {
 
-        public bool checkIdExist(long id)
+        private bool checkIdExist(long id)
         {
             using (var db = new ServiceContext())
             {
@@ -249,7 +249,7 @@ namespace DRD.Service
                     inboxItem = new Inbox();
                     while (checkIdExist(inboxItem.Id))
                     {
-                        inboxItem.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                        inboxItem.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                     }
                     inboxItem.IsUnread = true;
                     if (activity.RotationNodeId < 0)
@@ -295,7 +295,7 @@ namespace DRD.Service
                             inboxItem2 = new Inbox();
                             while (inboxItem2.Id == inboxItem.Id || checkIdExist(inboxItem2.Id))
                             {
-                                inboxItem2.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                                inboxItem2.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                             }
                             inboxItem2.IsUnread = true;
                             inboxItem2.LastStatus = "ROTATION";

@@ -34,6 +34,8 @@ namespace DRD.Service
             _connString = Constant.CONSTRING;
         }
 
+       
+
         public RotationInboxData AssignNodes(ServiceContext db, RotationInboxData rot, long userId, IDocumentService docSvr)
         {
             RotationInboxData rotation = rot;

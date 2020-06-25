@@ -12,6 +12,18 @@ namespace DRD.Service
 {
     public class UserService
     {
+
+        private bool checkIdExist(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+
+                var count = db.Users.Where(i => i.Id == id).FirstOrDefault();
+
+                return count != null;
+
+            }
+        }
         /// <summary>
         /// Save User Ragistration as a new user
         /// </summary>
@@ -29,7 +41,14 @@ namespace DRD.Service
                     retVal.Id = -1;
                     return retVal;
                 }
+                
                 User user = new User();
+                //check duplicate id
+                while (checkIdExist(user.Id))
+                {
+                    user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                }
+
                 user.Email = register.Email;
                 user.Name = register.Name;
                 user.Phone = register.Phone;
@@ -63,7 +82,7 @@ namespace DRD.Service
                 {
                     for (int j = 0; j < Constant.TEST_DUPLICATION_COUNT; j++)
                     {
-                        user.Id = Utilities.RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
+                        user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                         var encryptedUserId = Utilities.Encrypt(user.Id.ToString());
                         if (!Constant.RESTRICTED_FOLDER_NAME.Any(w => encryptedUserId.Contains(w)))
                             break;
@@ -92,25 +111,15 @@ namespace DRD.Service
         /// <returns></returns>
         public long Save(Member member)
         {
-            int result = 0;
             using (var db = new ServiceContext())
             {
-                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
+                while (checkIdExist(member.Id))
                 {
-                    try
-                    {
-                        member.Id = ((long)member.CompanyId * 10000) + Utilities.RandomLongGenerator(1000, 10000);
-                        member.JoinedAt = DateTime.Now;
-                        db.Members.Add(member);
-                        result = db.SaveChanges();
-                        break;
-                    }
-                    catch (DbUpdateException x)
-                    {
-                        if (i > Constant.TEST_DUPLICATION_COUNT)
-                            throw new Exception(x.Message);
-                    }
+                    member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                 }
+                db.Members.Add(member);
+                db.SaveChanges();
+                       
 
                 return member.Id;
             }

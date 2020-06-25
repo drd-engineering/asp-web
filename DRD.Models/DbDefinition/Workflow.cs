@@ -6,7 +6,7 @@ namespace DRD.Models
     [Table("Workflows", Schema = "public")]
     public class Workflow
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 100)
         public string Description { get; set; } // Description
@@ -24,6 +24,7 @@ namespace DRD.Models
 
         public Workflow()
         {
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: 1000000000);
             WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
             Type = 0;
         }

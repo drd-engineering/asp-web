@@ -6,7 +6,7 @@ namespace DRD.Models
     [Table("Rotations", Schema = "public")]
     public class Rotation
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
@@ -46,6 +46,7 @@ namespace DRD.Models
 
         public Rotation()
         {
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID);
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
             SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 

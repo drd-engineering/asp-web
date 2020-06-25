@@ -7,6 +7,8 @@ namespace DRD.App.Controllers
 {
     public class RegisterController : Controller
     {
+        private CompanyService companyService = new CompanyService();
+        private UserService userService = new UserService();
         private ServiceContext db = new ServiceContext();
 
         // GET: Register
@@ -20,8 +22,7 @@ namespace DRD.App.Controllers
         // Register a new User, save it to database
         public ActionResult Save(Register register)
         {
-            var service = new UserService();
-            var data = service.SaveRegistration(register);
+            var data = userService.SaveRegistration(register);
             var registrationResponse = new RegisterResponse();
             if (data.Id < 0)
             {
@@ -49,7 +50,7 @@ namespace DRD.App.Controllers
                 }
                 registrationResponse.Id = "" + data.Id;
                 registrationResponse.Email = data.Email;
-                service.SendEmailRegistration(data);
+                userService.SendEmailRegistration(data);
             }
             else
                 registrationResponse.Id = "ERROR";
@@ -62,8 +63,7 @@ namespace DRD.App.Controllers
         /// <returns>company details only contain name, code and id</returns>
         public ActionResult GetAllCompany()
         {
-            var service = new CompanyService();
-            var data = service.GetAllCompany();
+            var data = companyService.GetAllCompany();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -71,8 +71,7 @@ namespace DRD.App.Controllers
         // Check whenever an email is already used
         public ActionResult CheckEmail(string email)
         {
-            var service = new UserService();
-            var data = service.CheckEmailAvailability(email);
+            var data = userService.CheckEmailAvailability(email);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
