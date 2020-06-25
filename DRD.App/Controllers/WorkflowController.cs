@@ -39,9 +39,6 @@ namespace DRD.App.Controllers
         {
             if (!Initialize())
                 return RedirectToAction("Index", "login", new { redirectUrl = "Workflow/New" });
-            WorkflowItem product = new WorkflowItem();
-            layout.obj = product;
-
             return View(layout);
         }
 

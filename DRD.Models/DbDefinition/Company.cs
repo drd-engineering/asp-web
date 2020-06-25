@@ -9,7 +9,7 @@ namespace DRD.Models
     [Table("Companies", Schema = "public")]
     public class Company
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public string Code { get; set; } // Code (length: 10)
         public string Name { get; set; } // Name (length: 50)
@@ -43,6 +43,7 @@ namespace DRD.Models
 
         public Company()
         {
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: 1000000000);
             IsActive = true;
             IsVerified = false;
             CreatedAt = DateTime.Now;

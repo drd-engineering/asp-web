@@ -11,6 +11,8 @@ namespace DRD.Service
         public const string ENCRYPT_DECRYPT_PWD = "drdw1w1rjang";
         public const string ENCRYPT_KEY = "drdtul@l1t3";
         public const string INIT_LOGIN = "_init_login_xbudi_";
+        public const long MINIMUM_VALUE_ID = 1000000000;
+        public const long MAXIMUM_VALUE_ID = 1000000000000000;
         public const int LOOP_TRY_SAVE = 10;
         public const int LOOP_TRY_SAVE_THROW = 6;
         public const int DATA_TEMP3 = 2020;

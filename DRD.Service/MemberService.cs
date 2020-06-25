@@ -1,4 +1,5 @@
 ﻿using DRD.Models;
+using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service.Context;
@@ -14,6 +15,18 @@ namespace DRD.Service
         private CompanyService companyService;
         private ContactService contactService;
         private SubscriptionService subscriptionService = new SubscriptionService();
+
+        private bool checkIdExist(long id)
+        {
+            using (var db = new ServiceContext())
+            {
+
+                var count = db.Members.Where(i => i.Id == id).FirstOrDefault();
+
+                return count != null;
+
+            }
+        }
 
         public Member getMember(long memberId)
         {
@@ -175,10 +188,14 @@ namespace DRD.Service
                     member = new Member()
                     {
                         UserId = userId,
-                        CompanyId = userId,
+                        CompanyId = companyId,
                         isCompanyAccept = true,
                         isMemberAccept = false,
                     };
+                    while (checkIdExist(member.Id))
+                    {
+                        member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    }
                 }
                 bool result = db.Members.Add(member).IsAdministrator;
                 db.SaveChanges();
@@ -201,10 +218,14 @@ namespace DRD.Service
                     member = new Member()
                     {
                         UserId = userId,
-                        CompanyId = userId,
+                        CompanyId = companyId,
                         isCompanyAccept = false,
                         isMemberAccept = true,
                     };
+                    while (checkIdExist(member.Id))
+                    {
+                        member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    }
                 }
                 bool result = db.Members.Add(member).IsAdministrator;
                 db.SaveChanges();
@@ -212,6 +233,123 @@ namespace DRD.Service
                 return result;
             }
         }
+
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        {
+            List<AddMemberResponse> retVal = new List<AddMemberResponse>();
+            string[] listOfEmail = emails.Split(',');
+            using (var db = new ServiceContext())
+            {
+                if (!checkIsAdmin(userId, companyId) && !checkIsOwner(userId, companyId))
+                {
+                    // user editting member is not administrator or owner
+                    retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
+                }
+                else
+                {
+                    CompanyService cpserv = new CompanyService();
+                    SmallCompanyData companyInviting = cpserv.GetCompany(companyId);
+                    foreach (var emailItem in listOfEmail)
+                    {
+                        var email = emailItem.Replace(" ", string.Empty);
+                        
+                        User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
+                        if (target == null)
+                        {
+                            // user that wanted to invite is not found (not registered)
+                            retVal.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
+                            continue;
+                        }
+
+                        Member existingMember = db.Members.Where(member => member.UserId == target.Id
+                            && member.IsActive && member.CompanyId == companyId).FirstOrDefault();
+                        //check member exist or not
+                        if (existingMember == null)
+                        {
+                            Member newMember = new Member();
+                            //check duplicate id
+                            while (checkIdExist(newMember.Id))
+                            {
+                                newMember.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                            }
+                            newMember.UserId = target.Id;
+                            newMember.CompanyId = companyId;
+                            newMember.isCompanyAccept = true;
+
+                            db.Members.Add(newMember);
+                            db.SaveChanges();
+                            // success adding new member
+                            retVal.Add(new AddMemberResponse(email, newMember.Id, target.Name, 1, companyInviting.Name));
+                            continue;
+                        }
+
+                        //exist but company hasn't accepeted yet
+                        if (!existingMember.isCompanyAccept)
+                        {
+                            existingMember.isCompanyAccept = true;
+                            existingMember.JoinedAt = DateTime.Now;
+                            db.SaveChanges();
+                            retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                            continue;
+                        }
+
+                        if (existingMember.isMemberAccept)
+                        {
+                            retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                            continue;
+                        }
+
+                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
+                    }
+                }
+            }
+            return retVal;
+        }
+
+        /// <summary>
+        /// Email sender that will sending email to member about their status adding by company, 
+        /// this function will not return any response and running in background
+        /// Need improvement in how it will handling errors
+        /// </summary>
+        /// <param name="item"></param>
+        public void SendEmailAddMember(AddMemberResponse item)
+        {
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
+
+            if (item.status == 1 || item.status == 2)
+            {
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/MemberInvitation.html"));
+                String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+                String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                body = body.Replace("{_URL_}", strUrl);
+                body = body.Replace("{_COMPANYNAME_}", item.companyName);
+                body = body.Replace("{_NAME_}", item.userName);
+                body = body.Replace("{_MEMBERID_}", item.memberId.ToString());
+
+                var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+                var task = emailService.Send(senderEmail, senderName, item.email, senderName + "Member Invitation", body, false, new string[] { });
+            }
+            // belum register jadi pengguna jadi ya invite aja.
+            else if (item.status == 0)
+            {
+                string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/JoinDRD.html"));
+                String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+                String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                body = body.Replace("{_URL_}", strUrl);
+                body = body.Replace("{_COMPANYNAME_}", item.companyName);
+
+                var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+                var task = emailService.Send(senderEmail, senderName, item.email, senderName + " Invitation", body, false, new string[] { });
+            }
+        }
+
         /// <summary>
         /// Search some member data based on search query as many as one page requested
         /// </summary>

@@ -37,11 +37,8 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult New()
         {
-            if (!Initialize())
-                return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
+            if (!Initialize()) return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
 
-            Rotation product = new Rotation();
-            layout.obj = product;
             return View(layout);
         }
 

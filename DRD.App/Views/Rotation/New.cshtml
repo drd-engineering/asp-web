@@ -230,18 +230,7 @@
             });
 
             function initValues() {
-                var product = @Html.Raw(Json.Encode(Model.obj));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                if (product.Id!=0 ){
-                    $scope.model.Id = product.Id;
-                    $scope.model.Subject = product.Subject;
-                    $scope.model.Status = product.Status;
-                    $scope.model.Remark = product.Remark;
-                    $scope.workflow = product.Workflow;
-                    $scope.users = product.RotationUsers;
-                }else{
-
-                }
 
                 $('#checkbox1').bootstrapSwitch.defaults.size='mini';
             }
@@ -255,9 +244,6 @@
             }
 
             $scope.getFlagPermission = function (val, bit) {
-                //var reult="";
-                //if ((val & bit)==bit)
-                //    result="√";
                 return ((val & bit)==bit);
             };
             /*--------------------------------------------------------------
@@ -279,17 +265,17 @@
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
+
                 $http.post('@Url.Action("Save", "Rotation")',
                     {
                         prod: {
-                            Id: $scope.model.Id,
+                            Id: 0,
                             Subject: $scope.model.Subject,
                             Remark: $scope.model.Remark,
                             WorkflowId:$scope.workflow.Id,
-                            Status: "00",
+                            Status: 0,
                             RotationUsers: $scope.users,
-                            Tags: $scope.model.Tags,
-                            //IsActive: $('#checkbox1')[0].checked,
+                            Tags: $scope.model.Tags
                         }
                     }).then(function (response) {
                         btn.stop();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DRD.Models;
 
 namespace DRD.Models
 {
@@ -29,16 +30,7 @@ namespace DRD.Models
 
         public Inbox()
         {
-            Id = RandomLongGenerator(minimumValue: 1000000000, maximumValue: 10000000000);
-        }
-        private long RandomLongGenerator(long minimumValue, long maximumValue)
-        {
-            Random randomClass = new Random();
-            byte[] buf = new byte[8];
-            randomClass.NextBytes(buf);
-            long longRand = BitConverter.ToInt64(buf, 0);
-
-            return (Math.Abs(longRand % (maximumValue - minimumValue)) + minimumValue);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: 1000000000);
         }
     }
 }

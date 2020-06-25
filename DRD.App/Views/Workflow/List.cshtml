@@ -68,8 +68,6 @@
                                 <tr style="cursor:pointer;height:50px;height:50px;vertical-align:central;" ng-repeat="x in products">
                                     <td ng-click="do_edit(x.Id);" width="25px">{{$index+1 + index}}</td>
                                     <td ng-click="do_edit(x.Id);">{{x.Name}}</td>
-                                    <td ng-click="do_edit(x.Id);">{{(x.WfType==1?'Draft':'')}}</td>
-                                    <td ng-click="do_edit(x.Id);" style="text-align:center">{{(x.IsActive?"√":"-")}}</td>
                                 </tr>
                             </tbody>
                         </table>
