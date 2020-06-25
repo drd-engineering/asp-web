@@ -220,7 +220,6 @@
     <Compile Include="View\Setting\CompanySettingData.cs" />
     <Compile Include="View\CounterInboxData.cs" />
     <Compile Include="View\Document\DocumentItem.cs" />
-    <Compile Include="View\ElementType.cs" />
     <Compile Include="View\Rotation\RotationDashboard.cs" />
     <Compile Include="View\Rotation\RotationUserItem.cs" />
     <Compile Include="View\UserProfile.cs" />

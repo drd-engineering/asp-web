@@ -43,6 +43,8 @@ namespace DRD.Models
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
             RotationNodeRemarks = new System.Collections.Generic.List<RotationNodeRemark>();
             RotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDocInboxData>();
+            User = new UserInboxData();
+            WorkflowNode = new WorkflowNodeInboxData();
         }
     }
 }

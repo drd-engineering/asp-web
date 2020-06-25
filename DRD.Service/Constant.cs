@@ -128,7 +128,7 @@ namespace DRD.Service
             PERSONAL = 1,
             BUSINESS = 0
         }
-       
+
         public enum EnumActivityAction
         {
             SUBMIT = 1,
@@ -146,6 +146,16 @@ namespace DRD.Service
             PRIVATESTAMP = 32,
             REMOVE = 64,
         }
-       
+        public enum EnumElementTypeId
+        {
+            PEN = 1,
+            HIGHLIGHTER = 2,
+            TEXT = 3,
+            SIGNATURE = 4,
+            INITIAL = 5,
+            STAMP = 6,
+            PRIVATESTAMP = 7
+        }
+
     }
 }

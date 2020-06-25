@@ -3193,7 +3193,6 @@
     <Content Include="assets\js\plugins\pickers\pickadate\translations\FORMATTING.md" />
     <Content Include="assets\js\plugins\pickers\pickadate\translations\NAMING.md" />
     <Content Include="assets\js\plugins\uploaders\plupload\files\Moxie.xap" />
-    <Content Include="ElementType.csv" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

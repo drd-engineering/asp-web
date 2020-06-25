@@ -87,7 +87,7 @@ namespace DRD.Service
                 //set page access to specific user
                 if (rotationNode.User.Id == userId)
                 {
-                        rotation.AccessType = (int)Constant.AccessType.readOnly;
+                    rotation.AccessType = (int)Constant.AccessType.readOnly;
                     // responsible access for the current user
                     if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
                     {
@@ -95,8 +95,6 @@ namespace DRD.Service
                         break;
                     }
                 }
-
-
                 // user encrypted id
                 rotationNode.User.EncryptedUserId = Utilities.Encrypt(rotationNode.User.Id.ToString());
                 // set note for waiting pending member
@@ -143,7 +141,6 @@ namespace DRD.Service
                             rotationNode.Note = "There is a flow alter, there has been no determination of the period.";
                     }
                 }
-
                 if (rotationNode.Id == rotation.RotationNodeId && rotation.UserId == rotationNode.User.Id && rotationNode.Status.Equals((int)Constant.RotationStatus.Open) && (rotationNode.PrevWorkflowNodeId != null || rotationNode.SenderRotationNodeId != null))
                 {
                     if (rotationNode.PrevWorkflowNodeId != null)
@@ -157,7 +154,7 @@ namespace DRD.Service
                             List<RotationNodeUpDocInboxData> listUpDoc = new List<RotationNodeUpDocInboxData>();
                             foreach (RotationNode rnx in rns)
                             {
-                                var d = AssignNodeDocs(db, rnx.Id, userId/*rotation.UserId*/, rot.RotationNodeId, docSvr);
+                                var d = AssignNodeDocs(db, rnx.Id, userId, rot.RotationNodeId, docSvr);
                                 if (d.Count > 0)
                                     listDoc.AddRange(d);
 
@@ -178,7 +175,7 @@ namespace DRD.Service
                 else
                 {
                     //rotationNode.RotationNodeDocs = assignNodeDocs(db, rotationNode.Id, rotation.UserId, rot.RotationNodeId);
-                    rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId/*rotationNode.UserId*/, rot.RotationNodeId, docSvr);
+                    rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId, rot.RotationNodeId, docSvr);
                     rotationNode.RotationNodeUpDocs = AssignNodeUpDocs(db, rotationNode.Id);
                 }
 
@@ -189,7 +186,9 @@ namespace DRD.Service
                     foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
                     {
                         if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
-                        if (documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("SIGNATURE").Id || documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("INITIAL").Id || documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("PRIVATESTAMP").Id)
+                        if (documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE 
+                            || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL 
+                            || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
                             Element newElement = new Element();
@@ -199,7 +198,7 @@ namespace DRD.Service
                             newElement.Foto = user.ImageProfile;
                             documentElement.Element = newElement;
                         }
-                        else if (documentElement.ElementTypeId == DocumentService.GetElementTypeFromCsvByCode("STAMP").Id)
+                        else if (documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.STAMP)
                         {
                             // Stamp Masih Perlu perbaikan nantinya
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
@@ -650,8 +649,83 @@ namespace DRD.Service
 
             return JsonConvert.DeserializeObject<RotationNodeDocInboxData>(JsonConvert.SerializeObject(source), DeserializeSettings);
         }
-
-        private List<RotationNodeDocInboxData> AssignNodeDocs(ServiceContext db, long rnId, long memId, long? curRnId, IDocumentService docSvr)
+        /// <summary>
+        /// Obtain all the Rotation Node Document will return as inbox data
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="rnId"></param>
+        /// <param name="usrId"></param>
+        /// <param name="curRnId"></param>
+        /// <param name="docSvr"></param>
+        /// <returns></returns>
+        private List<RotationNodeDocInboxData> AssignNodeDocs(ServiceContext db, long rnId, long usrId, long? curRnId, IDocumentService docSvr)
+        {
+            if (curRnId == 0)
+                curRnId = -rnId;
+            var rndFromDb = db.RotationNodeDocs.Where(rnd => rnd.RotationNodeId == rnId).ToList();
+            List<RotationNodeDocInboxData> result = new List<RotationNodeDocInboxData>();
+            foreach (var rndDb in rndFromDb)
+            {
+                var item = new RotationNodeDocInboxData();
+                item.Id = rndDb.Id;
+                item.FlagAction = rndDb.FlagAction;
+                item.DocumentId = rndDb.DocumentId;
+                item.RotationNode.RotationId = rndDb.RotationId;
+                item.Document.Id = rndDb.Document.Id;
+                item.Document.Extention = rndDb.Document.Extention;
+                item.Document.FileUrl = rndDb.Document.FileUrl;
+                item.Document.FileName = rndDb.Document.FileName;
+                item.Document.FileSize = rndDb.Document.FileSize;
+                foreach (var dusr in rndDb.Document.DocumentUsers)
+                {
+                    var dUsrItem = new DocumentUserInboxData();
+                    dUsrItem.Id = dusr.Id;
+                    dUsrItem.DocumentId = dusr.DocumentId;
+                    dUsrItem.UserId = dusr.UserId;
+                    dUsrItem.FlagAction = dusr.FlagAction;
+                    dUsrItem.FlagPermission = dusr.FlagPermission;
+                    dUsrItem.FlagPermission |= docSvr.GetPermission(usrId, curRnId.Value, dusr.DocumentId);
+                    item.Document.DocumentUsers.Add(dUsrItem);
+                }
+                foreach (var delm in rndDb.Document.DocumentElements) 
+                {
+                    var dElmItem = new DocumentElementInboxData();
+                    dElmItem.Id = delm.Id;
+                    dElmItem.DocumentId = delm.DocumentId;
+                    dElmItem.Page = delm.Page;
+                    dElmItem.LeftPosition = delm.LeftPosition;
+                    dElmItem.TopPosition = delm.TopPosition;
+                    dElmItem.WidthPosition = delm.WidthPosition;
+                    dElmItem.HeightPosition = delm.HeightPosition;
+                    dElmItem.Color = delm.Color;
+                    dElmItem.BackColor = delm.BackColor;
+                    dElmItem.Data = delm.Data;
+                    dElmItem.Data2 = delm.Data2;
+                    dElmItem.Rotation = delm.Rotation;
+                    dElmItem.ScaleX = delm.ScaleX;
+                    dElmItem.ScaleY = delm.ScaleY;
+                    dElmItem.TransitionX = delm.TransitionX;
+                    dElmItem.TransitionY = delm.TransitionY;
+                    dElmItem.StrokeWidth = delm.StrokeWidth;
+                    dElmItem.Opacity = delm.Opacity;
+                    dElmItem.Flag = delm.Flag;
+                    dElmItem.FlagCode = delm.FlagCode;
+                    dElmItem.FlagDate = delm.FlagDate;
+                    dElmItem.FlagImage = delm.FlagImage;
+                    dElmItem.CreatorId = delm.CreatorId;
+                    dElmItem.ElementId = delm.ElementId;
+                    dElmItem.UserId = delm.UserId;
+                    dElmItem.CreatedAt = delm.CreatedAt;
+                    dElmItem.UpdatedAt = delm.UpdatedAt;
+                    dElmItem.ElementTypeId = delm.ElementTypeId;
+                    item.Document.DocumentElements.Add(dElmItem);
+                }
+                item.Document.DocumentUser = item.Document.DocumentUsers.FirstOrDefault(itmDocUsr => itmDocUsr.UserId == usrId);
+                result.Add(item);
+            }
+            return result;
+        }
+        private List<RotationNodeDocInboxData> AssignNodeDocs2(ServiceContext db, long rnId, long usrId, long? curRnId, IDocumentService docSvr)
         {
             //rotationNode.RotationNodeDocs =
             var result =
@@ -677,7 +751,7 @@ namespace DRD.Service
                          // The original documentusers is also commented
                          DocumentUser =
                              (from dm in d.Document.DocumentUsers
-                              where dm.UserId == memId // default inbox member
+                              where dm.UserId == usrId
                               select new DocumentUserInboxData
                               {
                                   Id = dm.Id,
@@ -691,7 +765,6 @@ namespace DRD.Service
                               select new DocumentElementInboxData
                               {
                                   Id = documentElement.Id,
-                                  //Document = documentElement.Document,
                                   Page = documentElement.Page,
                                   LeftPosition = documentElement.LeftPosition,
                                   TopPosition = documentElement.TopPosition,
@@ -726,8 +799,7 @@ namespace DRD.Service
                               }).ToList(),
                      }
                  }).ToList();
-
-            if (result != null /*&& curRnId != 0*/)
+            if (result != null)
             {
                 // assign permission
                 //DocumentService docSvr = new DocumentService();
@@ -736,18 +808,17 @@ namespace DRD.Service
                     if (rnd.Document.DocumentUser == null)
                     {
                         rnd.Document.DocumentUser = new DocumentUserInboxData();
-                        rnd.Document.DocumentUser.UserId = memId;
+                        rnd.Document.DocumentUser.UserId = usrId;
                         rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
                         rnd.Document.DocumentUser.FlagPermission = 6; //default permission read document
                     }
                     if (curRnId == 0)
                         curRnId = -rnd.RotationNode.Rotation.Id;
-                    rnd.Document.DocumentUser.FlagPermission |= docSvr.GetPermission(memId, curRnId.Value, (long)rnd.Document.Id);
+                    rnd.Document.DocumentUser.FlagPermission |= docSvr.GetPermission(usrId, curRnId.Value, (long)rnd.Document.Id);
                 }
             }
-            return result;// rotationNode.RotationNodeDocs;
+            return result;//
         }
-
         private List<RotationNodeUpDocInboxData> AssignNodeUpDocs(ServiceContext db, long rnId)
         {
             //rotationNode.RotationNodeUpDocs =

@@ -10,28 +10,6 @@ namespace DRD.Service
 {
     public class DocumentService : IDocumentService
     {
-        public static ElementType GetElementTypeFromCsvByCode(string code)
-        {
-            var root = System.Web.HttpContext.Current.Server.MapPath("~");
-            var path = Path.Combine(root, @"ElementType.csv");
-            ElementType values = File.ReadAllLines(path)
-                                           .Select(v => ElementType.fromCsv(v))
-                                           .Where(c => c.Code.Equals(code)).FirstOrDefault();
-
-            return values;
-        }
-
-        public static ElementType GetElementTypeFromCsvById(int id)
-        {
-            var root = System.Web.HttpContext.Current.Server.MapPath("~");
-            var path = Path.Combine(root, @"ElementType.csv");
-            ElementType values = File.ReadAllLines(path)
-                                           .Select(v => ElementType.fromCsv(v))
-                                           .Where(c => c.Id == id).FirstOrDefault();
-
-            return values;
-        }
-
         public int CheckingPrivateStamp(long memberId)
         {
             int ret = 1;
@@ -79,7 +57,7 @@ namespace DRD.Service
                 document.ExpiryDay = newDocument.ExpiryDay;
                 document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
                 document.MaxPrintPerActivity = newDocument.MaxPrintPerActivity;
-                document.IsCurrent = true; // ??
+                document.IsCurrent = true; //
 
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;
@@ -110,16 +88,23 @@ namespace DRD.Service
                 {
                     if (el.ElementId == null) continue;
                     var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
-                    if (docUser != null) continue;
-                    docUser = new DocumentUser();
+                    if (docUser == null)
+                    {
+                        docUser = new DocumentUser();
+                        db.DocumentUsers.Add(docUser);
+                    }
                     docUser.UserId = el.ElementId.Value;
                     docUser.DocumentId = el.DocumentId;
-                    docUser.FlagPermission = 6; // view, add annotate
-                    if (("SIGNATURE,INITIAL").Contains(GetElementTypeFromCsvById(el.ElementTypeId).Code)) docUser.FlagPermission |= 1;
-                    if (("PRIVATESTAMP").Contains(GetElementTypeFromCsvById(el.ElementTypeId).Code)) docUser.FlagPermission |= 32;
-                    db.DocumentUsers.Add(docUser);
+                    string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
+
+                    if (("SIGNATURE,INITIAL").Contains(eltypename))
+                        docUser.FlagPermission |= 1;
+
+                    if (("PRIVATESTAMP").Contains(eltypename))
+                        docUser.FlagPermission |= 32;
+                    
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
 
                 // after save the value, then return value as api response data
                 foreach (DocumentUser du in createdOrUpdated)
@@ -257,7 +242,7 @@ namespace DRD.Service
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(GetElementTypeFromCsvById(c.ElementTypeId).Code) &&
+                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) &&
                             (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
@@ -366,15 +351,15 @@ namespace DRD.Service
                     foreach (DocumentElement da in result.DocumentElements)
                     {
                         if (da.ElementId == null) continue;
-                        if (da.ElementTypeId == GetElementTypeFromCsvByCode("SIGNATURE").Id || da.ElementTypeId == GetElementTypeFromCsvByCode("INITIAL").Id
-                            || da.ElementTypeId == GetElementTypeFromCsvByCode("PRIVATESTAMP").Id)
+                        if (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
+                            || da.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
                             var mem = db.Users.FirstOrDefault(c => c.Id == da.ElementId);
                             da.Element.UserId = mem.Id;
                             da.Element.Name = mem.Name;
                             da.Element.Foto = mem.ImageProfile;
                         }
-                        else if (da.ElementTypeId == GetElementTypeFromCsvByCode("STAMP").Id)
+                        else if (da.ElementTypeId == (int)Constant.EnumElementTypeId.STAMP)
                         {
                             var stmp = db.Stamps.FirstOrDefault(c => c.Id == da.ElementId);
                             da.Element.Name = stmp.Descr;
@@ -696,31 +681,34 @@ namespace DRD.Service
 
             }
         }
-        public int GetPermission(long memberId, long rotationNodeId, long documentId)
+        /// <summary>
+        /// Obtain user permission from rotation user
+        /// </summary>
+        /// <param name="usrId"></param>
+        /// <param name="rotationNodeId"></param>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        public int GetPermission(long usrId, long rotationNodeId, long documentId)
         {
-            int ret = 0;
             using (var db = new ServiceContext())
             {
                 if (rotationNodeId == 0)
                     return 0;
 
+                // if the value of rotationNodeId is minus it means the rotation node id still not found, so it should be searched first
                 if (rotationNodeId < 0)
                 {
                     var rid = Math.Abs(rotationNodeId);
-                    var rnx = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == documentId && c.RotationNode.UserId == memberId && !c.RotationNode.Status.Equals((int)Constant.RotationStatus.Open) && c.RotationNode.Rotation.Id == rid);
-                    if (rnx == null)
-                        return 0;
-
+                    var rnx = db.RotationNodeDocs.FirstOrDefault(c => c.Document.Id == documentId && c.RotationNode.UserId == usrId && !c.RotationNode.Status.Equals((int)Constant.RotationStatus.Open) && c.RotationNode.Rotation.Id == rid);
+                    if (rnx == null) return 0;
+                    // get rotation node id
                     rotationNodeId = rnx.RotationNode.Id;
                 }
                 var rn = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNodeId);
-                var rm = db.RotationUsers.FirstOrDefault(c => c.UserId == memberId && c.Rotation.Id == rn.Rotation.Id && c.WorkflowNodeId == rn.WorkflowNode.Id);
-                if (rm != null)
-                {
-                    ret = rm.FlagPermission;
-                }
+                var rm = db.RotationUsers.FirstOrDefault(c => c.UserId == usrId && c.Rotation.Id == rn.Rotation.Id && c.WorkflowNodeId == rn.WorkflowNode.Id);
+                if (rm == null) return 0;
+                return rm.FlagPermission;
             }
-            return ret;
         }
 
         public IEnumerable<DocumentSign> GetSignatureDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria)
@@ -746,14 +734,14 @@ namespace DRD.Service
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(GetElementTypeFromCsvById(c.ElementTypeId).Code) && (c.Flag & 1) == 1 &&
+                     where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
                         (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.FlagDate descending
                      select new DocumentSign
                      {
                          Id = c.Document.Id,
-                         CxSignature = (c.ElementTypeId == GetElementTypeFromCsvByCode("SIGNATURE").Id ? 1 : 0),
-                         CxInitial = (c.ElementTypeId == GetElementTypeFromCsvByCode("INITIAL").Id ? 1 : 0),
+                         CxSignature = (c.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE ? 1 : 0),
+                         CxInitial = (c.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL ? 1 : 0),
                          DateCreated = c.FlagDate,
                      }).ToList();
 
@@ -897,7 +885,7 @@ namespace DRD.Service
                         da.Page = ep.Page;
                         da.ElementTypeId = ep.ElementTypeId;
 
-                        da.UserId = userEmail;
+                        da.UserId = da.UserId = string.IsNullOrEmpty(userEmail) ? da.UserId : userEmail;
                         da.CreatedAt = DateTime.Now;
                         db.DocumentElements.Add(da);
                     }
@@ -955,62 +943,54 @@ namespace DRD.Service
             }
         }
 
-        public void SendEmailSignature(User member, string rotName, string docName, string numbers)
+        public void SendEmailSignature(User user, string rotName, string docName, string numbers)
         {
             AppConfigGenerator appsvr = new AppConfigGenerator();
             var topaz = appsvr.GetConstant("APPLICATION_NAME")["value"];
             var admName = appsvr.GetConstant("EMAIL_USER_DISPLAY")["value"];
-            EmailService emailtools = new EmailService();
+            EmailService emailService = new EmailService();
             string body =
-                "Dear " + member.Name + ",<br/><br/>" +
+                "Dear " + user.Name + ",<br/><br/>" +
                 "You have signed rotation <b>" + rotName + "</b> in document <b>" + docName + "</b>, the signature number generated: <b>" + numbers + "</b>.<br/>";
 
             body += "<br/><br/> " + admName + " Administrator<br/>";
 
-            var dbx = new ServiceContext();
             var emailfrom = appsvr.GetConstant("EMAIL_USER")["value"];
 
 
-            var task = emailtools.Send(emailfrom, admName + " Administrator", member.Email, admName + " User Signature", body, false, new string[] { });
+            emailService.Send(emailfrom, admName, user.Email, admName + " User Signature", body, false, new string[] { });
         }
 
-        public void SendEmailSignature(Member member, string rotName, string docName, string numbers)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEmailStamp(User member, string rotName, string docName, string numbers)
+        public void SendEmailStamp(User user, string rotName, string docName, string numbers)
         {
             AppConfigGenerator appsvr = new AppConfigGenerator();
-            var topaz = appsvr.GetConstant("APPL_NAME")["value"];
-            var admName = appsvr.GetConstant("EMAILUSERDISPLAY")["value"];
-            EmailService emailtools = new EmailService();
+            var topaz = appsvr.GetConstant("APPLICATION_NAME")["value"];
+            var admName = appsvr.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
             string body =
-                "Dear " + member.Name + ",<br/><br/>" +
-                "You have stamped rotation <b>" + rotName + "</b> in document <b>" + docName + "</b>, the stamp number generated: <b>" + numbers + "</b>.<br/>";
+                "Dear " + user.Name + ",<br/><br/>" +
+                "You have stamped document <b>" + docName + "</b> in rotation <b>" + rotName + "</b>, the stamp number generated: <b>" + numbers + "</b>.<br/>";
 
             body += "<br/><br/> " + admName + " Administrator<br/>";
 
-            var dbx = new ServiceContext();
             var emailfrom = appsvr.GetConstant("EMAIL_USER")["value"];
 
-            var task = emailtools.Send(emailfrom, admName + " Administrator", member.Email, admName + " User Stamping", body, false, new string[] { });
+
+            emailService.Send(emailfrom, admName, user.Email, admName + " User Stamp", body, false, new string[] { });
         }
 
-        public void SendEmailStamp(Member member, string rotName, string docName, string numbers)
-        {
-            throw new NotImplementedException();
-        }
 
-        public int Signature(long documentId, long memberId, long rotationId)
+        public int Signature(long documentId, long userId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
-                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && (c.ElementTypeId == 4 || c.ElementTypeId == 5) && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
+                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId 
+                    && (c.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || c.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL) 
+                    && c.ElementId == userId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
-                var user = db.Users.FirstOrDefault(c => c.Id == memberId);
-                var rotnod = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
+                var user = db.Users.FirstOrDefault(c => c.Id == userId);
+                var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
                 var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
                 int cx = 0;
                 string numbers = "";
@@ -1020,7 +1000,7 @@ namespace DRD.Service
                     da.Flag = 1;
                     da.FlagDate = dt;
                     da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = (da.ElementTypeId == GetElementTypeFromCsvByCode("SIGNATURE").Id ? user.ImageSignature : user.ImageInitials);
+                    da.FlagImage = (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE ? user.ImageSignature : user.ImageInitials);
                     if (!numbers.Equals(""))
                         numbers += ", ";
                     numbers += da.FlagCode;
@@ -1029,25 +1009,24 @@ namespace DRD.Service
                 if (cx > 0)
                 {
                     db.SaveChanges();
-                    User xmem = new User();
-                    xmem.Id = user.Id;
-                    xmem.Name = user.Name;
-                    xmem.Email = user.Email;
-                    SendEmailSignature(xmem, rotnod.Subject, doc.FileName, numbers);
+                    SendEmailSignature(user, rot.Subject, doc.FileName, numbers);
                 }
                 return cx;
             }
         }
 
-        public int Stamp(long documentId, long memberId, long rotationId)
+        public int Stamp(long documentId, long userId, long rotationId)
         {
             using (var db = new ServiceContext())
             {
-                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId && c.ElementTypeId == GetElementTypeFromCsvByCode("PRIVATESTAMP").Id && c.ElementId == memberId && (c.Flag & 1) != 1).ToList();
+                var datas = db.DocumentElements.Where(c => c.Document.Id == documentId 
+                    && c.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP 
+                    && c.ElementId == userId && (c.Flag & 1) != 1).ToList();
+                
                 if (datas == null)
                     return 0;
-                var member = db.Users.FirstOrDefault(c => c.Id == memberId);
-                var rotnod = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
+                var user = db.Users.FirstOrDefault(c => c.Id == userId);
+                var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
                 var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
                 int cx = 0;
                 string numbers = "";
@@ -1057,7 +1036,7 @@ namespace DRD.Service
                     da.Flag = 1;
                     da.FlagDate = dt;
                     da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = member.ImageStamp;
+                    da.FlagImage = user.ImageStamp;
                     if (!numbers.Equals(""))
                         numbers += ", ";
                     numbers += da.FlagCode;
@@ -1066,11 +1045,7 @@ namespace DRD.Service
                 if (cx > 0)
                 {
                     db.SaveChanges();
-                    User xmem = new User();
-                    xmem.Id = member.Id;
-                    xmem.Name = member.Name;
-                    xmem.Email = member.Email;
-                    SendEmailStamp(xmem, rotnod.Subject, doc.FileName, numbers);
+                    SendEmailStamp(user, rot.Subject, doc.FileName, numbers);
                 }
                 return cx;
             }
@@ -1130,7 +1105,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="documentId"></param>
         /// <returns>status db save</returns>
-        public int DocumentRemovedofRevisedFromRotation(long documentId)
+        public int DocumentRemovedorRevisedFromRotation(long documentId)
         {
             using (var db = new ServiceContext())
             {

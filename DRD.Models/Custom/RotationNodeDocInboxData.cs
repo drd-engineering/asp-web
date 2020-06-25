@@ -16,6 +16,8 @@
         public RotationNodeDocInboxData()
         {
             FlagAction = 0;
+            Document = new DocumentInboxData();
+            RotationNode = new RotationNodeInboxData();
         }
     }
 }
