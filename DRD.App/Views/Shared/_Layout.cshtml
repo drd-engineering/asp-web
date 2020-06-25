@@ -213,18 +213,20 @@
 
         moment.calendarFormat = function (myMoment, now) {
             var diff = myMoment.diff(now, 'days', true);
-            var nextMonth = now.clone().add(1, 'month');
+            var thisYear = myMoment.year() === now.year();
+            var beforeYear = myMoment.year() < now.year();
 
-            var retVal =  diff < -6 ? 'sameElse' :
+            console.log(thisYear +" "+ diff);
+
+            var retVal =
+                beforeYear? 'sameElse':
+                diff < -6 && thisYear ? 'thisYear' :
                 diff < -1 ? 'lastWeek' :
                 diff < 0 ? 'lastDay' :
                 diff < 1 ? 'sameDay' :
                 diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' :
-                // introduce thisMonth and nextMonth
-                (myMoment.month() === now.month() && myMoment.year() === now.year()) ? 'thisMonth' :
-                (myMoment.year() === now.year()) ? 'thisYear' :
-                (nextMonth.month() === myMoment.month() && nextMonth.year() === myMoment.year()) ? 'nextMonth' : 'sameElse';
+                                diff < 7 ? 'nextWeek' : 'sameElse';
+            console.log(retVal);
             return retVal;
         };
 
@@ -238,8 +240,8 @@
                sameDay: 'H:mm',
                lastDay: '[yesterday]',
                lastWeek: 'DD/MM',
-               thisYear: 'DD/MM',
-               sameElse: defaultDateTime
+                thisYear: 'DD/MM',
+                sameElse: dateDefault
            });
         }
 
