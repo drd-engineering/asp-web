@@ -434,7 +434,7 @@
                     item.Opacity = ix.Opacity;
                     item.Flag = ix.Flag;
                     item.FlagCode = ix.FlagCode;
-                    item.FlagDate = convertJsonDate(ix.FlagDate);
+                    item.FlagDate = $scope.convertJsonDate(ix.FlagDate);
                     item.FlagImage = ix.FlagImage;
                     item.CreatorId = ix.CreatorId;
                     item.ElementId = ix.ElementId;
@@ -562,14 +562,10 @@
                 $(window).on('beforeunload', function(){ return "";});
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
-
-
-
             $scope.closePdf = function () {
                 if ($scope.isRevising) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                     if (items != [] && items != null && items != undefined) {
-
                         swal({
                             title: "Confirmation",
                             text: "Do you want to save these changes?",
@@ -581,42 +577,45 @@
                             showLoaderOnConfirm: true,
                             confirmButtonText: "Yes ",
                             cancelButtonText: "No",
-                        },
-                            function (isConfirm) {
-                                $scope.btnDisabled = false;
-                                alert($scope.btnDisabled );
-                                if (isConfirm) {
-                                    $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
-                                    if (!$scope.checkIsFirstPerson()) {
-                                        $scope.model.FlagAction |= 2;
-                                        $scope.docs[$scope.selectedIdx].FlagAction |= 2;
-                                    }
-                                    $scope.$apply();
-                                    if ($scope.fromSelectDoc) {
-                                        $("#modal_select_document").modal("show");
-                                        $scope.fromSelectDoc = false;
-                                    }
+                        },function (isConfirm) {
+                            $scope.btnDisabled = false;
+                            if (isConfirm) {
+                                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                if (!$scope.checkIsFirstPerson()) {
+                                    $scope.model.FlagAction |= 2;
+                                    $scope.docs[$scope.selectedIdx].FlagAction |= 2;
                                 }
-                                $("#modal_pdf_viewer").modal("hide");
-                            });
+                                $scope.$apply();
+                                if ($scope.fromSelectDoc) {
+                                    $("#modal_select_document").modal("show");
+                                }
+                                $scope.btnDisabled = false;
+                                $scope.isRevising = false;
+                                $scope.isUploading = false;
+                            }
+                            $("#modal_pdf_viewer").modal("hide");
+                        });
                     }
+                    $scope.btnDisabled = false;
+                    $scope.isRevising = false;
+                    $scope.isUploading = false;
                 } else if ($scope.isUploading) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-
-                        $scope.annos = items;
-                        $("#modal_pdf_viewer").modal("hide");
-                        if ($scope.fromSelectDoc) {
-                            $("#modal_select_document").modal("show");
-                            $scope.fromSelectDoc = false;
-                        }
-
+                    $scope.annos = items;
+                    $("#modal_pdf_viewer").modal("hide");
+                    console.log($scope.fromSelectDoc);
+                    if ($scope.fromSelectDoc) {
+                        $("#modal_select_document").modal("show");
+                    }
+                    $scope.btnDisabled = false;
+                    $scope.isRevising = false;
+                    $scope.isUploading = false;
                 } else {
                     $("#modal_pdf_viewer").modal("hide");
-
-                }
                     $scope.btnDisabled = false;
-                $scope.isRevising = false;
-                $scope.isUploading = false;
+                    $scope.isRevising = false;
+                    $scope.isUploading = false;
+                }
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -626,7 +625,6 @@
                 $("#modal_select_document").modal("hide");
                 $scope.fromSelectDoc = true;
                 $scope.isUploading = true;
-
                 var iframe = document.getElementById('xpdfIFrame');
                 // Reset everytime document want to open
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
@@ -640,9 +638,6 @@
                     var x = 0;
                 });
             };
-
-
-
             $scope.openDocument = function (iframe, fileName, isNew) {
                 $scope.btnDisabled = true;
                 if (iframe.contentWindow == null)
@@ -1032,22 +1027,21 @@
                 var pdfCanClose = document.getElementById('xpdfIFrame').contentWindow.angular.element("#xpdfController").scope().canClosePdf();
                 if (!pdfCanClose) {
                     swal({
-                            title: "Information",
-                            text: "There is still unassign member in Document Annotation",
-                            type: "warning",
-                            showCancelButton: false,
-                            closeOnConfirm: true,
-                            closeOnCancel: true,
-                            confirmButtonColor: "#2196F3",
-                            showLoaderOnConfirm: true,
-                            confirmButtonText: "OK ",
-                            cancelButtonText: "No",
-                        },
-                            function (isConfirm) {
-                                if (isConfirm) {
-                                }
-                                $scope.btnDisabled = false;
-                            });
+                        title: "Information",
+                        text: "There is still unassign member in Document Annotation",
+                        type: "warning",
+                        showCancelButton: false,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonColor: "#2196F3",
+                        showLoaderOnConfirm: true,
+                        confirmButtonText: "OK ",
+                        cancelButtonText: "No",
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            console.log('pdf cannot close')
+                        }
+                    });
                 }
                 return pdfCanClose;
             }
@@ -1067,7 +1061,6 @@
                 $scope.fromSelectDoc = true;
                 $("#modal_select_document").modal("show");
                 $('#modal_select_document').on('hidden.bs.modal', function () {
-                    $scope.fromSelectDoc = false;
                     $scope.btnDisabled = false;
                 });
             };
