@@ -53,7 +53,7 @@ namespace DRD.Service
                                   Name = User.Name,
                                   Phone = User.Phone,
                                   Email = User.Email,
-                                  ImageProfile = User.ImageProfile
+                                  ImageProfile = User.ProfileImageFileName
                               }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
                 ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
                 int counter = 0;
@@ -86,7 +86,7 @@ namespace DRD.Service
                                   Name = User.Name,
                                   Phone = User.Phone,
                                   Email = User.Email,
-                                  ImageProfile = User.ImageProfile
+                                  ImageProfile = User.ProfileImageFileName
                               }
                               ).Count();
 
@@ -134,7 +134,7 @@ namespace DRD.Service
                                   Name = User.Name,
                                   Phone = User.Phone,
                                   Email = User.Email,
-                                  ImageProfile = User.ImageProfile
+                                  ImageProfile = User.ProfileImageFileName
                               }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
 
                 ContactList listReturned = new ContactList { Type = "Company", Items = new List<ContactItem>(), CompanyName = companyName };
@@ -171,7 +171,7 @@ namespace DRD.Service
                                   Name = User.Name,
                                   Phone = User.Phone,
                                   Email = User.Email,
-                                  ImageProfile = User.ImageProfile
+                                  ImageProfile = User.ProfileImageFileName
                               }
                              ).FirstOrDefault();
                 return result;

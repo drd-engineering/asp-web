@@ -194,7 +194,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\ActivePackageList.cs" />
     <Compile Include="API\ActiveUsageList.cs" />
     <Compile Include="API\AddMemberResponse.cs" />
     <Compile Include="API\ResponseStatus.cs" />
@@ -214,6 +213,7 @@
     <Compile Include="Custom\RotationNodeUpDocInboxData.cs" />
     <Compile Include="Custom\UserInboxData.cs" />
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
+    <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />
     <Compile Include="DbDefinition\Price.cs" />
     <Compile Include="UtilitiesModel.cs" />
@@ -228,11 +228,10 @@
     <Compile Include="View\Rotation\RotationIndex.cs" />
     <Compile Include="Custom\RotationUserData.cs" />
     <Compile Include="DbDefinition\BusinessPackage.cs" />
-    <Compile Include="DbDefinition\PlanPersonal.cs" />
     <Compile Include="DbDefinition\Inbox.cs" />
     <Compile Include="View\CompanyProfile.cs" />
     <Compile Include="View\Company\CompanyDetail.cs" />
-    <Compile Include="DbDefinition\BusinessUsage.cs" />
+    <Compile Include="DbDefinition\BaseEntity.cs" />
     <Compile Include="View\ErrorInfo.cs" />
     <Compile Include="View\List\InboxItem.cs" />
     <Compile Include="View\Member\MemberItem.cs" />
@@ -244,7 +243,6 @@
     <Compile Include="API\RegisterResponse.cs" />
     <Compile Include="API\RegistrationData.cs" />
     <Compile Include="DbDefinition\Contact.cs" />
-    <Compile Include="DbDefinition\Stamp.cs" />
     <Compile Include="Custom\Comparator.cs" />
     <Compile Include="DbDefinition\DocumentUser.cs" />
     <Compile Include="DbDefinition\Company.cs" />
@@ -254,7 +252,7 @@
     <Compile Include="Custom\WorkflowItem.cs" />
     <Compile Include="Custom\UserSession.cs" />
     <Compile Include="DbDefinition\Document.cs" />
-    <Compile Include="DbDefinition\DocumentElement.cs" />
+    <Compile Include="DbDefinition\DocumentAnnotation.cs" />
     <Compile Include="DbDefinition\DocumentSign.cs" />
     <Compile Include="DbDefinition\Member.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -262,11 +260,8 @@
     <Compile Include="DbDefinition\RotationUser.cs" />
     <Compile Include="DbDefinition\RotationNode.cs" />
     <Compile Include="DbDefinition\RotationNodeDoc.cs" />
-    <Compile Include="DbDefinition\RotationNodeRemark.cs" />
-    <Compile Include="DbDefinition\RotationNodeUpDoc.cs" />
     <Compile Include="DbDefinition\Tag.cs" />
     <Compile Include="DbDefinition\User.cs" />
-    <Compile Include="DbDefinition\Versioning.cs" />
     <Compile Include="View\Contact\ContactData.cs" />
     <Compile Include="View\Contact\ContactItem.cs" />
     <Compile Include="View\Contact\ContactList.cs" />

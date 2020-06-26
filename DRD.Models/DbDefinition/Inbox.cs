@@ -6,31 +6,30 @@ using DRD.Models;
 namespace DRD.Models
 {
     [Table("Inbox", Schema = "public")]
-    public class Inbox
+    public class Inbox : BaseEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
         public bool IsUnread { get; set; }
         public string Message { get; set; }
+        public string Note { get; set; }
         public long RotationId { get; set; }
 
         [ForeignKey("Activity")]
         public long ActivityId { get; set; }
         public RotationNode Activity { get; set; }
         public string LastStatus { get; set; }
-        public string prevUserName { get; set; }
-        public string prevUserEmail { get; set; }
+        public string PreviousUserName { get; set; }
+        public string PreviousUserEmail { get; set; }
 
         [ForeignKey("User")]
         public long UserId { get; set; }
         public User User { get; set; }
 
-        public System.DateTime CreatedAt { get; set; }
-        public String DateNote { get; set; }
 
         public Inbox()
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: 1000000000);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID,ConstantModel.MAXIMUM_VALUE_ID);
         }
     }
 }

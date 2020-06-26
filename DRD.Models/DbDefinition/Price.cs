@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("Prices", Schema = "public")]
-    public class Price
+    public class Price : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
@@ -18,7 +18,6 @@ namespace DRD.Models
         public long StorageExceeded { get; set; } = -99;
         public long Total { get; set; }
         public string Currency { get; set; } = "IDR";
-        public DateTime CreatedAt { get; set; }
         public long PackageId { get; set; }
         public bool IsActive { get; set; } // IsDefault
 

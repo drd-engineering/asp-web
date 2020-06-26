@@ -106,7 +106,7 @@ namespace DRD.Service
                             IsActive = usage == null ? false : usage.IsActive,
                             PackageName = package == null ? null : package.Name,
                             RotationStartedLimit = package == null ? 0 : package.RotationStarted,
-                            StartedAt = usage == null ? DateTime.MinValue : usage.StartedAt,
+                            StartedAt = usage == null ? DateTime.MinValue : usage.CreatedAt,
                             StorageLimit = package == null ? 0 : package.Storage,
                             TotalAdministrators = usage == null ? 0 : usage.Administrator,
                             TotalPrice = price == null ? 0 : price.Total,
@@ -266,7 +266,7 @@ namespace DRD.Service
             BusinessPackage businessPackage = getCompanyPackageByCompany(companyId);
             using (var db = new ServiceContext())
             {
-                DateTime extendedTime = oldUsage.ExpiredAt.AddDays(businessPackage.Duration);
+                DateTime? extendedTime = oldUsage.ExpiredAt.Value.AddDays(businessPackage.Duration);
                 BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
 
                 db.BusinessUsages.Add(newUsage);

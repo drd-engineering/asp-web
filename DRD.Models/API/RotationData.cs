@@ -12,10 +12,9 @@ namespace DRD.Models.API
         public long? UserId { get; set; } // userid
         public long? MemberId { get; set; } //memberid
         public long FirstNodeId { get; set; }
-        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
-        public System.DateTime? DateStatus { get; set; } // DateUpdated
-        public System.DateTime? DateStarted { get; set; } // DateStarted
+        public System.DateTime? StartedAt { get; set; } // DateStarted
 
         public long RotationNodeId { get; set; }
         public string ActivityName { get; set; }

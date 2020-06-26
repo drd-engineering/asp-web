@@ -16,7 +16,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var mem = db.Users.FirstOrDefault(c => c.Id == memberId);
-                if (mem.ImageStamp == null)
+                if (mem.StampImageFileName == null)
                     ret = -1;
             }
             return ret;
@@ -28,7 +28,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var mem = db.Users.FirstOrDefault(c => c.Id == memberId);
-                if (mem.ImageSignature == null || mem.ImageInitials == null || mem.ImageKtp1 == null || mem.ImageKtp2 == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
+                if (mem.SignatureImageFileName == null || mem.InitialImageFileName == null || mem.KTPImageFileName == null || mem.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
                     ret = -1;
             }
             return ret;
@@ -42,27 +42,20 @@ namespace DRD.Service
 
                 // mapping value
                 document.Extention = newDocument.Extention;
-                document.Description = newDocument.Description;
-                document.Description = newDocument.FileUrl;
                 document.FileName = newDocument.FileName;
                 document.FileSize = newDocument.FileSize;
 
-                document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
-                document.UserEmail = newDocument.UserEmail;
+                document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
                 document.CreatedAt = DateTime.Now;
                 document.UpdatedAt = DateTime.Now;
 
-
                 // NEW
-                document.ExpiryDay = newDocument.ExpiryDay;
-                document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
-                document.MaxPrintPerActivity = newDocument.MaxPrintPerActivity;
+                document.MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity;
+                document.MaximumPrintPerUser = newDocument.MaxPrintPerActivity;
                 document.IsCurrent = true; //
 
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;
-
-               
 
                 document.RotationId = rotationId;
                 document.CompanyId = companyId;
@@ -84,7 +77,7 @@ namespace DRD.Service
                 var createdOrUpdated = new List<DocumentUser>();
                 var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
                 if (docs == null) return null;
-                foreach (DocumentElement el in docs.DocumentElements)
+                foreach (DocumentAnnotation el in docs.DocumentElements)
                 {
                     if (el.ElementId == null) continue;
                     var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
@@ -98,10 +91,10 @@ namespace DRD.Service
                     string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
 
                     if (("SIGNATURE,INITIAL").Contains(eltypename))
-                        docUser.FlagPermission |= 1;
+                        docUser.ActionPermission |= 1;
 
                     if (("PRIVATESTAMP").Contains(eltypename))
-                        docUser.FlagPermission |= 32;
+                        docUser.ActionPermission |= 32;
                     
                     db.SaveChanges();
                 }
@@ -112,8 +105,8 @@ namespace DRD.Service
                     var item = new DocumentUserInboxData();
                     item.DocumentId = du.DocumentId;
                     item.Document = du.Document;
-                    item.FlagAction = du.FlagAction;
-                    item.FlagPermission = du.FlagPermission;
+                    item.FlagAction = du.ActionStatus;
+                    item.FlagPermission = du.ActionPermission;
                     item.UserId = du.UserId;
                     item.User = du.User;
                     item.UserName = du.User.Name;
@@ -134,14 +127,14 @@ namespace DRD.Service
             throw new NotImplementedException();
         }
 
-        public ICollection<DocumentElement> FillAnnos(Document doc)
+        public ICollection<DocumentAnnotation> FillAnnos(Document doc)
         {
             using (var db = new ServiceContext())
             {
                 var annos =
                     (from x in db.DocumentElements
                      where x.Document.Id == doc.Id
-                     select new DocumentElement
+                     select new DocumentAnnotation
                      {
                          Page = x.Page,
                          LeftPosition = x.LeftPosition,
@@ -150,8 +143,8 @@ namespace DRD.Service
                          HeightPosition = x.HeightPosition,
                          Color = x.Color,
                          BackColor = x.BackColor,
-                         Data = x.Data,
-                         Data2 = x.Data2,
+                         Text = x.Text,
+                         Unknown = x.Unknown,
                          Rotation = x.Rotation,
                          ScaleX = x.ScaleX,
                          ScaleY = x.ScaleY,
@@ -160,9 +153,9 @@ namespace DRD.Service
                          StrokeWidth = x.StrokeWidth,
                          Opacity = x.Opacity,
                          Flag = x.Flag,
-                         FlagCode = x.FlagCode,
-                         FlagDate = x.FlagDate,
-                         FlagImage = x.FlagImage,
+                         AssignedAnnotationCode = x.AssignedAnnotationCode,
+                         AssignedAt = x.AssignedAt,
+                         AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
                          CreatorId = x.CreatorId,
                          ElementId = x.ElementId,
 
@@ -187,12 +180,9 @@ namespace DRD.Service
                      FileName = doc.FileUrl,
                      FileNameOri = doc.FileName,
                      FileSize = doc.FileSize,
-                     CreatorId = doc.CreatorId,
-                     CreatedAt = doc.CreatedAt,
-                     Description = doc.Description,
-                     MaxDownload = doc.MaxDownloadPerActivity,
-                     MaxPrint = doc.MaxPrintPerActivity,
-                     ExpiryDay = doc.ExpiryDay
+                     CreatorId = doc.UploaderId,
+                     MaxDownload = doc.MaximumDownloadPerUser,
+                     MaxPrint = doc.MaximumPrintPerUser
                  }).ToList();
                 return result;
             }
@@ -208,7 +198,7 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId && (keywords.All(x => (c.FileName).Contains(x)))
+                     where c.UploaderId == memberId && (keywords.All(x => (c.FileName).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
@@ -244,12 +234,12 @@ namespace DRD.Service
                     (from c in db.DocumentElements
                      where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) &&
                             (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
-                     orderby c.FlagDate descending
+                     orderby c.AssignedAt descending
                      select new DocumentSign
                      {
                          Id = c.Document.Id,
                          CxAnnotate = 1,
-                         DateCreated = c.FlagDate,
+                         CreatedAt = c.AssignedAt,
                      }).ToList();
 
                 var signs =
@@ -259,7 +249,7 @@ namespace DRD.Service
                      {
                          Id = g.Key,
                          CxAnnotate = g.Sum(c => c.CxAnnotate),
-                         DateCreated = g.Max(c => c.DateCreated),
+                         CreatedAt = g.Max(c => c.CreatedAt),
                      }).ToList();
 
                 var rowCount = signs.Count();
@@ -273,7 +263,7 @@ namespace DRD.Service
                      FileName = d.FileName,
                      CxAnnotate = c.CxAnnotate,
                      RowCount = rowCount,
-                     DateCreated = c.DateCreated,
+                     CreatedAt = c.CreatedAt,
                  }).Skip(skip).Take(pageSize).ToList();
 
                 return result;
@@ -303,17 +293,15 @@ namespace DRD.Service
                      {
                          Id = c.Id,
                          Extention = c.Extention,
-                         Description = c.Description,
                          FileName = c.FileName,
                          FileUrl = c.FileUrl,
                          FileSize = c.FileSize,
                          CreatedAt = c.CreatedAt,
                          UpdatedAt = c.UpdatedAt,
-                         CreatorId = c.CreatorId,
-                         UserEmail = c.UserEmail,
+                         UploaderId = c.UploaderId,
                          DocumentElements = (
                             from x in c.DocumentElements
-                            select new DocumentElement
+                            select new DocumentAnnotation
                             {
                                 Id = x.Id,
                                 Document = x.Document,
@@ -324,8 +312,8 @@ namespace DRD.Service
                                 HeightPosition = x.HeightPosition,
                                 Color = x.Color,
                                 BackColor = x.BackColor,
-                                Data = x.Data,
-                                Data2 = x.Data2,
+                                Text = x.Text,
+                                Unknown = x.Unknown,
                                 Rotation = x.Rotation,
                                 ScaleX = x.ScaleX,
                                 ScaleY = x.ScaleY,
@@ -334,9 +322,9 @@ namespace DRD.Service
                                 StrokeWidth = x.StrokeWidth,
                                 Opacity = x.Opacity,
                                 Flag = x.Flag,
-                                FlagCode = x.FlagCode,
-                                FlagDate = x.FlagDate,
-                                FlagImage = x.FlagImage,
+                                AssignedAnnotationCode = x.AssignedAnnotationCode,
+                                AssignedAt = x.AssignedAt,
+                                AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
                                 CreatorId = x.CreatorId,
                                 ElementId = x.ElementId,
                                 UserId = x.UserId,
@@ -348,7 +336,7 @@ namespace DRD.Service
 
                 if (result != null)
                 {
-                    foreach (DocumentElement da in result.DocumentElements)
+                    foreach (DocumentAnnotation da in result.DocumentElements)
                     {
                         if (da.ElementId == null) continue;
                         if (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
@@ -357,13 +345,7 @@ namespace DRD.Service
                             var mem = db.Users.FirstOrDefault(c => c.Id == da.ElementId);
                             da.Element.UserId = mem.Id;
                             da.Element.Name = mem.Name;
-                            da.Element.Foto = mem.ImageProfile;
-                        }
-                        else if (da.ElementTypeId == (int)Constant.EnumElementTypeId.STAMP)
-                        {
-                            var stmp = db.Stamps.FirstOrDefault(c => c.Id == da.ElementId);
-                            da.Element.Name = stmp.Descr;
-                            da.Element.Foto = stmp.StampFile;
+                            da.Element.Foto = mem.ProfileImageFileName;
                         }
                     }
 
@@ -394,16 +376,7 @@ namespace DRD.Service
                         doc.EncryptedId = Utilities.Encrypt(result.CompanyId.ToString());
                     }
                 }
-                else
-                {
-                    var result = db.RotationNodeUpDocs.FirstOrDefault(c => c.Document.FileUrl.Contains(uniqFileName));
-                    if (result != null)
-                    {
-                        doc.Id = result.Id;
-                        doc.FileName = result.Document.FileUrl;
-                        doc.EncryptedId = Utilities.Encrypt(result.Document.CompanyId.ToString());
-                    }
-                }
+
             }
             return doc;
         }
@@ -422,7 +395,7 @@ namespace DRD.Service
             {
                 var result =
                 (from doc in db.Documents
-                 where (doc.CreatorId == creatorId || doc.CompanyId == companyId)
+                 where (doc.UploaderId == creatorId || doc.CompanyId == companyId)
                  && (keywords.All(x => (doc.FileName).Contains(x)))
                  orderby doc.CreatedAt descending
                  select new DocumentItem
@@ -432,12 +405,9 @@ namespace DRD.Service
                      FileNameOri = doc.FileName,
                      FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
-                     CreatorId = doc.CreatorId,
-                     CreatedAt = doc.CreatedAt,
-                     Description = doc.Description,
-                     MaxDownload = doc.MaxDownloadPerActivity,
-                     MaxPrint = doc.MaxPrintPerActivity,
-                     ExpiryDay = doc.ExpiryDay
+                     CreatorId = doc.UploaderId,
+                     MaxDownload = doc.MaximumDownloadPerUser,
+                     MaxPrint = doc.MaximumPrintPerUser
                  }).Skip(skip).Take(pageSize).ToList();
 
                 // ini ngapain?
@@ -484,7 +454,7 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == creatorId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
+                 where c.UploaderId == creatorId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  orderby c.CreatedAt descending
                  select new DocumentItem
                  {
@@ -492,8 +462,7 @@ namespace DRD.Service
                      Extention = c.Extention,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
-                     CreatorId = c.CreatorId,
-                     CreatedAt = c.CreatedAt,
+                     CreatorId = c.UploaderId,
                      //DocumentUsers =
                      //    (from x in c.DocumentUsers
                      //     select new DocumentUser
@@ -544,7 +513,7 @@ namespace DRD.Service
             {
                 var result =
                     (from c in db.Documents
-                     where c.CreatorId == memberId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
+                     where c.UploaderId == memberId && (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                      select new DocumentItem
                      {
                          Id = c.Id,
@@ -587,7 +556,7 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == memberId &&
+                 where c.UploaderId == memberId &&
                     (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  select new DocumentItem
                  {
@@ -595,8 +564,7 @@ namespace DRD.Service
                      Extention = c.Extention,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
-                     CreatorId = c.CreatorId,
-                     CreatedAt = c.CreatedAt,
+                     CreatorId = c.UploaderId
 
                  }).Skip(skip).Take(pageSize).ToList();
 
@@ -636,7 +604,7 @@ namespace DRD.Service
             {
                 var result =
                 (from c in db.Documents
-                 where c.CreatorId == memberId &&
+                 where c.UploaderId == memberId &&
                     (topCriteria == null || tops.All(x => (c.FileName).Contains(x)))
                  select new DocumentItem
                  {
@@ -671,7 +639,6 @@ namespace DRD.Service
                      select new DocumentItem
                      {
                          Id = c.Id,
-                         Description = c.Description,
                          Extention = c.Extention,
                          FileName = c.FileName,
 
@@ -707,7 +674,7 @@ namespace DRD.Service
                 var rn = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNodeId);
                 var rm = db.RotationUsers.FirstOrDefault(c => c.UserId == usrId && c.Rotation.Id == rn.Rotation.Id && c.WorkflowNodeId == rn.WorkflowNode.Id);
                 if (rm == null) return 0;
-                return rm.FlagPermission;
+                return rm.ActionPermission;
             }
         }
 
@@ -736,13 +703,13 @@ namespace DRD.Service
                     (from c in db.DocumentElements
                      where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
                         (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
-                     orderby c.FlagDate descending
+                     orderby c.AssignedAt descending
                      select new DocumentSign
                      {
                          Id = c.Document.Id,
                          CxSignature = (c.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE ? 1 : 0),
                          CxInitial = (c.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL ? 1 : 0),
-                         DateCreated = c.FlagDate,
+                         CreatedAt = c.AssignedAt,
                      }).ToList();
 
                 var signs =
@@ -753,7 +720,7 @@ namespace DRD.Service
                          Id = g.Key,
                          CxSignature = g.Sum(c => c.CxSignature),
                          CxInitial = g.Sum(c => c.CxInitial),
-                         DateCreated = g.Max(c => c.DateCreated),
+                         CreatedAt = g.Max(c => c.CreatedAt),
                      }).ToList();
 
                 var rowCount = signs.Count();
@@ -768,7 +735,7 @@ namespace DRD.Service
                      CxSignature = c.CxSignature,
                      CxInitial = c.CxInitial,
                      RowCount = rowCount,
-                     DateCreated = c.DateCreated,
+                     CreatedAt = c.CreatedAt,
                  }).Skip(skip).Take(pageSize).ToList();
 
                 return result;
@@ -799,11 +766,11 @@ namespace DRD.Service
                 // calc from rotation is completed
                 // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                 //    return -3;
-                if ((docMem.FlagPermission & (int)Constant.EnumDocumentAction.DOWNLOAD) == (int)Constant.EnumDocumentAction.DOWNLOAD)
+                if ((docMem.ActionPermission & (int)Constant.EnumDocumentAction.DOWNLOAD) == (int)Constant.EnumDocumentAction.DOWNLOAD)
                     return -3;
 
                 // out of max // There may be a race condition
-                if (docMem.PrintCount + 1 > doc.MaxPrintPerActivity)
+                if (docMem.PrintCount + 1 > doc.MaximumPrintPerUser)
                     return -1;
 
                 docMem.PrintCount++;
@@ -834,11 +801,11 @@ namespace DRD.Service
                 // calc from rotation is completed
                 // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                 //    return -3;
-                if ((docMem.FlagPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
+                if ((docMem.ActionPermission & (int)Constant.EnumDocumentAction.PRINT) == (int)Constant.EnumDocumentAction.PRINT)
                     return -3;
 
                 // out of max // There may be a race condition
-                if (docMem.PrintCount + 1 > doc.MaxPrintPerActivity)
+                if (docMem.PrintCount + 1 > doc.MaximumPrintPerUser)
                     return -1;
 
                 docMem.PrintCount++;
@@ -880,7 +847,7 @@ namespace DRD.Service
                     var ep = annos.ElementAt(0); // get 1 data for sample
                     for (var x = cxold; x < cxnew; x++)
                     {
-                        DocumentElement da = new DocumentElement();
+                        DocumentAnnotation da = new DocumentAnnotation();
                         da.DocumentId = documentId;
                         da.Page = ep.Page;
                         da.ElementTypeId = ep.ElementTypeId;
@@ -903,7 +870,7 @@ namespace DRD.Service
                 var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
                 int v = 0;
                 var retval = new List<DocumentElementInboxData>();
-                foreach (DocumentElement da in dnew)
+                foreach (DocumentAnnotation da in dnew)
                 {
                     var epos = annos.ElementAt(v);
                     da.DocumentId = documentId;
@@ -915,8 +882,8 @@ namespace DRD.Service
                     da.HeightPosition = epos.HeightPosition;
                     da.Color = epos.Color;
                     da.BackColor = epos.BackColor;
-                    da.Data = epos.Data;
-                    da.Data2 = epos.Data2;
+                    da.Text = epos.Data;
+                    da.Unknown = epos.Data2;
                     da.Rotation = epos.Rotation;
                     da.ScaleX = epos.ScaleX;
                     da.ScaleY = epos.ScaleY;
@@ -925,9 +892,9 @@ namespace DRD.Service
                     da.StrokeWidth = epos.StrokeWidth;
                     da.Opacity = epos.Opacity;
                     da.Flag = epos.Flag;
-                    da.FlagCode = epos.FlagCode;
-                    da.FlagDate = epos.FlagDate;
-                    da.FlagImage = epos.FlagImage;
+                    da.AssignedAnnotationCode = epos.FlagCode;
+                    da.AssignedAt = epos.FlagDate;
+                    da.AssignedAnnotationImageFileName = epos.FlagImage;
                     da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
                     da.ElementId = epos.ElementId;
                     da.Element = epos.Element;
@@ -935,7 +902,7 @@ namespace DRD.Service
                     v++;
                 }
                 db.SaveChanges();
-                foreach (DocumentElement da in dnew)
+                foreach (DocumentAnnotation da in dnew)
                 {
                     retval.Add(new DocumentElementInboxData(da));
                 }
@@ -994,22 +961,22 @@ namespace DRD.Service
                 var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
                 int cx = 0;
                 string numbers = "";
-                foreach (DocumentElement da in datas)
+                foreach (DocumentAnnotation da in datas)
                 {
                     var dt = DateTime.Now;
                     da.Flag = 1;
-                    da.FlagDate = dt;
-                    da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE ? user.ImageSignature : user.ImageInitials);
+                    da.AssignedAt = dt;
+                    da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                    da.AssignedAnnotationImageFileName = (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE ? user.SignatureImageFileName : user.InitialImageFileName);
                     if (!numbers.Equals(""))
                         numbers += ", ";
-                    numbers += da.FlagCode;
+                    numbers += da.AssignedAnnotationCode;
                     cx++;
                 }
                 if (cx > 0)
                 {
                     db.SaveChanges();
-                    SendEmailSignature(user, rot.Subject, doc.FileName, numbers);
+                    SendEmailSignature(user, rot.Name, doc.FileName, numbers);
                 }
                 return cx;
             }
@@ -1030,22 +997,22 @@ namespace DRD.Service
                 var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
                 int cx = 0;
                 string numbers = "";
-                foreach (DocumentElement da in datas)
+                foreach (DocumentAnnotation da in datas)
                 {
                     var dt = DateTime.Now;
                     da.Flag = 1;
-                    da.FlagDate = dt;
-                    da.FlagCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                    da.FlagImage = user.ImageStamp;
+                    da.AssignedAt = dt;
+                    da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                    da.AssignedAnnotationImageFileName = user.StampImageFileName;
                     if (!numbers.Equals(""))
                         numbers += ", ";
-                    numbers += da.FlagCode;
+                    numbers += da.AssignedAnnotationCode;
                     cx++;
                 }
                 if (cx > 0)
                 {
                     db.SaveChanges();
-                    SendEmailStamp(user, rot.Subject, doc.FileName, numbers);
+                    SendEmailStamp(user, rot.Name, doc.FileName, numbers);
                 }
                 return cx;
             }
@@ -1059,16 +1026,13 @@ namespace DRD.Service
 
                 // mapping value
                 document.Extention = newDocument.Extention;
-                document.Description = newDocument.Description;
                 document.FileName = newDocument.FileName;
 
-                document.CreatorId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
-                document.UserEmail = newDocument.UserEmail;
+                document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
 
                 // NEW
-                document.ExpiryDay = newDocument.ExpiryDay;
-                document.MaxDownloadPerActivity = newDocument.MaxDownloadPerActivity;
-                document.MaxPrintPerActivity = newDocument.MaxPrintPerActivity;
+                document.MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity;
+                document.MaximumPrintPerUser = newDocument.MaxPrintPerActivity;
 
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;
@@ -1078,7 +1042,6 @@ namespace DRD.Service
                 document.UpdatedAt = DateTime.Now;
 
                 db.SaveChanges();
-                newDocument.UpdatedAt = document.UpdatedAt;
                 newDocument.Id = document.Id;
 
                 return newDocument;

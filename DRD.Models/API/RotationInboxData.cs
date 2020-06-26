@@ -5,17 +5,14 @@ namespace DRD.Models.API
     public class RotationInboxData
     {
         public long Id { get; set; } // Id (Primary key)
-        public string Subject { get; set; } // Subject (length: 100)
+        public string Name { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
-        public string Remark { get; set; } // Remark
         public long? CreatorId { get; set; } // CreatorId
         public long? CompanyId { get; set; } // filled only if rotation started
         public long FirstNodeId { get; set; }
-        public System.DateTime DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
-        public System.DateTime? DateStarted { get; set; } // DateStarted
-
-        public string StatusDescription { get; set; }
+        public System.DateTime? CreatedAt { get; set; } // DateCreated
+        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
+        public System.DateTime? StartedAt { get; set; } // DateStarted
         public long RotationNodeId { get; set; }
         public long DefWorkflowNodeId { get; set; }
         public long WorkflowId { get; set; }
@@ -29,7 +26,6 @@ namespace DRD.Models.API
 
         // Document summaries
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
@@ -46,7 +42,6 @@ namespace DRD.Models.API
         public RotationInboxData()
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
-            SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 
             Document = new DocumentInboxData();
 

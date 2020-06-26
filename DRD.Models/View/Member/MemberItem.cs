@@ -7,7 +7,7 @@ namespace DRD.Models.View
         public long Id { get; set; } // Id (Primary key)
         public long CompanyId { get; set; } // CompanyId
         public long UserId { get; set; } // UserId (length: 50)
-        public System.DateTime JoinedAt { get; set; } // DateCreated
+        public System.DateTime? JoinedAt { get; set; } // DateCreated
         public bool IsActive { get; set; } // IsActive
         public bool isCompanyAccept { get; set; }
         public bool isMemberAccept { get; set; }

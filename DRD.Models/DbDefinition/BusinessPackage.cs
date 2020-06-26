@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("BusinessPackages", Schema = "public")]
-    public class BusinessPackage
+    public class BusinessPackage : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
@@ -19,7 +19,6 @@ namespace DRD.Models
         public int Member { get; set; } = -99;
         public long Storage { get; set; } = -99;
         public string Name { get; set; } // MemberId
-        public System.DateTime? CreatedAt { get; set; } // ValidPackage
 
         public BusinessPackage()
         {

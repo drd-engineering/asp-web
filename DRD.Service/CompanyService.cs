@@ -24,7 +24,7 @@ namespace DRD.Service
                 Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
                 if (memberSearch != null)
                 {
-                    memberSearch.isCompanyAccept = true;
+                    memberSearch.IsCompanyAccept = true;
                     var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid:true);
                     if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                         db.SaveChanges();
@@ -48,10 +48,10 @@ namespace DRD.Service
                 newCompany.Name = company.Name;
                 newCompany.OwnerId = company.OwnerId;
                 newCompany.Address = company.Address;
-                newCompany.Descr = company.Descr;
+                newCompany.Description = company.Description;
                 newCompany.Email = company.Email;
                 newCompany.Phone = company.Phone;
-                newCompany.PointLocation = company.PointLocation;
+                newCompany.MapCoordinate = company.MapCoordinate;
                 newCompany.PostalCode = company.PostalCode;
 
                 CompanyService companyService = new CompanyService();
@@ -90,7 +90,7 @@ namespace DRD.Service
                 if (company != null && package != null && price != null)
                 {
                     Usage.CompanyId = company.Id;
-                    Usage.StartedAt = DateTime.Now;
+                    Usage.CreatedAt = DateTime.Now;
                     Usage.ExpiredAt = DateTime.Now.AddDays(package.Duration);
                     Usage.Administrator = 0;
                     Usage.Storage = 0;
@@ -188,7 +188,7 @@ namespace DRD.Service
                     company.Name = x.Name;
                     company.Phone = x.Phone;
                     company.Address = x.Address;
-                    company.PointLocation = x.PointLocation;
+                    company.PointLocation = x.MapCoordinate;
                     company.OwnerId = x.OwnerId;
                     company.OwnerName = userService.GetName(company.OwnerId);
                     if (subscription != null)
@@ -244,7 +244,7 @@ namespace DRD.Service
                 company.Name = result.Name;
                 company.Phone = result.Phone;
                 company.Address = result.Address;
-                company.PointLocation = result.PointLocation;
+                company.PointLocation = result.MapCoordinate;
                 company.OwnerId = result.OwnerId;
                 company.OwnerName = userService.GetName(company.OwnerId);
                 if (subscription != null)
@@ -311,7 +311,7 @@ namespace DRD.Service
 
                 //rejectmember
                 memberSearch.IsActive = false;
-                memberSearch.isCompanyAccept = false;
+                memberSearch.IsCompanyAccept = false;
                 db.SaveChanges();
                 return subscriptionStatus.ToString();
 

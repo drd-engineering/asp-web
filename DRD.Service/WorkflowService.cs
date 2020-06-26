@@ -47,10 +47,8 @@ namespace DRD.Service
                          Id = workflow.Id,
                          Name = workflow.Name,
                          Description = workflow.Description,
-                         UserEmail = workflow.UserEmail,
                          IsActive = workflow.IsActive,
                          IsTemplate = workflow.IsTemplate,
-                         Type = workflow.Type,
                          IsUsed = (workflow.TotalUsed > 0),
                      }).FirstOrDefault();
 
@@ -76,37 +74,18 @@ namespace DRD.Service
                                 dmid++;
                             }
                             WorkflowNodeItem.symbolCode = getSymbolsFromCsvById(workflowNode.SymbolCode).Code;
-                            WorkflowNodeItem.userId = workflowNode.UserId;
                             WorkflowNodeItem.caption = workflowNode.Caption;
-                            WorkflowNodeItem.info = workflowNode.Info;
-                            WorkflowNodeItem.Operator = workflowNode.Operator;
-                            WorkflowNodeItem.value = workflowNode.Value;
                             WorkflowNodeItem.textColor = workflowNode.TextColor;
                             WorkflowNodeItem.backColor = workflowNode.BackColor;
                             WorkflowNodeItem.posLeft = workflowNode.PosLeft;
                             WorkflowNodeItem.posTop = workflowNode.PosTop;
                             WorkflowNodeItem.width = workflowNode.Width;
                             WorkflowNodeItem.height = workflowNode.Height;
-                            User user = db.Users.Where(dbuser => dbuser.Id == workflowNode.UserId).FirstOrDefault();
-                            if (user != null)
-                            {
-                                WorkflowNodeItem.user = new WorkflowNodeUser
-                                {
-                                    id = user.Id,
-                                    name = user.Name,
-                                    email = user.Email,
-                                    imageProfile = user.ImageProfile,
-                                };
-                            }
-                            else
-                            {
-                                WorkflowNodeItem.user = null;
-                            }
                             result.WorkflowNodes.Add(WorkflowNodeItem);
                         }
                     }
 
-                    var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.WorkflowNode.WorkflowId == result.Id).ToList();
+                    var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.Source.WorkflowId == result.Id).ToList();
                     if (links.Count() > 0)
                     {
                         result.WorkflowNodeLinks = new List<WorkflowNodeLinkItem>();
@@ -114,19 +93,13 @@ namespace DRD.Service
                         foreach (WorkflowNodeLink wfnl in links)
                         {
                             WorkflowNodeLinkItem jwfnl = new WorkflowNodeLinkItem();
-                            jwfnl.NodeId = wfnl.WorkflowNodeId;
-                            jwfnl.NodeToId = wfnl.WorkflowNodeToId;
+                            jwfnl.NodeId = wfnl.SourceId;
+                            jwfnl.NodeToId = wfnl.TargetId;
                             jwfnl.firstNodeId = wfnl.FirstNodeId;
-                            jwfnl.endNodeId = wfnl.EndNodeId;
-                            jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeId).element;
-                            jwfnl.elementTo = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.WorkflowNodeToId).element;
+                            jwfnl.elementFrom = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.SourceId).element;
+                            jwfnl.elementTo = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.TargetId).element;
                             jwfnl.firstNode = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.FirstNodeId).element;
-                            jwfnl.endNode = result.WorkflowNodes.FirstOrDefault(wfNode => wfNode.Id == wfnl.EndNodeId).element;
                             jwfnl.symbolCode = getSymbolsFromCsvById(wfnl.SymbolCode).Code;
-                            jwfnl.caption = wfnl.Caption;
-                            jwfnl.Operator = wfnl.Operator;
-                            jwfnl.value = wfnl.Value;
-
                             result.WorkflowNodeLinks.Add(jwfnl);
                         }
                     }
@@ -170,7 +143,7 @@ namespace DRD.Service
                 var result =
                     (from workflow in db.Workflows
                      where workflow.CreatorId == creatorId && workflow.IsActive==isActive && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
-                     orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
+                     orderby workflow.CreatedAt descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {
                          Id = workflow.Id,
@@ -178,10 +151,8 @@ namespace DRD.Service
                          Description = workflow.Description,
                          IsActive = workflow.IsActive,
                          IsTemplate = workflow.IsTemplate,
-                         Type = workflow.Type,
-                         UserEmail = workflow.UserEmail,
-                         DateCreated = workflow.DateCreated,
-                         DateUpdated = workflow.DateUpdated,
+                         CreatedAt = workflow.CreatedAt,
+                         UpdatedAt = workflow.UpdatedAt,
                      }).Where(criteria).Skip(skip).Take(pageSize).ToList();
                 if (result != null)
                 {
@@ -210,7 +181,7 @@ namespace DRD.Service
                 var result =
                     (from workflow in db.Workflows
                      where workflow.CreatorId == creatorId && workflow.IsActive == isActive && (topCriteria.Equals("") || tops.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
-                     orderby workflow.DateCreated descending, workflow.IsTemplate descending, workflow.Name
+                     orderby workflow.CreatedAt descending, workflow.IsTemplate descending, workflow.Name
                      select new WorkflowItem
                      {
                          Id = workflow.Id,
@@ -218,10 +189,8 @@ namespace DRD.Service
                          Description = workflow.Description,
                          IsActive = workflow.IsActive,
                          IsTemplate = workflow.IsTemplate,
-                         Type = workflow.Type,
-                         UserEmail = workflow.UserEmail,
-                         DateCreated = workflow.DateCreated,
-                         DateUpdated = workflow.DateUpdated,
+                         CreatedAt = workflow.CreatedAt,
+                         UpdatedAt = workflow.UpdatedAt,
                      }).Count();
                 return result;
             }
@@ -269,16 +238,14 @@ namespace DRD.Service
                 product.Description = WorkflowItem.Description;
                 product.IsActive = WorkflowItem.IsActive;
                 product.IsTemplate = WorkflowItem.IsTemplate;
-                product.Type = WorkflowItem.Type;
                 product.CreatorId = WorkflowItem.CreatorId;
-                product.UserEmail = WorkflowItem.UserEmail;
                 if (WorkflowItem.Id == 0)
                 {
-                    product.DateCreated = DateTime.Now;
+                    product.CreatedAt = DateTime.Now;
                     db.Workflows.Add(product);
                 }
                 else
-                    product.DateUpdated = DateTime.Now;
+                    product.UpdatedAt = DateTime.Now;
 
                 var result = db.SaveChanges();
 
@@ -291,7 +258,7 @@ namespace DRD.Service
                     // delete existing node
                     if (WorkflowItem.Id != 0)
                     {
-                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.WorkflowNode.WorkflowId == WorkflowItem.Id || workflow.WorkflowNodeTo.WorkflowId == WorkflowItem.Id).ToList();
+                        var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.Source.WorkflowId == WorkflowItem.Id || workflow.Target.WorkflowId == WorkflowItem.Id).ToList();
                         db.WorkflowNodeLinks.RemoveRange(oldNodeLinks);
                         db.SaveChanges();
 
@@ -307,21 +274,16 @@ namespace DRD.Service
                         {
                             var node = new WorkflowNode();
                             node.WorkflowId = product.Id;
-                            node.UserId = (jnode.userId == 0 ? null : jnode.userId);
                             node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
                             //node.SymbolCode = getSymbolsFromCsvByCode(jnode.symbolCode).Id;
 
                             node.Caption = jnode.caption;
-                            node.Info = jnode.info;
-                            node.Operator = jnode.Operator;
-                            node.Value = jnode.value;
                             node.PosLeft = jnode.posLeft;
                             node.PosTop = jnode.posTop;
                             node.Width = jnode.width;
                             node.Height = jnode.height;
                             node.TextColor = jnode.textColor;
                             node.BackColor = jnode.backColor;
-                            node.Flag = 0;
                             db.WorkflowNodes.Add(node);
                             db.SaveChanges();
                             jnode.Id = node.Id;
@@ -333,23 +295,16 @@ namespace DRD.Service
                         foreach (WorkflowNodeLinkItem jnodelink in WorkflowItem.WorkflowNodeLinks)
                         {
                             var nodelink = new WorkflowNodeLink();
-                            nodelink.WorkflowNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
-                            var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeId);
-                            nodelink.WorkflowNode = wfnod;
-                            nodelink.WorkflowNodeToId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
-                            var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.WorkflowNodeToId);
-                            nodelink.WorkflowNodeTo = to;
-                            nodelink.Caption = jnodelink.caption;
+                            nodelink.SourceId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementFrom)).Id;
+                            var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.SourceId);
+                            nodelink.Source = wfnod;
+                            nodelink.TargetId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.elementTo)).Id;
+                            var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.TargetId);
+                            nodelink.Target = to;
                             nodelink.SymbolCode = getSymbolsFromCsvByCode(jnodelink.symbolCode).Id;
                             nodelink.FirstNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.firstNode)).Id;
-                            nodelink.EndNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(jnodelink.endNode)).Id;
                             var first = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.FirstNodeId);
-                            var end = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.EndNodeId);
                             nodelink.FirstNode = first;
-                            nodelink.EndNode = end;
-                            /*db.Symbols.FirstOrDefault(workflow => workflow.Code.Equals(jnodelink.symbolCode)).Id;*/
-                            nodelink.Operator = jnodelink.Operator;
-                            nodelink.Value = jnodelink.value;
                             db.WorkflowNodeLinks.Add(nodelink);
                             db.SaveChanges();
                         }
@@ -397,7 +352,7 @@ namespace DRD.Service
                 if (rotationNode != null) return Constant.WorkflowStatus.USED_IN_ROTATION.ToString();
 
                 workflow.IsActive = false;
-                workflow.DateUpdated = DateTime.Now;
+                workflow.UpdatedAt = DateTime.Now;
                 db.SaveChanges();
                 return Constant.WorkflowStatus.OK.ToString();
             }

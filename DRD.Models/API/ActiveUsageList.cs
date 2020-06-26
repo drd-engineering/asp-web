@@ -11,20 +11,17 @@ namespace DRD.Models.API
         public long Id { get; set; }
         public bool? IsActive { get; set; } // IsDefault
         public string PackageName { get; set; }
-        public int? RotationLimit { get; set; }
         public int? RotationStartedLimit { get; set; }
         public System.DateTime? StartedAt { get; set; }
         public long? StorageLimit { get; set; }
         public int? TotalAdministrators { get; set; }
         public decimal? TotalPrice { get; set; }
-        public int? TotalRotation { get; set; }
         public int? TotalRotationStarted { get; set; }
         public long? TotalStorage { get; set; }
 
         public int? TotalUsers { get; set; }
         public int? TotalWorkflow { get; set; }
         public int? UsersLimit { get; set; }
-        public int? WorkflowLimit { get; set; }
     }
 
     public class ActiveUsageList

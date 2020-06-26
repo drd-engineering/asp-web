@@ -206,7 +206,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
-    <Compile Include="Controllers\DummyController.cs" />
     <Compile Include="Controllers\EmailHtmlController.cs" />
     <Compile Include="Controllers\FaspayController.cs" />
     <Compile Include="Controllers\MemberTopupPaymentController.cs" />
@@ -294,8 +293,6 @@
   <ItemGroup>
     <Content Include="angular-signature-master\src\signature_pad.min.js" />
     <Content Include="appearance_content_panels.html" />
-    <Content Include="assets\completed.png" />
-    <Content Include="assets\ongoing.png" />
     <Content Include="assets\xml\clickpaystatus.xml" />
     <Content Include="assets\xml\cliclpay.xml" />
     <Content Include="assets\xml\faspay_debit.xml" />
@@ -328,8 +325,6 @@
     <Content Include="Images\Company\default_logo.png" />
     <Content Include="Images\Company\logodocurate.png" />
     <Content Include="Images\Company\no_picture.png" />
-    <Content Include="Images\Company\verified.png" />
-    <Content Include="Images\completed.png" />
     <Content Include="Images\Diagram\canvas.png" />
     <Content Include="Images\Diagram\case.png" />
     <Content Include="Images\Company\drd.jpg" />
@@ -388,7 +383,6 @@
     <Content Include="Images\Member\wisnu.png" />
     <Content Include="Images\News\no_picture.png" />
     <Content Include="Images\News\no_picture_video.png" />
-    <Content Include="Images\ongoing.png" />
     <Content Include="Images\PodCast\no_picture.png" />
     <Content Include="Images\PodCast\podcast.png" />
     <Content Include="Images\PodCast\podcast_uploaded.png" />
@@ -415,7 +409,6 @@
     <Content Include="Images\Toolbar\text.png" />
     <Content Include="Images\userlogin2.png" />
     <Content Include="Images\userlogin.png" />
-    <Content Include="Images\verified.png" />
     <Content Include="layout_navbar_sidebar_fixed.html" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
@@ -600,8 +593,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Views\Dummy\DesktopMember.cshtml" />
-    <Content Include="Views\Dummy\Company.cshtml" />
     <None Include="Views\EmailHtml\InboxNotif.cshtml" />
     <None Include="Views\EmailHtml\Registration.cshtml" />
     <Content Include="WebForm1.aspx" />
@@ -1089,7 +1080,6 @@
     <Content Include="Views\Payment\XAggregator.cshtml" />
     <Content Include="Views\Include\PopupTnC.cshtml" />
     <Content Include="Views\Include\PopupChatContact.cshtml" />
-    <Content Include="Views\Subscription\Succeed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="angular-pdf-viewer-master\" />
@@ -1128,6 +1118,12 @@
     </Content>
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DRD.Core\DRD.Core.csproj">
+      <Project>{69adf00a-e21c-4924-91ae-1fa3a2c354e6}</Project>
+      <Name>DRD.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

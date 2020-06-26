@@ -75,11 +75,7 @@ namespace DRD.App.Controllers
         public ActionResult Save(WorkflowItem prod)
         {
             InitializeAPI();
-
             prod.CreatorId = user.Id;
-            prod.UserEmail = user.Email;
-            prod.Type = 0;
-
             var data = workflowService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -89,8 +85,6 @@ namespace DRD.App.Controllers
             InitializeAPI();
 
             prod.CreatorId = user.Id;
-            prod.UserEmail = user.Email;
-            prod.Type = 1;
 
             var data = workflowService.Save(prod);
             return Json(data, JsonRequestBehavior.AllowGet);

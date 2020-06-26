@@ -67,7 +67,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var listReturn = new MemberList();
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive).ToList();
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
 
                 mappingMember(membersFromDb, listReturn);
                 return listReturn;
@@ -78,7 +78,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var listReturn = new MemberList(); ;
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive).ToList();
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
 
                 mappingMember(membersFromDb, listReturn);
                 return listReturn;
@@ -90,7 +90,7 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var listReturn = new MemberList(); ;
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.IsActive && memberItem.IsAdministrator == isAdmin).ToList();
+                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive && memberItem.IsAdministrator == isAdmin).ToList();
 
                 mappingMember(membersFromDb, listReturn);
                 return listReturn;
@@ -121,7 +121,7 @@ namespace DRD.Service
             {
                 var admins = (from Member in db.Members
                               join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == CompanyId && Member.isCompanyAccept && Member.isMemberAccept && Member.IsActive && Member.IsAdministrator
+                              where Member.CompanyId == CompanyId && Member.IsCompanyAccept && Member.IsMemberAccept && Member.IsActive && Member.IsAdministrator
                               select new MemberItem
                               {
                                   Id = Member.Id,
@@ -189,8 +189,8 @@ namespace DRD.Service
                     {
                         UserId = userId,
                         CompanyId = companyId,
-                        isCompanyAccept = true,
-                        isMemberAccept = false,
+                        IsCompanyAccept = true,
+                        IsMemberAccept = false,
                     };
                     while (checkIdExist(member.Id))
                     {
@@ -219,8 +219,8 @@ namespace DRD.Service
                     {
                         UserId = userId,
                         CompanyId = companyId,
-                        isCompanyAccept = false,
-                        isMemberAccept = true,
+                        IsCompanyAccept = false,
+                        IsMemberAccept = true,
                     };
                     while (checkIdExist(member.Id))
                     {
@@ -274,7 +274,7 @@ namespace DRD.Service
                             }
                             newMember.UserId = target.Id;
                             newMember.CompanyId = companyId;
-                            newMember.isCompanyAccept = true;
+                            newMember.IsCompanyAccept = true;
 
                             db.Members.Add(newMember);
                             db.SaveChanges();
@@ -284,16 +284,16 @@ namespace DRD.Service
                         }
 
                         //exist but company hasn't accepeted yet
-                        if (!existingMember.isCompanyAccept)
+                        if (!existingMember.IsCompanyAccept)
                         {
-                            existingMember.isCompanyAccept = true;
+                            existingMember.IsCompanyAccept = true;
                             existingMember.JoinedAt = DateTime.Now;
                             db.SaveChanges();
                             retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
                             continue;
                         }
 
-                        if (existingMember.isMemberAccept)
+                        if (existingMember.IsMemberAccept)
                         {
                             retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
                             continue;
@@ -319,34 +319,34 @@ namespace DRD.Service
             var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
             EmailService emailService = new EmailService();
 
-            if (item.status == 1 || item.status == 2)
+            if (item.Status == 1 || item.Status == 2)
             {
                 string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/MemberInvitation.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
                 body = body.Replace("{_URL_}", strUrl);
-                body = body.Replace("{_COMPANYNAME_}", item.companyName);
-                body = body.Replace("{_NAME_}", item.userName);
-                body = body.Replace("{_MEMBERID_}", item.memberId.ToString());
+                body = body.Replace("{_COMPANYNAME_}", item.CompanyName);
+                body = body.Replace("{_NAME_}", item.UserName);
+                body = body.Replace("{_MEMBERID_}", item.MemberId.ToString());
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName, item.email, senderName + "Member Invitation", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName, item.Email, senderName + "Member Invitation", body, false, new string[] { });
             }
             // belum register jadi pengguna jadi ya invite aja.
-            else if (item.status == 0)
+            else if (item.Status == 0)
             {
                 string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/JoinDRD.html"));
                 String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
                 String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
 
                 body = body.Replace("{_URL_}", strUrl);
-                body = body.Replace("{_COMPANYNAME_}", item.companyName);
+                body = body.Replace("{_COMPANYNAME_}", item.CompanyName);
 
                 var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
-                var task = emailService.Send(senderEmail, senderName, item.email, senderName + " Invitation", body, false, new string[] { });
+                var task = emailService.Send(senderEmail, senderName, item.Email, senderName + " Invitation", body, false, new string[] { });
             }
         }
 
@@ -390,14 +390,14 @@ namespace DRD.Service
                                                Name = User.Name,
                                                Phone = User.Phone,
                                                Email = User.Email,
-                                               ImageProfile = User.ImageProfile
+                                               ImageProfile = User.ProfileImageFileName
                                            }).Union(from member1 in db.Members
                                                     join company in db.Companies on member1.CompanyId equals company.Id
                                                     join member2 in db.Members on company.Id equals member2.CompanyId
                                                     join user in db.Users on member2.UserId equals user.Id
                                                     where member1.UserId == userId
-                                                    && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
-                                                    && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
+                                                    && member1.IsActive && member1.IsCompanyAccept && member1.IsMemberAccept
+                                                    && member2.IsActive && member2.IsCompanyAccept && member2.IsMemberAccept
                                                     && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
                                                     select new MemberData
                                                     {
@@ -405,7 +405,7 @@ namespace DRD.Service
                                                         Name = user.Name,
                                                         Phone = user.Phone,
                                                         Email = user.Email,
-                                                        ImageProfile = user.ImageProfile
+                                                        ImageProfile = user.ProfileImageFileName
                                                     }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
                 if (contactListAllMatch != null)
                     for (var i = 0; i < contactListAllMatch.Count(); i++)
@@ -444,14 +444,14 @@ namespace DRD.Service
                                                     Name = User.Name,
                                                     Phone = User.Phone,
                                                     Email = User.Email,
-                                                    ImageProfile = User.ImageProfile
+                                                    ImageProfile = User.ProfileImageFileName
                                                 }).Union(from member1 in db.Members
                                                          join company in db.Companies on member1.CompanyId equals company.Id
                                                          join member2 in db.Members on company.Id equals member2.CompanyId
                                                          join user in db.Users on member2.UserId equals user.Id
                                                          where member1.UserId == userId
-                                                         && member1.IsActive && member1.isCompanyAccept && member1.isMemberAccept
-                                                         && member2.IsActive && member2.isCompanyAccept && member2.isMemberAccept
+                                                         && member1.IsActive && member1.IsCompanyAccept && member1.IsMemberAccept
+                                                         && member2.IsActive && member2.IsCompanyAccept && member2.IsMemberAccept
                                                          && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
                                                          select new MemberData
                                                          {
@@ -459,7 +459,7 @@ namespace DRD.Service
                                                              Name = user.Name,
                                                              Phone = user.Phone,
                                                              Email = user.Email,
-                                                             ImageProfile = user.ImageProfile
+                                                             ImageProfile = user.ProfileImageFileName
                                                          }).Count();
                 return countContactListAllMatch;
             }
@@ -497,7 +497,7 @@ namespace DRD.Service
                                                Name = User.Name,
                                                Phone = User.Phone,
                                                Email = User.Email,
-                                               ImageProfile = User.ImageProfile
+                                               ImageProfile = User.ProfileImageFileName
                                            }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
                 if (contactListAllMatch != null)
                     for (var i = 0; i < contactListAllMatch.Count(); i++)
@@ -537,7 +537,7 @@ namespace DRD.Service
                                                     Name = User.Name,
                                                     Phone = User.Phone,
                                                     Email = User.Email,
-                                                    ImageProfile = User.ImageProfile
+                                                    ImageProfile = User.ProfileImageFileName
                                                 }).Count();
                 return countContactListAllMatch;
             }
@@ -552,10 +552,10 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                Member theUser = db.Members.FirstOrDefault(m => m.Id == memberId && m.UserId == userId && m.isCompanyAccept && !m.isMemberAccept);
+                Member theUser = db.Members.FirstOrDefault(m => m.Id == memberId && m.UserId == userId && m.IsCompanyAccept && !m.IsMemberAccept);
                 if (theUser != null)
                 {
-                    theUser.isMemberAccept = true;
+                    theUser.IsMemberAccept = true;
                     db.SaveChanges();
                     return true;
                 }
@@ -591,8 +591,8 @@ namespace DRD.Service
                         memberItem.UserId = candidate.UserId;
                         memberItem.IsActive = candidate.IsActive;
                         memberItem.IsAdministrator = candidate.IsAdministrator;
-                        memberItem.isCompanyAccept = candidate.isCompanyAccept;
-                        memberItem.isMemberAccept = candidate.isMemberAccept;
+                        memberItem.isCompanyAccept = candidate.IsCompanyAccept;
+                        memberItem.isMemberAccept = candidate.IsMemberAccept;
                         memberItem.JoinedAt = candidate.JoinedAt;
                         memberItem.User = x.User;
                         memberItem.Company = x.Company;
@@ -625,8 +625,8 @@ namespace DRD.Service
                         memberItem.UserId = candidate.UserId;
                         memberItem.IsActive = candidate.IsActive;
                         memberItem.IsAdministrator = candidate.IsAdministrator;
-                        memberItem.isCompanyAccept = candidate.isCompanyAccept;
-                        memberItem.isMemberAccept = candidate.isMemberAccept;
+                        memberItem.isCompanyAccept = candidate.IsCompanyAccept;
+                        memberItem.isMemberAccept = candidate.IsMemberAccept;
                         memberItem.JoinedAt = candidate.JoinedAt;
                         memberItem.User = x.User;
                         memberItem.Company = x.Company;

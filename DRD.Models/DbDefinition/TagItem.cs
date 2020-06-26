@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("TagItems", Schema = "public")]
-    public class TagItem
+    public class TagItem : BaseEntity
     {
         [Key]
         [Column(Order = 1)]

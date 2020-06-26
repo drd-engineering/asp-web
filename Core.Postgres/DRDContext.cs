@@ -15,7 +15,7 @@ namespace Core.Postgres
         public DbSet<Company> Companies { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<DocumentElement> DocumentElements { get; set; }
+        public DbSet<DocumentAnnotation> DocumentElements { get; set; }
         public DbSet<DocumentUser> DocumentUsers { get; set; }
         public DbSet<Inbox> Inboxes { get; set; }
         public DbSet<Member> Members { get; set; }
@@ -23,10 +23,7 @@ namespace Core.Postgres
         public DbSet<Rotation> Rotations { get; set; }
         public DbSet<RotationNode> RotationNodes { get; set; }
         public DbSet<RotationNodeDoc> RotationNodeDocs { get; set; }
-        public DbSet<RotationNodeRemark> RotationNodeRemarks { get; set; }
-        public DbSet<RotationNodeUpDoc> RotationNodeUpDocs { get; set; }
         public DbSet<RotationUser> RotationUsers { get; set; }
-        public DbSet<Stamp> Stamps { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<TagItem> TagItems { get; set; }
         public DbSet<BusinessUsage> Usages { get; set; }
@@ -45,13 +42,13 @@ namespace Core.Postgres
                 Phone = "081111111111",
                 Email = "a@hotmail.com",
                 OfficialIdNo = 1111111111111111,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -62,13 +59,13 @@ namespace Core.Postgres
                 Phone = "081111111112",
                 Email = "b@hotmail.com",
                 OfficialIdNo = 1111111111111112,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -79,13 +76,13 @@ namespace Core.Postgres
                 Phone = "081111111113",
                 Email = "c@hotmail.com",
                 OfficialIdNo = 1111111111111113,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -96,13 +93,13 @@ namespace Core.Postgres
                 Phone = "081111111114",
                 Email = "d@hotmail.com",
                 OfficialIdNo = 1111111111111114,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -113,13 +110,13 @@ namespace Core.Postgres
                 Phone = "081111111115",
                 Email = "e@hotmail.com",
                 OfficialIdNo = 1111111111111115,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -130,13 +127,13 @@ namespace Core.Postgres
                 Phone = "081111111116",
                 Email = "f@hotmail.com",
                 OfficialIdNo = 1111111111111116,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -147,13 +144,13 @@ namespace Core.Postgres
                 Phone = "081111111117",
                 Email = "g@hotmail.com",
                 OfficialIdNo = 1111111111111117,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -164,13 +161,13 @@ namespace Core.Postgres
                 Phone = "081111111118",
                 Email = "h@hotmail.com",
                 OfficialIdNo = 1111111111111118,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -181,13 +178,13 @@ namespace Core.Postgres
                 Phone = "081111111119",
                 Email = "i@hotmail.com",
                 OfficialIdNo = 1111111111111119,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -198,13 +195,13 @@ namespace Core.Postgres
                 Phone = "081111111121",
                 Email = "j@hotmail.com",
                 OfficialIdNo = 1111111111111121,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
             });
             listOfUserCreated.Add(new User
             {
@@ -213,13 +210,13 @@ namespace Core.Postgres
                 Phone = "081111111122",
                 Email = "k@hotmail.com",
                 OfficialIdNo = 1111111111111122,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -230,13 +227,13 @@ namespace Core.Postgres
                 Phone = "081111111123",
                 Email = "l@hotmail.com",
                 OfficialIdNo = 1111111111111123,
-                ImageProfile = "danilova.jpg",
+                ProfileImageFileName = "danilova.jpg",
                 Password = "kapandeadline",
-                ImageSignature = "danilovasgn.png",
-                ImageInitials = "danilovainit.png",
-                ImageStamp = "danilovastmp.png",
-                ImageKtp1 = "danilovaktp1.png",
-                ImageKtp2 = "danilovaktp2.png",
+                SignatureImageFileName = "danilovasgn.png",
+                InitialImageFileName = "danilovainit.png",
+                StampImageFileName = "danilovastmp.png",
+                KTPImageFileName = "danilovaktp1.png",
+                KTPVerificationImageFileName = "danilovaktp2.png",
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });
@@ -252,7 +249,7 @@ namespace Core.Postgres
                     Name = "PT perusahaan 1",
                     Phone = "0214556372",
                     Email = "sempoasupport@sempoa.com",
-                    Descr = "a company dummy",
+                    Description = "a company dummy",
                     Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe",
                     PostalCode = "122122",
                     IsActive = true,
@@ -267,7 +264,7 @@ namespace Core.Postgres
                     Name = "PT perusahaan 2",
                     Phone = "0218229103",
                     Email = "sempuasupport@sempua.com",
-                    Descr = "a company dummy",
+                    Description = "a company dummy",
                     Address = "jalan haha nomor 2, haha, kota haha, provinsi haha",
                     PostalCode = "211211",
                     IsActive = true,
@@ -282,7 +279,7 @@ namespace Core.Postgres
                     Name = "PT perusahaan 4",
                     Phone = "0218229103",
                     Email = "siminsupport@sempua.com",
-                    Descr = "a company dummy",
+                    Description = "a company dummy",
                     Address = "jalan huhu nomor 2, huhu, kota huhu, provinsi huhu",
                     PostalCode = "221211",
                     IsActive = true,
@@ -297,7 +294,7 @@ namespace Core.Postgres
                     Name = "PT perusahaan 5",
                     Phone = "0214556372",
                     Email = "sempoasupport@sempoa.com",
-                    Descr = "a company dummy",
+                    Description = "a company dummy",
                     Address = "jalan hehe nomor 2, hehe, kota hehe, provinsi hehe",
                     PostalCode = "122122",
                     IsActive = true,
@@ -311,8 +308,8 @@ namespace Core.Postgres
                 Id = -6,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[0].Id,
                 IsAdministrator = false
             };
@@ -321,8 +318,8 @@ namespace Core.Postgres
                 Id = -11,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[2].Id,
                 IsAdministrator = false
             };
@@ -331,8 +328,8 @@ namespace Core.Postgres
                 Id = -13,
                 CompanyId = listOfCompanyCreated[2].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[4].Id,
                 IsAdministrator = false
             };
@@ -341,8 +338,8 @@ namespace Core.Postgres
                 Id = -26,
                 CompanyId = listOfCompanyCreated[3].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[0].Id,
                 IsAdministrator = false
             };
@@ -353,8 +350,8 @@ namespace Core.Postgres
                 Id = -1,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[2].Id,
                 IsAdministrator = true
             };
@@ -363,8 +360,8 @@ namespace Core.Postgres
                 Id = -7,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[4].Id,
                 IsAdministrator = false
             };
@@ -373,8 +370,8 @@ namespace Core.Postgres
                 Id = -8,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[3].Id,
                 IsAdministrator = false
             };
@@ -383,8 +380,8 @@ namespace Core.Postgres
                 Id = -18,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[1].Id,
                 IsAdministrator = false
             };
@@ -393,8 +390,8 @@ namespace Core.Postgres
                 Id = -19,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[5].Id,
                 IsAdministrator = false
             };
@@ -403,8 +400,8 @@ namespace Core.Postgres
                 Id = -20,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[6].Id,
                 IsAdministrator = false
             };
@@ -413,8 +410,8 @@ namespace Core.Postgres
                 Id = -21,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[7].Id,
                 IsAdministrator = false
             };
@@ -423,8 +420,8 @@ namespace Core.Postgres
                 Id = -22,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[8].Id,
                 IsAdministrator = false
             };
@@ -433,8 +430,8 @@ namespace Core.Postgres
                 Id = -23,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[9].Id,
                 IsAdministrator = false
             };
@@ -443,8 +440,8 @@ namespace Core.Postgres
                 Id = -24,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[10].Id,
                 IsAdministrator = false
             };
@@ -453,8 +450,8 @@ namespace Core.Postgres
                 Id = -25,
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[11].Id,
                 IsAdministrator = false
             };
@@ -464,8 +461,8 @@ namespace Core.Postgres
                 Id = -2,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[3].Id,
                 IsAdministrator = false
             };
@@ -474,8 +471,8 @@ namespace Core.Postgres
                 Id = -3,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[0].Id,
                 IsAdministrator = true
             };
@@ -484,8 +481,8 @@ namespace Core.Postgres
                 Id = -4,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[4].Id,
                 IsAdministrator = false
             };
@@ -494,8 +491,8 @@ namespace Core.Postgres
                 Id = -5,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[5].Id,
                 IsAdministrator = false
             };
@@ -504,8 +501,8 @@ namespace Core.Postgres
                 Id = -15,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[1].Id,
                 IsAdministrator = false
             };
@@ -514,8 +511,8 @@ namespace Core.Postgres
                 Id = -16,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[6].Id,
                 IsAdministrator = false
             };
@@ -524,8 +521,8 @@ namespace Core.Postgres
                 Id = -17,
                 CompanyId = listOfCompanyCreated[1].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[7].Id,
                 IsAdministrator = false
             };
@@ -535,8 +532,8 @@ namespace Core.Postgres
                 Id = -9,
                 CompanyId = listOfCompanyCreated[2].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[5].Id,
                 IsAdministrator = true
             };
@@ -545,8 +542,8 @@ namespace Core.Postgres
                 Id = -10,
                 CompanyId = listOfCompanyCreated[2].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[0].Id,
                 IsAdministrator = true
             };
@@ -555,8 +552,8 @@ namespace Core.Postgres
                 Id = -12,
                 CompanyId = listOfCompanyCreated[2].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[3].Id,
                 IsAdministrator = false
             };
@@ -565,8 +562,8 @@ namespace Core.Postgres
                 Id = -14,
                 CompanyId = listOfCompanyCreated[2].Id,
                 IsActive = true,
-                isCompanyAccept = true,
-                isMemberAccept = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
                 UserId = listOfUserCreated[4].Id,
                 IsAdministrator = false
             };
@@ -579,9 +576,9 @@ namespace Core.Postgres
             Price price2 = new Price { Id = -2, CreatedAt = DateTime.Now, Total = 31241256, PackageId = package2.Id };
             Price price3 = new Price { Id = -3, CreatedAt = DateTime.Now, Total = 423566135, PackageId = package3.Id };
 
-            BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, StartedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
-            BusinessUsage usage2 = new BusinessUsage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, StartedAt = DateTime.Now, PriceId = price2.Id };
-            BusinessUsage usage3 = new BusinessUsage { Id = -3, CompanyId = listOfCompanyCreated[2].Id, PackageId = package3.Id, StartedAt = DateTime.Now, PriceId = price3.Id };
+            BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
+            BusinessUsage usage2 = new BusinessUsage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, CreatedAt = DateTime.Now, PriceId = price2.Id };
+            BusinessUsage usage3 = new BusinessUsage { Id = -3, CompanyId = listOfCompanyCreated[2].Id, PackageId = package3.Id, CreatedAt = DateTime.Now, PriceId = price3.Id };
 
             Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
             Contact contact2 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[2].Id };

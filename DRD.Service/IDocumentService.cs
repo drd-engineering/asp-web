@@ -13,7 +13,7 @@ namespace DRD.Service
         //void DoRevision(Document document);
         int CheckingPrivateStamp(long memberId);
         int CheckingSignature(long memberId);
-        ICollection<DocumentElement> FillAnnos(Document doc);
+        ICollection<DocumentAnnotation> FillAnnos(Document doc);
         IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize);
         IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize, string order);
         IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria);

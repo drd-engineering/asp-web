@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("Workflows", Schema = "public")]
-    public class Workflow
+    public class Workflow : BaseEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; } // Id (Primary key)
@@ -13,20 +13,15 @@ namespace DRD.Models
         public bool IsActive { get; set; } // IsActive
         public long? CreatorId { get; set; } // CreatorId
         public bool IsTemplate { get; set; } // IsTemplate
-        public int Type { get; set; } // WfType
         public int TotalUsed { get; set; } // WfType
-        public string UserEmail { get; set; } // UserEmail (length: 50)
-        public System.DateTime DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
-
+        
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<WorkflowNode> WorkflowNodes { get; set; } // WorkflowNode.FK_WorkflowNode_Workflow
 
         public Workflow()
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: 1000000000);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID); 
             WorkflowNodes = new System.Collections.Generic.List<WorkflowNode>();
-            Type = 0;
         }
     }
 }

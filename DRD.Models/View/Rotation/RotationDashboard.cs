@@ -6,7 +6,7 @@
         public long InboxId { get; set; } // Id (Primary key)
         public string Subject { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
-        public System.DateTime DateCreated { get; set; } // DateCreated
+        public System.DateTime? DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
         public System.DateTime? DateStarted { get; set; } // DateStarted
         // Document summaries
@@ -30,7 +30,7 @@
             public string EncryptedId { get; set; }
             public string ImageProfile { get; set; }
 
-            public System.DateTime InboxTimeStamp { get; set; } // DateCreated
+            public System.DateTime? InboxTimeStamp { get; set; } // DateCreated
             public int InboxStatus { get; set; } // string
             public bool IsHere { get; set; }
         }

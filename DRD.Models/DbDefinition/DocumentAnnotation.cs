@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
-    [Table("DocumentElements", Schema = "public")]
-    public class DocumentElement
+    [Table("DocumentAnnotations", Schema = "public")]
+    public class DocumentAnnotation : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
@@ -16,8 +16,8 @@ namespace DRD.Models
         public double? HeightPosition { get; set; } // HeightPosition
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
-        public string Data { get; set; } // Data
-        public string Data2 { get; set; } // Data2
+        public string Text { get; set; } // Data
+        public string Unknown { get; set; } // Data2
         public int Rotation { get; set; } // Rotation
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
@@ -28,12 +28,11 @@ namespace DRD.Models
         public long? CreatorId { get; set; } // CreatorId
         public long? ElementId { get; set; } // ElementId
         public int Flag { get; set; } // Flag
-        public string FlagCode { get; set; } // FlagCode (length: 20)
-        public System.DateTime? FlagDate { get; set; } // FlagDate
-        public string FlagImage { get; set; } // FlagImage (length: 100)
+        public string AssignedAnnotationCode { get; set; } // stamp/signature/initial (length: 20)
+        public System.DateTime? AssignedAt { get; set; } // date when signed, initialed, or stamped
+        public string AssignedAnnotationImageFileName { get; set; } // stamp/signature/initial  (length: 100)
         public string UserId { get; set; } // UserId (length: 50)
-        public System.DateTime CreatedAt { get; set; } // DateCreated
-        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
+
         public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }
 
@@ -42,7 +41,7 @@ namespace DRD.Models
         [ForeignKey("ElementId")]
         public Element Element { get; set; }
 
-        public DocumentElement()
+        public DocumentAnnotation()
         {
             Rotation = 0;
             ScaleX = 1;

@@ -11,7 +11,7 @@ namespace DRD.Models.API
         public String RotationName { get; set; } // access rotation activity first then the rotation to get the name
         public String CurrentActivity { get; set; } // rotationActivity name
         public String WorkflowName { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public String Message { get; set; }
         public long RotationId { get; set; }
         public String DateNote { get; set; }

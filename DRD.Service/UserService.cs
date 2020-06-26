@@ -61,7 +61,7 @@ namespace DRD.Service
                 {
                     Member member = new Member();
                     member.UserId = userId;
-                    member.isMemberAccept = true;
+                    member.IsMemberAccept = true;
                     member.CompanyId = register.CompanyId.Value;
                     long memberId = Save(member);
                 }
@@ -89,7 +89,7 @@ namespace DRD.Service
                     }
                     try
                     {
-                        user.ImageProfile = "user.png";
+                        user.ProfileImageFileName = "user.png";
                         user.CreatedAt = DateTime.Now;
                         db.Users.Add(user);
                         result = db.SaveChanges();
@@ -180,12 +180,12 @@ namespace DRD.Service
                     loginUser.OfficialIdNo = userGet.OfficialIdNo;
                     loginUser.Phone = userGet.Phone;
                     loginUser.Email = userGet.Email;
-                    loginUser.ImageProfile = userGet.ImageProfile;
-                    loginUser.ImageSignature = userGet.ImageSignature;
-                    loginUser.ImageInitials = userGet.ImageInitials;
-                    loginUser.ImageStamp = userGet.ImageStamp;
-                    loginUser.ImageKtp1 = userGet.ImageKtp1;
-                    loginUser.ImageKtp2 = userGet.ImageKtp2;
+                    loginUser.ImageProfile = userGet.ProfileImageFileName;
+                    loginUser.ImageSignature = userGet.SignatureImageFileName;
+                    loginUser.ImageInitials = userGet.InitialImageFileName;
+                    loginUser.ImageStamp = userGet.StampImageFileName;
+                    loginUser.ImageKtp1 = userGet.KTPImageFileName;
+                    loginUser.ImageKtp2 = userGet.KTPVerificationImageFileName;
 
                     loginUser.Name = loginUser.Name.Split(' ')[0];
 
@@ -222,21 +222,21 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
-                user.ImageInitials = (userProfile.ImageInitials == null ? null : RemovePrefixLocation(userProfile.ImageInitials));
-                user.ImageKtp1 = (userProfile.ImageKtp1 == null ? null : RemovePrefixLocation(userProfile.ImageKtp1));
-                user.ImageKtp2 = (userProfile.ImageKtp2 == null ? null : RemovePrefixLocation(userProfile.ImageKtp2));
-                user.ImageProfile = (userProfile.ImageProfile == null ? null : RemovePrefixLocation(userProfile.ImageProfile));
-                user.ImageSignature = (userProfile.ImageSignature == null ? null : RemovePrefixLocation(userProfile.ImageSignature));
-                user.ImageStamp = (userProfile.ImageStamp == null ? null : RemovePrefixLocation(userProfile.ImageStamp));
+                user.InitialImageFileName = (userProfile.ImageInitials == null ? null : RemovePrefixLocation(userProfile.ImageInitials));
+                user.KTPImageFileName = (userProfile.ImageKtp1 == null ? null : RemovePrefixLocation(userProfile.ImageKtp1));
+                user.KTPVerificationImageFileName = (userProfile.ImageKtp2 == null ? null : RemovePrefixLocation(userProfile.ImageKtp2));
+                user.ProfileImageFileName = (userProfile.ImageProfile == null ? null : RemovePrefixLocation(userProfile.ImageProfile));
+                user.SignatureImageFileName = (userProfile.ImageSignature == null ? null : RemovePrefixLocation(userProfile.ImageSignature));
+                user.StampImageFileName = (userProfile.ImageStamp == null ? null : RemovePrefixLocation(userProfile.ImageStamp));
                 user.OfficialIdNo = userProfile.OfficialIdNo;
                 db.SaveChanges();
             }
-            userProfile.ImageInitials = user.ImageInitials;
-            userProfile.ImageKtp1 = user.ImageKtp1;
-            userProfile.ImageKtp2 = user.ImageKtp2;
-            userProfile.ImageProfile = user.ImageProfile;
-            userProfile.ImageSignature = user.ImageSignature;
-            userProfile.ImageStamp = user.ImageStamp;
+            userProfile.ImageInitials = user.InitialImageFileName;
+            userProfile.ImageKtp1 = user.KTPImageFileName;
+            userProfile.ImageKtp2 = user.KTPVerificationImageFileName;
+            userProfile.ImageProfile = user.ProfileImageFileName;
+            userProfile.ImageSignature = user.SignatureImageFileName;
+            userProfile.ImageStamp = user.StampImageFileName;
             userProfile.OfficialIdNo = user.OfficialIdNo;
 
             return userProfile;
@@ -280,13 +280,13 @@ namespace DRD.Service
                          Name = c.Name,
                          Phone = c.Phone,
                          Email = c.Email,
-                         ImageProfile = c.ImageProfile,
+                         ImageProfile = c.ProfileImageFileName,
                          IsActive = c.IsActive,
-                         ImageSignature = (id == loginId ? c.ImageSignature : ""),
-                         ImageInitials = (id == loginId ? c.ImageInitials : ""),
-                         ImageStamp = (id == loginId ? c.ImageStamp : ""),
-                         ImageKtp1 = (id == loginId ? c.ImageKtp1 : ""),
-                         ImageKtp2 = (id == loginId ? c.ImageKtp2 : ""),
+                         ImageSignature = (id == loginId ? c.SignatureImageFileName : ""),
+                         ImageInitials = (id == loginId ? c.InitialImageFileName : ""),
+                         ImageStamp = (id == loginId ? c.StampImageFileName : ""),
+                         ImageKtp1 = (id == loginId ? c.KTPImageFileName : ""),
+                         ImageKtp2 = (id == loginId ? c.KTPVerificationImageFileName : ""),
                          OfficialIdNo = c.OfficialIdNo,
                          CreatedAt = c.CreatedAt
                      }).ToList().FirstOrDefault();
@@ -439,7 +439,7 @@ namespace DRD.Service
             var isMember = true;
             using (var db = new ServiceContext())
             {
-                var countMember = db.Members.Count(m => m.UserId == userId && m.isCompanyAccept && m.isMemberAccept);
+                var countMember = db.Members.Count(m => m.UserId == userId && m.IsCompanyAccept && m.IsMemberAccept);
                 isMember = countMember > 0;
             }
             return isMember;
@@ -454,7 +454,7 @@ namespace DRD.Service
             var usrIsAdmin = false;
             using (var db = new ServiceContext())
             {
-                var countAdminCompany = db.Members.Count(m => m.UserId == userId && m.IsAdministrator && m.IsActive && m.isCompanyAccept && m.isMemberAccept);
+                var countAdminCompany = db.Members.Count(m => m.UserId == userId && m.IsAdministrator && m.IsActive && m.IsCompanyAccept && m.IsMemberAccept);
                 usrIsAdmin = countAdminCompany > 0;
             }
             return usrIsAdmin;
@@ -470,7 +470,7 @@ namespace DRD.Service
             {
                 var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
                     && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
-                    && memberItem.isCompanyAccept && memberItem.isMemberAccept);
+                    && memberItem.IsCompanyAccept && memberItem.IsMemberAccept);
                 var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
 
                 return countAsAdmin > 0 || countAsOwner > 0;
@@ -482,7 +482,7 @@ namespace DRD.Service
             {
                 var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
                     && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
-                    && memberItem.isCompanyAccept && memberItem.isMemberAccept && memberItem.CompanyId==companyId);
+                    && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.CompanyId==companyId);
                 var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.Id==companyId && companyItem.IsActive);
 
                 return countAsAdmin > 0 || countAsOwner > 0;

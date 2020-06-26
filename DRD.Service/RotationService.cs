@@ -49,34 +49,25 @@ namespace DRD.Service
                      Id = rotationNode.Id,
                      CreatedAt = rotationNode.CreatedAt,
                      Status = rotationNode.Status,
-                     Value = rotationNode.Value,
                      WorkflowNodeId = rotationNode.WorkflowNodeId,
-                     PrevWorkflowNodeId = rotationNode.PrevWorkflowNodeId,
+                     PrevWorkflowNodeId = rotationNode.PreviousWorkflowNodeId,
                      SenderRotationNodeId = rotationNode.SenderRotationNodeId,
                      User = new UserInboxData
                      {
                          Id = rotationNode.User.Id,
                          Name = rotationNode.User.Name,
-                         ImageProfile = rotationNode.User.ImageProfile,
-                         ImageInitials = rotationNode.User.ImageInitials,
-                         ImageSignature = rotationNode.User.ImageSignature,
-                         ImageStamp = rotationNode.User.ImageStamp,
-                         ImageKtp1 = rotationNode.User.ImageKtp1,
-                         ImageKtp2 = rotationNode.User.ImageKtp2,
+                         ImageProfile = rotationNode.User.ProfileImageFileName,
+                         ImageInitials = rotationNode.User.InitialImageFileName,
+                         ImageSignature = rotationNode.User.SignatureImageFileName,
+                         ImageStamp = rotationNode.User.StampImageFileName,
+                         ImageKtp1 = rotationNode.User.KTPImageFileName,
+                         ImageKtp2 = rotationNode.User.KTPVerificationImageFileName,
                      },
                      WorkflowNode = new WorkflowNodeInboxData
                      {
                          Id = rotationNode.WorkflowNode.Id,
                          Caption = rotationNode.WorkflowNode.Caption
                      },
-                     //RotationNodeRemarks =
-                     //(from rotationNodeRemark in rotationNode.RotationNodeRemarks
-                     // select new RotationNodeRemarkInboxData
-                     // {
-                     //     Id = rotationNodeRemark.Id,
-                     //     Remark = rotationNodeRemark.Remark,
-                     //     DateStamp = rotationNodeRemark.DateStamp,
-                     // }).ToList(),
                  }).ToList();
 
             //if owner has access to readonly
@@ -92,93 +83,14 @@ namespace DRD.Service
                     if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
                     {
                         rotation.AccessType = (int)Constant.AccessType.responsible;
-                        break;
                     }
                 }
+
                 // user encrypted id
                 rotationNode.User.EncryptedUserId = Utilities.Encrypt(rotationNode.User.Id.ToString());
-                // set note for waiting pending member
-                if (rotationNode.Status.Equals(Constant.RotationStatus.Pending))
-                {
-                    rotationNode.Note = "Waiting for action from: ";
-                    var rtpending = db.RotationNodes.FirstOrDefault(c => c.Id == rotationNode.Id);
-                    var wfnto = rtpending.WorkflowNode.WorkflowNodeLinks.FirstOrDefault(c => c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString()));
 
-                    var nodetos = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == wfnto.WorkflowNodeToId && c.SymbolCode.Equals(Constant.EnumActivityAction.SUBMIT.ToString())).ToList();
-                    foreach (WorkflowNodeLink workflowNodeLink in nodetos)
-                    {
-                        int[] statuses = { (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision };
-                        if (statuses.Contains(workflowNodeLink.WorkflowNode.RotationNodes.FirstOrDefault().Status))
-                            rotationNode.Note += workflowNodeLink.WorkflowNode.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.WorkflowNodeId).User.Name + " | " + workflowNodeLink.WorkflowNode.Caption + ", ";
-                    }
-
-                    if (rotationNode.Note.EndsWith(", "))
-                        rotationNode.Note = rotationNode.Note.Substring(0, rotationNode.Note.Length - 2);
-                }
-                // set note for alter link
-                else if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
-                {
-                    int alter = (int)Constant.EnumActivityAction.ALTER;
-                    var node = db.WorkflowNodeLinks.FirstOrDefault(c => c.WorkflowNodeId == rotationNode.WorkflowNode.Id && c.SymbolCode == alter);
-
-                    if (node != null)
-                    {
-                        if (node.Operator != null)
-                        {
-                            var start = rotationNode.CreatedAt;
-                            double val = 0;
-                            if (Double.TryParse(node.Value, out val))
-                            {
-                                if (node.Operator.Equals("HOUR"))
-                                    start = start.AddHours(val);
-                                else
-                                    start = start.AddDays(val);
-                            }
-
-                            rotationNode.Note = "There is a flow alter on " + start.ToString("dd/MM/yyyy HH:mm");
-                        }
-                        else
-                            rotationNode.Note = "There is a flow alter, there has been no determination of the period.";
-                    }
-                }
-                if (rotationNode.Id == rotation.RotationNodeId && rotation.UserId == rotationNode.User.Id && rotationNode.Status.Equals((int)Constant.RotationStatus.Open) && (rotationNode.PrevWorkflowNodeId != null || rotationNode.SenderRotationNodeId != null))
-                {
-                    if (rotationNode.PrevWorkflowNodeId != null)
-                    {
-                        var wfn = db.WorkflowNodes.FirstOrDefault(c => c.Id == rotationNode.PrevWorkflowNodeId);
-                        if (wfn.SymbolCode.Equals("PARALLEL"))
-                        {
-                            var wfnIds = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeToId == wfn.Id).Select(c => c.WorkflowNodeId).ToArray();
-                            var rns = db.RotationNodes.Where(c => wfnIds.Contains(c.WorkflowNode.Id)).ToList();
-                            List<RotationNodeDocInboxData> listDoc = new List<RotationNodeDocInboxData>();
-                            List<RotationNodeUpDocInboxData> listUpDoc = new List<RotationNodeUpDocInboxData>();
-                            foreach (RotationNode rnx in rns)
-                            {
-                                var d = AssignNodeDocs(db, rnx.Id, userId, rot.RotationNodeId, docSvr);
-                                if (d.Count > 0)
-                                    listDoc.AddRange(d);
-
-                                var ud = AssignNodeUpDocs(db, rnx.Id);
-                                if (ud.Count > 0)
-                                    listUpDoc.AddRange(ud);
-                            }
-                            if (listDoc.Count > 0)
-                                rotationNode.RotationNodeDocs = listDoc;
-                            if (listUpDoc.Count > 0)
-                                rotationNode.RotationNodeUpDocs = listUpDoc;
-                        }
-                    }
-                    else
-                    {
-                    }
-                }
-                else
-                {
-                    //rotationNode.RotationNodeDocs = assignNodeDocs(db, rotationNode.Id, rotation.UserId, rot.RotationNodeId);
-                    rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId, rot.RotationNodeId, docSvr);
-                    rotationNode.RotationNodeUpDocs = AssignNodeUpDocs(db, rotationNode.Id);
-                }
-
+                rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId, rot.RotationNodeId, docSvr);
+               
                 //document summaries document
                 foreach (RotationNodeDocInboxData rotationNodeDoc in rotationNode.RotationNodeDocs)
                 {
@@ -195,17 +107,10 @@ namespace DRD.Service
                             newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
                             newElement.UserId = user.Id;
                             newElement.Name = user.Name;
-                            newElement.Foto = user.ImageProfile;
+                            newElement.Foto = user.ProfileImageFileName;
                             documentElement.Element = newElement;
                         }
-                        else if (documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.STAMP)
-                        {
-                            // Stamp Masih Perlu perbaikan nantinya
-                            var stmp = db.Stamps.FirstOrDefault(c => c.Id == documentElement.ElementId);
-                            documentElement.Element.EncryptedUserId = Utilities.Encrypt(documentElement.ElementId.ToString());
-                            documentElement.Element.Name = stmp.Descr;
-                            documentElement.Element.Foto = stmp.StampFile;
-                        }
+                       
                     }
 
                     var dx = rotation.SumRotationNodeDocs.FirstOrDefault(c => c.Document.Id == rotationNodeDoc.Document.Id);
@@ -218,13 +123,7 @@ namespace DRD.Service
                         rotation.SumRotationNodeDocs.Add(DeepCopy(rotationNodeDoc));
                     }
                 }
-                //attchment summaries
-                //foreach (RotationNodeUpDoc rotationNodeDoc in rotationNode.RotationNodeUpDocs)
-                //{
-                //    var dx = rotation.SumRotationNodeUpDocs.FirstOrDefault(c => c.Document.FileName.Equals(rotationNodeDoc.Document.FileName));
-                //    if (dx == null)
-                //        rotation.SumRotationNodeUpDocs.Add(rotationNodeDoc);
-                //}
+                
             }
             return rotation;
         }
@@ -248,8 +147,8 @@ namespace DRD.Service
                 if (db.Rotations != null)
                 {
                     var result = (from rotation in db.Rotations
-                                  where rotation.CreatorId == creatorId && rotation.IsActive==isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
-                                  orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
+                                  where rotation.CreatorId == creatorId && rotation.IsActive==isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Name).ToLower().Contains(criteria.ToLower())))
+                                  orderby rotation.Status, rotation.CreatedAt descending, rotation.Name descending
                                   select new RotationData
                                   {
                                       Id = rotation.Id,
@@ -281,20 +180,20 @@ namespace DRD.Service
             {
                 if (db.Rotations == null) return null;
                 var result = (from rotation in db.Rotations
-                              where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Subject).ToLower().Contains(criteria.ToLower())))
-                              orderby rotation.Status, rotation.DateCreated descending, rotation.Subject descending
+                              where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (topCriteria.Equals("") || tops.All(criteria => (rotation.Name).ToLower().Contains(criteria.ToLower())))
+                              orderby rotation.Status, rotation.CreatedAt descending, rotation.Name descending
                               select new RotationData
                               {
                                   Id = rotation.Id,
-                                  Subject = rotation.Subject,
+                                  Subject = rotation.Name,
                                   Status = rotation.Status,
                                   WorkflowId = rotation.Workflow.Id,
                                   WorkflowName = rotation.Workflow.Name,
                                   CompanyId = rotation.CompanyId,
                                   UserId = rotation.UserId,
-                                  CreatedAt = rotation.DateCreated,
-                                  UpdatedAt = rotation.DateUpdated,
-                                  DateStarted = rotation.DateUpdated,
+                                  CreatedAt = rotation.CreatedAt,
+                                  UpdatedAt = rotation.UpdatedAt,
+                                  StartedAt = rotation.UpdatedAt,
                               }).Skip(skip).Take(take).ToList();
                 foreach (RotationData resultItem in result)
                 {
@@ -322,13 +221,13 @@ namespace DRD.Service
                      select new Rotation
                      {
                          Id = rotation.Id,
-                         Subject = rotation.Subject,
+                         Name = rotation.Name,
                          Status = rotation.Status,
-                         Remark = rotation.Remark,
+                         Description = rotation.Description,
                          UserId = rotation.UserId,
-                         DateCreated = rotation.DateCreated,
-                         DateUpdated = rotation.DateUpdated,
-                         DateStarted = rotation.DateStarted,
+                         CreatedAt = rotation.CreatedAt,
+                         UpdatedAt = rotation.UpdatedAt,
+                         StartedAt = rotation.StartedAt,
                          Workflow = new Workflow
                          {
                              Id = rotation.Workflow.Id,
@@ -359,7 +258,7 @@ namespace DRD.Service
                     if (rotx != null)
                         rotations.Add(rotx);
                 }
-                rotations = rotations.OrderByDescending(rotation => rotation.DateUpdated).ToList();
+                rotations = rotations.OrderByDescending(rotation => rotation.UpdatedAt).ToList();
                 return rotations;
             }
         }
@@ -368,7 +267,6 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                //string[] statuses = Convert.ToInt32(status.Split(','));
                 var statuses = status.Split(',').Select(Int32.Parse).ToList();
 
                 var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && statuses.Contains(rotation.Rotation.Status)).ToList();
@@ -377,7 +275,6 @@ namespace DRD.Service
                 if (Ids.Length > 0)
                     Ids = Ids.Distinct().ToArray();
 
-                //var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.User.Id == userId) && rotation.Status.Equals(status)).ToList();
                 var rots = db.Rotations.Where(rotation => (Ids.Contains(rotation.Id) || rotation.UserId == userId) && statuses.Contains(rotation.Status)).ToList();
 
                 List<Rotation> rotations = new List<Rotation>();
@@ -388,158 +285,11 @@ namespace DRD.Service
                     if (rotx != null)
                         rotations.Add(rotx);
                 }
-                rotations = rotations.OrderByDescending(rotation => rotation.DateUpdated).ToList();
+                rotations = rotations.OrderByDescending(rotation => rotation.UpdatedAt).ToList();
                 return rotations;
             }
         }
 
-        public IEnumerable<Rotation> GetInboxByUserId(long userId)
-        {
-            using (var db = new ServiceContext())
-            {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && rotation.Status.Equals((int)Constant.RotationStatus.Open)).ToList();
-
-                long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
-                if (Ids.Length > 0)
-                    Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals((int)Constant.RotationStatus.In_Progress)).ToList();
-
-                List<Rotation> rotations = new List<Rotation>();
-
-                foreach (Rotation rt in rots)
-                {
-                    var rotx = GetById(rt.Id);
-                    if (rotx != null)
-                        rotations.Add(rotx);
-                }
-                rotations = rotations.OrderByDescending(rotation => rotation.DateUpdated).ToList();
-                return rotations;
-            }
-        }
-
-        public RotationInboxData GetNodeById(long id)
-        {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotationNode in db.RotationNodes
-                     select new RotationInboxData
-                     {
-                         Id = rotationNode.Rotation.Id,
-                         Subject = rotationNode.Rotation.Subject,
-                         Status = rotationNode.Status,
-                         UserId = rotationNode.User.Id,
-                         DateCreated = rotationNode.CreatedAt,
-                         DateUpdated = rotationNode.UpdatedAt,
-                         DateStarted = rotationNode.Rotation.DateUpdated,
-                         RotationNodeId = id,
-                         DefWorkflowNodeId = rotationNode.WorkflowNode.Id,
-                         FlagAction = 0,
-                         DecissionInfo = "",
-                         StatusDescription = constant.getRotationStatusName(rotationNode.Status),
-                         Workflow = new Workflow
-                         {
-                             Id = rotationNode.Rotation.Workflow.Id,
-                             Name = rotationNode.Rotation.Workflow.Name,
-                         },
-                     }).FirstOrDefault();
-
-                result = AssignNodes(db, result, result.UserId.Value, new DocumentService());
-
-                var workflowNodeLinks = db.WorkflowNodeLinks.Where(rotation => rotation.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
-                foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
-                {
-                    if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
-                    {
-                        result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
-                        if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("DECISION"))
-                            result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTo.Operator + " " + workflowNodeLink.WorkflowNodeTo.Value;
-                        else if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("CASE"))
-                            result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTo.Value;
-                    }
-                    else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
-                        result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
-                    else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
-                        result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
-                    else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
-                        result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
-                }
-
-                return result;
-            }
-        }
-
-        public IEnumerable<Rotation> GetNodeByUserId(long userId, string status)
-        {
-            using (var db = new ServiceContext())
-            {
-                var rotnodes = db.RotationNodes.Where(rotation => rotation.UserId == userId && rotation.Status.Equals(status)).ToList();
-
-                long[] Ids = (from rotation in rotnodes select rotation.Id).ToArray();
-                if (Ids.Length > 0)
-                    Ids = Ids.Distinct().ToArray();
-                var rots = db.Rotations.Where(rotation => Ids.Contains(rotation.Id) && rotation.Status.Equals(Constant.RotationStatus.In_Progress)).ToList();
-
-                List<Rotation> rotations = new List<Rotation>();
-
-                foreach (Rotation rt in rots)
-                {
-                    var rotx = GetById(rt.Id);
-                    if (rotx != null)
-                        rotations.Add(rotx);
-                }
-                rotations = rotations.OrderByDescending(rotation => rotation.DateUpdated).ToList();
-                return rotations;
-            }
-        }
-
-        public IEnumerable<RotationData> GetNodeByUserId(long userId, string status, string topCriteria, int page, int pageSize)
-        {
-            int skip = pageSize * (page - 1);
-            Expression<Func<RotationData, string>> ordering = WorkflowData => "Status, DateCreated desc";
-
-            // top criteria
-            string[] tops = new string[] { };
-            if (!string.IsNullOrEmpty(topCriteria))
-                tops = topCriteria.Split(' ');
-            else
-                topCriteria = "";
-
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotationNode in db.RotationNodes
-                     where rotationNode.Rotation.Status.Equals(Constant.RotationStatus.In_Progress) &&
-                            rotationNode.UserId == userId && rotationNode.Status.Equals(status) &&
-                            (topCriteria == null || tops.All(RotationUser => (rotationNode.Rotation.Subject).ToLower().Contains(RotationUser.ToLower())))
-                     select new RotationData
-                     {
-                         Id = rotationNode.Rotation.Id,
-                         RotationNodeId = rotationNode.Id,
-                         Subject = rotationNode.Rotation.Subject,
-                         Status = rotationNode.Status,
-                         WorkflowId = rotationNode.Rotation.Workflow.Id,
-                         WorkflowName = rotationNode.Rotation.Workflow.Name,
-                         ActivityName = rotationNode.WorkflowNode.Caption,
-                         UserId = rotationNode.UserId,
-                         StatusDescription = constant.getRotationStatusName(rotationNode.Status),
-                         CreatedAt = rotationNode.CreatedAt,
-                         UpdatedAt = rotationNode.UpdatedAt,
-                         DateStarted = rotationNode.Rotation.DateUpdated,
-                     }).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-
-                if (result != null)
-                {
-                    MenuService menuService = new MenuService();
-                    foreach (RotationData rotationItem in result)
-                    {
-                        rotationItem.Key = menuService.EncryptData(rotationItem.Id);
-                    }
-                }
-
-                return result;
-            }
-        }
         /// <summary>
         /// Obtain rotation that user has already made and search by Id of the rotation
         /// </summary>
@@ -556,8 +306,8 @@ namespace DRD.Service
                      select new RotationIndex
                      {
                          Id = rotation.Id,
-                         Subject = rotation.Subject,
-                         Remark = rotation.Remark,
+                         Subject = rotation.Name,
+                         Remark = rotation.Description,
                          WorkflowId = rotation.WorkflowId,
                          CompanyId = rotation.CompanyId,
                          Workflow = new WorkflowItem
@@ -577,8 +327,8 @@ namespace DRD.Service
                                               Number = (x.UserId == null ? (long?)null : x.User.Id),
                                               Name = (x.UserId == null ? "Undefined" : x.User.Name),
                                               Email = (x.UserId == null ? "" : x.User.Email),
-                                              Picture = (x.UserId == null ? "icon_user.png" : x.User.ImageProfile),
-                                              FlagPermission = x.FlagPermission,
+                                              Picture = (x.UserId == null ? "icon_user.png" : x.User.ProfileImageFileName),
+                                              FlagPermission = x.ActionPermission,
                                               //FlagAction = x.FlagAction,
                                               //CxDownload = x.CxDownload,
                                               //CxPrint = x.CxPrint,
@@ -613,8 +363,7 @@ namespace DRD.Service
                      select new RotationUserData
                      {
                          ActivityName = workflowNode.Caption,
-                         WorkflowNodeId = workflowNode.Id,
-                         UserId = workflowNode.UserId.Value
+                         WorkflowNodeId = workflowNode.Id
                      }).ToList();
                 foreach (RotationUserData item in result)
                 {
@@ -625,7 +374,7 @@ namespace DRD.Service
                         {
                             item.Email = user.Email;
                             item.Name = user.Name;
-                            item.Picture = user.ImageProfile;
+                            item.Picture = user.ProfileImageFileName;
                         }
                     }
                 }
@@ -668,7 +417,7 @@ namespace DRD.Service
             {
                 var item = new RotationNodeDocInboxData();
                 item.Id = rndDb.Id;
-                item.FlagAction = rndDb.FlagAction;
+                item.FlagAction = rndDb.ActionStatus;
                 item.DocumentId = rndDb.DocumentId;
                 item.RotationNode.RotationId = rndDb.RotationId;
                 item.Document.Id = rndDb.Document.Id;
@@ -685,8 +434,8 @@ namespace DRD.Service
                     dUsrItem.Id = dusr.Id;
                     dUsrItem.DocumentId = dusr.DocumentId;
                     dUsrItem.UserId = dusr.UserId;
-                    dUsrItem.FlagAction = dusr.FlagAction;
-                    dUsrItem.FlagPermission = dusr.FlagPermission;
+                    dUsrItem.FlagAction = dusr.ActionStatus;
+                    dUsrItem.FlagPermission = dusr.ActionPermission;
                     dUsrItem.FlagPermission |= docSvr.GetPermission(usrId, curRnId.Value, dusr.DocumentId);
                     item.Document.DocumentUsers.Add(dUsrItem);
                 }
@@ -702,8 +451,8 @@ namespace DRD.Service
                     dElmItem.HeightPosition = delm.HeightPosition;
                     dElmItem.Color = delm.Color;
                     dElmItem.BackColor = delm.BackColor;
-                    dElmItem.Data = delm.Data;
-                    dElmItem.Data2 = delm.Data2;
+                    dElmItem.Data = delm.Text;
+                    dElmItem.Data2 = delm.Unknown;
                     dElmItem.Rotation = delm.Rotation;
                     dElmItem.ScaleX = delm.ScaleX;
                     dElmItem.ScaleY = delm.ScaleY;
@@ -712,9 +461,9 @@ namespace DRD.Service
                     dElmItem.StrokeWidth = delm.StrokeWidth;
                     dElmItem.Opacity = delm.Opacity;
                     dElmItem.Flag = delm.Flag;
-                    dElmItem.FlagCode = delm.FlagCode;
-                    dElmItem.FlagDate = delm.FlagDate;
-                    dElmItem.FlagImage = delm.FlagImage;
+                    dElmItem.FlagCode = delm.AssignedAnnotationCode;
+                    dElmItem.FlagDate = delm.AssignedAt;
+                    dElmItem.FlagImage = delm.AssignedAnnotationImageFileName;
                     dElmItem.CreatorId = delm.CreatorId;
                     dElmItem.ElementId = delm.ElementId;
                     dElmItem.UserId = delm.UserId;
@@ -728,146 +477,22 @@ namespace DRD.Service
             }
             return result;
         }
-        private List<RotationNodeDocInboxData> AssignNodeDocs2(ServiceContext db, long rnId, long usrId, long? curRnId, IDocumentService docSvr)
-        {
-            //rotationNode.RotationNodeDocs =
-            var result =
-                (from d in db.RotationNodeDocs
-                 where d.RotationNode.Id == rnId
-                 select new RotationNodeDocInboxData
-                 {
-                     Id = d.Id,
-                     FlagAction = d.FlagAction,
-                     DocumentId = d.Document.Id,
-                     RotationNode = new RotationNodeInboxData
-                     {
-                         //this line error bcs of extent5.rotation_id does not exist
-                         RotationId = d.RotationNode.Rotation.Id,
-                     },
-                     Document = new DocumentInboxData
-                     {
-                         Id = d.Document.Id,
-                         Extention = d.Document.Extention,
-                         FileUrl = d.Document.FileUrl,
-                         FileName = d.Document.FileName,
-                         FileSize = d.Document.FileSize,
-                         // The original documentusers is also commented
-                         DocumentUser =
-                             (from dm in d.Document.DocumentUsers
-                              where dm.UserId == usrId
-                              select new DocumentUserInboxData
-                              {
-                                  Id = dm.Id,
-                                  DocumentId = dm.DocumentId,
-                                  UserId = dm.UserId,
-                                  FlagAction = dm.FlagAction,
-                                  FlagPermission = dm.FlagPermission,
-                              }).FirstOrDefault(),
-                         DocumentElements =
-                             (from documentElement in d.Document.DocumentElements
-                              select new DocumentElementInboxData
-                              {
-                                  Id = documentElement.Id,
-                                  Page = documentElement.Page,
-                                  LeftPosition = documentElement.LeftPosition,
-                                  TopPosition = documentElement.TopPosition,
-                                  WidthPosition = documentElement.WidthPosition,
-                                  HeightPosition = documentElement.HeightPosition,
-                                  Color = documentElement.Color,
-                                  BackColor = documentElement.BackColor,
-                                  Data = documentElement.Data,
-                                  Data2 = documentElement.Data2,
-                                  Rotation = documentElement.Rotation,
-                                  ScaleX = documentElement.ScaleX,
-                                  ScaleY = documentElement.ScaleY,
-                                  TransitionX = documentElement.TransitionX,
-                                  TransitionY = documentElement.TransitionY,
-                                  StrokeWidth = documentElement.StrokeWidth,
-                                  Opacity = documentElement.Opacity,
-                                  Flag = documentElement.Flag,
-                                  FlagCode = documentElement.FlagCode,
-                                  FlagDate = documentElement.FlagDate,
-                                  FlagImage = documentElement.FlagImage,
-                                  CreatorId = documentElement.CreatorId,
-                                  ElementId = documentElement.ElementId,
-                                  UserId = documentElement.UserId,
-                                  CreatedAt = documentElement.CreatedAt,
-                                  UpdatedAt = documentElement.UpdatedAt,
-                                  ElementTypeId = documentElement.ElementTypeId
-                                  //ElementType = new ElementTypeInboxData
-                                  //{
-                                  //    Id = documentElement.ElementType.Id,
-                                  //    Code = documentElement.ElementType.Code,
-                                  //}
-                              }).ToList(),
-                     }
-                 }).ToList();
-            if (result != null)
-            {
-                // assign permission
-                //DocumentService docSvr = new DocumentService();
-                foreach (RotationNodeDocInboxData rnd in result)
-                {
-                    if (rnd.Document.DocumentUser == null)
-                    {
-                        rnd.Document.DocumentUser = new DocumentUserInboxData();
-                        rnd.Document.DocumentUser.UserId = usrId;
-                        rnd.Document.DocumentUser.DocumentId = (long)rnd.Document.Id;
-                        rnd.Document.DocumentUser.FlagPermission = 6; //default permission read document
-                    }
-                    if (curRnId == 0)
-                        curRnId = -rnd.RotationNode.Rotation.Id;
-                    rnd.Document.DocumentUser.FlagPermission |= docSvr.GetPermission(usrId, curRnId.Value, (long)rnd.Document.Id);
-                }
-            }
-            return result;//
-        }
-        private List<RotationNodeUpDocInboxData> AssignNodeUpDocs(ServiceContext db, long rnId)
-        {
-            //rotationNode.RotationNodeUpDocs =
-            var result =
-                (from ud in db.RotationNodeUpDocs
-                 where ud.RotationNode.Id == rnId
-                 select new RotationNodeUpDocInboxData
-                 {
-                     Id = ud.Id,
-                     DocumentId = ud.DocumentId,
-                     //Document = new Document
-                     //{
-                     //    FileFlag = ud.Document.FileFlag,
-                     //    FileName = ud.Document.FileName,
-                     //    FileSize = ud.Document.FileSize,
-                     //    CreatorId = ud.Document.CreatorId,
-                     //    DateCreated = ud.Document.DateCreated,
-                     //}
-                 }).ToList();
 
-            return result;
-        }
-
-        /// <summary>
-        /// Function to obtain Rotation status of a Company from Models
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="tags">filter by tag, if tags is empty get all the rotation status data from models</param>
-        /// <param name="skip"></param>
-        /// <param name="pageSize"> if the pagesize is negative so it will get all the rotation status data from models</param>
-        /// <returns></returns>
         public ICollection<RotationDashboard> GetRelatedToCompany(long companyId, ICollection<string> tags, int skip, int pageSize)
         {
             using (var db = new ServiceContext())
             {
                 var data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.UpdatedAt descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
-                                Subject = rotation.Subject,
+                                Subject = rotation.Name,
                                 Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
+                                DateCreated = rotation.CreatedAt,
+                                DateUpdated = rotation.UpdatedAt,
+                                DateStarted = rotation.StartedAt,
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
@@ -876,7 +501,7 @@ namespace DRD.Service
                                                  {
                                                      Id = rtuser.User.Id,
                                                      Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
+                                                     ImageProfile = rtuser.User.ProfileImageFileName
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -884,7 +509,7 @@ namespace DRD.Service
                                            {
                                                Id = user.Id,
                                                Name = user.Name,
-                                               ImageProfile = user.ImageProfile
+                                               ImageProfile = user.ProfileImageFileName
                                            }).FirstOrDefault(),
                                 Workflow = new RotationDashboard.WorkflowDashboard
                                 {
@@ -940,15 +565,15 @@ namespace DRD.Service
             {
                 var data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId
-                            orderby rotation.DateUpdated descending
+                            orderby rotation.UpdatedAt descending
                             select new RotationDashboard
                             {
                                 Id = rotation.Id,
-                                Subject = rotation.Subject,
+                                Subject = rotation.Name,
                                 Status = rotation.Status,
-                                DateCreated = rotation.DateCreated,
-                                DateUpdated = rotation.DateUpdated,
-                                DateStarted = rotation.DateStarted,
+                                DateCreated = rotation.CreatedAt,
+                                DateUpdated = rotation.UpdatedAt,
+                                DateStarted = rotation.StartedAt,
                                 Tags = (from tagitem in rotation.TagItems
                                         join tag in db.Tags on tagitem.TagId equals tag.Id
                                         select tag.Name.ToLower()).ToList(),
@@ -957,7 +582,7 @@ namespace DRD.Service
                                                  {
                                                      Id = rtuser.User.Id,
                                                      Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ImageProfile
+                                                     ImageProfile = rtuser.User.ProfileImageFileName
                                                  }).ToList(),
                                 Creator = (from user in db.Users
                                            where user.Id == rotation.CreatorId
@@ -965,7 +590,7 @@ namespace DRD.Service
                                            {
                                                Id = user.Id,
                                                Name = user.Name,
-                                               ImageProfile = user.ImageProfile
+                                               ImageProfile = user.ProfileImageFileName
                                            }).FirstOrDefault(),
                                 Workflow = new RotationDashboard.WorkflowDashboard
                                 {
@@ -992,7 +617,7 @@ namespace DRD.Service
                 if (rotation.CompanyId.HasValue) return Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString();
 
                 rotation.IsActive = false;
-                rotation.DateUpdated = DateTime.Now;
+                rotation.UpdatedAt = DateTime.Now;
                 db.SaveChanges();
                 return Constant.RotationStatus.OK.ToString();
             }

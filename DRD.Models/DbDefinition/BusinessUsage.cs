@@ -5,15 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("BusinessUsages", Schema = "public")]
-    public class BusinessUsage
+    public class BusinessUsage : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
 
         public bool IsActive { get; set; } // IsDefault
         public long PriceId { get; set; }
-        public DateTime ExpiredAt { get; set; } = DateTime.MaxValue;
-        public DateTime StartedAt { get; set; }
+        public DateTime? ExpiredAt { get; set; } = DateTime.MaxValue;
         public int Administrator { get; set; } = 0;
         public int RotationStarted { get; set; } = 0;
         public int Member { get; set; } = 0;
@@ -25,11 +24,11 @@ namespace DRD.Models
         {
             IsActive = true;
         }
-        public BusinessUsage(BusinessUsage usage, DateTime startedAt, DateTime expiredAt)
+        public BusinessUsage(BusinessUsage usage, DateTime? startedAt, DateTime? expiredAt)
         {
             IsActive = true;
             PriceId = usage.PriceId;
-            StartedAt = startedAt;
+            CreatedAt = startedAt;
             ExpiredAt = expiredAt;
             Administrator = usage.Administrator;
             RotationStarted = 0;

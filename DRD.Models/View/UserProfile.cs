@@ -21,7 +21,7 @@ namespace DRD.Models.View
 
         public string Password { get; set; } // Password (length: 20)
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public bool IsActive { get; set; } // IsActive
 

@@ -47,7 +47,7 @@ namespace DRD.Service
                 if (db.Inboxes != null)
                 {
                     var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId && 
-                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.DateNote).ToLower().Contains(
+                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
                             crtr.ToLower())))).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
                     List<InboxList> result = new List<InboxList>();
                     foreach (Inbox i in inboxes)
@@ -59,16 +59,15 @@ namespace DRD.Service
                         var activity = db.RotationNodes.Where(a => a.Id == i.ActivityId).FirstOrDefault();
 
                         item.CurrentActivity = activity.WorkflowNode.Caption;
-                        item.RotationName = activity.Rotation.Subject;
+                        item.RotationName = activity.Rotation.Name;
                         item.RotationId = activity.RotationId;
                         item.CompanyId = activity.Rotation.CompanyId.Value;
-                        item.Message = i.Message;
+                        item.Message = i.Note;
                         item.LastStatus = i.LastStatus;
-                        item.prevUserEmail = i.prevUserEmail;
-                        item.prevUserName = i.prevUserName;
-                        item.DateNote = i.DateNote;
+                        item.prevUserEmail = i.PreviousUserEmail;
+                        item.prevUserName = i.PreviousUserName;
+                        item.DateNote = i.Message;
                         item.WorkflowName = activity.WorkflowNode.Workflow.Name;
-                        item.CreatedAt = i.CreatedAt;
                         item.CompanyInbox = (from cmpny in db.Companies
                                              where cmpny.Id == item.CompanyId
                                              select new SmallCompanyData
@@ -105,7 +104,7 @@ namespace DRD.Service
                 if (db.Inboxes != null)
                 {
                     var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId &&
-                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.DateNote).ToLower().Contains(
+                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
                             crtr.ToLower())))).ToList().Count();
                     return inboxesCount;
                 }
@@ -168,16 +167,13 @@ namespace DRD.Service
                     select new RotationInboxData
                     {
                         Id = c.Rotation.Id,
-                        Subject = c.Rotation.Subject,
+                        Name = c.Rotation.Name,
                         CreatorId = c.Rotation.CreatorId,
                         Status = c.Status,
                         CompanyId = c.Rotation.CompanyId,
                         WorkflowId = c.Rotation.WorkflowId,
                         UserId = c.UserId,
                         FirstNodeId = c.FirstNodeId,
-                        DateCreated = c.CreatedAt,
-                        DateUpdated = c.UpdatedAt,
-                        DateStarted = c.DateRead,
                         DefWorkflowNodeId = c.WorkflowNodeId,
                         FlagAction = 0,
                         DecissionInfo = "",
@@ -194,22 +190,15 @@ namespace DRD.Service
                 var tagService = new TagService();
                 var tags = tagService.GetTags(result.Id);
                 foreach (var tag in tags) { result.Tags.Add(tag.Name); }
-                result.StatusDescription = Constant.getRotationStatusNameByCode(result.Status);
 
                 RotationService rotationService = new RotationService();
                 result = rotationService.AssignNodes(db, result, UserId, new DocumentService());
 
-                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.WorkflowNodeId == result.DefWorkflowNodeId).ToList();
+                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
                 {
                     if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
-                    {
                         result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
-                        if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("DECISION"))
-                            result.DecissionInfo = "Value " + workflowNodeLink.WorkflowNodeTo.Operator + " " + workflowNodeLink.WorkflowNodeTo.Value;
-                        else if (workflowNodeLink.WorkflowNodeTo.SymbolCode.Equals("CASE"))
-                            result.DecissionInfo = "Expression: " + workflowNodeLink.WorkflowNodeTo.Value;
-                    }
                     else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
                         result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
                     else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
@@ -254,7 +243,7 @@ namespace DRD.Service
                     inboxItem.IsUnread = true;
                     if (activity.RotationNodeId < 0)
                     {
-                        inboxItem.Message = "You success to start a Rotation";
+                        inboxItem.Note = "You success to start a Rotation";
                         var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
                         if (userResponsible != null)
                         {
@@ -264,7 +253,7 @@ namespace DRD.Service
                     }
                     else
                     {
-                        inboxItem.Message = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
+                        inboxItem.Note = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
                         var activityItem = db.RotationNodes.FirstOrDefault(rtNode => rtNode.Id == activity.RotationNodeId);
                         if (activityItem != null)
                         {
@@ -281,14 +270,14 @@ namespace DRD.Service
 
                     if (activity.LastActivityStatus != null && activity.LastActivityStatus.Equals("SUBMIT"))
                     {
-                        inboxItem.DateNote = "You need to review " + activity.RotationName;
+                        inboxItem.Message = "You need to review " + activity.RotationName;
                         inboxItem.LastStatus = "REVIEW";
                         UpdatePreviousInbox(activity);
                     }
                     else
                     {
                         inboxItem.LastStatus = "UPLOAD";
-                        inboxItem.DateNote = "New Created Inbox from " + activity.RotationName;
+                        inboxItem.Message = "New Created Inbox from " + activity.RotationName;
                         if (activity.PreviousUserId != activity.UserId)
                         {
                             Inbox inboxItem2;
@@ -299,9 +288,9 @@ namespace DRD.Service
                             }
                             inboxItem2.IsUnread = true;
                             inboxItem2.LastStatus = "ROTATION";
-                            inboxItem2.DateNote = "You have rotation - " + activity.RotationName;
-                            inboxItem2.prevUserEmail = activity.PreviousEmail;
-                            inboxItem2.prevUserName = activity.PreviousUserName;
+                            inboxItem2.Message = "You have rotation - " + activity.RotationName;
+                            inboxItem2.PreviousUserEmail = activity.PreviousEmail;
+                            inboxItem2.PreviousUserName = activity.PreviousUserName;
                             inboxItem2.UserId = activity.PreviousUserId;
                             inboxItem2.ActivityId = activity.RotationNodeId;
                             inboxItem2.RotationId = activity.RotationId;
@@ -310,8 +299,8 @@ namespace DRD.Service
                             sendemailactivity(inboxItem2);
                         }
                     }
-                    inboxItem.prevUserEmail = activity.PreviousEmail;
-                    inboxItem.prevUserName = activity.PreviousUserName;
+                    inboxItem.PreviousUserEmail = activity.PreviousEmail;
+                    inboxItem.PreviousUserName = activity.PreviousUserName;
                     inboxItem.RotationId = activity.RotationId;
                     inboxItem.CreatedAt = DateTime.Now;
                     db.Inboxes.Add(inboxItem);
@@ -333,28 +322,28 @@ namespace DRD.Service
                     {
                         if (activity.LastActivityStatus.Equals("SUBMIT"))
                         {
-                            inbox.DateNote = activity.UserName + "(" + activity.Email + ")" + " is reviewing " + activity.RotationName;
+                            inbox.Message = activity.UserName + "(" + activity.Email + ")" + " is reviewing " + activity.RotationName;
                             inbox.LastStatus = "INFO";
 
                         }
                         else if (activity.LastActivityStatus.Equals("REVISI"))
                         {
-                            inbox.DateNote = activity.UserName + "(" + activity.Email + ")" + " is revising " + activity.RotationName;
+                            inbox.Message = activity.UserName + "(" + activity.Email + ")" + " is revising " + activity.RotationName;
                             inbox.LastStatus = "INFO";
                         }
                         else if (activity.LastActivityStatus.Equals("REJECT"))
                         {
-                            inbox.DateNote = "This " + activity.RotationName + " has been rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
+                            inbox.Message = "This " + activity.RotationName + " has been rejected by " + activity.PreviousUserName + "(" + activity.PreviousEmail + ")";
                             inbox.LastStatus = "REJECTED";
                         }
                         else if (activity.LastActivityStatus.Equals("END"))
                         {
-                            inbox.DateNote = "This " + activity.RotationName + " has been completed";
+                            inbox.Message = "This " + activity.RotationName + " has been completed";
                             inbox.LastStatus = "COMPLETED";
                         }
                         inbox.CreatedAt = DateTime.Now;
-                        inbox.prevUserEmail = activity.PreviousEmail;
-                        inbox.prevUserName = activity.PreviousUserName;
+                        inbox.PreviousUserEmail = activity.PreviousEmail;
+                        inbox.PreviousUserName = activity.PreviousUserName;
                     }
                     return db.SaveChanges();
                 }
@@ -371,30 +360,30 @@ namespace DRD.Service
 
                     inbox.ActivityId = activity.RotationNodeId;
                     inbox.CreatedAt = DateTime.Now;
-                    inbox.prevUserEmail = activity.PreviousEmail;
-                    inbox.prevUserName = activity.PreviousUserName;
+                    inbox.PreviousUserEmail = activity.PreviousEmail;
+                    inbox.PreviousUserName = activity.PreviousUserName;
                     inbox.IsUnread = true;
 
                     if (activity.LastActivityStatus.Equals("SUBMIT"))
                     {
-                        inbox.DateNote = "You need to review " + activity.RotationName;
+                        inbox.Message = "You need to review " + activity.RotationName;
                         inbox.LastStatus = "REVIEW";
                         sendemailactivity(inbox);
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
-                        inbox.DateNote = "You need to revise " + activity.RotationName;
+                        inbox.Message = "You need to revise " + activity.RotationName;
                         inbox.LastStatus = "REVISION";
                         sendemailactivity(inbox);
                     }
                     else if (activity.LastActivityStatus.Equals("REJECT"))
                     {
-                        inbox.DateNote = "This " + activity.RotationName + " has ben rejected by you";
+                        inbox.Message = "This " + activity.RotationName + " has ben rejected by you";
                         inbox.LastStatus = "REJECTED";
                     }
                     else if (activity.LastActivityStatus.Equals("END"))
                     {
-                        inbox.DateNote = "This " + activity.RotationName + " has been completed";
+                        inbox.Message = "This " + activity.RotationName + " has been completed";
                         inbox.LastStatus = "COMPLETED";
                     }
                     UpdatePreviousInbox(activity);
@@ -426,10 +415,10 @@ namespace DRD.Service
             }
 
             body = body.Replace("{_URL_}", strUrl);
-            body = body.Replace("{_SENDER_}", inbox.prevUserName + " (" + inbox.prevUserEmail + ")");
+            body = body.Replace("{_SENDER_}", inbox.PreviousUserName + " (" + inbox.PreviousUserEmail + ")");
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_ACTION_}", inbox.LastStatus);
-            body = body.Replace("{_MESSAGE_}", inbox.DateNote);
+            body = body.Replace("{_MESSAGE_}", inbox.Message);
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 

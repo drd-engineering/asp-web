@@ -16,7 +16,7 @@ namespace DRD.Models
         public string Value { get; set; } // Value (length: 20)
         public int Status { get; set; } // string
         public System.DateTime? DateRead { get; set; } // DateRead
-        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
 
         //public StatusCode StatusCode { get; set; }
@@ -25,7 +25,6 @@ namespace DRD.Models
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationNodeInboxData> RotationNodes { get; set; } // RotationNode.FK_RotationNode_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        public virtual System.Collections.Generic.ICollection<RotationNodeRemark> RotationNodeRemarks { get; set; } // RotationNodeRemark.FK_RotationNodeRemark_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeUpDocInboxData> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
         // Foreign keys
@@ -41,7 +40,6 @@ namespace DRD.Models
         {
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
-            RotationNodeRemarks = new System.Collections.Generic.List<RotationNodeRemark>();
             RotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDocInboxData>();
             User = new UserInboxData();
             WorkflowNode = new WorkflowNodeInboxData();

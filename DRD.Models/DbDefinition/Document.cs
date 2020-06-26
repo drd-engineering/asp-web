@@ -4,40 +4,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("Documents", Schema = "public")]
-    public class Document
+    public class Document : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
         public string Extention { get; set; } // extention file (length: 500)
-        public string Description { get; set; } // Descr
         public string FileUrl { get; set; } // FileUrl --> file path
         public string FileName { get; set; } // FileName (length: 100)
         public int FileSize { get; set; } // FileSize
 
-        public int MaxPrintPerActivity { get; set; }
-        public int MaxDownloadPerActivity { get; set; }
-        public int ExpiryDay { get; set; } // Day Counter (Count Down
-        // public bool IsCurrent { get; set; }
+        public int MaximumPrintPerUser { get; set; }
+        public int MaximumDownloadPerUser { get; set; }
 
-        public string UserEmail { get; set; } // this existance's questionable
         public bool IsCurrent { get; set; }
-        public long CreatorId { get; set; }
-        public long CompanyId { get; set; }
+        public long UploaderId { get; set; }
+        public long CompanyId { get; set; } = 0;
         public long RotationId { get; set; }
 
-        public System.DateTime CreatedAt { get; set; }
-        public System.DateTime UpdatedAt { get; set; }
-
-        public virtual System.Collections.Generic.ICollection<DocumentElement> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
+        public virtual System.Collections.Generic.ICollection<DocumentAnnotation> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } //DocumentUser.FK_document
 
         // FK
+
+        [ForeignKey("UploaderId")]
+        public User Uploader { get; set; } //FK to User
+
         [ForeignKey("CompanyId")]
         public Company Company { get; set; } //FK to Company
-
-        [ForeignKey("CreatorId")]
-        public User User { get; set; } //FK to User
 
         [ForeignKey("RotationId")]
         public Rotation Rotation { get; set; }
@@ -46,11 +40,9 @@ namespace DRD.Models
         public Document()
         {
             FileSize = 0;
-            MaxPrintPerActivity = 0;
-            MaxDownloadPerActivity = 0;
-            ExpiryDay = 0;
-            //DocumentUser = new DocumentUser();
-            DocumentElements = new System.Collections.Generic.List<DocumentElement>();
+            MaximumPrintPerUser = 0;
+            MaximumDownloadPerUser = 0;
+            DocumentElements = new System.Collections.Generic.List<DocumentAnnotation>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
     }

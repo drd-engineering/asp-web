@@ -31,7 +31,7 @@ namespace DRD.Models
         public System.DateTime? FlagDate { get; set; } // FlagDate
         public string FlagImage { get; set; } // FlagImage (length: 100)
         public string UserId { get; set; } // UserId (length: 50)
-        public System.DateTime CreatedAt { get; set; } // DateCreated
+        public System.DateTime? CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }
@@ -52,7 +52,7 @@ namespace DRD.Models
             Flag = 0;
             // Annotate = new JsonAnnotate();
         }
-        public DocumentElementInboxData(DocumentElement item)
+        public DocumentElementInboxData(DocumentAnnotation item)
         {
             this.Id = item.Id;
             this.Page = item.Page;
@@ -62,8 +62,8 @@ namespace DRD.Models
             this.HeightPosition = item.HeightPosition;
             this.Color = item.Color;
             this.BackColor = item.BackColor;
-            this.Data = item.Data;
-            this.Data2 = item.Data2;
+            this.Data = item.Text;
+            this.Data2 = item.Unknown;
             this.Rotation = item.Rotation;
             this.ScaleX = item.ScaleX;
             this.ScaleY = item.ScaleY;
@@ -74,12 +74,10 @@ namespace DRD.Models
             this.CreatorId = item.CreatorId;
             this.ElementId = item.ElementId;
             this.Flag = item.Flag;
-            this.FlagCode = item.FlagCode;
-            this.FlagDate = item.FlagDate;
-            this.FlagImage = item.FlagImage;
+            this.FlagCode = item.AssignedAnnotationCode;
+            this.FlagDate = item.AssignedAt;
+            this.FlagImage = item.AssignedAnnotationImageFileName;
             this.UserId = item.UserId;
-            this.CreatedAt = item.CreatedAt;
-            this.UpdatedAt = item.UpdatedAt;
             this.DocumentId = item.DocumentId;
             this.ElementTypeId = item.ElementTypeId;
             this.Element = item.Element;

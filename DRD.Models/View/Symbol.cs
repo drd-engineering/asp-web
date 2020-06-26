@@ -14,7 +14,7 @@ namespace DRD.Models.View
         public int SymbolType { get; set; } // SymbolType
         public string ElementName { get; set; } // ElementName (length: 50)
         public string UserId { get; set; } // UserId (length: 50)
-        public System.DateTime DateCreated { get; set; } // DateCreated
+        public System.DateTime? DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
 
         public Symbol() { }

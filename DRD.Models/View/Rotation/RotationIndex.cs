@@ -14,7 +14,7 @@ namespace DRD.Models.View
         public long? UserId { get; set; } // userid
         public long? MemberId { get; set; } //memberid
         public long? CompanyId { get; set; }
-        public System.DateTime DateCreated { get; set; } // DateCreated
+        public System.DateTime? DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
         public System.DateTime? DateStatus { get; set; } // DateUpdated
         public System.DateTime? DateStarted { get; set; } // DateStarted

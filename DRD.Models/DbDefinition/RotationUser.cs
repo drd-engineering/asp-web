@@ -3,20 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
-    [Table("RotationMembers", Schema = "public")]
-    public class RotationUser
+    [Table("RotationUsers", Schema = "public")]
+    public class RotationUser : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
-        public bool isStartPerson { get; set; } // flag is he starting node person
-        public int FlagPermission { get; set; } // FlagPermission
+        public bool IsStartPerson { get; set; } // flag is he starting node person
+        public int ActionPermission { get; set; } // FlagPermission
         public long WorkflowNodeId { get; set; } // WorkflowNodeId
-        public string ActivityName { get; set; }
-        public string Picture { get; set; }
         public long? UserId { get; set; }
         public long RotationId { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
 
         // Foreign keys
         [ForeignKey("UserId")]
@@ -28,7 +24,7 @@ namespace DRD.Models
 
         public RotationUser()
         {
-            FlagPermission = 0;
+            ActionPermission = 0;
         }
     }
 }

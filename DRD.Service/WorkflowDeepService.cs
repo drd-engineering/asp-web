@@ -34,7 +34,7 @@ namespace DRD.Service
                  select new RotationNodeDoc
                  {
                      Id = d.Id,
-                     FlagAction = d.FlagAction,
+                     ActionStatus = d.ActionStatus,
                      RotationNode = new RotationNode
                      {
                          Rotation = d.RotationNode.Rotation,
@@ -57,7 +57,7 @@ namespace DRD.Service
 
                          DocumentElements =
                              (from documentElement in d.Document.DocumentElements
-                              select new DocumentElement
+                              select new DocumentAnnotation
                               {
                                   Id = documentElement.Id,
                                   Document = documentElement.Document,
@@ -68,8 +68,8 @@ namespace DRD.Service
                                   HeightPosition = documentElement.HeightPosition,
                                   Color = documentElement.Color,
                                   BackColor = documentElement.BackColor,
-                                  Data = documentElement.Data,
-                                  Data2 = documentElement.Data2,
+                                  Text = documentElement.Text,
+                                  Unknown = documentElement.Unknown,
                                   Rotation = documentElement.Rotation,
                                   ScaleX = documentElement.ScaleX,
                                   ScaleY = documentElement.ScaleY,
@@ -78,9 +78,9 @@ namespace DRD.Service
                                   StrokeWidth = documentElement.StrokeWidth,
                                   Opacity = documentElement.Opacity,
                                   Flag = documentElement.Flag,
-                                  FlagCode = documentElement.FlagCode,
-                                  FlagDate = documentElement.FlagDate,
-                                  FlagImage = documentElement.FlagImage,
+                                  AssignedAnnotationCode = documentElement.AssignedAnnotationCode,
+                                  AssignedAt = documentElement.AssignedAt,
+                                  AssignedAnnotationImageFileName = documentElement.AssignedAnnotationImageFileName,
                                   CreatorId = documentElement.CreatorId,
                                   ElementId = documentElement.ElementId,
                                   UserId = documentElement.UserId,
@@ -111,29 +111,7 @@ namespace DRD.Service
 
             return result;// rotationNode.RotationNodeDocs;
         }
-        private List<RotationNodeUpDoc> assignNodeUpDocs(ServiceContext db, long rnId)
-        {
-            //rotationNode.RotationNodeUpDocs =
-            var result =
-                (from ud in db.RotationNodeUpDocs
-                 where ud.RotationNode.Id == rnId
-                 select new RotationNodeUpDoc
-                 {
-                     Id = ud.Id,
-                     DocumentId = ud.DocumentId,
-                     //Document = new Document
-                     //{
-                     //    FileFlag = ud.Document.FileFlag,
-                     //    FileName = ud.Document.FileName,
-                     //    FileSize = ud.Document.FileSize,
-                     //    CreatorId = ud.Document.CreatorId,
-                     //    DateCreated = ud.Document.DateCreated,
-                     //}
-                 }).ToList();
-
-            return result;
-        }
-
+      
         private bool checkIdExist(long id)
         {
             using (var db = new ServiceContext())
@@ -173,21 +151,21 @@ namespace DRD.Service
                 }
 
                 System.Diagnostics.Debug.WriteLine(prod.Id +" TESTES");
-                product.Subject = prod.Subject;
+                product.Name = prod.Subject;
                 Workflow workflowitem = db.Workflows.FirstOrDefault(w => w.Id == prod.WorkflowId);
                 product.Workflow = workflowitem;
-                product.Remark = prod.Remark;
+                product.Description = prod.Remark;
                 product.Status = prod.Status;
                 product.CreatorId = prod.CreatorId;
                 product.UserId = prod.UserId;
                 if (prod.Id == 0)
                 {
-                    product.DateCreated = DateTime.Now;
+                    product.CreatedAt = DateTime.Now;
                     db.Rotations.Add(product);
                     workflowitem.TotalUsed = workflowitem.TotalUsed + 1;
                 }
                 else
-                    product.DateUpdated = DateTime.Now;
+                    product.UpdatedAt = DateTime.Now;
 
                 var result = db.SaveChanges();
 
@@ -211,10 +189,10 @@ namespace DRD.Service
                         if (!startPersonAded)
                         {
                             var checkIsStartNode = (from workflowNode in db.WorkflowNodes
-                                                    join wfndLink in db.WorkflowNodeLinks on workflowNode.Id equals wfndLink.WorkflowNodeId
+                                                    join wfndLink in db.WorkflowNodeLinks on workflowNode.Id equals wfndLink.SourceId
                                                     where workflowNode.WorkflowId == wfl.WorkflowId
                                                     && workflowNode.SymbolCode == 0
-                                                    && wfndLink.WorkflowNodeToId == ep.WorkflowNodeId //this node is a target node from start Node
+                                                    && wfndLink.TargetId == ep.WorkflowNodeId //this node is a target node from start Node
                                                     select new
                                                     {
                                                         isFound = true
@@ -222,13 +200,13 @@ namespace DRD.Service
                             // if this RotationUser is startNode.
                             if (checkIsStartNode.Count == 1)
                             {
-                                newItem.isStartPerson = true;
+                                newItem.IsStartPerson = true;
                                 // only one person can be startNode
                                 startPersonAded = true;
                             }
                         }
                         newItem.WorkflowNode = wfl;
-                        newItem.FlagPermission = ep.FlagPermission;
+                        newItem.ActionPermission = ep.ActionPermission;
                         User gotUser = db.Users.FirstOrDefault(usr => usr.Id == ep.UserId);
                         newItem.User = gotUser;
                         newItem.UserId = gotUser.Id;
@@ -255,7 +233,7 @@ namespace DRD.Service
                         User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
                         d.User = gotUser;
                         d.UserId = gotUser.Id;
-                        d.FlagPermission = epos.FlagPermission;
+                        d.ActionPermission = epos.ActionPermission;
                         //d.FlagAction = epos.FlagAction;
                         //d.CxDownload = epos.CxDownload;
                         //d.CxPrint = epos.CxPrint;
@@ -279,7 +257,7 @@ namespace DRD.Service
                         User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
                         userItem.User = gotUser;
                         userItem.UserId = gotUser.Id;
-                        userItem.FlagPermission = epos.FlagPermission;
+                        userItem.ActionPermission = epos.ActionPermission;
                         //d.FlagAction = epos.FlagAction;
                         //d.CxDownload = epos.CxDownload;
                         //d.CxPrint = epos.CxPrint;

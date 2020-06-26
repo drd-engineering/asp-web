@@ -23,8 +23,8 @@
         public long CompanyId { get; set; }
         public long RotationId { get; set; }
 
-        public System.DateTime CreatedAt { get; set; }
-        public System.DateTime UpdatedAt { get; set; }
+        public System.DateTime? CreatedAt { get; set; }
+        public System.DateTime? UpdatedAt { get; set; }
 
         public virtual System.Collections.Generic.ICollection<DocumentElementInboxData> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
     [Table("DocumentSigns", Schema = "public")]
-    public class DocumentSign
+    public class DocumentSign : BaseEntity
     {
         [Key]
         public long Id { get; set; } // Id (Primary key)
@@ -20,6 +20,5 @@ namespace DRD.Models
         public int CxAnnotate { get; set; }
 
         public int RowCount { get; set; }
-        public DateTime? DateCreated { get; set; }
     }
 }

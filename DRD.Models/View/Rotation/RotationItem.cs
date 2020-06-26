@@ -9,7 +9,7 @@
         public string Remark { get; set; } // Remark
         public long UserId { get; set; } // MemberId
         public long? CreatorId { get; set; } // CreatorId
-        public System.DateTime DateCreated { get; set; } // DateCreated
+        public System.DateTime? DateCreated { get; set; } // DateCreated
         public System.DateTime? DateUpdated { get; set; } // DateUpdated
         public System.DateTime? DateStatus { get; set; } // DateUpdated
         public System.DateTime? DateStarted { get; set; } // DateStarted
@@ -24,8 +24,6 @@
         // Document summaries
         public virtual System.Collections.Generic.ICollection<TagItem> TagItems { get; set; }
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        public virtual System.Collections.Generic.ICollection<RotationNodeUpDoc> SumRotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
-
 
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationUser> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
@@ -38,7 +36,6 @@
         public RotationItem()
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
-            SumRotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDoc>();
 
             RotationUsers = new System.Collections.Generic.List<RotationUser>();
             RotationNodes = new System.Collections.Generic.List<RotationNode>();
