@@ -13,17 +13,12 @@ namespace DRD.Service
     public class UserService
     {
 
-        private bool checkIdExist(long id)
+        private bool CheckIdExist(long id)
         {
-            using (var db = new ServiceContext())
-            {
-
-                var count = db.Users.Where(i => i.Id == id).FirstOrDefault();
-
-                return count != null;
-
-            }
+            using var db = new ServiceContext();
+            return db.Users.Any(i => i.Id == id);
         }
+
         /// <summary>
         /// Save User Ragistration as a new user
         /// </summary>
@@ -44,7 +39,7 @@ namespace DRD.Service
                 
                 User user = new User();
                 //check duplicate id
-                while (checkIdExist(user.Id))
+                while (CheckIdExist(user.Id))
                 {
                     user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                 }
@@ -113,7 +108,7 @@ namespace DRD.Service
         {
             using (var db = new ServiceContext())
             {
-                while (checkIdExist(member.Id))
+                while (CheckIdExist(member.Id))
                 {
                     member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                 }
@@ -154,67 +149,42 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 string encryptedPassword = Utilities.Encrypt(password);
-                /*string encryptedPassword = password;*/
 
                 Expression<Func<User, bool>> findUsername = s => s.Email == username;
                 if (!username.Contains('@'))
                 {
                     long userId = Convert.ToInt64(username);
-                    if (userId < 0)
-                        encryptedPassword = password;
+                    if (userId < 0) encryptedPassword = password;
                     findUsername = s => s.Id == userId;
                 }
+
                 User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
 
-                if (userGet != null)
+                if (userGet == null) return null;
+
+                if (userGet.IsActive == false)
                 {
-                    if (userGet.IsActive == false)
-                    {
-                        userGet.IsActive = true;
-                        db.SaveChanges();
-                    }
-                    UserSession loginUser = new UserSession();
-                    loginUser.Id = userGet.Id;
-                    loginUser.EncryptedId = Utilities.Encrypt(userGet.Id.ToString());
-                    loginUser.Name = userGet.Name;
-                    loginUser.OfficialIdNo = userGet.OfficialIdNo;
-                    loginUser.Phone = userGet.Phone;
-                    loginUser.Email = userGet.Email;
-                    loginUser.ImageProfile = userGet.ProfileImageFileName;
-                    loginUser.ImageSignature = userGet.SignatureImageFileName;
-                    loginUser.ImageInitials = userGet.InitialImageFileName;
-                    loginUser.ImageStamp = userGet.StampImageFileName;
-                    loginUser.ImageKtp1 = userGet.KTPImageFileName;
-                    loginUser.ImageKtp2 = userGet.KTPVerificationImageFileName;
-
-                    loginUser.Name = loginUser.Name.Split(' ')[0];
-
-                    return loginUser;
+                    userGet.IsActive = true;
+                    db.SaveChanges();
                 }
+
+                UserSession loginUser = new UserSession(userGet);
+                return loginUser;
+
             }
-            return null;
         }
 
         public bool CheckEmailAvailability(string email)
         {
-            using (var db = new ServiceContext())
-            {
-                var result = db.Users.Where(userItem => userItem.Email.Equals(email)).ToList();
-                if (result.Count != 0) { return false; }
-                else { return true; }
-            }
+            using var db = new ServiceContext();
+            return !db.Users.Any(userItem => userItem.Email.Equals(email));
         }
 
         public int Logout(long id)
         {
-            using (var db = new ServiceContext())
-            {
-                var data = db.Users.FirstOrDefault(user => user.Id == id);
-
-                //data.LastLogout = DateTime.Now;
-                //return db.SaveChanges();
-                return 0;
-            }
+            using var db = new ServiceContext();
+            var data = db.Users.FirstOrDefault(user => user.Id == id);
+            return 0;
         }
         public UserProfile Update(UserProfile userProfile)
         {
@@ -253,18 +223,8 @@ namespace DRD.Service
         }
         public String GetName(long id)
         {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from c in db.Users
-                     where c.Id == id
-                     select new UserSession
-                     {
-                         Id = c.Id,
-                         Name = c.Name
-                     }).FirstOrDefault();
-                return result.Name;
-            }
+            using var db = new ServiceContext();
+            return db.Users.Find(id).Name;
         }
 
         public UserProfile GetById(long id, long loginId)

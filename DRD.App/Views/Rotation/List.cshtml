@@ -3,10 +3,6 @@
     ViewBag.Title = "Rotation";
     ViewBag.Submenu = "ROTATION";
 
-    if (!Model.isLayout)
-    {
-        Layout = null;
-    }
 }
 @section Scripts
 {
@@ -53,7 +49,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="">
-                        <button class="btn btn-flat" style="background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="create new rotation" ng-click="addProduct('@Model.key')">
+                        <button class="btn btn-flat" style="background-color:#075685; color:white; width:100px;height:50px" data-toggle="tooltip" title="create new rotation" ng-click="addProduct('@Model.Key')">
                             <i class="icon-plus2"></i> Add
                         </button>
                     </div>

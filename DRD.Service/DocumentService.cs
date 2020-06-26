@@ -36,84 +36,83 @@ namespace DRD.Service
 
         public DocumentInboxData Create(DocumentInboxData newDocument, long companyId, long rotationId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            Document document = new Document
             {
-                Document document = new Document();
-
                 // mapping value
-                document.Extention = newDocument.Extention;
-                document.FileName = newDocument.FileName;
-                document.FileSize = newDocument.FileSize;
+                Extention = newDocument.Extention,
+                FileName = newDocument.FileName,
+                FileSize = newDocument.FileSize,
 
-                document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
-                document.CreatedAt = DateTime.Now;
-                document.UpdatedAt = DateTime.Now;
+                UploaderId = newDocument.CreatorId, // harusnya current user bukan? diinject ke newDocument pas di-controller
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
 
                 // NEW
-                document.MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity;
-                document.MaximumPrintPerUser = newDocument.MaxPrintPerActivity;
-                document.IsCurrent = true; //
+                MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity,
+                MaximumPrintPerUser = newDocument.MaxPrintPerActivity,
+                IsCurrent = true, //
 
                 // upload, get file directory, controller atau di service?
-                document.FileUrl = newDocument.FileUrl;
+                FileUrl = newDocument.FileUrl,
 
-                document.RotationId = rotationId;
-                document.CompanyId = companyId;
+                RotationId = rotationId,
+                CompanyId = companyId
+            };
 
-                db.Documents.Add(document);
-                db.SaveChanges();
-                newDocument.Id = document.Id;
+            db.Documents.Add(document);
+            db.SaveChanges();
+            newDocument.Id = document.Id;
 
-                return newDocument;
-            }
+            return newDocument;
 
         }
 
         public ICollection<DocumentUserInboxData> CreateDocumentUser(long documentId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var returnValue = new List<DocumentUserInboxData>();
+            var createdOrUpdated = new List<DocumentUser>();
+            var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
+            if (docs == null) return null;
+            foreach (DocumentAnnotation el in docs.DocumentElements)
             {
-                var returnValue = new List<DocumentUserInboxData>();
-                var createdOrUpdated = new List<DocumentUser>();
-                var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
-                if (docs == null) return null;
-                foreach (DocumentAnnotation el in docs.DocumentElements)
+                if (el.ElementId == null) continue;
+                var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
+                if (docUser == null)
                 {
-                    if (el.ElementId == null) continue;
-                    var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
-                    if (docUser == null)
-                    {
-                        docUser = new DocumentUser();
-                        db.DocumentUsers.Add(docUser);
-                    }
-                    docUser.UserId = el.ElementId.Value;
-                    docUser.DocumentId = el.DocumentId;
-                    string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
-
-                    if (("SIGNATURE,INITIAL").Contains(eltypename))
-                        docUser.ActionPermission |= 1;
-
-                    if (("PRIVATESTAMP").Contains(eltypename))
-                        docUser.ActionPermission |= 32;
-                    
-                    db.SaveChanges();
+                    docUser = new DocumentUser();
+                    db.DocumentUsers.Add(docUser);
                 }
+                docUser.UserId = el.ElementId.Value;
+                docUser.DocumentId = el.DocumentId;
+                string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
 
-                // after save the value, then return value as api response data
-                foreach (DocumentUser du in createdOrUpdated)
-                {
-                    var item = new DocumentUserInboxData();
-                    item.DocumentId = du.DocumentId;
-                    item.Document = du.Document;
-                    item.FlagAction = du.ActionStatus;
-                    item.FlagPermission = du.ActionPermission;
-                    item.UserId = du.UserId;
-                    item.User = du.User;
-                    item.UserName = du.User.Name;
-                    returnValue.Add(item);
-                }
-                return returnValue;
+                if (("SIGNATURE,INITIAL").Contains(eltypename))
+                    docUser.ActionPermission |= 1;
+
+                if (("PRIVATESTAMP").Contains(eltypename))
+                    docUser.ActionPermission |= 32;
+
+                db.SaveChanges();
             }
+
+            // after save the value, then return value as api response data
+            foreach (DocumentUser du in createdOrUpdated)
+            {
+                var item = new DocumentUserInboxData
+                {
+                    DocumentId = du.DocumentId,
+                    Document = du.Document,
+                    FlagAction = du.ActionStatus,
+                    FlagPermission = du.ActionPermission,
+                    UserId = du.UserId,
+                    User = du.User,
+                    UserName = du.User.Name
+                };
+                returnValue.Add(item);
+            }
+            return returnValue;
         }
 
         public void DoRevision(long documentId)
@@ -129,63 +128,58 @@ namespace DRD.Service
 
         public ICollection<DocumentAnnotation> FillAnnos(Document doc)
         {
-            using (var db = new ServiceContext())
-            {
-                var annos =
-                    (from x in db.DocumentElements
-                     where x.Document.Id == doc.Id
-                     select new DocumentAnnotation
-                     {
-                         Page = x.Page,
-                         LeftPosition = x.LeftPosition,
-                         TopPosition = x.TopPosition,
-                         WidthPosition = x.WidthPosition,
-                         HeightPosition = x.HeightPosition,
-                         Color = x.Color,
-                         BackColor = x.BackColor,
-                         Text = x.Text,
-                         Unknown = x.Unknown,
-                         Rotation = x.Rotation,
-                         ScaleX = x.ScaleX,
-                         ScaleY = x.ScaleY,
-                         TransitionX = x.TransitionX,
-                         TransitionY = x.TransitionY,
-                         StrokeWidth = x.StrokeWidth,
-                         Opacity = x.Opacity,
-                         Flag = x.Flag,
-                         AssignedAnnotationCode = x.AssignedAnnotationCode,
-                         AssignedAt = x.AssignedAt,
-                         AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
-                         CreatorId = x.CreatorId,
-                         ElementId = x.ElementId,
+            using var db = new ServiceContext();
+            var annos =
+                (from x in db.DocumentElements
+                where x.Document.Id == doc.Id
+                select new DocumentAnnotation
+                {
+                Page = x.Page,
+                LeftPosition = x.LeftPosition,
+                TopPosition = x.TopPosition,
+                WidthPosition = x.WidthPosition,
+                HeightPosition = x.HeightPosition,
+                Color = x.Color,
+                BackColor = x.BackColor,
+                Text = x.Text,
+                Unknown = x.Unknown,
+                Rotation = x.Rotation,
+                ScaleX = x.ScaleX,
+                ScaleY = x.ScaleY,
+                TransitionX = x.TransitionX,
+                TransitionY = x.TransitionY,
+                StrokeWidth = x.StrokeWidth,
+                Opacity = x.Opacity,
+                Flag = x.Flag,
+                AssignedAnnotationCode = x.AssignedAnnotationCode,
+                AssignedAt = x.AssignedAt,
+                AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
+                CreatorId = x.CreatorId,
+                ElementId = x.ElementId,
+                }).ToList();
 
-                     }).ToList();
-
-                return annos;
-            }
+            return annos;
         }
 
         public IEnumerable<DocumentItem> GetAllCompanyDocument(long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                (from doc in db.Documents
-                 where doc.CompanyId == companyId
-                 orderby doc.CreatedAt descending
-                 select new DocumentItem
-                 {
-                     Id = doc.Id,
-                     Extention = doc.Extention,
-                     FileName = doc.FileUrl,
-                     FileNameOri = doc.FileName,
-                     FileSize = doc.FileSize,
-                     CreatorId = doc.UploaderId,
-                     MaxDownload = doc.MaximumDownloadPerUser,
-                     MaxPrint = doc.MaximumPrintPerUser
-                 }).ToList();
-                return result;
-            }
+            using var db = new ServiceContext();
+            var result =
+                        (from doc in db.Documents
+                        where doc.CompanyId == companyId
+                        orderby doc.CreatedAt descending
+                        select new DocumentItem
+                        {
+                        Id = doc.Id,
+                        Extention = doc.Extention,
+                        FileName = doc.FileUrl,
+                        FileNameOri = doc.FileName,
+                        FileSize = doc.FileSize,
+                        CreatorId = doc.UploaderId,
+                        MaxDownload = doc.MaximumDownloadPerUser,
+                        MaxPrint = doc.MaximumPrintPerUser
+                        }).ToList();
+            return result;
         }
 
         public long GetAllCount(long memberId, string searchKeyword)
@@ -835,79 +829,77 @@ namespace DRD.Service
         }
         public ICollection<DocumentElementInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            //
+            // prepare data 
+            var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
+            var cxnew = annos.Count();
+            //nambah old document
+            if (cxold < cxnew)
             {
-                //
-                // prepare data 
-                var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
-                var cxnew = annos.Count();
-                //nambah old document
-                if (cxold < cxnew)
+                var ep = annos.ElementAt(0); // get 1 data for sample
+                for (var x = cxold; x < cxnew; x++)
                 {
-                    var ep = annos.ElementAt(0); // get 1 data for sample
-                    for (var x = cxold; x < cxnew; x++)
-                    {
-                        DocumentAnnotation da = new DocumentAnnotation();
-                        da.DocumentId = documentId;
-                        da.Page = ep.Page;
-                        da.ElementTypeId = ep.ElementTypeId;
-
-                        da.UserId = da.UserId = string.IsNullOrEmpty(userEmail) ? da.UserId : userEmail;
-                        da.CreatedAt = DateTime.Now;
-                        db.DocumentElements.Add(da);
-                    }
-                    db.SaveChanges();
-                }
-                else if (cxold > cxnew)
-                {
-                    var dremove = db.DocumentElements.Where(c => c.Document.Id == documentId).Take(cxold - cxnew).ToList();
-                    db.DocumentElements.RemoveRange(dremove);
-                    db.SaveChanges();
-                }
-                //
-                // save data (update)
-                //
-                var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
-                int v = 0;
-                var retval = new List<DocumentElementInboxData>();
-                foreach (DocumentAnnotation da in dnew)
-                {
-                    var epos = annos.ElementAt(v);
+                    DocumentAnnotation da = new DocumentAnnotation();
                     da.DocumentId = documentId;
-                    da.Page = epos.Page;
-                    da.ElementTypeId = epos.ElementTypeId;
-                    da.LeftPosition = epos.LeftPosition;
-                    da.TopPosition = epos.TopPosition;
-                    da.WidthPosition = epos.WidthPosition;
-                    da.HeightPosition = epos.HeightPosition;
-                    da.Color = epos.Color;
-                    da.BackColor = epos.BackColor;
-                    da.Text = epos.Data;
-                    da.Unknown = epos.Data2;
-                    da.Rotation = epos.Rotation;
-                    da.ScaleX = epos.ScaleX;
-                    da.ScaleY = epos.ScaleY;
-                    da.TransitionX = epos.TransitionX;
-                    da.TransitionY = epos.TransitionY;
-                    da.StrokeWidth = epos.StrokeWidth;
-                    da.Opacity = epos.Opacity;
-                    da.Flag = epos.Flag;
-                    da.AssignedAnnotationCode = epos.FlagCode;
-                    da.AssignedAt = epos.FlagDate;
-                    da.AssignedAnnotationImageFileName = epos.FlagImage;
-                    da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
-                    da.ElementId = epos.ElementId;
-                    da.Element = epos.Element;
+                    da.Page = ep.Page;
+                    da.ElementTypeId = ep.ElementTypeId;
+
+                    da.UserId = da.UserId = string.IsNullOrEmpty(userEmail) ? da.UserId : userEmail;
                     da.CreatedAt = DateTime.Now;
-                    v++;
+                    db.DocumentElements.Add(da);
                 }
                 db.SaveChanges();
-                foreach (DocumentAnnotation da in dnew)
-                {
-                    retval.Add(new DocumentElementInboxData(da));
-                }
-                return retval;
             }
+            else if (cxold > cxnew)
+            {
+                var dremove = db.DocumentElements.Where(c => c.Document.Id == documentId).Take(cxold - cxnew).ToList();
+                db.DocumentElements.RemoveRange(dremove);
+                db.SaveChanges();
+            }
+            //
+            // save data (update)
+            //
+            var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
+            int v = 0;
+            var retval = new List<DocumentElementInboxData>();
+            foreach (DocumentAnnotation da in dnew)
+            {
+                var epos = annos.ElementAt(v);
+                da.DocumentId = documentId;
+                da.Page = epos.Page;
+                da.ElementTypeId = epos.ElementTypeId;
+                da.LeftPosition = epos.LeftPosition;
+                da.TopPosition = epos.TopPosition;
+                da.WidthPosition = epos.WidthPosition;
+                da.HeightPosition = epos.HeightPosition;
+                da.Color = epos.Color;
+                da.BackColor = epos.BackColor;
+                da.Text = epos.Data;
+                da.Unknown = epos.Data2;
+                da.Rotation = epos.Rotation;
+                da.ScaleX = epos.ScaleX;
+                da.ScaleY = epos.ScaleY;
+                da.TransitionX = epos.TransitionX;
+                da.TransitionY = epos.TransitionY;
+                da.StrokeWidth = epos.StrokeWidth;
+                da.Opacity = epos.Opacity;
+                da.Flag = epos.Flag;
+                da.AssignedAnnotationCode = epos.FlagCode;
+                da.AssignedAt = epos.FlagDate;
+                da.AssignedAnnotationImageFileName = epos.FlagImage;
+                da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
+                da.ElementId = epos.ElementId;
+                da.Element = epos.Element;
+                da.CreatedAt = DateTime.Now;
+                v++;
+            }
+            db.SaveChanges();
+            foreach (DocumentAnnotation da in dnew)
+            {
+                retval.Add(new DocumentElementInboxData(da));
+            }
+            return retval;
         }
 
         public void SendEmailSignature(User user, string rotName, string docName, string numbers)
@@ -925,7 +917,7 @@ namespace DRD.Service
             var emailfrom = appsvr.GetConstant("EMAIL_USER")["value"];
 
 
-            emailService.Send(emailfrom, admName, user.Email, admName + " User Signature", body, false, new string[] { });
+            _ = emailService.Send(emailfrom, admName, user.Email, admName + " User Signature", body, false, new string[] { });
         }
 
         public void SendEmailStamp(User user, string rotName, string docName, string numbers)
@@ -943,7 +935,7 @@ namespace DRD.Service
             var emailfrom = appsvr.GetConstant("EMAIL_USER")["value"];
 
 
-            emailService.Send(emailfrom, admName, user.Email, admName + " User Stamp", body, false, new string[] { });
+            _ = emailService.Send(emailfrom, admName, user.Email, admName + " User Stamp", body, false, new string[] { });
         }
 
 

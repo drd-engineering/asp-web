@@ -260,7 +260,7 @@
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
                 $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
-                var product = @Html.Raw(Json.Encode(Model.obj));
+                var product = @Html.Raw(Json.Encode(Model.Object));
 
                 assignProdut(product);
 
@@ -316,7 +316,7 @@
             }
 
             function initDocumentValues() {
-                var product = @Html.Raw(Json.Encode(Model.obj));
+                var product = @Html.Raw(Json.Encode(Model.Object));
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Title=product.Title;

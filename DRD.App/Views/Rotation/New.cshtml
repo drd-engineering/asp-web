@@ -204,7 +204,6 @@
             $scope.model.Status = "00";
             $scope.model.Tags = [];
             $scope.users = [];
-            initValues();
 
             $(".control-warning").uniform({
                 radioClass: 'choice',
@@ -229,19 +228,7 @@
                 $(".content").show();
             });
 
-            function initValues() {
-                $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
 
-                $('#checkbox1').bootstrapSwitch.defaults.size='mini';
-            }
-
-            $scope.initData = function () {
-
-            }
-            $scope.gotoWf = function () {
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:'WORKFLOW'})[0].UrlPage.replace('list?','?');
-                location.href = url;
-            }
 
             $scope.getFlagPermission = function (val, bit) {
                 return ((val & bit)==bit);
@@ -340,7 +327,7 @@
             --------------------------------------------------------------*/
             $scope.popupWorkflow = function () {
 
-                $scope.findWorkflows(null, 1, 20);
+                $scope.GetWorkflows(null, 1, 20);
                 if ($scope.model.Status!='00'){
                     showInfo("Workflow data can not be changed.");
                     return;
@@ -372,13 +359,13 @@
                 });
             }
 
-            $scope.findWorkflows = function (criteria, page, row) {
+            $scope.GetWorkflows = function (criteria, page, row) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.findWorkflowsCountAll(criteria);
+                        $scope.CountWorkflows(criteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -386,9 +373,9 @@
                     var x = 0;
                 });
             }
-            $scope.findWorkflowsCountAll = function (criteria) {
+            $scope.CountWorkflows = function (criteria) {
                 $scope.paging = [];
-                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: criteria }).then(function (response) {
+                $http.post('@Url.Action("CountWorkflows","Workflow")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -403,7 +390,7 @@
             }
             $scope.changePageWorkflows = function (criteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);

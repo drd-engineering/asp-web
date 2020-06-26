@@ -7,30 +7,37 @@ namespace DRD.App.Controllers
 {
     public class ContactController : Controller
     {
-        LoginController login = new LoginController();
-        ContactService contactService = new ContactService();
-        UserSession user;
-        Layout layout = new Layout();
+        private LoginController login;
+        private ContactService contactService;
+        private UserSession user;
+        private Layout layout;
 
-        public void Initialize()
+        private bool CheckLogin(bool getMenu = false)
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
-        }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
+            login = new LoginController();
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                contactService = new ContactService();
+                if (getMenu)
+                {
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
+                return true;
+            }
+            return false;
         }
 
         // GET: Contact
         public ActionResult Index()
         {
-            Initialize();
-            layout.menus = login.GetMenus(this, 0);
-            layout.activeId = 0;
+            CheckLogin();
+            layout.Menus = login.GetMenus(this);
+            
             return RedirectToAction("Index", "Dashboard");
             //return View(layout);
         }
@@ -38,7 +45,7 @@ namespace DRD.App.Controllers
         // GET: Contact/GetPersonalContact
         public ActionResult GetPersonalContact(string topCriteria, int page, int pageSize)
         {
-            InitializeAPI();
+            CheckLogin();
 
             ContactList data = contactService.GetPersonalContact(login.GetUser(this), topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -47,14 +54,14 @@ namespace DRD.App.Controllers
         // GET: Contact/GetContactFromCompany/Id
         public ActionResult GetContactFromCompany(long CompanyId, string topCriteria, int page, int pageSize)
         {
-            InitializeAPI();
+            CheckLogin();
             ContactList data = contactService.GetContactFromCompany(login.GetUser(this), CompanyId, topCriteria, page, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetCompaniesData()
         {
-            InitializeAPI();
+            CheckLogin();
             var data = contactService.GetListOfCompany(login.GetUser(this));
             return Json(data, JsonRequestBehavior.AllowGet);
         }

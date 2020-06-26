@@ -13,6 +13,7 @@ namespace DRD.Service
         public const string INIT_LOGIN = "_init_login_xbudi_";
         public const long MINIMUM_VALUE_ID = 1000000000;
         public const long MAXIMUM_VALUE_ID = 1000000000000000;
+        public const long ID_NOT_FOUND = 0;
         public const int LOOP_TRY_SAVE = 10;
         public const int LOOP_TRY_SAVE_THROW = 6;
         public const int DATA_TEMP3 = 2020;
@@ -115,14 +116,6 @@ namespace DRD.Service
 
         }
 
-        public static string getRotationStatusNameByCode(int statusCode)
-        {
-            return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
-        }
-        public string getRotationStatusName(int statusCode)
-        {
-            return Enum.GetName(typeof(RotationStatus), statusCode).Replace("_", " ");
-        }
         public enum SubscriptionType : byte
         {
             PERSONAL = 1,

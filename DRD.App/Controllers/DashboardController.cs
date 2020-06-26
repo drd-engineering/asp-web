@@ -10,11 +10,12 @@ namespace DRD.App.Controllers
 {
     public class DashboardController : Controller
     {
-        private LoginController login = new LoginController();
         private DashboardService dashboardService = new DashboardService();
         private UserService userService = new UserService();
         private CompanyService companyService = new CompanyService();
         private RotationService rotationService = new RotationService();
+
+        private LoginController login = new LoginController();
         private UserSession user;
         private Layout layout = new Layout();
 
@@ -23,8 +24,8 @@ namespace DRD.App.Controllers
             if (login.CheckLogin(this))
             {
                 user = login.GetUser(this);
-                layout.menus = login.GetMenus(this, layout.activeId);
-                layout.user = login.GetUser(this);
+                layout.Menus = login.GetMenus(this);
+                layout.User = login.GetUser(this);
                 return true;
             }
             return false;
@@ -44,9 +45,9 @@ namespace DRD.App.Controllers
             if (user == null)
                 return RedirectToAction("Index", "Login");
             Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, 0);
-            layout.user = user;
-            layout.activeId = 0;
+            layout.Menus = login.GetMenus(this);
+            layout.User = user;
+            
             var hasCompany = userService.HasCompany(user.Id);
             if (!hasCompany) return RedirectToAction("List", "Inbox"); 
             

@@ -373,7 +373,7 @@
             }
             function initValues() {
 
-                var product = @Html.Raw(Json.Encode(Model.obj));
+                var product = @Html.Raw(Json.Encode(Model.Object));
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Title=product.Title;

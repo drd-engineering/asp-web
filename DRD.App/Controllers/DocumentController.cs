@@ -45,7 +45,7 @@ namespace DRD.App.Controllers
 
             DocumentService psvr = new DocumentService();
             doc = psvr.GetById(documentId);
-            layout.obj = doc;
+            layout.Object = doc;
 
             return View(layout);
         }
@@ -183,8 +183,8 @@ namespace DRD.App.Controllers
         {
             user = login.GetUser(this);
             login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            layout.Menus = login.GetMenus(this);
+            layout.User = login.GetUser(this);
         }
 
         public void InitializeAPI()
@@ -204,8 +204,8 @@ namespace DRD.App.Controllers
             // end decription menu
 
             Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = user;
+            layout.Menus = login.GetMenus(this);
+            layout.User = user;
             return RedirectToAction("Index", "Dashboard");
 
             //return View(layout);
@@ -294,11 +294,11 @@ namespace DRD.App.Controllers
             //UserSession user = msvr.GetById(memberId);
             LoginController login = new LoginController();
             //login.SetLogin(this, user);
-            layout.activeId = 0;
-            layout.menus = null;
+            
+            layout.Menus = null;
             //layout.user = user;
-            layout.obj = doc;
-            layout.dataId = type;
+            layout.Object = doc;
+            layout.DataId = type;
 
             return View(layout);
         }

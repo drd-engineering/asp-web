@@ -62,8 +62,8 @@ namespace DRD.App.Controllers
         {
             user = login.GetUser(this);
             login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            layout.Menus = login.GetMenus(this);
+            layout.User = login.GetUser(this);
         }
 
         public void InitializeAPI()

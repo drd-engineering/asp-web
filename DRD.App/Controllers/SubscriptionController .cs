@@ -10,15 +10,15 @@ namespace DRD.App.Controllers
     public class SubscriptionController : Controller
     {
         private LoginController login = new LoginController();
-        private UserSession user = new UserSession();
+        private UserSession user;
         private Layout layout = new Layout();
 
         public void Initialize()
         {
             user = login.GetUser(this);
             login.CheckLogin(this);
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = login.GetUser(this);
+            layout.Menus = login.GetMenus(this);
+            layout.User = login.GetUser(this);
         }
         public void InitializeAPI()
         {

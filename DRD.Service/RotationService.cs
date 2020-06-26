@@ -197,7 +197,6 @@ namespace DRD.Service
                               }).Skip(skip).Take(take).ToList();
                 foreach (RotationData resultItem in result)
                 {
-                    resultItem.StatusDescription = constant.getRotationStatusName(resultItem.Status);
                     resultItem.CompanyRotation = (from cmpny in db.Companies
                                                   where cmpny.Id == resultItem.CompanyId
                                                   select new SmallCompanyData

@@ -21,8 +21,8 @@ namespace DRD.App.Controllers
             if (login.CheckLogin(this))
             {
                 user = login.GetUser(this);
-                layout.menus = login.GetMenus(this, layout.activeId);
-                layout.user = login.GetUser(this);
+                layout.Menus = login.GetMenus(this);
+                layout.User = login.GetUser(this);
                 return true;
             }
             return false;
@@ -40,8 +40,7 @@ namespace DRD.App.Controllers
             if (!Initialize())
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
 
-            layout.obj = login.GetUser(this);
-            layout.activeId = 0;
+            layout.Object = login.GetUser(this);
 
             return View(layout);
         }
@@ -55,7 +54,7 @@ namespace DRD.App.Controllers
             UserSession userSession = login.GetUser(this);
             // end decription menu
 
-            layout.user = login.GetUser(this);
+            layout.User = login.GetUser(this);
 
             return View(layout);
         }
@@ -89,9 +88,9 @@ namespace DRD.App.Controllers
             UserProfile user = new UserProfile();
            
             Layout layout = new Layout();
-            layout.menus = login.GetMenus(this, layout.activeId);
-            layout.user = userSession;
-            layout.obj = user;
+            layout.Menus = login.GetMenus(this);
+            layout.User = userSession;
+            layout.Object = user;
 
             return View(layout);
         }
@@ -211,7 +210,7 @@ namespace DRD.App.Controllers
                     return -1;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return 0;
             }

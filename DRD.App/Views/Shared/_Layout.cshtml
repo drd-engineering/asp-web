@@ -67,7 +67,7 @@
                 </a>
                 <ul class="nav navbar-nav visible-xs-block">
                     <li>
-                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="@(Model.user.ImageProfile!=null ? "/Images/Member/"+Model.user.EncryptedId+"/" + Model.user.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" /></a>
+                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="@(Model.User.ImageProfile!=null ? "/Images/Member/"+Model.User.EncryptedId+"/" + Model.User.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" /></a>
                     </li>
                     <li>
                         <a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a>
@@ -81,7 +81,6 @@
                     </li>
                     <li>
                         <a href="/">
-                            <!-- @*<span style="font-size:medium;">DRD | @Model.user.Name</span>*@ -->
                         </a>
                     </li>
                 </ul>
@@ -96,8 +95,8 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="@(Model.user.ImageProfile!=null ? "/Images/Member/" + Model.user.EncryptedId+"/"+Model.user.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
-                                <span> @Model.user.Name </span>
+                                <img src="@(Model.User.ImageProfile!=null ? "/Images/Member/" + Model.User.EncryptedId+"/"+Model.User.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
+                                <span> @Model.User.FirstName </span>
                                 <i class="caret"></i>
                             </a>
                             <ul id="mobile-view" class="dropdown-menu dropdown-menu-right">
@@ -193,7 +192,7 @@
         INIT DATA
         --------------------------------------------------------------*/
         angular.element(document).ready(function () {
-            $scope.menusFromController = @Html.Raw(Json.Encode(Model.menus));
+            $scope.menusFromController = @Html.Raw(Json.Encode(Model.Menus));
             $scope.viewbagsubmenu = @Html.Raw(Json.Encode(ViewBag.Submenu));
             NProgress.done();
             $("#menu-content").show();

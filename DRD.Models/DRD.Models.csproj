@@ -212,6 +212,7 @@
     <Compile Include="Custom\RotationNodeInboxData.cs" />
     <Compile Include="Custom\RotationNodeUpDocInboxData.cs" />
     <Compile Include="Custom\UserInboxData.cs" />
+    <Compile Include="Custom\WorkflowListItem.cs" />
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />

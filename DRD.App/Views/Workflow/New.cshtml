@@ -1,4 +1,5 @@
-﻿@using DRD.Models.View;
+﻿
+@using DRD.Models.View;
 @model Layout
 
 @{
@@ -136,7 +137,7 @@
                                         <div class="col-md-12">
                                             <div class="col-md-12">
                                                 <div class="text-right">
-                                                    <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                                    <button class="btn btn-drd-1 btn-large pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
                                                         <span class="ladda-label">&nbsp;&nbsp;Save&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                         <div class="ladda-progress" style="width: 0px;"></div>
                                                     </button>
@@ -152,7 +153,7 @@
                                         Data successfully saved.
                                         <br>
                                     </div>
-                                    This page will be redirected to Rotation List page in 10 seconds
+                                    This page will be redirected to Rotation List page 
                                 </div>
                                 <!--/CONFIRMATION THANK YOU-->
 
@@ -194,6 +195,17 @@
             /*--------------------------------------------------------------
             SAVE PRODUCT
             --------------------------------------------------------------*/
+            $scope.updateProduct = function () {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+                $scope.saveProduct();
+            }
+
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+
             $scope.saveProduct = function () {
                 var btn = Ladda.create(document.querySelector('.btn-submit1'));
                 btn.start();
@@ -234,15 +246,7 @@
 
             }
 
-            $scope.updateProduct = function () {
-                if (!$scope.isValidForm($scope.myForm))
-                    return;
-                $scope.saveProduct();
-            }
-            $scope.isValidForm = function (theForm) {
-                var isvalid = theForm.$valid;
-                return isvalid;
-            };
+
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top

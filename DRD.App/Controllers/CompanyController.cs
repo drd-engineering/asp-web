@@ -11,53 +11,61 @@ namespace DRD.App.Controllers
 {
     public class CompanyController : Controller
     {
-        private LoginController login = new LoginController();
-        private UserSession user;
-        private CompanyService companyService = new CompanyService();
-        private MemberService memberService = new MemberService();
-        private UserService userService = new UserService();
-        private SubscriptionService subscriptionService = new SubscriptionService();
-        private Layout layout = new Layout();
+        private CompanyService companyService;
+        private MemberService memberService;
+        private SubscriptionService subscriptionService;
+        private UserService userService;
 
-        public bool Initialize()
+        private LoginController login;
+        private UserSession user;
+        private Layout layout;
+
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
                 user = login.GetUser(this);
-                layout.menus = login.GetMenus(this, layout.activeId);
-                layout.user = login.GetUser(this);
+                companyService = new CompanyService();
+                memberService = new MemberService();
+                subscriptionService = new SubscriptionService();
+                userService = new UserService();
+
+                if (getMenu)
+                {
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
         }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
 
         public ActionResult Index()
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu:true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "company" });
-            var isAdminandHasCompany = userService.IsAdminOrOwnerofAnyCompany(user.Id);
-            if (isAdminandHasCompany)
-            {
-                return View(layout);
-            }
-            return RedirectToAction("List", "Inbox");
+            
+            if (!userService.IsAdminOrOwnerofAnyCompany(user.Id)) return RedirectToAction("List", "Inbox");
+            
+            return View(layout);
+            
+            
         }
 
         public ActionResult GetAllCompanyOwnedbyUser()
         {
-            Initialize();
+            CheckLogin();
             var data = companyService.GetAllCompanyOwnedbyUser(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Member(long id)
+        public ActionResult Member(long id = Constant.ID_NOT_FOUND)
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Company/Member?id"+id });
             var company = companyService.GetCompany(id);
             if (company == null)
@@ -74,7 +82,7 @@ namespace DRD.App.Controllers
 
         public ActionResult AddMembers(long companyId, string emails)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = memberService.AddMembers(companyId, user.Id, emails);
             foreach (AddMemberResponse item in data)
             {
@@ -88,14 +96,14 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetOwnedandManagedCompany()
         {
-            InitializeAPI();
+            CheckLogin();
             var data = companyService.GetOwnedandManagedCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetSubscriptionList()
         {
-            InitializeAPI();
+            CheckLogin();
             List<BusinessPackage> data = subscriptionService.GetAllPublicSubscription();
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -103,14 +111,14 @@ namespace DRD.App.Controllers
 
         public ActionResult AcceptMember(long memberId)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = companyService.AcceptMember(memberId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult RejectMember(long memberId)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = companyService.RejectMember(memberId);
 
             return Json(data, JsonRequestBehavior.AllowGet);

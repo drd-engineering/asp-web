@@ -95,6 +95,10 @@
                                         </h6>
                                     </div>
 
+                                    <div class="is-used alert alert-warning alert-styled-left" style="padding:5px;margin-bottom:0px;display:none">
+                                            The diagram <span class="text-semibold">cannot be updated</span>, because it is already used by the rotation.
+                                    </div>
+
                                     <div id="canvas" class="canvas context-menu-one" onscroll="canvasScroll()" ng-click="releaseAllSelected()" style="pointer-events:none">
 
                                         <div id="node-activity-xx" class="node-activity-yy" style="display:none">
@@ -136,8 +140,13 @@
                                 <div class="col-md-12">
                                     <div class="col-md-12">
                                         <div class="text-right">
-                                            <button class="btn bg-slate-700 pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
+                                            <button class="btn btn-drd-1  btn-large  pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:120px">
                                                 <span class="ladda-label">&nbsp;&nbsp;Save&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
+                                                <div class="ladda-progress" style="width: 0px;"></div>
+                                            </button>
+
+                                            <button class="btn btn-drd-1-bordered  btn-large  pull-right btn-ladda btn-submit1" data-style="slide-down" data-spinner-color="#333" ng-click="deleteWorkflow()" style="width:120px">
+                                                <span class="ladda-label">&nbsp;&nbsp;Delete&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
                                                 <div class="ladda-progress" style="width: 0px;"></div>
                                             </button>
                                         </div>
@@ -197,8 +206,9 @@
 
 
             function initValues() {
-                var product = @Html.Raw(Json.Encode(Model.obj));
-                $scope.objectItems = @Html.Raw(Json.Encode(Model.objItems));
+                var product = @Html.Raw(Json.Encode(Model.Object));
+                console.log(product);
+                $scope.objectItems = @Html.Raw(Json.Encode(Model.ObjectItems));
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
                     $scope.model.Name=product.Name;
@@ -228,8 +238,7 @@
                 btn.start();
                 var digramScope=angular.element('#xdiagramController').scope();
                 var data = digramScope.submitFlow();
-                console.log(data);
-
+                
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
                         prod: {
@@ -245,11 +254,11 @@
                         btn.stop();
                         if (response.data) {
                             window.scrollTo(0, 0);
-                            $.jGrowl('You have succefully delete a workflow', {
-                                header: "Rotation deleted",
+                            $.jGrowl('This Workflow has been saved', {
+                                header: "Save Workflow",
                                 //sticky: true,
                                 life: $scope.notiftime,
-                                theme: 'alert-styled-right bg-info'
+                                theme: 'alert-styled-right bg-success'
                             });
                             digramScope.clearDiagram();
                         }
@@ -281,8 +290,8 @@
                 $http.post('@Url.Action("DeleteWorkflow", "Workflow")', { id: workflowId })
                     .then(function (response) {
                         if (response.data == "OK") {
-                            $.jGrowl('You have succefully delete a workflow', {
-                                header: "Rotation deleted",
+                            $.jGrowl('This workflow has been deleted', {
+                                header: "Delete Workflow",
                                 //sticky: true,
                                 life: $scope.notiftime,
                                 theme: 'alert-styled-right bg-info'

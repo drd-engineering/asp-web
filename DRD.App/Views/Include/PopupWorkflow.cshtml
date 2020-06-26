@@ -12,10 +12,10 @@
             </div>
 
             <div class="input-group">
-                <input type="text" ng-keyup="$event.keyCode == 13 && findWorkflows($parent.criteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.criteria" placeholder="Enter workflow name" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && GetWorkflows($parent.criteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.criteria" placeholder="Enter workflow name" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findWorkflows($parent.criteria, $parent.page, $parent.row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="GetWorkflows($parent.criteria, $parent.page, $parent.row)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">

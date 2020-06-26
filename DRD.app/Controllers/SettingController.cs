@@ -25,8 +25,8 @@ namespace DRD.App.Controllers
             if (login.CheckLogin(this))
             {
                 user = login.GetUser(this);
-                layout.menus = login.GetMenus(this, layout.activeId);
-                layout.user = login.GetUser(this);
+                layout.Menus = login.GetMenus(this);
+                layout.User = login.GetUser(this);
                 return true;
             }
             return false;
@@ -47,8 +47,8 @@ namespace DRD.App.Controllers
             if (!Initialize())
                 return RedirectToAction("Index", "login", new { redirectUrl = "setting" });
 
-            layout.obj = login.GetUser(this);
-            layout.activeId = 0;
+            layout.Object = login.GetUser(this);
+            
 
             return View(layout);
         }
@@ -58,7 +58,7 @@ namespace DRD.App.Controllers
             if (!Initialize())
                 return Json(-1, JsonRequestBehavior.AllowGet);
 
-            return Json(layout.user, JsonRequestBehavior.AllowGet);
+            return Json(layout.User, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Account()

@@ -19,8 +19,8 @@ namespace DRD.App.Controllers
             if (login.CheckLogin(this))
             {
                 user = login.GetUser(this);
-                layout.menus = login.GetMenus(this, layout.activeId);
-                layout.user = login.GetUser(this);
+                layout.Menus = login.GetMenus(this);
+                layout.User = login.GetUser(this);
                 return true;
             }
             return false;
@@ -47,7 +47,7 @@ namespace DRD.App.Controllers
                 return RedirectToAction("Index", "Inbox");
 
             //user have access
-            layout.obj = product;
+            layout.Object = product;
             return View(layout);
         }
         

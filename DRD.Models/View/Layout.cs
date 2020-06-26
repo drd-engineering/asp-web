@@ -6,20 +6,19 @@ namespace DRD.Models.View
 {
     public class Layout
     {
-        public List<Menu> menus { get; set; }
-        public List<Menu> dbmenus { get; set; }
-        public List<string> objItems { get; set; }
-        public UserSession user { get; set; }
-        public object obj { get; set; }
-        public int activeId { get; set; }
-        public string key { get; set; }
-        public string url { get; set; }
-        public int dataId { get; set; } // cover godeg program
-        public bool isLayout { get; set; }
-        public ErrorInfo errorInfo { get; set; }
+        public List<Menu> Menus { get; set; }
+        public List<Menu> Dbmenus { get; set; }
+        public List<string> ObjectItems { get; set; }
+        public UserSession User { get; set; }
+        public object Object { get; set; }
+        public string Key { get; set; }
+        public string Url { get; set; }
+        public int DataId { get; set; } // cover godeg program
+        public bool IsLayout { get; set; }
+        public ErrorInfo ErrorInfo { get; set; }
         public Layout()
         {
-            isLayout = true;
+            IsLayout = true;
         }
     }
 }

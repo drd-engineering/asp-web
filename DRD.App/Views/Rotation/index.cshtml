@@ -2,11 +2,6 @@
 @{
     ViewBag.Title = "Rotation Detail";
     ViewBag.Submenu = "ROTATION";
-
-    if (!Model.isLayout)
-    {
-        Layout = null;
-    }
 }
 @section Scripts
 {
@@ -227,7 +222,7 @@
             });
 
             function initValues() {
-                var product = @Html.Raw(Json.Encode(Model.obj));
+                var product = @Html.Raw(Json.Encode(Model.Object));
 
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
@@ -378,13 +373,13 @@
                 });
             }
 
-            $scope.findWorkflows = function (criteria, page, row) {
+            $scope.GetWorkflows = function (criteria, page, row) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
-                        $scope.findWorkflowsCountAll(criteria);
+                        $scope.CountWorkflows(criteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -392,9 +387,9 @@
                     var x = 0;
                 });
             }
-            $scope.findWorkflowsCountAll = function (criteria) {
+            $scope.CountWorkflows = function (criteria) {
                 $scope.paging = [];
-                $http.post('@Url.Action("FindWorkflowsCountAll","Workflow")', { topCriteria: criteria }).then(function (response) {
+                $http.post('@Url.Action("CountWorkflows","Workflow")', { topCriteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.row);
@@ -409,7 +404,7 @@
             }
             $scope.changePageWorkflows = function (criteria, page, row) {
                 $scope.products = [];
-                $http.post('@Url.Action("FindWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);

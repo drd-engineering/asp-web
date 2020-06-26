@@ -64,30 +64,16 @@ namespace DRD.App.Controllers
         [OutputCache(Duration = 1800, VaryByParam = "none", Location = OutputCacheLocation.Client, NoStore = true)]
         public bool CheckLogin(Controller controller)
         {
-            if (controller.Session["_USER_LOGIN_"] == null)
-            {
-                return false;
-            }
-            return true;
+            return controller.Session["_USER_LOGIN_"] != null;
         }
 
         public UserSession GetUser(Controller controller)
         {
             UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
-            //user.Id = user.Id;
-            //user.UserId = user.UserId;
-            //user.Name = user.Name;
-            //user.ShortName = user.ShortName;
-            //user.Location = user.Location;
-            //user.AppZone = user.CompanyCode;
-
-            //AppZoneService azsvr = new AppZoneService();
-            //azsvr.GetByCode();
-
             return user;
         }
 
-        public List<Menu> GetMenus(Controller controller, int activeId)
+        public List<Menu> GetMenus(Controller controller)
         {
             UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
             if (user == null)
