@@ -15,7 +15,7 @@ namespace DRD.App.Controllers
         {
             ViewBag.redirectUrl = redirectUrl;
             if (this.Session["_USER_LOGIN_"] != null)
-                return RedirectToAction("Index", "DashboardController");
+                return RedirectToAction("Index", "Dashboard");
             return View();
         }
 

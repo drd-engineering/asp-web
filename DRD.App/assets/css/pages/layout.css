@@ -78,6 +78,7 @@ div.col-md-12.padding-bottom{
     margin-left:10px;
 }
 
+
 .btn-drd-1 {
     background-color:#075685; 
     color:white; 
@@ -101,5 +102,16 @@ div.col-md-12.padding-bottom{
 }
 
 .btn-large {
-    width:100px;height:50px;
+    width:100px;
+    height:50px;
+}
+
+.btn-logo-header {
+    border-radius: 15px;
+    text-align: center;
+    padding: 5px;
+    margin-left: 20px;
+    font-weight: 800;
+    background-color: #5D90AE;
+    color: white;
 }

@@ -241,11 +241,8 @@ namespace DRD.Service
                 product.CreatorId = WorkflowItem.CreatorId;
                 if (WorkflowItem.Id == 0)
                 {
-                    product.CreatedAt = DateTime.Now;
                     db.Workflows.Add(product);
                 }
-                else
-                    product.UpdatedAt = DateTime.Now;
 
                 var result = db.SaveChanges();
 
