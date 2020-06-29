@@ -310,6 +310,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\pages\changepassword.css" />
     <Content Include="assets\css\pages\login.css" />
     <Content Include="assets\css\pages\registration.css" />
     <Content Include="assets\css\pages\for-all-page.css" />

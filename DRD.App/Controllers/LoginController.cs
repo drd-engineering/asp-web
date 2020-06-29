@@ -49,7 +49,7 @@ namespace DRD.App.Controllers
             return Json(ret, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        /// API LOGOUT Clear session of a user logged in
+        /// LOGOUT Clear session of a user logged in
         /// </summary>
         public void Logout()
         {
@@ -59,6 +59,7 @@ namespace DRD.App.Controllers
             Session["_COUNTERINBOX_"] = null;
             Response.Redirect("/Login");
         }
+
         /// <summary>
         /// CHECK is there any user logged in to DRD from the given controller
         /// </summary>
@@ -69,6 +70,7 @@ namespace DRD.App.Controllers
         {
             return controller.Session["_USER_LOGIN_"] != null;
         }
+
         /// <summary>
         /// GET user logged in details from sessions
         /// </summary>

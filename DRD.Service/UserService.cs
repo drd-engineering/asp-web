@@ -13,7 +13,7 @@ namespace DRD.Service
     public class UserService
     {
         /// <summary>
-        /// Save User Ragistration as a new user
+        /// SAVE User Ragistration as a new user
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
@@ -41,7 +41,7 @@ namespace DRD.Service
             return user;
         }
         /// <summary>
-        /// Helper method to Save user with valid and unique user Id long value
+        /// HELPER method to Save user with valid and unique user Id long value
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
@@ -60,7 +60,7 @@ namespace DRD.Service
             return user.Id;
         }
         /// <summary>
-        /// Check if User Id generated is exist
+        /// CHECK if User Id generated is exist
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace DRD.Service
             return db.Users.Any(i => i.Id == id);
         }
         /// <summary>
-        /// Registration notification via email, for new user
+        /// SEND registration notification via email, for new user
         /// </summary>
         /// <param name="user"></param>
         public void SendEmailRegistration(User user)
@@ -94,7 +94,7 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName, user.Email, "User Registration", body, false, new string[] { });
         }
         /// <summary>
-        /// Login to DRD account using username and password
+        /// GET user session to DRD account using username and password
         /// </summary>
         /// <param name="username">you can use ID user and email user to login.</param>
         /// <param name="password"></param>
@@ -201,7 +201,6 @@ namespace DRD.Service
                 return result;
             }
         }
-
         /// <summary>
         /// this function will return all the list Subscription if the user is admin and company have subscription, or the user have subscription.
         /// </summary>
@@ -236,9 +235,8 @@ namespace DRD.Service
                 return returnValue;
             }
         }
-
         /// <summary>
-        /// Change password of specify user that loged in to application
+        /// SAVE new password of specify user that loged in to application
         /// </summary>
         /// <param name="user"></param>
         /// <param name="oldPassword"></param>
@@ -257,7 +255,6 @@ namespace DRD.Service
                 return 1;
             }
         }
-
         /// <summary>
         /// SAVE new user password by generator and send the password to user's email
         /// </summary>
