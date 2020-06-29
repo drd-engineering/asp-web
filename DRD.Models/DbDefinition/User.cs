@@ -32,11 +32,21 @@ namespace DRD.Models
         public bool LockOutEnabled { get; set; } = false;
         public int AccessFailedCount { get; set; }
 
-
-         public User()
+        public User()
         {
             Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
-            Username = "" + Id;
+            Username = Id.ToString();
+            ProfileImageFileName = "user.png";
+        }
+        public User(string email, string name, string phone)
+        {
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
+            ProfileImageFileName = "user.png";
+            Username = Id.ToString();
+            Email = email;
+            Name = name;
+            Phone = phone;
+            IsActive = true;
         }
     }
 }

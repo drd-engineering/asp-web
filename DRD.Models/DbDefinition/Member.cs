@@ -19,10 +19,19 @@ namespace DRD.Models
         public Member()
         {
             Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
-            CreatedAt = System.DateTime.Now;
-            UpdatedAt = System.DateTime.Now;
             IsAdministrator = false;
             IsActive = true;
+        }
+        public Member(long userId, long companyId, bool isMemberAccept, bool isCompanyAccept)
+        {
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
+            UserId = userId;
+            CompanyId = companyId;
+            IsMemberAccept = isMemberAccept;
+            IsCompanyAccept = isCompanyAccept;
+            IsAdministrator = false;
+            IsActive = true;
+
         }
     }
 }

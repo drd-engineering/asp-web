@@ -12,22 +12,19 @@ namespace DRD.Service
 {
     public class MemberService
     {
-        private CompanyService companyService;
-        private ContactService contactService;
+        private CompanyService companyService = new CompanyService();
+        private ContactService contactService = new ContactService();
         private SubscriptionService subscriptionService = new SubscriptionService();
-
-        private bool checkIdExist(long id)
+        /// <summary>
+        /// CHECK if id member already exist or not
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool CheckIdIsExist(long id)
         {
-            using (var db = new ServiceContext())
-            {
-
-                var count = db.Members.Where(i => i.Id == id).FirstOrDefault();
-
-                return count != null;
-
-            }
+            using var db = new ServiceContext();
+            return db.Members.Any(i => i.Id == id);
         }
-
         public Member getMember(long memberId)
         {
             using (var db = new ServiceContext())
@@ -36,7 +33,7 @@ namespace DRD.Service
             }
         }
 
-        public Member getMember(long userId, long companyId)
+        public Member GetMember(long userId, long companyId)
         {
             using (var db = new ServiceContext())
             {
@@ -173,134 +170,100 @@ namespace DRD.Service
                 return member.UserId;
             }
         }
-
-        public bool addMemberToCompany(long userId, long companyId)
+        /// <summary>
+        /// SAVE member data requested by company to a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public long AddMemberToCompany(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var member = new Member(userId, companyId, false, true);
+            while (CheckIdIsExist(member.Id))
             {
-                Member member = getMember(userId, companyId);
-                if (member != null)
-                {
-                    member.IsActive = true;
-                }
-                else
-                {
-                    member = new Member()
-                    {
-                        UserId = userId,
-                        CompanyId = companyId,
-                        IsCompanyAccept = true,
-                        IsMemberAccept = false,
-                    };
-                    while (checkIdExist(member.Id))
-                    {
-                        member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                    }
-                }
-                bool result = db.Members.Add(member).IsAdministrator;
-                db.SaveChanges();
-
-                return result;
+                member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             }
+            db.Members.Add(member);
+            db.SaveChanges();
+            return member.Id;
         }
-
-        public bool addCompanyToMember(long userId, long companyId)
+        /// <summary>
+        /// SAVE member data requested by user who want to join a company
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        public long AddMemberRequestToJoinCompany(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var member = new Member(userId, companyId, true, false);
+            while (CheckIdIsExist(member.Id))
             {
-                Member member = getMember(userId, companyId);
-                if (member != null)
-                {
-                    member.IsActive = true;
-                }
-                else
-                {
-                    member = new Member()
-                    {
-                        UserId = userId,
-                        CompanyId = companyId,
-                        IsCompanyAccept = false,
-                        IsMemberAccept = true,
-                    };
-                    while (checkIdExist(member.Id))
-                    {
-                        member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                    }
-                }
-                bool result = db.Members.Add(member).IsAdministrator;
-                db.SaveChanges();
-
-                return result;
+                member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             }
+            db.Members.Add(member);
+            db.SaveChanges();
+            return member.Id;
         }
-
+        /// <summary>
+        /// SAVE multiple member data requested by company to a user
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="userId"></param>
+        /// <param name="emails"></param>
+        /// <returns></returns>
         public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
         {
             List<AddMemberResponse> retVal = new List<AddMemberResponse>();
             string[] listOfEmail = emails.Split(',');
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            if (!checkIsAdmin(userId, companyId) && !checkIsOwner(userId, companyId))
             {
-                if (!checkIsAdmin(userId, companyId) && !checkIsOwner(userId, companyId))
+                // user editting member is not administrator or owner
+                retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
+            }
+            else
+            {
+                CompanyService cpserv = new CompanyService();
+                SmallCompanyData companyInviting = cpserv.GetCompany(companyId);
+                foreach (var emailItem in listOfEmail)
                 {
-                    // user editting member is not administrator or owner
-                    retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
-                }
-                else
-                {
-                    CompanyService cpserv = new CompanyService();
-                    SmallCompanyData companyInviting = cpserv.GetCompany(companyId);
-                    foreach (var emailItem in listOfEmail)
+                    var email = emailItem.Replace(" ", string.Empty);
+                    User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
+                    if (target == null)
                     {
-                        var email = emailItem.Replace(" ", string.Empty);
-                        
-                        User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
-                        if (target == null)
-                        {
-                            // user that wanted to invite is not found (not registered)
-                            retVal.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
-                            continue;
-                        }
-
-                        Member existingMember = db.Members.Where(member => member.UserId == target.Id
-                            && member.IsActive && member.CompanyId == companyId).FirstOrDefault();
-                        //check member exist or not
-                        if (existingMember == null)
-                        {
-                            Member newMember = new Member();
-                            //check duplicate id
-                            while (checkIdExist(newMember.Id))
-                            {
-                                newMember.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                            }
-                            newMember.UserId = target.Id;
-                            newMember.CompanyId = companyId;
-                            newMember.IsCompanyAccept = true;
-
-                            db.Members.Add(newMember);
-                            db.SaveChanges();
-                            // success adding new member
-                            retVal.Add(new AddMemberResponse(email, newMember.Id, target.Name, 1, companyInviting.Name));
-                            continue;
-                        }
-
-                        //exist but company hasn't accepeted yet
-                        if (!existingMember.IsCompanyAccept)
-                        {
-                            existingMember.IsCompanyAccept = true;
-                            existingMember.JoinedAt = DateTime.Now;
-                            db.SaveChanges();
-                            retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
-                            continue;
-                        }
-
-                        if (existingMember.IsMemberAccept)
-                        {
-                            retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
-                            continue;
-                        }
-
-                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
+                        // user that wanted to invite is not found (not registered)
+                        retVal.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
+                        continue;
                     }
+
+                    Member existingMember = db.Members.Where(member => member.UserId == target.Id
+                        && member.IsActive && member.CompanyId == companyId).FirstOrDefault();
+                    //check member exist or not
+                    if (existingMember == null)
+                    {
+                        long memberId = AddMemberToCompany(target.Id, companyInviting.Id);
+                        retVal.Add(new AddMemberResponse(email, memberId, target.Name, 1, companyInviting.Name));
+                        continue;
+                    }
+                    //exist but company hasn't accepeted yet
+                    if (!existingMember.IsCompanyAccept)
+                    {
+                        existingMember.IsCompanyAccept = true;
+                        existingMember.JoinedAt = DateTime.Now;
+                        db.SaveChanges();
+                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                        continue;
+                    }
+                    //exist and already accepted by both side
+                    if (existingMember.IsMemberAccept)
+                    {
+                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                        continue;
+                    }
+                    //exist and not accepted yet by user
+                    retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
                 }
             }
             return retVal;

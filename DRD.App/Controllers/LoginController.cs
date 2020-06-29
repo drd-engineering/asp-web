@@ -30,7 +30,12 @@ namespace DRD.App.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// API for login to DRD account using username and password
+        /// </summary>
+        /// <param name="username">there are many options for username, use id or email</param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public ActionResult Login(string username, string password)
         {
             int ret = -1;
@@ -43,12 +48,6 @@ namespace DRD.App.Controllers
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
         }
-
-        public void SetLogin(Controller controller, User user)
-        {
-            controller.Session["_USER_LOGIN_"] = user;
-        }
-
         /// <summary>
         /// API LOGOUT Clear session of a user logged in
         /// </summary>
@@ -60,19 +59,31 @@ namespace DRD.App.Controllers
             Session["_COUNTERINBOX_"] = null;
             Response.Redirect("/Login");
         }
-
+        /// <summary>
+        /// CHECK is there any user logged in to DRD from the given controller
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <returns></returns>
         [OutputCache(Duration = 1800, VaryByParam = "none", Location = OutputCacheLocation.Client, NoStore = true)]
         public bool CheckLogin(Controller controller)
         {
             return controller.Session["_USER_LOGIN_"] != null;
         }
-
+        /// <summary>
+        /// GET user logged in details from sessions
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <returns></returns>
         public UserSession GetUser(Controller controller)
         {
             UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
             return user;
         }
-
+        /// <summary>
+        /// GET menu list for layout
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <returns></returns>
         public List<Menu> GetMenus(Controller controller)
         {
             UserSession user = (UserSession)controller.Session["_USER_LOGIN_"];
@@ -82,22 +93,12 @@ namespace DRD.App.Controllers
 
             return menuService.GetMenus(user.Id);
         }
-
-        public List<string> GetMenuObjectItems(List<Menu> menus, int parentId)
-        {
-            List<string> items = new List<string>();
-            foreach (Menu m in menus)
-            {
-                if (int.Parse(m.ParentCode) == parentId && m.ItemType == 1)
-                {
-                    items.Add(m.ObjectName);
-                }
-            }
-            return items;
-        }
-
-
-        // GET FUNCTION for change password
+        /// <summary>
+        /// API to change password of user logged in
+        /// </summary>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
         public ActionResult UpdatePassword(String oldPassword, String newPassword)
         {
             CheckLogin(this);
@@ -106,13 +107,19 @@ namespace DRD.App.Controllers
             var data = usrService.UpdatePassword(user, oldPassword, newPassword);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        // GET FUNCTION for reset password
+        /// <summary>
+        /// API to request for reset password of user
+        /// </summary>
+        /// <param name="emailUser"></param>
+        /// <returns></returns>
         public ActionResult ResetPassword(String emailUser)
         {
-            UserService usrService = new UserService();
-            var data = usrService.ResetPassword(emailUser);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            UserService userService = new UserService();
+            var data = userService.ResetPassword(emailUser);
+            if (data != null)
+                userService.SendEmailResetPassword(data);
+            var result = data == null ? 0 : 1;
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

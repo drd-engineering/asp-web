@@ -310,6 +310,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\pages\login.css" />
+    <Content Include="assets\css\pages\registration.css" />
     <Content Include="assets\css\pages\for-all-page.css" />
     <Content Include="assets\css\nprogress.css" />
     <Content Include="assets\css\pages\setting.css" />
@@ -2777,12 +2779,15 @@
     <Content Include="doc\emailtemplate\JoinDRD.html" />
     <Content Include="doc\emailtemplate\MemberInvitation.html" />
     <Content Include="doc\emailtemplate\InboxNotif.html" />
+    <Content Include="doc\emailtemplate\ResetPassword.html" />
     <Content Include="doc\emailtemplate\Registration.html" />
     <Content Include="doc\tnc\tnc.htm" />
     <Content Include="doc\tnc\tnc_files\colorschememapping.xml" />
     <Content Include="doc\tnc\tnc_files\filelist.xml" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\background_login %281%29.jpg" />
+    <Content Include="Images\background_login %282%29.jpg" />
     <Content Include="Images\background_login.jpg" />
     <Content Include="Images\back_reg2.jpg" />
     <Content Include="Images\Bank\creditcard.png" />

@@ -39,36 +39,8 @@
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
 
     <script src="~/Scripts/xpublic.js"></script>
-    <style>
-        .field-icon {
-            float: right;
-            margin-left: -25px;
-            margin-top: -25px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .bg-dark-blue {
-            background-color: #363636;
-        }
-        /*Pseudo Element*/
-        .login-container:before {
-            content: ' ';
-            display: block;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.6;
-            background: url('/Images/background_login.jpg')  no-repeat center center fixed;
-            -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
-        }
-    </style>
+    <!-- Page stylesheets -->
+    <link href="~/assets/css/pages/login.css" rel="stylesheet" type="text/css">
 </head>
 <body class="login-container" style="" ng-app="drdApp">
     <div ng-controller="drdController">
@@ -147,10 +119,7 @@
         var myApp = angular.module('drdApp', ['ui.bootstrap'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-
-            /*--------------------------------------------------------------
-            INIT DATA
-            --------------------------------------------------------------*/
+            ////////////  INITIAL DATA  /////////////////
             angular.element(document).ready(function () {
                 $(".styled, .multiselect-container input").uniform({
                     radioClass: 'choice'
@@ -173,18 +142,7 @@
                     $scope.isPasswordShown = false;
                 }
             }
-
-            $scope.popupTnC = function () {
-                $("#modal_tnc").modal("show");
-            }
-
-            $scope.goRegistry = function () {
-                location.href = "/subscription/registry";
-            }
-
-            /*--------------------------------------------------------------
-            GET VALID USER
-            --------------------------------------------------------------*/
+            ////////////  LOGIN  /////////////////
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;
@@ -205,10 +163,6 @@
                         }
                         else if (response.data == 1)
                             window.location = $scope.redirectUrl;
-                        else if (response.data == 2) {
-                            window.location = "/appzone/appzonelist";
-                            $scope.load = false;
-                        }
                     }
                 }, function (response) {
                     $scope.load = false;
@@ -217,8 +171,6 @@
                 });
             }
         });
-
-
     </script>
 </body>
 

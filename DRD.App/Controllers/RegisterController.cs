@@ -18,12 +18,15 @@ namespace DRD.App.Controllers
             return View();
         }
 
-        // GET: Register/Save
-        // Register a new User, save it to database
-        public ActionResult Save(Register register)
+        /// <summary>
+        /// API to SAVE user's registration data 
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns></returns>
+        public ActionResult Save(RegistrationData register)
         {
             var data = userService.SaveRegistration(register);
-            var registrationResponse = new RegisterResponse();
+            var registrationResponse = new RegistrationResponse();
             if (data.Id < 0)
             {
                 registrationResponse.Id = "DBLEMAIL";
@@ -39,16 +42,10 @@ namespace DRD.App.Controllers
                 var Tranfiles = Server.MapPath("/" + "Images/Member" + "/") + "user.png";
                 if (System.IO.File.Exists(Tranfiles))
                 {
-                    //Need to mention any file,so that to overwrite this newly created with the actual file,other wise will get 2 errors like
-                    //1)Cannot create a file when that file already exists
-                    //2)The path....is a folder not a file.
-                    //ProcessedFiles = Server.MapPath(@"~\ProcessedFiles"); //Wrong
                     var ProcessedFiles = Server.MapPath("/" + userFolder + "/") + "user.png";
-
-                    //Need to move or overwrite the new file with actual file.
                     System.IO.File.Copy(Tranfiles, ProcessedFiles);
                 }
-                registrationResponse.Id = "" + data.Id;
+                registrationResponse.Id = data.Id.ToString();
                 registrationResponse.Email = data.Email;
                 userService.SendEmailRegistration(data);
             }
@@ -58,20 +55,22 @@ namespace DRD.App.Controllers
         }
 
         /// <summary>
-        /// API to Obtain all company that available in DRD
+        /// API to GET all company that available in DRD
         /// </summary>
         /// <returns>company details only contain name, code and id</returns>
-        public ActionResult GetAllCompany()
+        public ActionResult GetCompanies()
         {
-            var data = companyService.GetAllCompany();
+            var data = companyService.GetCompanies();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        // GET: Register/CheckEmail
-        // Check whenever an email is already used
-        public ActionResult CheckEmail(string email)
+        /// <summary>
+        /// API to CHECK is email is never used by other user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public ActionResult CheckIsEmailAvailable(string email)
         {
-            var data = userService.CheckEmailAvailability(email);
+            var data = userService.CheckIsEmailAvailable(email);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

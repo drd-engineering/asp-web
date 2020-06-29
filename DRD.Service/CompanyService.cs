@@ -3,14 +3,13 @@ using DRD.Models.API;
 using DRD.Service.Context;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace DRD.Service
 {
     public class CompanyService
     {
-        private MemberService memberService = new MemberService();
+        private MemberService memberService;
         private SubscriptionService subscriptionService = new SubscriptionService();
         private UserService userService = new UserService();
 
@@ -113,7 +112,7 @@ namespace DRD.Service
         /// Obtain all company available in DRD 
         /// </summary>
         /// <returns>only contains little details like id, name and code</returns>
-        public ICollection<SmallCompanyData> GetAllCompany()
+        public ICollection<SmallCompanyData> GetCompanies()
         {
             using (var db = new ServiceContext())
             {

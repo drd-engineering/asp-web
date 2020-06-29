@@ -241,7 +241,7 @@
     <Compile Include="API\ProcessActivity.cs" />
     <Compile Include="API\CompanyItem.cs" />
     <Compile Include="API\Element.cs" />
-    <Compile Include="API\RegisterResponse.cs" />
+    <Compile Include="API\RegistrationResponse.cs" />
     <Compile Include="API\RegistrationData.cs" />
     <Compile Include="DbDefinition\Contact.cs" />
     <Compile Include="Custom\Comparator.cs" />

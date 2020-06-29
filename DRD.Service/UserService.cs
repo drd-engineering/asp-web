@@ -12,113 +12,62 @@ namespace DRD.Service
 {
     public class UserService
     {
-
-        private bool CheckIdExist(long id)
-        {
-            using var db = new ServiceContext();
-            return db.Users.Any(i => i.Id == id);
-        }
-
         /// <summary>
         /// Save User Ragistration as a new user
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
-        public User SaveRegistration(Register register)
+        public User SaveRegistration(RegistrationData register)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email)).Count();
+            if (result != 0)
             {
-                var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email)).ToList();
-
-                if (result.Count != 0)
-                {
-                    User retVal = new User();
-                    retVal.Id = -1;
-                    return retVal;
-                }
-                
-                User user = new User();
-                //check duplicate id
-                while (CheckIdExist(user.Id))
-                {
-                    user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                }
-
-                user.Email = register.Email;
-                user.Name = register.Name;
-                user.Phone = register.Phone;
-                user.IsActive = true;
-                user.Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1));
-                // user.Password = System.Web.Security.Membership.GeneratePassword(length: 6, numberOfNonAlphanumericCharacters: 1);
-                long userId = Save(user);
-                user.Id = userId;
-                if (register.CompanyId != null)
-                {
-                    Member member = new Member();
-                    member.UserId = userId;
-                    member.IsMemberAccept = true;
-                    member.CompanyId = register.CompanyId.Value;
-                    long memberId = Save(member);
-                }
-                return user;
+                User retVal = new User();
+                retVal.Id = -1;
+                return retVal;
             }
+            User user = new User(register.Email, register.Name, register.Phone)
+            {
+                Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1))
+            };
+            long userId = Save(user);
+            user.Id = userId;
+            if (register.CompanyId != null)
+            {
+                MemberService memberService = new MemberService();
+                long memberId = memberService.AddMemberRequestToJoinCompany(userId, register.CompanyId.Value);
+            }
+            return user;
         }
         /// <summary>
-        /// Save user with valid user Id long value
+        /// Helper method to Save user with valid and unique user Id long value
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public long Save(User user)
+        private long Save(User user)
         {
-            int result = 0;
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var encryptedUserId = Utilities.Encrypt(user.Id.ToString());
+            while(Constant.RESTRICTED_FOLDER_NAME.Any(w => encryptedUserId.Contains(w)) && CheckIdIsExist(user.Id))
             {
-                for (int i = 0; i < Constant.TEST_DUPLICATION_COUNT; i++)
-                {
-                    for (int j = 0; j < Constant.TEST_DUPLICATION_COUNT; j++)
-                    {
-                        user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                        var encryptedUserId = Utilities.Encrypt(user.Id.ToString());
-                        if (!Constant.RESTRICTED_FOLDER_NAME.Any(w => encryptedUserId.Contains(w)))
-                            break;
-                    }
-                    try
-                    {
-                        user.ProfileImageFileName = "user.png";
-                        user.CreatedAt = DateTime.Now;
-                        db.Users.Add(user);
-                        result = db.SaveChanges();
-                        break;
-                    }
-                    catch (DbUpdateException x)
-                    {
-                        if (i > Constant.TEST_DUPLICATION_COUNT)
-                            throw new Exception(x.Message);
-                    }
-                }
-                return user.Id;
+                user.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                user.Username = user.Id.ToString();
+                encryptedUserId = Utilities.Encrypt(user.Id.ToString());
             }
+            db.Users.Add(user);
+            db.SaveChanges();
+            return user.Id;
         }
         /// <summary>
-        /// Save member with valid user Id long value
+        /// Check if User Id generated is exist
         /// </summary>
-        /// <param name="member"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public long Save(Member member)
+        private bool CheckIdIsExist(long id)
         {
-            using (var db = new ServiceContext())
-            {
-                while (CheckIdExist(member.Id))
-                {
-                    member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                }
-                db.Members.Add(member);
-                db.SaveChanges();
-                       
-
-                return member.Id;
-            }
-
+            using var db = new ServiceContext();
+            return db.Users.Any(i => i.Id == id);
         }
         /// <summary>
         /// Registration notification via email, for new user
@@ -144,6 +93,12 @@ namespace DRD.Service
 
             var task = emailService.Send(senderEmail, senderName, user.Email, "User Registration", body, false, new string[] { });
         }
+        /// <summary>
+        /// Login to DRD account using username and password
+        /// </summary>
+        /// <param name="username">you can use ID user and email user to login.</param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public UserSession Login(string username, string password)
         {
             using (var db = new ServiceContext())
@@ -157,35 +112,28 @@ namespace DRD.Service
                     if (userId < 0) encryptedPassword = password;
                     findUsername = s => s.Id == userId;
                 }
-
                 User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
-
                 if (userGet == null) return null;
-
                 if (userGet.IsActive == false)
                 {
                     userGet.IsActive = true;
                     db.SaveChanges();
                 }
-
                 UserSession loginUser = new UserSession(userGet);
                 return loginUser;
-
             }
         }
-
-        public bool CheckEmailAvailability(string email)
+        /// <summary>
+        /// CHECK is email is never used by other user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public bool CheckIsEmailAvailable(string email)
         {
             using var db = new ServiceContext();
             return !db.Users.Any(userItem => userItem.Email.Equals(email));
         }
 
-        public int Logout(long id)
-        {
-            using var db = new ServiceContext();
-            var data = db.Users.FirstOrDefault(user => user.Id == id);
-            return 0;
-        }
         public UserProfile Update(UserProfile userProfile)
         {
             User user;
@@ -311,39 +259,46 @@ namespace DRD.Service
         }
 
         /// <summary>
-        /// User for reset user password, the password will be sent to user email
+        /// SAVE new user password by generator and send the password to user's email
         /// </summary>
         /// <param name="emailUser"></param>
         /// <returns></returns>
-        public int ResetPassword(string emailUser)
+        public User ResetPassword(string emailUser)
         {
-            using (var db = new ServiceContext())
-            {
-                var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
-                if (userGet == null) return 0;
+            using var db = new ServiceContext();
+            var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
+            if (userGet == null) return userGet;
 
-                var xpwd = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
+            var xpwd = System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1);
 
-                userGet.Password = Utilities.Encrypt(xpwd);
-                var result = db.SaveChanges();
-
-                EmailService emailService = new EmailService();
-                string body =
-                    "Dear " + userGet.Name + ",<br/><br/>" +
-                    "your password is reset, use the following temporary password:<br/><br/>" +
-                    "Temporary password: <b>" + xpwd + "</b><br/><br/>" +
-                    "Make a new password change after you login with this password.<br/><br/>" +
-                    "Thank you<br/><br/>" +
-                    "DRD<br/>";
-                var configGenerator = new AppConfigGenerator();
-                var emailfrom = configGenerator.GetConstant("EMAIL_USER")["value"];
-                var emailfromdisplay = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
-
-                var task = emailService.Send(emailfrom, emailfromdisplay, emailUser, "DRD User Reset Password", body, false, new string[] { });
-                return 1;
-            }
+            userGet.Password = Utilities.Encrypt(xpwd);
+            var result = db.SaveChanges();
+            
+            return userGet;
         }
+        /// <summary>
+        /// EMAIL reset password result user
+        /// </summary>
+        /// <param name="user"></param>
+        public void SendEmailResetPassword(User user)
+        {
+            var configGenerator = new AppConfigGenerator();
+            var topaz = configGenerator.GetConstant("APPLICATION_NAME")["value"];
+            var senderName = configGenerator.GetConstant("EMAIL_USER_DISPLAY")["value"];
+            EmailService emailService = new EmailService();
 
+            string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/ResetPassword.html"));
+            String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+            String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+            body = body.Replace("{_URL_}", strUrl);
+            body = body.Replace("{_NAME_}", user.Name);
+            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
+
+            var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
+
+            var task = emailService.Send(senderEmail, senderName, user.Email, "User Reset Password", body, false, new string[] { });
+        }
         /// <summary>
         /// Validate the password provided is the user's password
         /// </summary>
@@ -356,11 +311,6 @@ namespace DRD.Service
             using (var db = new ServiceContext())
             {
                 var User = db.Users.FirstOrDefault(c => c.Id == id);
-
-                System.Diagnostics.Debug.WriteLine(User.Password);
-                System.Diagnostics.Debug.WriteLine(Utilities.Encrypt(password));
-                System.Diagnostics.Debug.WriteLine(password);
-
                 if (User == null)
                     return equals;  // invalid User
 

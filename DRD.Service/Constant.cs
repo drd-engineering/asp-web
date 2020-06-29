@@ -19,7 +19,6 @@ namespace DRD.Service
         public const int DATA_TEMP3 = 2020;
         public const int DATA_TEMP2 = 2;
         public const int DATA_TEMP1 = 10;
-        public const int TEST_DUPLICATION_COUNT = 10;
         public const int ALLOW_EXCEED_LIMIT = -99;
         public const string CONSTRING_USER = "DrdUserContext";
         public const string API_KEY = "AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY";

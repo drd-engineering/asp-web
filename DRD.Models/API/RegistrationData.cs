@@ -1,6 +1,6 @@
 ﻿namespace DRD.Models.API
 {
-    public class Register
+    public class RegistrationData
     {
         public string Name { get; set; }
         public string Phone { get; set; }

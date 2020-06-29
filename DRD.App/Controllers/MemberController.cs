@@ -111,13 +111,15 @@ namespace DRD.App.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult addMemberToCompany(long companyId, long userId)
+        public ActionResult AddMemberToCompany(long companyId, long userId)
         {
             InitializeAPI();
 
-            bool data = memberService.addMemberToCompany(userId, companyId);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
+            long data = memberService.AddMemberToCompany(userId, companyId);
+            bool returnValue = false;
+            if (data > 0)
+                returnValue = true;
+            return Json(returnValue, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Delete(long memberId)
@@ -125,15 +127,6 @@ namespace DRD.App.Controllers
             InitializeAPI();
 
             long data = memberService.Delete(memberId);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult addCompanyToMember(long companyId, long userId)
-        {
-            InitializeAPI();
-
-            bool data = memberService.addCompanyToMember(userId, companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
