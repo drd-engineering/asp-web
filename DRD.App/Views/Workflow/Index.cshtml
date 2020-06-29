@@ -207,7 +207,6 @@
 
             function initValues() {
                 var product = @Html.Raw(Json.Encode(Model.Object));
-                console.log(product);
                 $scope.objectItems = @Html.Raw(Json.Encode(Model.ObjectItems));
                 if (product.Id!=0 ){
                     $scope.model.Id=product.Id;
@@ -241,7 +240,7 @@
                 
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
-                        prod: {
+                        workflowUpdate: {
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
                             Description: $scope.model.Description,
@@ -287,7 +286,10 @@
 
              $scope.deleteWorkflow = function () {
                 var workflowId = $scope.model.Id;
-                $http.post('@Url.Action("DeleteWorkflow", "Workflow")', { id: workflowId })
+                 $http.post('@Url.Action("DeleteWorkflow", "Workflow")',
+                     {
+                         id: workflowId
+                     })
                     .then(function (response) {
                         if (response.data == "OK") {
                             $.jGrowl('This workflow has been deleted', {

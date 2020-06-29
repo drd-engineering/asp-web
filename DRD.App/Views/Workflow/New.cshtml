@@ -215,12 +215,12 @@
 
                 $http.post('@Url.Action("Save", "Workflow")',
                     {
-                        prod: {
+                        workflowUpdate: {
                             Id: $scope.model.Id,
                             Name: $scope.model.Name,
                             Description: $scope.model.Description,
                             IsActive: true,
-                            IsTemplate: $('#checkbox2')[0].checked,
+                            IsTemplate: false,
                             WorkflowNodes:data.nodes,
                             WorkflowNodeLinks:data.links,
                         }
