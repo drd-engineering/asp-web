@@ -14,15 +14,18 @@ namespace DRD.App.Controllers
         private UserSession user;
         private Layout layout;
 
+        //helper
         private bool CheckLogin(bool getMenu = false)
         {
             login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
                 workflowService = new WorkflowService();
                 if (getMenu)
                 {
+                    //get menu if user authenticated
                     layout = new Layout
                     {
                         Menus = login.GetMenus(this),
@@ -48,7 +51,7 @@ namespace DRD.App.Controllers
             if (!CheckLogin(getMenu:true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Workflow?id="+id });
 
-            layout.Object = workflowService.GetById(id);
+            layout.Object = workflowService.GetById(id,user.Id);
             if (layout.Object == null) return RedirectToAction("list", "workflow");
 
             return View(layout);
@@ -62,34 +65,50 @@ namespace DRD.App.Controllers
             return View(layout);
         }
 
-        public ActionResult GetById(long id)
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="workflowUpdate"></param>
+        /// <returns></returns>
+        public ActionResult Save(WorkflowItem workflowUpdate)
         {
             CheckLogin();
-            var data = workflowService.GetById(id);
+            workflowUpdate.CreatorId = user.Id;
+            var data = workflowService.Save(workflowUpdate);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(WorkflowItem prod)
+        /// <summary>
+        /// API Get all workflows that match the params
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <param name="page"></param>
+        /// <param name="totalItemPerPage"></param>
+        /// <returns></returns>
+        public ActionResult GetWorkflows(string criteria, int page, int totalItemPerPage)
         {
             CheckLogin();
-            prod.CreatorId = user.Id;
-            var data = workflowService.Save(prod);
+            var data = workflowService.GetWorkflows(user.Id, criteria, page, totalItemPerPage);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetWorkflows(string topCriteria, int page, int pageSize)
+        /// <summary>
+        /// API count the total of workflows that match the criteria
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        public ActionResult CountWorkflows(string criteria)
         {
             CheckLogin();
-            var data = workflowService.GetWorkflows(user.Id, topCriteria, page, pageSize);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult CountWorkflows(string topCriteria)
-        {
-            CheckLogin();
-            var data = workflowService.CountWorkflows(user.Id, topCriteria);
+            var data = workflowService.CountWorkflows(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// API delete workflow based on workflow id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult DeleteWorkflow(long id)
         {
             CheckLogin();
