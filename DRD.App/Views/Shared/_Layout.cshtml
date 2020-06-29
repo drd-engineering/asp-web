@@ -67,7 +67,7 @@
                 </a>
                 <ul class="nav navbar-nav visible-xs-block">
                     <li>
-                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="@(Model.User.ImageProfile!=null ? "/Images/Member/"+Model.User.EncryptedId+"/" + Model.User.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" /></a>
+                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="@(Model.User.ProfileImageFileName!=null ? "/Images/Member/"+Model.User.EncryptedId+"/" + Model.User.ProfileImageFileName : "/Images/Member/blue-user-icon-32.jpg")" alt="" /></a>
                     </li>
                     <li>
                         <a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a>
@@ -95,7 +95,7 @@
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="@(Model.User.ImageProfile!=null ? "/Images/Member/" + Model.User.EncryptedId+"/"+Model.User.ImageProfile : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
+                                <img src="@(Model.User.ProfileImageFileName!=null ? "/Images/Member/" + Model.User.EncryptedId+"/"+Model.User.ProfileImageFileName : "/Images/Member/blue-user-icon-32.jpg")" alt="" />
                                 <span> @Model.User.FirstName </span>
                                 <i class="caret"></i>
                             </a>
