@@ -101,27 +101,25 @@ namespace DRD.Service
         /// <returns></returns>
         public UserSession Login(string username, string password)
         {
-            using (var db = new ServiceContext())
-            {
-                string encryptedPassword = Utilities.Encrypt(password);
+            using var db = new ServiceContext();
+            string encryptedPassword = Utilities.Encrypt(password);
 
-                Expression<Func<User, bool>> findUsername = s => s.Email == username;
-                if (!username.Contains('@'))
-                {
-                    long userId = Convert.ToInt64(username);
-                    if (userId < 0) encryptedPassword = password;
-                    findUsername = s => s.Id == userId;
-                }
-                User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
-                if (userGet == null) return null;
-                if (userGet.IsActive == false)
-                {
-                    userGet.IsActive = true;
-                    db.SaveChanges();
-                }
-                UserSession loginUser = new UserSession(userGet);
-                return loginUser;
+            Expression<Func<User, bool>> findUsername = s => s.Email == username;
+            if (!username.Contains('@'))
+            {
+                long userId = Convert.ToInt64(username);
+                if (userId < 0) encryptedPassword = password;
+                findUsername = s => s.Id == userId;
             }
+            User userGet = db.Users.Where(user => user.Password.Equals(encryptedPassword)).Where(findUsername).FirstOrDefault();
+            if (userGet == null) return null;
+            if (userGet.IsActive == false)
+            {
+                userGet.IsActive = true;
+                db.SaveChanges();
+            }
+            UserSession loginUser = new UserSession(userGet);
+            return loginUser;
         }
         /// <summary>
         /// CHECK is email is never used by other user
@@ -204,32 +202,30 @@ namespace DRD.Service
         /// <returns></returns>
         public ListSubscription GetAllSubscription(long userId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var returnValue = new ListSubscription();
+            //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
+            var userBusinessPlan = (from member in db.Members
+                                    join company in db.Companies on member.CompanyId equals company.Id
+                                    join usage in db.BusinessUsages on company.Id equals usage.CompanyId
+                                    where member.UserId == userId
+                                    && member.IsAdministrator
+                                    && usage.IsActive
+                                    select new SubscriptionData
+                                    {
+                                        id = usage.Id,
+                                        type = "company",
+                                        companyId = company.Id,
+                                        companyName = company == null ? null : company.Name
+                                    }).ToList();
+            if (userBusinessPlan.Count != 0)
             {
-                var returnValue = new ListSubscription();
-                //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
-                var userBusinessPlan = (from member in db.Members
-                                        join company in db.Companies on member.CompanyId equals company.Id
-                                        join usage in db.BusinessUsages on company.Id equals usage.CompanyId
-                                        where member.UserId == userId
-                                        && member.IsAdministrator
-                                        && usage.IsActive
-                                        select new SubscriptionData
-                                        {
-                                            id = usage.Id,
-                                            type = "company",
-                                            companyId = company.Id,
-                                            companyName = company == null ? null : company.Name
-                                        }).ToList();
-                if (userBusinessPlan.Count != 0)
+                foreach (var item in userBusinessPlan)
                 {
-                    foreach (var item in userBusinessPlan)
-                    {
-                        returnValue.items.Add(item);
-                    }
+                    returnValue.items.Add(item);
                 }
-                return returnValue;
             }
+            return returnValue;
         }
         /// <summary>
         /// SAVE new password of specify user that loged in to application
@@ -240,16 +236,14 @@ namespace DRD.Service
         /// <returns></returns>
         public int UpdatePassword(UserSession user, String oldPassword, String newPassword)
         {
-            using (var db = new ServiceContext())
-            {
-                var encryptedPassword = Utilities.Encrypt(oldPassword);
-                User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
-                if (getUser == null)
-                    return -1;
-                getUser.Password = Utilities.Encrypt(newPassword);
-                db.SaveChanges();
-                return 1;
-            }
+            using var db = new ServiceContext();
+            var encryptedPassword = Utilities.Encrypt(oldPassword);
+            User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
+            if (getUser == null)
+                return -1;
+            getUser.Password = Utilities.Encrypt(newPassword);
+            db.SaveChanges();
+            return 1;
         }
         /// <summary>
         /// SAVE new user password by generator and send the password to user's email
@@ -301,21 +295,19 @@ namespace DRD.Service
         public bool ValidationPassword(long id, string password)
         {
             var equals = false;
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var User = db.Users.FirstOrDefault(c => c.Id == id);
+            if (User == null)
+                return equals;  // invalid User
+
+            // for test case, can be deprecated if needed
+            if (User.Id < 0 && User.Password.Equals(password))
             {
-                var User = db.Users.FirstOrDefault(c => c.Id == id);
-                if (User == null)
-                    return equals;  // invalid User
+                    equals = true;
+            }else if (User.Password.Equals(Utilities.Encrypt(password)))
+                    equals = true;
 
-                // for test case, can be deprecated if needed
-                if (User.Id < 0 && User.Password.Equals(password))
-                {
-                        equals = true;
-                }else if (User.Password.Equals(Utilities.Encrypt(password)))
-                        equals = true;
-
-                return equals;
-            }
+            return equals;
         }
         /// <summary>
         /// CHECK if the user is owner of a company or more
@@ -324,13 +316,8 @@ namespace DRD.Service
         /// <returns></returns>
         public bool HasCompany(long userId)
         {
-            var has = true;
-            using (var db = new ServiceContext())
-            {
-                var countCompany = db.Companies.Count(c => c.OwnerId == userId && c.IsActive);
-                has = countCompany > 0;
-            }
-            return has;
+            using var db = new ServiceContext();
+            return db.Companies.Any(c => c.OwnerId == userId && c.IsActive);
         }
         /// <summary>
         /// CHECK if the user is a member of some company
@@ -339,13 +326,8 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsMemberofCompany(long userId)
         {
-            var isMember = true;
-            using (var db = new ServiceContext())
-            {
-                var countMember = db.Members.Count(m => m.UserId == userId && m.IsCompanyAccept && m.IsMemberAccept);
-                isMember = countMember > 0;
-            }
-            return isMember;
+            using var db = new ServiceContext();
+            return db.Members.Any(m => m.UserId == userId && m.IsCompanyAccept && m.IsMemberAccept);
         }
         /// <summary>
         /// CHECK if the user is admin of a company or more
@@ -354,42 +336,35 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsAdminOfCompany(long userId)
         {
-            var usrIsAdmin = false;
-            using (var db = new ServiceContext())
-            {
-                var countAdminCompany = db.Members.Count(m => m.UserId == userId && m.IsAdministrator && m.IsActive && m.IsCompanyAccept && m.IsMemberAccept);
-                usrIsAdmin = countAdminCompany > 0;
-            }
-            return usrIsAdmin;
+            using var db = new ServiceContext();
+            return db.Members.Any(m => m.UserId == userId && 
+                m.IsAdministrator && m.IsActive && 
+                m.IsCompanyAccept && m.IsMemberAccept);
         }
         /// <summary>
-        /// CHECK if the user is an admin or has company
+        /// CHECK if the user is an admin at least in one company or has at least one company
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool IsAdminOrOwnerofAnyCompany(long userId)
         {
-            using (var db = new ServiceContext())
-            {
-                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
-                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
-                    && memberItem.IsCompanyAccept && memberItem.IsMemberAccept);
-                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.IsActive);
-
-                return countAsAdmin > 0 || countAsOwner > 0;
-            }
+            using var db = new ServiceContext();
+            return IsAdminOfCompany(userId) || HasCompany(userId);
         }
+        /// <summary>
+        /// CHECK if the user is an admin or has the company
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
         public bool IsAdminOrOwnerofSpecificCompany(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var countAsAdmin = db.Members.Count(memberItem => memberItem.UserId == userId
-                    && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
-                    && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.CompanyId==companyId);
-                var countAsOwner = db.Companies.Count(companyItem => companyItem.OwnerId == userId && companyItem.Id==companyId && companyItem.IsActive);
-
-                return countAsAdmin > 0 || countAsOwner > 0;
-            }
+            using var db = new ServiceContext();
+            return db.Members.Any(memberItem => memberItem.UserId == userId
+                && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
+                && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.CompanyId==companyId) 
+                || 
+                db.Companies.Any(companyItem => companyItem.OwnerId == userId && companyItem.Id==companyId && companyItem.IsActive);
         }
     }
 }
