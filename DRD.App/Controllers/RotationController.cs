@@ -63,7 +63,7 @@ namespace DRD.App.Controllers
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation?id="+id });
 
-            layout.Object =  rotationService.GetRotationById(id, user.Id);
+            layout.Object =  rotationService.GetRotation(id, user.Id);
             if (layout.Object == null) return RedirectToAction("list", "rotation");
 
             return View(layout);

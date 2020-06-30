@@ -51,7 +51,7 @@ namespace DRD.App.Controllers
             if (!CheckLogin(getMenu:true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Workflow?id="+id });
 
-            layout.Object = workflowService.GetById(id,user.Id);
+            layout.Object = workflowService.GetWorkflow(id,user.Id);
             if (layout.Object == null) return RedirectToAction("list", "workflow");
 
             return View(layout);
@@ -68,13 +68,13 @@ namespace DRD.App.Controllers
         /// <summary>
         /// API save workflow, workflow nodes and workflow links
         /// </summary>
-        /// <param name="workflowUpdate"></param>
+        /// <param name="updatedWorkflow"></param>
         /// <returns></returns>
-        public ActionResult Save(WorkflowItem workflowUpdate)
+        public ActionResult Save(WorkflowItem updatedWorkflow)
         {
             CheckLogin();
-            workflowUpdate.CreatorId = user.Id;
-            var data = workflowService.Save(workflowUpdate);
+            updatedWorkflow.CreatorId = user.Id;
+            var data = workflowService.Save(updatedWorkflow);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

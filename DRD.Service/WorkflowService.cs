@@ -1,4 +1,5 @@
 ﻿using DRD.Models;
+using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service.Context;
@@ -35,7 +36,6 @@ namespace DRD.Service
             return values;
         }
 
-
         //helper
         private static Symbol GetSymbolsFromCsvById(int id)
         {
@@ -53,7 +53,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="id"></param
         /// <returns></returns>
-        public WorkflowItem GetById(long id, long userId)
+        public WorkflowItem GetWorkflow(long id, long userId)
         {
             using var db = new ServiceContext();
             var result =
@@ -200,65 +200,65 @@ namespace DRD.Service
         /// <summary>
         /// Save updated and new workflow
         /// </summary>
-        /// <param name="WorkflowItem"></param>
+        /// <param name="newWorkflow"></param>
         /// <returns></returns>
-        public int Save(WorkflowItem WorkflowItem)
+        public int Save(WorkflowItem newWorkflow)
         {
-            Workflow product;
+            Workflow workflowDb;
             using var db = new ServiceContext();
 
             // validity subscription type
-            var creator = db.Users.FirstOrDefault(user => user.Id == WorkflowItem.CreatorId);
+            var creator = db.Users.FirstOrDefault(user => user.Id == newWorkflow.CreatorId);
 
-            if (WorkflowItem.Id != 0)
-                product = db.Workflows.FirstOrDefault(workflow => workflow.Id == WorkflowItem.Id);
+            if (newWorkflow.Id != 0)
+                workflowDb = db.Workflows.FirstOrDefault(workflow => workflow.Id == newWorkflow.Id);
             else
             {
-                product = new Workflow();
-                while (CheckIdExist(product.Id))
+                workflowDb = new Workflow();
+                while (CheckIdExist(workflowDb.Id))
                 {
-                    product.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    workflowDb.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
                 }
             }
 
-            product.Name = WorkflowItem.Name;
-            product.Description = WorkflowItem.Description;
-            product.IsActive = WorkflowItem.IsActive;
-            product.IsTemplate = WorkflowItem.IsTemplate;
-            product.CreatorId = WorkflowItem.CreatorId;
-            if (WorkflowItem.Id == 0)db.Workflows.Add(product);
+            workflowDb.Name = newWorkflow.Name;
+            workflowDb.Description = newWorkflow.Description;
+            workflowDb.IsActive = newWorkflow.IsActive;
+            workflowDb.IsTemplate = newWorkflow.IsTemplate;
+            workflowDb.CreatorId = newWorkflow.CreatorId;
+            if (newWorkflow.Id == 0)db.Workflows.Add(workflowDb);
             
 
             var result = db.SaveChanges();
 
             var isused = false;
-            if (WorkflowItem.Id != 0 && product.TotalUsed > 0)
+            if (newWorkflow.Id != 0 && workflowDb.TotalUsed > 0)
                 isused = true;
 
             //changes in canvas can't be updated
             if (isused) return result;
             
             // delete existing node
-            if (WorkflowItem.Id == 0)
+            if (newWorkflow.Id == 0)
             {
-                var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.Source.WorkflowId == WorkflowItem.Id || workflow.Target.WorkflowId == WorkflowItem.Id).ToList();
+                var oldNodeLinks = db.WorkflowNodeLinks.Where(workflow => workflow.Source.WorkflowId == newWorkflow.Id || workflow.Target.WorkflowId == newWorkflow.Id).ToList();
                 db.WorkflowNodeLinks.RemoveRange(oldNodeLinks);
                 db.SaveChanges();
 
-                var oldNodes = db.WorkflowNodes.Where(workflow => workflow.WorkflowId == WorkflowItem.Id).ToList();
+                var oldNodes = db.WorkflowNodes.Where(workflow => workflow.WorkflowId == newWorkflow.Id).ToList();
                 db.WorkflowNodes.RemoveRange(oldNodes);
                 db.SaveChanges();
             }
 
             // check if workflow node or link null => automatically invalid
-            if (WorkflowItem.WorkflowNodes == null || WorkflowItem.WorkflowNodeLinks == null) return result;
+            if (newWorkflow.WorkflowNodes == null || newWorkflow.WorkflowNodeLinks == null) return result;
             
             // save node
-            foreach (WorkflowNodeItem newNode in WorkflowItem.WorkflowNodes)
+            foreach (WorkflowNodeItem newNode in newWorkflow.WorkflowNodes)
             {
                 var node = new WorkflowNode
                 {
-                    WorkflowId = product.Id,
+                    WorkflowId = workflowDb.Id,
                     SymbolCode = GetSymbolsFromCsvByCode(newNode.symbolCode).Id,
 
                     Caption = newNode.caption,
@@ -275,14 +275,14 @@ namespace DRD.Service
             }
             
             // save node link
-            foreach (WorkflowNodeLinkItem newNodeLink in WorkflowItem.WorkflowNodeLinks)
+            foreach (WorkflowNodeLinkItem newNodeLink in newWorkflow.WorkflowNodeLinks)
             {
                 var nodelink = new WorkflowNodeLink
                 {
-                    SourceId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.elementFrom)).Id,
-                    TargetId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.elementTo)).Id,
+                    SourceId = newWorkflow.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.elementFrom)).Id,
+                    TargetId = newWorkflow.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.elementTo)).Id,
                     SymbolCode = GetSymbolsFromCsvByCode(newNodeLink.symbolCode).Id,
-                    FirstNodeId = WorkflowItem.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.firstNode)).Id
+                    FirstNodeId = newWorkflow.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.firstNode)).Id
                 };
 
                 var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.SourceId);

@@ -207,12 +207,17 @@
     <Compile Include="Custom\DocumentElementInboxData.cs" />
     <Compile Include="Custom\MemberData.cs" />
     <Compile Include="API\RotationInboxData.cs" />
+<<<<<<< HEAD
     <Compile Include="API\RotationNodeDocInboxData.cs" />
+=======
+    <Compile Include="API\RotationListItem.cs" />
+    <Compile Include="Custom\RotationNodeDocInboxData.cs" />
+>>>>>>> 8248d2ce8496d41564d06723b58683adcf80a94f
     <Compile Include="Custom\DocumentUserInboxData.cs" />
     <Compile Include="API\RotationNodeInboxData.cs" />
     <Compile Include="API\RotationNodeUpDocInboxData.cs" />
     <Compile Include="Custom\UserInboxData.cs" />
-    <Compile Include="Custom\WorkflowListItem.cs" />
+    <Compile Include="API\WorkflowListItem.cs" />
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />

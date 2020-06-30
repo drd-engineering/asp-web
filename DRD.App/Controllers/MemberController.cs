@@ -30,14 +30,14 @@ namespace DRD.App.Controllers
         /// <summary>
         /// Request to get member data based on search query and page list requested
         /// </summary>
-        /// <param name="topCriteria"></param>
+        /// <param name="criteria"></param>
         /// <param name="page"></param>
-        /// <param name="pageSize"></param>
+        /// <param name="totalItemPerPage"></param>
         /// <returns></returns>
-        public ActionResult FindMembers(string topCriteria, int page, int pageSize)
+        public ActionResult GetMembers(string criteria, int page, int totalItemPerPage)
         {
             InitializeAPI();
-            var data = memberService.FindMembers(user.Id, topCriteria, page, pageSize, null);
+            var data = memberService.GetMembers(user.Id, criteria, page, totalItemPerPage, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
