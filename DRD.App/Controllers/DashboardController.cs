@@ -24,8 +24,7 @@ namespace DRD.App.Controllers
                 //instantiate
                 user = login.GetUser(this);
                 dashboardService = new DashboardService();
-                if (!hasCompany)
-                    hasCompany = dashboardService.CheckIsUserHasCompany(user.Id);
+                hasCompany = dashboardService.CheckIsUserHasCompany(user.Id);
                 if (getMenu)
                 {
                     //get menu if user authenticated
@@ -111,12 +110,12 @@ namespace DRD.App.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult GetRotationsByCompany(long companyId, ICollection<string> Tags, int page, int pageSize)
+        public ActionResult GetRotationsByCompany(long companyId, int page, int pageSize, ICollection<string> tags)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
             int skip = (page - 1) * pageSize;
-            var data = dashboardService.GetRotationsByCompany(companyId, Tags, skip, pageSize);
+            var data = dashboardService.GetRotationsByCompany(companyId, skip, pageSize, tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -125,11 +124,11 @@ namespace DRD.App.Controllers
         /// <param name="companyId"></param>
         /// <param name="Tags"></param>
         /// <returns></returns>
-        public ActionResult CountRotationsByCompany(long companyId, ICollection<string> Tags)
+        public ActionResult CountRotationsByCompany(long companyId, ICollection<string> tags)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
-            var data = dashboardService.CountRotationsByCompany(companyId, Tags);
+            var data = dashboardService.CountRotationsByCompany(companyId, tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -143,18 +142,18 @@ namespace DRD.App.Controllers
                 return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
             // prevent user to go do dashboard page if they are not an owner
             if (!hasCompany) return RedirectToAction("List", "Inbox");
-            var data = dashboardService.GetRotationsByCompany(companyId, null, 0, -1);
+            var data = dashboardService.GetRotationsByCompany(companyId, 0, -1);
             StringBuilder sb = new StringBuilder();
             sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Done,Ongoing,Waiting");
             sb.Append("\r\n");
             foreach (RotationDashboard rtd in data)
             {
                 sb.Append(rtd.Id.ToString() + ',');
-                sb.Append(rtd.Subject + ',');
+                sb.Append(rtd.Name + ',');
                 sb.Append(rtd.Status.ToString() + ',');
-                sb.Append(rtd.DateCreated.ToString() + ',');
-                sb.Append(rtd.DateStarted.ToString() + ',');
-                sb.Append(rtd.DateUpdated.ToString() + ',');
+                sb.Append(rtd.CreatedAt.ToString() + ',');
+                sb.Append(rtd.StartedAt.ToString() + ',');
+                sb.Append(rtd.UpdatedAt.ToString() + ',');
                 sb.Append(rtd.Creator.Name + ',');
                 sb.Append(rtd.Workflow.Name + ',');
                 foreach (var tagname in rtd.Tags)

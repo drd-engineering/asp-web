@@ -559,6 +559,7 @@
                 $scope.model.Tags.splice(index, 1);
                 $scope.backCount = 0;
                 $("#newTag").focus();
+                $scope.getDashboardRotationStatus();
             }
             $scope.backToLastTag = function () {
                 if ($scope.newTag === "" && $scope.backCount < 1) { $scope.backCount += 1; return;}
@@ -567,6 +568,7 @@
                     $scope.newTag = $scope.model.Tags[$scope.model.Tags.length - 1];
                     $scope.model.Tags.splice($scope.model.Tags.length - 1, 1);
                     $scope.backCount = 0;
+                    $scope.getDashboardRotationStatus();
                 }
             }
             $scope.tagPasteHandler = function () {
@@ -579,7 +581,7 @@
                     item = item.replace(",","");
                     var alreadyUsed = false;
                     $scope.model.Tags.some(function (element, i) {
-                        if (item.toLowerCase() === element.toLowerCase()) {
+                        if (item === element) {
                             alreadyUsed = true;
                             return;
                         }
@@ -589,6 +591,7 @@
                     }
                 });
                 $scope.backCount = 0;
+                $scope.getDashboardRotationStatus();
             }
             $scope.addTagList = function () {
                 var splittedTag = $scope.newTag.split(/[\n,]+/);
@@ -598,24 +601,25 @@
                 if ($scope.newTag != "" && $scope.newTag != ",") {
                     $scope.newTag = $scope.newTag.replace(",", "");
                     $scope.model.Tags.some(function (element, i) {
-                        if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        if ($scope.newTag === element) {
                             alreadyUsed = true;
                             return;
                         }
                     })
                     if (!alreadyUsed) {
                         $scope.model.Tags.push($scope.newTag);
+                        $scope.getDashboardRotationStatus();
                     }
                 }
                 $scope.backCount = 0;
                 $scope.newTag = "";
             }
             $scope.removeTag = function (index) {
-                console.log("INDEX" +index);
                 $scope.model.Tags.splice(index, 1);
                 $scope.backCount = 0;
+                $scope.getDashboardRotationStatus();
             }
-            /////////////////// TAG MANIPULATION ////////////////////////////
+            /////////////////// END TAG MANIPULATION ////////////////////////////
         });
 
 

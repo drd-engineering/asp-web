@@ -15,7 +15,6 @@
     <!-- /theme JS files -->
 }
 @section Styles{
-    <link href="~/assets/css/pages/for-all-page.css" rel="stylesheet" type="text/css">
     <link href="~/assets/css/pages/dashboard.css" rel="stylesheet" type="text/css">
 }
 <body>
@@ -25,7 +24,7 @@
             <div class="row">
 
                 <!-- DASHBOARD - ROTATION -->
-                <div class="col-sm-12 col-md-8 col-lg-4" id="dashboard-rotation">
+                <div class="col-sm-12 col-md-8 col-lg-6" id="dashboard-rotation">
                     <div class="panel highlight-container">
                         <div class="highlight-card">
                             <!-- HEADER -->
@@ -169,12 +168,12 @@
                                 <tbody>
                                     <tr ng-click="openInbox(y.InboxId)" style="cursor:pointer; height:50px;vertical-align:central;" ng-repeat="y in listRotationStatus">
                                         <td>{{y.Workflow.Name}}</td>
-                                        <td>{{y.Subject}} </td>
+                                        <td>{{y.Name}} </td>
                                         <td>{{getStatusName(y.Status)}}</td>
-                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateCreated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
-                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.DateUpdated) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
+                                        <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.UpdatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                         <td>
-                                            <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.InboxStatus == 0? 'ongoing' : (usr.InboxStatus == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.InboxStatus == 0? ' border: 2px solid green' : (usr.InboxStatus == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ImageProfile}}" /></span>
+                                            <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.InboxStatus == 0? 'ongoing' : (usr.InboxStatus == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.InboxStatus == 0? ' border: 2px solid green' : (usr.InboxStatus == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="/Images/Member/{{usr.EncryptedId}}/{{usr.ProfileImageFileName}}" /></span>
 
                                         </td>
                                     </tr>
@@ -224,9 +223,7 @@
             $scope.criteria = "";
             $scope.rotationStatusPaging = [];
             $scope.pageRotationStatus = 1;
-            $scope.pageSizeRotationStatus = 10;
-            $scope.hasPrevPage = false;
-            $scope.hasNextPage = false;
+            $scope.totalRotationStatusPerPage = 10;
 
             //company-related
             $scope.companyOwned = [];
@@ -271,31 +268,9 @@
             });
             $scope.getActivityCounter = function () {
                 $scope.products = [];
-                $http.post('@Url.Action("GetActivityCounterCompany", "Rotation")', {companyId: $scope.selectedCompany.Id}).then(function (response) {
+                $http.post('@Url.Action("GetActivityCounterCompany", "Dashboard")', {companyId: $scope.selectedCompany.Id}).then(function (response) {
                     if (response.data) {
-                        console.log($scope.counter);
                         $scope.counter = response.data;
-                        var counter = response.data;
-                        $.jGrowl.defaults.closer = false;
-                        var val = counter.New.Inbox - counter.Old.Inbox;
-                        val = counter.New.InProgress - counter.Old.InProgress;
-                        val = counter.New.Signed - counter.Old.Signed;
-                        val = counter.New.Declined - counter.Old.Declined;
-                        val = counter.New.Completed - counter.Old.Completed
-                        val = counter.New.Altered - counter.Old.Altered;
-                        val = counter.New.Revised - counter.Old.Revised;
-                    }
-                    else {
-                        clearInterval($scope.xtimer);
-                        swal({
-                            title: "Session expired!",
-                            text: "The session has expired, the page will redirect to login. I will close in 10 seconds.",
-                            confirmButtonColor: "#2196F3",
-                            timer: 10000
-                        }, function () {
-                            swal.close();
-                            location.href = "/Login";
-                        });
                     }
                 }, function (response) {
                     //error handle\
@@ -314,7 +289,7 @@
                 });
             };
             $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                $http.post('@Url.Action("GetCompaniesOwnedByUser", "Company")', {}).then(function (response) {
                     if (response.data) {
                         $scope.companyOwned = response.data;
                         $scope.selectedCompany = $scope.companyOwned[0];
@@ -322,7 +297,6 @@
                         $scope.getActivityCounter();
                         // Belum di tampilkan
                         $scope.getCompanySubscriptionLimit();
-
                     }
                 })
             }
@@ -338,11 +312,6 @@
             --------------------------------------------------------------*/
             $scope.openInbox = function (id) {
                 location.href = "/inbox?id=" + id;
-            }
-            $scope.convertJsonDate = function (val) {
-                if (val == undefined)
-                    return '';
-                return new Date(parseInt(val.substr(6)));
             }
             /////////////////// TAG MANIPULATION ////////////////////////////
             $scope.backCount = 0;
@@ -379,7 +348,7 @@
                     item = item.replace(",","");
                     var alreadyUsed = false;
                     $scope.model.Tags.some(function (element, i) {
-                        if (item.toLowerCase() === element.toLowerCase()) {
+                        if (item === element) {
                             alreadyUsed = true;
                             return;
                         }
@@ -399,7 +368,7 @@
                 if ($scope.newTag != "" && $scope.newTag != ",") {
                     $scope.newTag = $scope.newTag.replace(",", "");
                     $scope.model.Tags.some(function (element, i) {
-                        if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        if ($scope.newTag === element) {
                             alreadyUsed = true;
                             return;
                         }
@@ -423,7 +392,7 @@
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
                 $http.post('@Url.Action("GetRotationsByCompany", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: $scope.pageRotationStatus, pageSize: $scope.pageSizeRotationStatus }).then(function (response)
+                    { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags, page: $scope.pageRotationStatus, pageSize: $scope.totalRotationStatusPerPage }).then(function (response)
                 {
                     if (response.data) {
                         $scope.listRotationStatus = response.data;
@@ -435,11 +404,11 @@
                 });
             }
             $scope.dashboardRotationStatusCountAll = function () {
-                $http.post('@Url.Action("CountRotationsByCompany","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags }).then(function (response) {
+                $http.post('@Url.Action("CountRotationsByCompany","Dashboard")', { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags }).then(function (response) {
                     if (response.data) {
                         $scope.rotationStatusPaging = [];
                         var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.pageSizeRotationStatus);
+                        var jumlahPage = Math.ceil(jumlahData / $scope.totalRotationStatusPerPage);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.rotationStatusPaging.push(i);
                         }
@@ -451,7 +420,7 @@
             }
             $scope.getDashboardRotationStatusPage = function (pageTarget) {
                 $http.post('@Url.Action("GetRotationsByCompany", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.pageSizeRotationStatus }
+                    { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.totalRotationStatusPerPage }
                 ).then(function (response) {
                     if (response.data) {
                         var saved = $scope.rotationStatusPaging;
@@ -547,8 +516,6 @@
                 }, function (response) {
                 });
             }
-
-
             $scope.getStatusName = function (status) {
                 switch (status) {
                     case 0:
