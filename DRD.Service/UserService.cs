@@ -13,21 +13,21 @@ namespace DRD.Service
     public class UserService
     {
         /// <summary>
-        /// Save User Ragistration as a new user
+        /// SAVE User Ragistration as a new user
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
         public User SaveRegistration(RegistrationData register)
         {
             using var db = new ServiceContext();
-            var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email)).Count();
+            var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email.ToLower())).Count();
             if (result != 0)
             {
                 User retVal = new User();
                 retVal.Id = -1;
                 return retVal;
             }
-            User user = new User(register.Email, register.Name, register.Phone)
+            User user = new User(register.Email.ToLower(), register.Name, register.Phone)
             {
                 Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1))
             };
@@ -41,7 +41,7 @@ namespace DRD.Service
             return user;
         }
         /// <summary>
-        /// Helper method to Save user with valid and unique user Id long value
+        /// HELPER method to Save user with valid and unique user Id long value
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
@@ -60,7 +60,7 @@ namespace DRD.Service
             return user.Id;
         }
         /// <summary>
-        /// Check if User Id generated is exist
+        /// CHECK if User Id generated is exist
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace DRD.Service
             return db.Users.Any(i => i.Id == id);
         }
         /// <summary>
-        /// Registration notification via email, for new user
+        /// SEND registration notification via email, for new user
         /// </summary>
         /// <param name="user"></param>
         public void SendEmailRegistration(User user)
@@ -94,7 +94,7 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName, user.Email, "User Registration", body, false, new string[] { });
         }
         /// <summary>
-        /// Login to DRD account using username and password
+        /// GET user session to DRD account using username and password
         /// </summary>
         /// <param name="username">you can use ID user and email user to login.</param>
         /// <param name="password"></param>
@@ -131,32 +131,43 @@ namespace DRD.Service
         public bool CheckIsEmailAvailable(string email)
         {
             using var db = new ServiceContext();
-            return !db.Users.Any(userItem => userItem.Email.Equals(email));
+            return !db.Users.Any(userItem => userItem.Email.Equals(email.ToLower()));
         }
-
-        public UserProfile Update(UserProfile userProfile)
+        /// <summary>
+        /// SAVE user profile data to user db
+        /// </summary>
+        /// <param name="userProfile"></param>
+        /// <returns></returns>
+        public UserProfile UpdateProfile(UserProfile userProfile)
         {
             User user;
-            using (var db = new ServiceContext())
-            {
-                user = db.Users.Where(u => u.Id == userProfile.Id).FirstOrDefault();
-                user.InitialImageFileName = (userProfile.ImageInitials == null ? null : RemovePrefixLocation(userProfile.ImageInitials));
-                user.KTPImageFileName = (userProfile.ImageKtp1 == null ? null : RemovePrefixLocation(userProfile.ImageKtp1));
-                user.KTPVerificationImageFileName = (userProfile.ImageKtp2 == null ? null : RemovePrefixLocation(userProfile.ImageKtp2));
-                user.ProfileImageFileName = (userProfile.ImageProfile == null ? null : RemovePrefixLocation(userProfile.ImageProfile));
-                user.SignatureImageFileName = (userProfile.ImageSignature == null ? null : RemovePrefixLocation(userProfile.ImageSignature));
-                user.StampImageFileName = (userProfile.ImageStamp == null ? null : RemovePrefixLocation(userProfile.ImageStamp));
-                user.OfficialIdNo = userProfile.OfficialIdNo;
-                db.SaveChanges();
-            }
-            userProfile.ImageInitials = user.InitialImageFileName;
-            userProfile.ImageKtp1 = user.KTPImageFileName;
-            userProfile.ImageKtp2 = user.KTPVerificationImageFileName;
-            userProfile.ImageProfile = user.ProfileImageFileName;
-            userProfile.ImageSignature = user.SignatureImageFileName;
-            userProfile.ImageStamp = user.StampImageFileName;
-            userProfile.OfficialIdNo = user.OfficialIdNo;
+            using var db = new ServiceContext();
+            user = db.Users.FirstOrDefault(u => u.Id == userProfile.Id);
+            if (user == null) return null;
 
+            user.InitialImageFileName = (userProfile.InitialImageFileName == null ? null : RemovePrefixLocation(userProfile.InitialImageFileName));
+            user.KTPImageFileName = (userProfile.KTPImageFileName == null ? null : RemovePrefixLocation(userProfile.KTPImageFileName));
+            user.KTPVerificationImageFileName = (userProfile.KTPVerificationImageFileName == null ? null : RemovePrefixLocation(userProfile.KTPVerificationImageFileName));
+            user.ProfileImageFileName = (userProfile.ProfileImageFileName == null ? null : RemovePrefixLocation(userProfile.ProfileImageFileName));
+            user.SignatureImageFileName = (userProfile.SignatureImageFileName == null ? null : RemovePrefixLocation(userProfile.SignatureImageFileName));
+            user.StampImageFileName = (userProfile.StampImageFileName == null ? null : RemovePrefixLocation(userProfile.StampImageFileName));
+            user.OfficialIdNo = userProfile.OfficialIdNo;
+            user.Name = userProfile.Name;
+            user.Phone = userProfile.Phone;
+            user.Email = userProfile.Email;
+            user.Username = userProfile.Username;
+            user.OfficialIdNo = userProfile.OfficialIdNo;
+            user.TwoFactorEnabled = userProfile.TwoFactorEnabled;
+            db.SaveChanges();
+
+            // update return value
+            userProfile.InitialImageFileName = user.InitialImageFileName;
+            userProfile.KTPImageFileName = user.KTPImageFileName;
+            userProfile.KTPVerificationImageFileName = user.KTPVerificationImageFileName;
+            userProfile.ProfileImageFileName = user.ProfileImageFileName;
+            userProfile.SignatureImageFileName = user.SignatureImageFileName;
+            userProfile.StampImageFileName = user.StampImageFileName;
+            userProfile.OfficialIdNo = user.OfficialIdNo;
             return userProfile;
         }
 
@@ -169,39 +180,23 @@ namespace DRD.Service
             string removedPrefix = System.Text.RegularExpressions.Regex.Replace(location, pattern, string.Empty);
             return removedPrefix;
         }
-        public String GetName(long id)
+        public string GetName(long id)
         {
             using var db = new ServiceContext();
             return db.Users.Find(id).Name;
         }
-
-        public UserProfile GetById(long id, long loginId)
+        /// <summary>
+        /// GET user profile data 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public UserProfile GetProfile(long id)
         {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from c in db.Users
-                     where c.Id == id
-                     select new UserProfile
-                     {
-                         Id = c.Id,
-                         Name = c.Name,
-                         Phone = c.Phone,
-                         Email = c.Email,
-                         ImageProfile = c.ProfileImageFileName,
-                         IsActive = c.IsActive,
-                         ImageSignature = (id == loginId ? c.SignatureImageFileName : ""),
-                         ImageInitials = (id == loginId ? c.InitialImageFileName : ""),
-                         ImageStamp = (id == loginId ? c.StampImageFileName : ""),
-                         ImageKtp1 = (id == loginId ? c.KTPImageFileName : ""),
-                         ImageKtp2 = (id == loginId ? c.KTPVerificationImageFileName : ""),
-                         OfficialIdNo = c.OfficialIdNo,
-                         CreatedAt = c.CreatedAt
-                     }).ToList().FirstOrDefault();
-                return result;
-            }
+            using var db = new ServiceContext();
+            var userDb = db.Users.FirstOrDefault(u => u.Id == id);
+            UserProfile result = new UserProfile(userDb);
+            return result;
         }
-
         /// <summary>
         /// this function will return all the list Subscription if the user is admin and company have subscription, or the user have subscription.
         /// </summary>
@@ -236,9 +231,8 @@ namespace DRD.Service
                 return returnValue;
             }
         }
-
         /// <summary>
-        /// Change password of specify user that loged in to application
+        /// SAVE new password of specify user that loged in to application
         /// </summary>
         /// <param name="user"></param>
         /// <param name="oldPassword"></param>
@@ -257,7 +251,6 @@ namespace DRD.Service
                 return 1;
             }
         }
-
         /// <summary>
         /// SAVE new user password by generator and send the password to user's email
         /// </summary>
@@ -277,7 +270,7 @@ namespace DRD.Service
             return userGet;
         }
         /// <summary>
-        /// EMAIL reset password result user
+        /// EMAIL to user result of the reset password action
         /// </summary>
         /// <param name="user"></param>
         public void SendEmailResetPassword(User user)
@@ -300,7 +293,7 @@ namespace DRD.Service
             var task = emailService.Send(senderEmail, senderName, user.Email, "User Reset Password", body, false, new string[] { });
         }
         /// <summary>
-        /// Validate the password provided is the user's password
+        /// CHECK if the password provided is the user's password
         /// </summary>
         /// <param name="id"></param>
         /// <param name="password"></param>
@@ -325,7 +318,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Checking if the user is owner of a company or more
+        /// CHECK if the user is owner of a company or more
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -340,7 +333,7 @@ namespace DRD.Service
             return has;
         }
         /// <summary>
-        /// Checking if the user is a member of some company
+        /// CHECK if the user is a member of some company
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -355,7 +348,7 @@ namespace DRD.Service
             return isMember;
         }
         /// <summary>
-        /// Checking if the user is admin of a company or more
+        /// CHECK if the user is admin of a company or more
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -370,7 +363,7 @@ namespace DRD.Service
             return usrIsAdmin;
         }
         /// <summary>
-        /// Check if the user is an admin or has company
+        /// CHECK if the user is an admin or has company
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>

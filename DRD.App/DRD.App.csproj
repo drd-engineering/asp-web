@@ -310,6 +310,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\pages\changepassword.css" />
     <Content Include="assets\css\pages\login.css" />
     <Content Include="assets\css\pages\registration.css" />
     <Content Include="assets\css\pages\for-all-page.css" />
@@ -3611,7 +3612,6 @@
     <Folder Include="Scripts\contextMenu\font\" />
     <Folder Include="Scripts\flow\required\" />
     <Folder Include="Scripts\flow\scripts\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">

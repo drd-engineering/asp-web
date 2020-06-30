@@ -100,21 +100,5 @@ namespace DRD.App.Controllers
             var data = settingService.resetState(companyId, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        // GET Profile/GetData
-        public ActionResult GetData()
-        {
-            login.CheckLogin(this);
-
-            UserSession userSession = login.GetUser(this);
-
-            UserService userService = new UserService();
-
-            UserProfile user = userService.GetById(userSession.Id, userSession.Id);
-            user.EncryptedId = Utilities.Encrypt(user.Id.ToString());
-            var data = user;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
     }
 }

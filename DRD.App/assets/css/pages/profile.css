@@ -1,0 +1,100 @@
+.auto-style3 {
+    width: 64px;
+}
+
+.image-wrapper {
+    float: left;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    position: relative;
+}
+
+.image-content {
+    width: 200px;
+    cursor: pointer;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    position: absolute;
+}
+
+.container {
+    border: 1px solid red;
+    padding: 10px 10px 40px 10px;
+    position: relative;
+    margin: 0 auto 0 auto;
+    height: 100%;
+}
+
+    .container .signature {
+        border: 1px solid orange;
+        margin: 0 auto;
+        cursor: pointer;
+    }
+
+        .container .signature canvas {
+            border: 1px solid #999;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+    .container .buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .container .sizes {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+        .container .sizes input {
+            width: 4em;
+            text-align: center;
+        }
+
+.result {
+    border: 1px solid blue;
+    margin: 30px auto 0 auto;
+    height: 220px;
+    width: 568px;
+}
+
+.btn-submit {
+    width: 120px;
+}
+
+.input-group {
+    display: block;
+    margin-bottom: 20px;
+}
+
+    .input-group label {
+        font-weight: 300;
+    }
+
+.content #content {
+    padding: 0
+}
+
+.page-header-default {
+    margin-bottom: 0;
+}
+
+.page-title {
+    padding-bottom: 0;
+}
+
+.flexible-row {
+    display: flex !important;
+}
+
+    .flexible-row > .vertically-center {
+        margin: auto;
+    }
