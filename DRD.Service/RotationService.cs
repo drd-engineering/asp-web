@@ -133,7 +133,7 @@ namespace DRD.Service
         /// <param name="creatorId"></param>
         /// <param name="topCriteria"></param>
         /// <returns></returns>
-        public int FindRotationCountAll(long creatorId, string topCriteria, bool isActive = true)
+        public int CountRotations(long creatorId, string topCriteria, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -166,7 +166,7 @@ namespace DRD.Service
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public ICollection<RotationData> FindRotations(long creatorId, string topCriteria, int skip, int take, bool isActive = true)
+        public ICollection<RotationData> GetRotations(long creatorId, string topCriteria, int skip, int take, bool isActive = true)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -354,33 +354,32 @@ namespace DRD.Service
         }
         public IEnumerable<RotationUserData> GetUsersWorkflow(long workflowId)
         {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from workflowNode in db.WorkflowNodes
-                     where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
-                     select new RotationUserData
-                     {
-                         ActivityName = workflowNode.Caption,
-                         WorkflowNodeId = workflowNode.Id
-                     }).ToList();
-                foreach (RotationUserData item in result)
+            using var db = new ServiceContext();
+            var result =
+                (from workflowNode in db.WorkflowNodes
+                where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
+                select new RotationUserData
                 {
-                    if (item.UserId != 0)
+                ActivityName = workflowNode.Caption,
+                WorkflowNodeId = workflowNode.Id
+                }).ToList();
+            foreach (RotationUserData item in result)
+            {
+                if (item.UserId != 0)
+                {
+                    User user = (from Userdb in db.Users where Userdb.Id == item.UserId select Userdb).FirstOrDefault();
+                    if (user != null)
                     {
-                        User user = (from Userdb in db.Users where Userdb.Id == item.UserId select Userdb).FirstOrDefault();
-                        if (user != null)
-                        {
-                            item.Email = user.Email;
-                            item.Name = user.Name;
-                            item.Picture = user.ProfileImageFileName;
-                        }
+                        item.Email = user.Email;
+                        item.Name = user.Name;
+                        item.Picture = user.ProfileImageFileName;
                     }
                 }
-                result = result.OrderBy(c => c.WorkflowNodeId).ToList();
-                return result;
             }
+            result = result.OrderBy(c => c.WorkflowNodeId).ToList();
+            return result;
         }
+
         /// <summary>
         ///
         /// </summary>

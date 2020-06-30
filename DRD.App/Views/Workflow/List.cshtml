@@ -54,7 +54,7 @@
                             <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
                                ng-click="page > 1 && changePageWorkflows(criteria, page - 1, totalItemPerPage)">&lt;</a>
                             <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
-                               ng-click="changePageWorkflows(criteria, rot, totalItemPerPage
+                               ng-click="changePageWorkflows(criteria, rot, totalItemPerPage)">
                                 {{rot}}
                             </a>
                             <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
