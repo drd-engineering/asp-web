@@ -778,8 +778,8 @@ namespace DRD.Service
                     dElmItem.FlagDate = delm.AssignedAt;
                     dElmItem.FlagImage = delm.AssignedAnnotationImageFileName;
                     dElmItem.CreatorId = delm.CreatorId;
-                    dElmItem.ElementId = delm.ElementId;
-                    dElmItem.UserId = delm.UserId;
+                    dElmItem.ElementId = delm.UserId;
+                    dElmItem.UserId = delm.EmailOfUserAssigned;
                     dElmItem.CreatedAt = delm.CreatedAt;
                     dElmItem.UpdatedAt = delm.UpdatedAt;
                     dElmItem.ElementTypeId = delm.ElementTypeId;

@@ -72,12 +72,12 @@ namespace DRD.Models
             this.StrokeWidth = item.StrokeWidth;
             this.Opacity = item.Opacity;
             this.CreatorId = item.CreatorId;
-            this.ElementId = item.ElementId;
+            this.ElementId = item.UserId;
             this.Flag = item.Flag;
             this.FlagCode = item.AssignedAnnotationCode;
             this.FlagDate = item.AssignedAt;
             this.FlagImage = item.AssignedAnnotationImageFileName;
-            this.UserId = item.UserId;
+            this.UserId = item.EmailOfUserAssigned;
             this.DocumentId = item.DocumentId;
             this.ElementTypeId = item.ElementTypeId;
             this.Element = item.Element;
