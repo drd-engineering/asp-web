@@ -10,7 +10,6 @@ namespace DRD.App.Controllers
     public class RotationController : Controller
     {
         RotationService rotationService;
-        RotationProcessService rotationProcessService;
 
         private LoginController login;
         private UserSession user;
@@ -25,7 +24,6 @@ namespace DRD.App.Controllers
                 //instantiate
                 user = login.GetUser(this);
                 rotationService = new RotationService();
-                rotationProcessService = new RotationProcessService();
                 if (getMenu)
                 {
                     //get menu if user authenticated
@@ -57,7 +55,7 @@ namespace DRD.App.Controllers
         }
 
         // GET : Rotation
-        public ActionResult Index(long id)
+        public ActionResult Index(long id = Constant.ID_NOT_FOUND)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation?id="+id });
@@ -92,7 +90,7 @@ namespace DRD.App.Controllers
         public ActionResult Start(long rotationId, long subscriptionId)
         {
             CheckLogin();
-            var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
+            var data = rotationService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

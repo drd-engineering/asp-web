@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace DRD.Service
 {
-    public class DocumentService : IDocumentService
+    public class DocumentService 
     {
         public int CheckingPrivateStamp(long memberId)
         {

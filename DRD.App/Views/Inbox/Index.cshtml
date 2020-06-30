@@ -257,9 +257,8 @@
             });
 
             function initValues() {
-                $scope.curentUser = @Html.Raw(Json.Encode(Model.user));
-                $scope.inboxId = @Html.Raw(Json.Encode(Model.dataId));
-                $scope.dbmenus = @Html.Raw(Json.Encode(Model.dbmenus));
+                $scope.curentUser = @Html.Raw(Json.Encode(Model.User));
+                $scope.inboxId = @Html.Raw(Json.Encode(Model.DataId));
                 var product = @Html.Raw(Json.Encode(Model.Object));
 
                 assignProdut(product);

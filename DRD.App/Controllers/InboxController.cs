@@ -10,7 +10,6 @@ namespace DRD.App.Controllers
     public class InboxController : Controller
     {
         InboxService inboxService;
-        RotationProcessService rotationProcessService;
 
         private LoginController login;
         private UserSession user;
@@ -25,7 +24,6 @@ namespace DRD.App.Controllers
                 //instantiate
                 user = login.GetUser(this);
                 inboxService = new InboxService();
-                rotationProcessService = new RotationProcessService();
                 if (getMenu)
                 {
                     //get menu if user authenticated
@@ -39,17 +37,14 @@ namespace DRD.App.Controllers
             }
             return false;
         }
-        /// <summary>
-        /// Access Page Inbox related to the inbox id that user has
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult Index(long id)
+
+        // GET : Workflow
+        public ActionResult Index(long id = Constant.ID_NOT_FOUND)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Inbox?id="+id });
 
-            RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
+            RotationInboxData product = inboxService.GetInbox(id, user.Id);
 
             //page authorization check if user has no access
             if (product == null || product.AccessType.Equals((int)Constant.AccessType.noAccess))
@@ -59,13 +54,26 @@ namespace DRD.App.Controllers
             layout.Object = product;
             return View(layout);
         }
-        
-        public ActionResult GetInboxDetail(long id)
+
+        // GET : Workflow/List
+        public ActionResult List()
+        {
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "Inbox/List"});
+            return View(layout);
+        }
+
+        /// <summary>
+        /// API get detail of Inbox to update the latest inbox info after updating/process inbox
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult GetInbox(long id)
         {
             if(!CheckLogin())
                 return Json(-1, JsonRequestBehavior.AllowGet);
  
-            var data = inboxService.GetInboxItem(id, user.Id);
+            var data = inboxService.GetInbox(id, user.Id);
 
             //page authorization check if user has no access
             if(data.AccessType.Equals((int)Constant.AccessType.noAccess))
@@ -74,37 +82,26 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
-        /// <summary>
-        /// Page inbox list
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult List()
-        {
-            if (!CheckLogin(getMenu: true))
-            {
-                return RedirectToAction("Index", "login", new { redirectUrl = "Inbox/List"});
-            }
-            return View(layout);
-        }
+
 
         /// <summary>
         /// API to obtain all user inbox
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="pageSize"></param>
+        /// <param name="totalItemPerPage"></param>
         /// <returns></returns>
-        public ActionResult GetInboxList(string criteria, int page, int pageSize)
+        public ActionResult GetInboxes(string criteria, int page, int totalItemPerPage)
         {
             CheckLogin();
-            int skip = pageSize * (page - 1);
-            var data = inboxService.GetInboxList(user.Id, criteria, skip, pageSize);
+            int skip = totalItemPerPage * (page - 1);
+            var data = inboxService.GetInboxes(user.Id, criteria, skip, totalItemPerPage);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CountAll(string criteria)
+        public ActionResult CountInboxes(string criteria)
         {
             CheckLogin();
-            var data = inboxService.CountAll(user.Id, criteria);
+            var data = inboxService.CountInboxes(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -118,7 +115,7 @@ namespace DRD.App.Controllers
             if (user == null)
                 return Json(null, JsonRequestBehavior.AllowGet);
 
-            var data = inboxService.CountUnread(user.Id);
+            var data = inboxService.CountUnreadInboxes(user.Id);
             if (counter.New.Unread != data)
             {
                 counter.Old.Unread = counter.New.Unread;
@@ -136,7 +133,7 @@ namespace DRD.App.Controllers
         public ActionResult ProcessActivity(ProcessActivity param, int bit)
         {
             CheckLogin();
-            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
+            var data = inboxService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
