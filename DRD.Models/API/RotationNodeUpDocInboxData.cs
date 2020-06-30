@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DRD.Models
+namespace DRD.Models.API
 {
 
     public class RotationNodeUpDocInboxData

@@ -1,9 +1,7 @@
-﻿namespace DRD.Models
+﻿namespace DRD.Models.API
 {
-
     public class RotationNodeDocInboxData
     {
-
         public long Id { get; set; } // Id (Primary key)
         public int FlagAction { get; set; } // FlagAction
 

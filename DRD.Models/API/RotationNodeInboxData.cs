@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DRD.Models
+namespace DRD.Models.API
 {
-
     public class RotationNodeInboxData
     {
-
         public long Id { get; set; } // Id (Primary key)
         public long UserId { get; set; } // UserId (Foreign Key)
         public long MemberId { get; set; } // MemberId (Foreign Key)

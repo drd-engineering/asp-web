@@ -1,9 +1,7 @@
-﻿namespace DRD.Models
+﻿namespace DRD.Models.API
 {
-
     public class DocumentInboxData
     {
-
         public long Id { get; set; } // Id (Primary key)
         public string status { get; set; }
         public string Extention { get; set; } // Title (length: 500)

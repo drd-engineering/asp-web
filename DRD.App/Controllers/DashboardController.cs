@@ -10,72 +10,44 @@ namespace DRD.App.Controllers
 {
     public class DashboardController : Controller
     {
-        private DashboardService dashboardService = new DashboardService();
-        private UserService userService = new UserService();
-        private CompanyService companyService = new CompanyService();
-        private RotationService rotationService = new RotationService();
-
-        private LoginController login = new LoginController();
-        private UserSession user;
-        private Layout layout = new Layout();
-
-        public bool Initialize()
+        LoginController login;
+        UserSession user;
+        DashboardService dashboardService;
+        Layout layout;
+        bool hasCompany;
+        // HELPER
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
-                layout.Menus = login.GetMenus(this);
-                layout.User = login.GetUser(this);
+                dashboardService = new DashboardService();
+                if (hasCompany != null)
+                    hasCompany = dashboardService.CheckIsUserHasCompany(user.Id);
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
         }
-
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
-
         // GET: Dashboard
         public ActionResult Index()
         {
-            if (!Initialize())
-                return RedirectToAction("Index", "Login");
-            if (user == null)
-                return RedirectToAction("Index", "Login");
-            Layout layout = new Layout();
-            layout.Menus = login.GetMenus(this);
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
             layout.User = user;
-            
-            var hasCompany = userService.HasCompany(user.Id);
+            // prevent user to go do dashboard page if they are not an owner
             if (!hasCompany) return RedirectToAction("List", "Inbox"); 
-            
             return View(layout);
-        }
-        /// <summary>
-        /// API to obtain how many rotation that user logged in has, devided by status of the rotation
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult GetActivityCounterUser()
-        {
-            Initialize();
-            CounterRotation counter = (CounterRotation)Session["_COUNTERACTIVITY_"];
-            if (counter == null)
-                counter = new CounterRotation();
-
-            if (user == null)
-                return Json(null, JsonRequestBehavior.AllowGet);
-
-            var data = dashboardService.GetActivityCounter(user.Id);
-            if (counter.New != data.New)
-            {
-                counter.Old = counter.New;
-                counter.New = data.New;
-            }
-
-            Session["_COUNTERACTIVITY_"] = counter;
-            return Json(counter, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// API to obtain how many rotation that company has, devided by status of the rotation
@@ -84,7 +56,10 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetActivityCounterCompany(long companyId)
         {
-            Initialize();
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+            // prevent user to go do dashboard page if they are not an owner
+            if (!hasCompany) return RedirectToAction("List", "Inbox");
             CounterRotation counter = (CounterRotation)Session["_COUNTERACTIVITY_"];
             if (counter == null)
                 counter = new CounterRotation();
@@ -108,7 +83,10 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetCompanySubscriptionLimit(long companyId)
         {
-            Initialize();
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+            // prevent user to go do dashboard page if they are not an owner
+            if (!hasCompany) return RedirectToAction("List", "Inbox");
             SubscriptionLimit counter = (SubscriptionLimit)Session["_SUBSCRIPTIONLIMIT_"];
             if (counter == null)
                 counter = new SubscriptionLimit();
@@ -133,11 +111,12 @@ namespace DRD.App.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult GetDashboardRotationStatus(long companyId, ICollection<string> Tags, int page, int pageSize)
+        public ActionResult GetRotationsByCompany(long companyId, ICollection<string> Tags, int page, int pageSize)
         {
-            Initialize();
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
             int skip = (page - 1) * pageSize;
-            var data = rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
+            var data = dashboardService.GetRotationsByCompany(companyId, Tags, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -146,10 +125,11 @@ namespace DRD.App.Controllers
         /// <param name="companyId"></param>
         /// <param name="Tags"></param>
         /// <returns></returns>
-        public ActionResult DashboardRotationStatusCountAll(long companyId, ICollection<string> Tags)
+        public ActionResult CountRotationsByCompany(long companyId, ICollection<string> Tags)
         {
-            Initialize();
-            var data = rotationService.CountAllRelatedToCompany(companyId, Tags);
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
+            var data = dashboardService.CountRotationsByCompany(companyId, Tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -159,8 +139,11 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult ExportAllRotationStatusToCSV(long companyId, string companyName)
         {
-            InitializeAPI();
-            var data = rotationService.GetRelatedToCompany(companyId, null, 0, -1);
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+            // prevent user to go do dashboard page if they are not an owner
+            if (!hasCompany) return RedirectToAction("List", "Inbox");
+            var data = dashboardService.GetRotationsByCompany(companyId, null, 0, -1);
             StringBuilder sb = new StringBuilder();
             sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Done,Ongoing,Waiting");
             sb.Append("\r\n");
@@ -203,10 +186,12 @@ namespace DRD.App.Controllers
         }
         public ActionResult SendEmailNotifikasiRotasi(long rotationId, long userId)
         {
-            Initialize();
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+            // prevent user to go do dashboard page if they are not an owner
+            if (!hasCompany) return RedirectToAction("List", "Inbox");
             var data = dashboardService.SendEmailNotifikasiRotasi(rotationId, userId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

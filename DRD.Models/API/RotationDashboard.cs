@@ -1,4 +1,4 @@
-﻿namespace DRD.Models.View
+﻿namespace DRD.Models.API
 {
     public class RotationDashboard
     {
