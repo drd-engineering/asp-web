@@ -36,8 +36,8 @@ namespace DRD.Service
                      select new RotationIndex
                      {
                          Id = rotation.Id,
-                         Subject = rotation.Name,
-                         Remark = rotation.Description,
+                         Name = rotation.Name,
+                         Description = rotation.Description,
                          WorkflowId = rotation.WorkflowId,
                          CompanyId = rotation.CompanyId,
                          Workflow = new WorkflowItem
@@ -136,7 +136,7 @@ namespace DRD.Service
                           select new RotationListItem
                           {
                               Id = rotation.Id,
-                              Subject = rotation.Name,
+                              Name = rotation.Name,
                               Status = rotation.Status,
                               WorkflowId = rotation.Workflow.Id,
                               WorkflowName = rotation.Workflow.Name,
@@ -155,6 +155,7 @@ namespace DRD.Service
                                                   Code = cmpny.Code,
                                                   Name = cmpny.Name,
                                               }).FirstOrDefault();
+                rotationListItem.StatusDescription = rotationListItem.Status == (int)Constant.RotationStatus.Open ? "Not Started" : (rotationListItem.Status == (int)Constant.RotationStatus.In_Progress ? "Ongoing" : "Completed");
             }
             return result;
         }
@@ -212,22 +213,19 @@ namespace DRD.Service
                 }
             }
 
-            rotationDb.Name = newRotation.Subject;
-            Workflow workflow = db.Workflows.FirstOrDefault(w => w.Id == newRotation.WorkflowId);
-            rotationDb.Workflow = workflow;
-            rotationDb.Description = newRotation.Remark;
+            Workflow workflowDb = db.Workflows.FirstOrDefault(w => w.Id == newRotation.WorkflowId);
+            rotationDb.Name = newRotation.Name;
+            rotationDb.Workflow = workflowDb;
+            rotationDb.Description = newRotation.Description;
             rotationDb.Status = newRotation.Status;
             rotationDb.CreatorId = newRotation.CreatorId;
             rotationDb.UserId = newRotation.UserId;
 
             if (newRotation.Id == 0)
             {
-                rotationDb.CreatedAt = DateTime.Now;
                 db.Rotations.Add(rotationDb);
-                workflow.TotalUsed += 1;
+                workflowDb.TotalUsed += 1;
             }
-            else
-                rotationDb.UpdatedAt = DateTime.Now;
 
             var result = db.SaveChanges();
 
@@ -308,15 +306,15 @@ namespace DRD.Service
                 int v = 0;
                 foreach (RotationUser userItem in rotationUserOld)
                 {
-                    var epos = newRotation.RotationUsers.ElementAt(v);
-                    var wfl = db.WorkflowNodes.FirstOrDefault(c => c.Id == epos.WorkflowNodeId);
-                    userItem.WorkflowNodeId = wfl.Id;
-                    userItem.WorkflowNode = wfl;
-                    wfl.RotationUsers.Add(userItem);
-                    User gotUser = db.Users.FirstOrDefault(usr => usr.Id == epos.UserId);
+                    var newRotationUser = newRotation.RotationUsers.ElementAt(v);
+                    var workflowNodeDb = db.WorkflowNodes.FirstOrDefault(c => c.Id == newRotationUser.WorkflowNodeId);
+                    userItem.WorkflowNodeId = workflowNodeDb.Id;
+                    userItem.WorkflowNode = workflowNodeDb;
+                    workflowNodeDb.RotationUsers.Add(userItem);
+                    User gotUser = db.Users.FirstOrDefault(usr => usr.Id == newRotationUser.UserId);
                     userItem.User = gotUser;
                     userItem.UserId = gotUser.Id;
-                    userItem.ActionPermission = epos.ActionPermission;
+                    userItem.ActionPermission = newRotationUser.ActionPermission;
                     v++;
                     db.SaveChanges();
                 }
@@ -365,16 +363,16 @@ namespace DRD.Service
         public string Delete(long id)
         {
             using var db = new ServiceContext();
-            var rotation = db.Rotations.Where(i => i.Id == id).FirstOrDefault();
+            var rotationDb = db.Rotations.Where(i => i.Id == id).FirstOrDefault();
 
             //check if rotation exist
-            if (rotation == null) return Constant.RotationStatus.NOT_FOUND.ToString();
+            if (rotationDb == null) return Constant.RotationStatus.NOT_FOUND.ToString();
 
             //check is already being used or not
-            if (rotation.CompanyId.HasValue) return Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString();
+            if (rotationDb.CompanyId.HasValue) return Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString();
 
-            rotation.IsActive = false;
-            rotation.UpdatedAt = DateTime.Now;
+            rotationDb.IsActive = false;
+            rotationDb.UpdatedAt = DateTime.Now;
             db.SaveChanges();
             return Constant.RotationStatus.OK.ToString();
         }

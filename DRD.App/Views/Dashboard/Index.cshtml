@@ -289,7 +289,7 @@
                 });
             };
             $scope.getCompanyOwned = function () {
-                $http.post('@Url.Action("GetAllCompanyOwnedbyUser", "Company")', {}).then(function (response) {
+                $http.post('@Url.Action("GetCompaniesOwnedByUser", "Company")', {}).then(function (response) {
                     if (response.data) {
                         $scope.companyOwned = response.data;
                         $scope.selectedCompany = $scope.companyOwned[0];
@@ -392,7 +392,7 @@
             --------------------------------------------------------------*/
             $scope.getDashboardRotationStatus = function () {
                 $http.post('@Url.Action("GetRotationsByCompany", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: $scope.pageRotationStatus, pageSize: $scope.totalRotationStatusPerPage }).then(function (response)
+                    { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags, page: $scope.pageRotationStatus, pageSize: $scope.totalRotationStatusPerPage }).then(function (response)
                 {
                     if (response.data) {
                         $scope.listRotationStatus = response.data;
@@ -404,7 +404,7 @@
                 });
             }
             $scope.dashboardRotationStatusCountAll = function () {
-                $http.post('@Url.Action("CountRotationsByCompany","Dashboard")', { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags }).then(function (response) {
+                $http.post('@Url.Action("CountRotationsByCompany","Dashboard")', { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags }).then(function (response) {
                     if (response.data) {
                         $scope.rotationStatusPaging = [];
                         var jumlahData = response.data;
@@ -420,7 +420,7 @@
             }
             $scope.getDashboardRotationStatusPage = function (pageTarget) {
                 $http.post('@Url.Action("GetRotationsByCompany", "Dashboard")',
-                    { companyId: $scope.selectedCompany.Id, Tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.totalRotationStatusPerPage }
+                    { companyId: $scope.selectedCompany.Id, tags: $scope.model.Tags, page: pageTarget, pageSize: $scope.totalRotationStatusPerPage }
                 ).then(function (response) {
                     if (response.data) {
                         var saved = $scope.rotationStatusPaging;

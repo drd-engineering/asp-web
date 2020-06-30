@@ -110,12 +110,12 @@ namespace DRD.App.Controllers
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult GetRotationsByCompany(long companyId, int page, int pageSize, ICollection<string> Tags)
+        public ActionResult GetRotationsByCompany(long companyId, int page, int pageSize, ICollection<string> tags)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
             int skip = (page - 1) * pageSize;
-            var data = dashboardService.GetRotationsByCompany(companyId, skip, pageSize, Tags);
+            var data = dashboardService.GetRotationsByCompany(companyId, skip, pageSize, tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -124,11 +124,11 @@ namespace DRD.App.Controllers
         /// <param name="companyId"></param>
         /// <param name="Tags"></param>
         /// <returns></returns>
-        public ActionResult CountRotationsByCompany(long companyId, ICollection<string> Tags)
+        public ActionResult CountRotationsByCompany(long companyId, ICollection<string> tags)
         {
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
-            var data = dashboardService.CountRotationsByCompany(companyId, Tags);
+            var data = dashboardService.CountRotationsByCompany(companyId, tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>

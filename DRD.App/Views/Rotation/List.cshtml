@@ -58,15 +58,17 @@
                             </thead>
                             <tbody>
                                 <tr style="cursor:pointer;height:50px;vertical-align:central;" ng-repeat="x in rotations">
-                                    <td ng-click="do_edit(x.Id);">{{x.Subject}}</td>
-                                    <td>
-                                        <a class="btn btn-default" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
-                                        <span ng-click="do_edit(x.Id);">{{x.CompanyRotation.Name}}</span>
+                                    <td width="30%" ng-click="goToDetailPage(x.Id);">{{x.Name}}</td>
+                                    <td width="30%" ng-click="goToDetailPage(x.Id);">
+                                       {{x.CompanyRotation.Name ==  ""?"-":x.CompanyRotation.Name }}
                                     </td>
-                                    <td width="100px" ng-click="do_edit(x.Id);">{{x.WorkflowName}}</td>
+                                    <td width="10%" ng-click="goToDetailPage(x.Id);">{{x.WorkflowName}}</td>
 
-                                    <td><a ng-click="runLog(x.Status, x.Key);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus  ) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
-                                    <td ng-click="do_edit(x.Id);" width="100px" style="font-size:10px">{{x.CreatedAt}}</td>
+                                    <td width="10%"><a style="width:100%" ng-click="goToDetailPage(x.Id);">{{x.StatusDescription }} <span style="font-size:xx-small;color:darkblue">{{convertJsonDate(x.DateStatus  ) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></a></td>
+                                    <td width="10%" ng-click="goToDetailPage(x.Id);"  style="font-size:10px">{{x.CreatedAt}}</td>
+                                    <td width="10%">
+                                        <a style="width:100%" class="btn btn-drd-1" ng-click="showSubscription(x.Id);" ng-show="x.Status=='00'">Start</a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -126,7 +128,7 @@
             DO EDIT
             --------------------------------------------------------------*/
 
-            $scope.do_edit = function (id) {
+            $scope.goToDetailPage = function (id) {
                 location.href = "/Rotation?id=" + id;
             }
             $scope.addrotation = function (mid) {

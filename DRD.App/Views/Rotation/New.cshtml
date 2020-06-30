@@ -49,7 +49,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-7 col-lg-7">
                             <label class="control-label">Name <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
-                            <input type="text" class="form-control" ng-model="model.Subject" ng-required="wizarno=='product'" maxlength="100" />
+                            <input type="text" class="form-control" ng-model="model.Name" ng-required="wizarno=='product'" maxlength="100" />
                         </div>
                         <div class="col-sm-12 col-md-5 col-lg-5">
                             <label class="control-label">Workflow <strong style="vertical-align:text-top; color:red" data-toggle="tooltip" title="required">*</strong></label>
@@ -79,7 +79,7 @@
 
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <label class="control-label">Description <small>(optional)</small></label><br />
-                            <textarea class="control-label" ng-model="model.Remark" rows="3"></textarea>
+                            <textarea class="control-label" ng-model="model.Description" rows="3"></textarea>
                         </div>
 
                     </div>
@@ -251,10 +251,10 @@
                 console.log($scope.workflow.Id);
                 $http.post('@Url.Action("Save", "Rotation")',
                     {
-                        prod: {
+                        newRotation: {
                             Id: 0,
-                            Subject: $scope.model.Subject,
-                            Remark: $scope.model.Remark,
+                            Name: $scope.model.Name,
+                            Description: $scope.model.Description,
                             WorkflowId:$scope.workflow.Id,
                             Status: 0,
                             RotationUsers: $scope.users,
@@ -410,18 +410,18 @@
                 $scope.page = "1";
                 $scope.paging = [];
                 $scope.criteria = "";
-                $scope.findMembers(null, 1, 20);
+                $scope.getMembers(null, 1, 20);
                 $("#modal_select_member").modal("show");
             }
 
-            $scope.findMembers = function (criteria, page, totalItemPerPage) {
+            $scope.getMembers = function (criteria, page, totalItemPerPage) {
                 $scope.page = 1;
                 $scope.members = [];
-                $http.post('/Member/FindMembers', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
+                $http.post('/Member/getMembers', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data;
                         $scope.index = totalItemPerPage * (page - 1);
-                        $scope.findMembersCountAll(criteria);
+                        $scope.getMembersCountAll(criteria);
                         $scope.isView = true;
                     }
                 }, function (response) {
@@ -429,9 +429,9 @@
                     var x = 0;
                 });
             }
-            $scope.findMembersCountAll = function (criteria) {
+            $scope.getMembersCountAll = function (criteria) {
                 $scope.paging = [];
-                $http.post('/Member/FindMembersCountAll', { criteria: criteria }).then(function (response) {
+                $http.post('/Member/getMembersCountAll', { criteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.totalItemPerPage);

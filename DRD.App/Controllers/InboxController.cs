@@ -9,26 +9,35 @@ namespace DRD.App.Controllers
 {
     public class InboxController : Controller
     {
-        LoginController login = new LoginController();
-        InboxService inboxService = new InboxService();
-        UserSession user;
-        Layout layout = new Layout();
+        InboxService inboxService;
+        RotationProcessService rotationProcessService;
 
-        public bool Initialize()
+        private LoginController login;
+        private UserSession user;
+        private Layout layout;
+
+        //helper
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
-                layout.Menus = login.GetMenus(this);
-                layout.User = login.GetUser(this);
+                inboxService = new InboxService();
+                rotationProcessService = new RotationProcessService();
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
-        }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
         }
         /// <summary>
         /// Access Page Inbox related to the inbox id that user has
@@ -37,7 +46,7 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult Index(long id)
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Inbox?id="+id });
 
             RotationInboxData product = inboxService.GetInboxItem(id, user.Id);
@@ -53,7 +62,7 @@ namespace DRD.App.Controllers
         
         public ActionResult GetInboxDetail(long id)
         {
-            if(!Initialize())
+            if(!CheckLogin())
                 return Json(-1, JsonRequestBehavior.AllowGet);
  
             var data = inboxService.GetInboxItem(id, user.Id);
@@ -71,7 +80,7 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult List()
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu: true))
             {
                 return RedirectToAction("Index", "login", new { redirectUrl = "Inbox/List"});
             }
@@ -86,7 +95,7 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetInboxList(string criteria, int page, int pageSize)
         {
-            Initialize();
+            CheckLogin();
             int skip = pageSize * (page - 1);
             var data = inboxService.GetInboxList(user.Id, criteria, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -94,14 +103,14 @@ namespace DRD.App.Controllers
 
         public ActionResult CountAll(string criteria)
         {
-            Initialize();
+            CheckLogin();
             var data = inboxService.CountAll(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateUnreadInboxCounter()
         {
-            Initialize();
+            CheckLogin();
             CounterInboxData counter = (CounterInboxData)Session["_COUNTERINBOX_"];
             if (counter == null)
                 counter = new CounterInboxData();
@@ -118,5 +127,18 @@ namespace DRD.App.Controllers
             Session["_COUNTERINBOX_"] = counter;
             return Json(counter, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="workflowUpdate"></param>
+        /// <returns></returns>
+        public ActionResult ProcessActivity(ProcessActivity param, int bit)
+        {
+            CheckLogin();
+            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
