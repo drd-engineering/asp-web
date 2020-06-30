@@ -137,7 +137,7 @@ namespace DRD.App.Controllers
         {
             Initialize();
             int skip = (page - 1) * pageSize;
-            var data = rotationService.GetRelatedToCompany(companyId, Tags, skip, pageSize);
+            var data = rotationService.GetRotationsByCompany(companyId, Tags, skip, pageSize);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -149,7 +149,7 @@ namespace DRD.App.Controllers
         public ActionResult DashboardRotationStatusCountAll(long companyId, ICollection<string> Tags)
         {
             Initialize();
-            var data = rotationService.CountAllRelatedToCompany(companyId, Tags);
+            var data = rotationService.CountRotationsByCompany(companyId, Tags);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -160,7 +160,7 @@ namespace DRD.App.Controllers
         public ActionResult ExportAllRotationStatusToCSV(long companyId, string companyName)
         {
             InitializeAPI();
-            var data = rotationService.GetRelatedToCompany(companyId, null, 0, -1);
+            var data = rotationService.GetRotationsByCompany(companyId, null, 0, -1);
             StringBuilder sb = new StringBuilder();
             sb.Append("Id,Subject,Status,Date Created,Date Started,Date Updated,Created by,Workflow Name,Tags,Done,Ongoing,Waiting");
             sb.Append("\r\n");

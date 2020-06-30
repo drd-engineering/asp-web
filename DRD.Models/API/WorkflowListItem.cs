@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DRD.Models.Custom
+namespace DRD.Models.API
 {
     public class WorkflowListItem
     {

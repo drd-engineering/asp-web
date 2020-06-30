@@ -322,7 +322,7 @@ namespace DRD.Service
         /// <param name="pageSize"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public ICollection<MemberData> FindMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
+        public ICollection<MemberData> GetMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
         {
             Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true;
             return FindMembers(userId, topCriteria, page, pageSize, order, criteriaUsed);

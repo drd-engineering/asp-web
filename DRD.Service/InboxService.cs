@@ -2,6 +2,7 @@
 using DRD.Models.API;
 using DRD.Models.View;
 using DRD.Service.Context;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -192,7 +193,7 @@ namespace DRD.Service
                 foreach (var tag in tags) { result.Tags.Add(tag.Name); }
 
                 RotationService rotationService = new RotationService();
-                result = rotationService.AssignNodes(db, result, UserId, new DocumentService());
+                result = AssignNodes(db, result, UserId, new DocumentService());
 
                 var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.DefWorkflowNodeId).ToList();
                 foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
@@ -425,6 +426,186 @@ namespace DRD.Service
             System.Diagnostics.Debug.WriteLine(senderEmail + senderName + user.Email + "Inbox Reception");
 
             var task = emailService.Send(senderEmail, senderName, user.Email, "You have a task in DRD", body, false, new string[] { });
+        }
+
+
+        private RotationInboxData AssignNodes(ServiceContext db, RotationInboxData rot, long userId, IDocumentService docSvr)
+        {
+            RotationInboxData rotation = rot;
+
+            rotation.RotationNodes =
+                (from rotationNode in db.RotationNodes
+                 where rotationNode.Rotation.Id == rotation.Id
+                 orderby rotationNode.CreatedAt
+                 select new RotationNodeInboxData
+                 {
+                     Id = rotationNode.Id,
+                     CreatedAt = rotationNode.CreatedAt,
+                     Status = rotationNode.Status,
+                     WorkflowNodeId = rotationNode.WorkflowNodeId,
+                     PrevWorkflowNodeId = rotationNode.PreviousWorkflowNodeId,
+                     SenderRotationNodeId = rotationNode.SenderRotationNodeId,
+                     User = new UserInboxData
+                     {
+                         Id = rotationNode.User.Id,
+                         Name = rotationNode.User.Name,
+                         ImageProfile = rotationNode.User.ProfileImageFileName,
+                         ImageInitials = rotationNode.User.InitialImageFileName,
+                         ImageSignature = rotationNode.User.SignatureImageFileName,
+                         ImageStamp = rotationNode.User.StampImageFileName,
+                         ImageKtp1 = rotationNode.User.KTPImageFileName,
+                         ImageKtp2 = rotationNode.User.KTPVerificationImageFileName,
+                     },
+                     WorkflowNode = new WorkflowNodeInboxData
+                     {
+                         Id = rotationNode.WorkflowNode.Id,
+                         Caption = rotationNode.WorkflowNode.Caption
+                     },
+                 }).ToList();
+
+            //if owner has access to readonly
+            rotation.AccessType = rotation.CreatorId == userId ? (int)Constant.AccessType.readOnly : (int)Constant.AccessType.noAccess;
+
+            foreach (RotationNodeInboxData rotationNode in rotation.RotationNodes)
+            {
+                //set page access to specific user
+                if (rotationNode.User.Id == userId)
+                {
+                    rotation.AccessType = (int)Constant.AccessType.readOnly;
+                    // responsible access for the current user
+                    if (rotationNode.Status.Equals((int)Constant.RotationStatus.Open))
+                    {
+                        rotation.AccessType = (int)Constant.AccessType.responsible;
+                    }
+                }
+
+                // user encrypted id
+                rotationNode.User.EncryptedUserId = Utilities.Encrypt(rotationNode.User.Id.ToString());
+
+                rotationNode.RotationNodeDocs = AssignNodeDocs(db, rotationNode.Id, userId, rot.RotationNodeId, docSvr);
+
+                //document summaries document
+                foreach (RotationNodeDocInboxData rotationNodeDoc in rotationNode.RotationNodeDocs)
+                {
+                    // get anno
+                    foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
+                    {
+                        if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
+                        if (documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE
+                            || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
+                            || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP)
+                        {
+                            var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
+                            Element newElement = new Element();
+                            newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
+                            newElement.UserId = user.Id;
+                            newElement.Name = user.Name;
+                            newElement.Foto = user.ProfileImageFileName;
+                            documentElement.Element = newElement;
+                        }
+
+                    }
+
+                    var dx = rotation.SumRotationNodeDocs.FirstOrDefault(c => c.Document.Id == rotationNodeDoc.Document.Id);
+                    if (dx != null)
+                    {
+                        dx.FlagAction |= rotationNodeDoc.FlagAction;
+                    }
+                    else
+                    {
+                        rotation.SumRotationNodeDocs.Add(DeepCopy(rotationNodeDoc));
+                    }
+                }
+
+            }
+            return rotation;
+        }
+
+        /// <summary>
+        /// Obtain all the Rotation Node Document will return as inbox data
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="rnId"></param>
+        /// <param name="usrId"></param>
+        /// <param name="curRnId"></param>
+        /// <param name="docSvr"></param>
+        /// <returns></returns>
+        private List<RotationNodeDocInboxData> AssignNodeDocs(ServiceContext db, long rnId, long usrId, long? curRnId, IDocumentService docSvr)
+        {
+            if (curRnId == 0)
+                curRnId = -rnId;
+            var rndFromDb = db.RotationNodeDocs.Where(rnd => rnd.RotationNodeId == rnId).ToList();
+            List<RotationNodeDocInboxData> result = new List<RotationNodeDocInboxData>();
+            foreach (var rndDb in rndFromDb)
+            {
+                var item = new RotationNodeDocInboxData();
+                item.Id = rndDb.Id;
+                item.FlagAction = rndDb.ActionStatus;
+                item.DocumentId = rndDb.DocumentId;
+                item.RotationNode.RotationId = rndDb.RotationId;
+                item.Document.Id = rndDb.Document.Id;
+                item.Document.Extention = rndDb.Document.Extention;
+                item.Document.FileUrl = rndDb.Document.FileUrl;
+                item.Document.FileName = rndDb.Document.FileName;
+                item.Document.FileSize = rndDb.Document.FileSize;
+                item.Document.IsCurrent = rndDb.Document.IsCurrent;
+                item.Document.CreatedAt = rndDb.Document.CreatedAt;
+                item.Document.UpdatedAt = rndDb.Document.CreatedAt;
+                foreach (var dusr in rndDb.Document.DocumentUsers)
+                {
+                    var dUsrItem = new DocumentUserInboxData();
+                    dUsrItem.Id = dusr.Id;
+                    dUsrItem.DocumentId = dusr.DocumentId;
+                    dUsrItem.UserId = dusr.UserId;
+                    dUsrItem.FlagAction = dusr.ActionStatus;
+                    dUsrItem.FlagPermission = dusr.ActionPermission;
+                    dUsrItem.FlagPermission |= docSvr.GetPermission(usrId, curRnId.Value, dusr.DocumentId);
+                    item.Document.DocumentUsers.Add(dUsrItem);
+                }
+                foreach (var delm in rndDb.Document.DocumentElements)
+                {
+                    var dElmItem = new DocumentElementInboxData();
+                    dElmItem.Id = delm.Id;
+                    dElmItem.DocumentId = delm.DocumentId;
+                    dElmItem.Page = delm.Page;
+                    dElmItem.LeftPosition = delm.LeftPosition;
+                    dElmItem.TopPosition = delm.TopPosition;
+                    dElmItem.WidthPosition = delm.WidthPosition;
+                    dElmItem.HeightPosition = delm.HeightPosition;
+                    dElmItem.Color = delm.Color;
+                    dElmItem.BackColor = delm.BackColor;
+                    dElmItem.Data = delm.Text;
+                    dElmItem.Data2 = delm.Unknown;
+                    dElmItem.Rotation = delm.Rotation;
+                    dElmItem.ScaleX = delm.ScaleX;
+                    dElmItem.ScaleY = delm.ScaleY;
+                    dElmItem.TransitionX = delm.TransitionX;
+                    dElmItem.TransitionY = delm.TransitionY;
+                    dElmItem.StrokeWidth = delm.StrokeWidth;
+                    dElmItem.Opacity = delm.Opacity;
+                    dElmItem.Flag = delm.Flag;
+                    dElmItem.FlagCode = delm.AssignedAnnotationCode;
+                    dElmItem.FlagDate = delm.AssignedAt;
+                    dElmItem.FlagImage = delm.AssignedAnnotationImageFileName;
+                    dElmItem.CreatorId = delm.CreatorId;
+                    dElmItem.ElementId = delm.ElementId;
+                    dElmItem.UserId = delm.UserId;
+                    dElmItem.CreatedAt = delm.CreatedAt;
+                    dElmItem.UpdatedAt = delm.UpdatedAt;
+                    dElmItem.ElementTypeId = delm.ElementTypeId;
+                    item.Document.DocumentElements.Add(dElmItem);
+                }
+                item.Document.DocumentUser = item.Document.DocumentUsers.FirstOrDefault(itmDocUsr => itmDocUsr.UserId == usrId);
+                result.Add(item);
+            }
+            return result;
+        }
+
+        private static RotationNodeDocInboxData DeepCopy(RotationNodeDocInboxData source)
+        {
+            var DeserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
+
+            return JsonConvert.DeserializeObject<RotationNodeDocInboxData>(JsonConvert.SerializeObject(source), DeserializeSettings);
         }
     }
 }

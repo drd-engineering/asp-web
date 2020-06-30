@@ -90,7 +90,6 @@
     <Compile Include="SubscriptionService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Utiities.cs" />
-    <Compile Include="WorkflowDeepService.cs" />
     <Compile Include="WorkflowService.cs" />
   </ItemGroup>
   <ItemGroup>

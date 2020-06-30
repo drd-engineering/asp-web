@@ -183,7 +183,7 @@
             $scope.paging = [];
             $scope.criteria = "";
             $scope.page = 1;
-            $scope.row = 20;
+            $scope.totalItemPerPage = 20;
             $scope.currPage = 0;
             $scope.index = 0;
             // modal workflow
@@ -248,7 +248,7 @@
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
-
+                console.log($scope.workflow.Id);
                 $http.post('@Url.Action("Save", "Rotation")',
                     {
                         prod: {
@@ -360,7 +360,7 @@
                 $http.post('@Url.Action("GetWorkflows", "Workflow")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                         $scope.CountWorkflows(criteria);
                         $scope.isView = true;
                     }
@@ -371,10 +371,10 @@
             }
             $scope.CountWorkflows = function (criteria) {
                 $scope.paging = [];
-                $http.post('@Url.Action("CountWorkflows","Workflow")', { topCriteria: criteria }).then(function (response) {
+                $http.post('@Url.Action("CountWorkflows","Workflow")', { criteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        var jumlahPage = Math.ceil(jumlahData / $scope.totalItemPerPage);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
@@ -384,12 +384,12 @@
                         var x = 0;
                 })
             }
-            $scope.changePageWorkflows = function (criteria, page, row) {
+            $scope.changePageWorkflows = function (criteria, page, totalItemPerPage) {
                 $scope.products = [];
-                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                     }
                 }, function (response) {
                     //error handle\
@@ -414,13 +414,13 @@
                 $("#modal_select_member").modal("show");
             }
 
-            $scope.findMembers = function (criteria, page, row) {
+            $scope.findMembers = function (criteria, page, totalItemPerPage) {
                 $scope.page = 1;
                 $scope.members = [];
-                $http.post('/Member/FindMembers', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('/Member/FindMembers', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data;
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                         $scope.findMembersCountAll(criteria);
                         $scope.isView = true;
                     }
@@ -431,10 +431,10 @@
             }
             $scope.findMembersCountAll = function (criteria) {
                 $scope.paging = [];
-                $http.post('/Member/FindMembersCountAll', { topCriteria: criteria }).then(function (response) {
+                $http.post('/Member/FindMembersCountAll', { criteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        var jumlahPage = Math.ceil(jumlahData / $scope.totalItemPerPage);
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push({ value: i, text: i });
                         }
@@ -445,12 +445,12 @@
                     var x = 0;
                 });
             }
-            $scope.changePageMember = function (criteria, page, row) {
+            $scope.changePageMember = function (criteria, page, totalItemPerPage) {
                 $scope.products = [];
-                $http.post('/Member/FindMembers', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
+                $http.post('/Member/GetMembers', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.members = response.data;
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                     }
                 }, function (response) {
                     //error handle\
