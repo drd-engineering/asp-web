@@ -55,11 +55,15 @@ namespace DRD.App.Controllers
             
             
         }
-
-        public ActionResult GetAllCompanyOwnedbyUser()
+        /// <summary>
+        /// API to get company owned by user
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetCompaniesOwnedByUser()
         {
-            CheckLogin();
-            var data = companyService.GetAllCompanyOwnedbyUser(user.Id);
+            if (!CheckLogin(getMenu: false))
+                return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+            var data = companyService.GetCompaniesOwnedByUser(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

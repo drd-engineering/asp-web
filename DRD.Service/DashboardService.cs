@@ -50,22 +50,131 @@ namespace DRD.Service
         /// <returns>the counting result is filled in value from subscriptionLimit.new</returns>
         public SubscriptionLimit GetCompanySubscriptionLimit(long companyId)
         {
+            using var db = new ServiceContext();
+            CompanyService companyService = new CompanyService();
+            SubscriptionService subscriptionService = new SubscriptionService();
+            var storage = new SubscriptionLimit();
+            var storages = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId: companyId);
+
+            if (storages != null)
+            {
+                storage.New.StorageLimit = storages.StorageLimit.Value;
+                storage.New.TotalStorage = storages.TotalStorage.Value;
+            }
+            return storage;
+        }
+        /// <summary>
+        /// GET rotations that company has and filtered by tags, the data will contains where is the rotation going on
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="skip"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public ICollection<RotationDashboard> GetRotationsByCompany(long companyId, int page, int totalItemPerPage, ICollection<string> tags = null)
+        {
+            int skip = totalItemPerPage * (page - 1);
+            using var db = new ServiceContext();
+            var data = (from rotation in db.Rotations
+                        where rotation.CompanyId == companyId
+                        orderby rotation.UpdatedAt descending
+                        select new RotationDashboard
+                        {
+                            Id = rotation.Id,
+                            Name = rotation.Name,
+                            Status = rotation.Status,
+                            CreatedAt = rotation.CreatedAt,
+                            UpdatedAt = rotation.UpdatedAt,
+                            StartedAt = rotation.StartedAt,
+                            Tags = (from tagitem in rotation.TagItems
+                                    join tag in db.Tags on tagitem.TagId equals tag.Id
+                                    select tag.Name.ToLower()).ToList(),
+                            RotationUsers = (from rtuser in rotation.RotationUsers
+                                                select new RotationDashboard.UserDashboard
+                                                {
+                                                    Id = rtuser.User.Id,
+                                                    Name = rtuser.User.Name,
+                                                    ProfileImageFileName = rtuser.User.ProfileImageFileName
+                                                }).ToList(),
+                            Creator = (from user in db.Users
+                                        where user.Id == rotation.CreatorId
+                                        select new RotationDashboard.UserDashboard
+                                        {
+                                            Id = user.Id,
+                                            Name = user.Name,
+                                            ProfileImageFileName = user.ProfileImageFileName
+                                        }).FirstOrDefault(),
+                            Workflow = new RotationDashboard.WorkflowDashboard
+                            {
+                                Id = rotation.Workflow.Id,
+                                Name = rotation.Workflow.Name
+                            }
+                        });
+            if (tags != null)
+                data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
+            if (totalItemPerPage > 0 && skip >= 0)
+                data = data.Skip(skip).Take(totalItemPerPage);
+            var result = data.ToList();
+            foreach (RotationDashboard x in result)
+            {
+                x.InboxId = db.Inboxes.Where(inbox => inbox.RotationId == x.Id).FirstOrDefault().Id;
+                x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
+                foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
+                {
+                    var rNode = db.RotationNodes.FirstOrDefault(i => i.RotationId == x.Id && i.UserId == y.Id);
+                    if (rNode != null)
+                    {
+                        y.InboxStatus = rNode.Status;
+                        y.InboxTimeStamp = rNode.CreatedAt;
+                    }
+                    else
+                    {
+                        y.InboxTimeStamp = DateTime.MaxValue;
+                        y.InboxStatus = -99;
+                    }
+                    y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
+                }
+                x.RotationUsers = x.RotationUsers.OrderBy(i => i.InboxTimeStamp).ToList();
+            }
+            return result;
+        }
+        /// <summary>
+        /// COUNT rotations that company has and filtered by tags, the data will contains where is the rotation going on
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public int CountRotationsByCompany(long companyId, ICollection<string> tags = null)
+        {
             using (var db = new ServiceContext())
             {
-                CompanyService companyService = new CompanyService();
-                SubscriptionService subscriptionService = new SubscriptionService();
-                var storage = new SubscriptionLimit();
-                var storages = subscriptionService.GetActiveBusinessSubscriptionByCompany(companyId: companyId);
-
-                if (storages != null)
-                {
-                    storage.New.StorageLimit = storages.StorageLimit.Value;
-                    storage.New.TotalStorage = storages.TotalStorage.Value;
-                }
-                return storage;
+                var data = (from rotation in db.Rotations
+                            where rotation.CompanyId == companyId
+                            orderby rotation.UpdatedAt descending
+                            select new RotationDashboard
+                            {
+                                // just for filtering
+                                Tags = (from tagitem in rotation.TagItems
+                                        join tag in db.Tags on tagitem.TagId equals tag.Id
+                                        select tag.Name.ToLower()).ToList(),
+                                
+                            });
+                if (tags != null)
+                    data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
+                var result = data.Count();
+                return result;
             }
         }
-
+        /// <summary>
+        /// CHECK if user has a company or not
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool CheckIsUserHasCompany(long userId)
+        {
+            UserService helper = new UserService();
+            return helper.HasCompany(userId);
+        }
         // Belom dipake ini bang
         public int SendEmailNotifikasiRotasi(long rotationId, long userId)
         {
@@ -80,150 +189,6 @@ namespace DRD.Service
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
             return 0;
-        }
-        /// <summary>
-        /// GET rotations that company has and filtered by tags, the data will contains where is the rotation going on
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="tags"></param>
-        /// <param name="skip"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public ICollection<RotationDashboard> GetRotationsByCompany(long companyId, ICollection<string> tags, int skip, int pageSize)
-        {
-            using (var db = new ServiceContext())
-            {
-                var data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId
-                            orderby rotation.UpdatedAt descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Name,
-                                Status = rotation.Status,
-                                DateCreated = rotation.CreatedAt,
-                                DateUpdated = rotation.UpdatedAt,
-                                DateStarted = rotation.StartedAt,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ProfileImageFileName
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ProfileImageFileName
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            });
-                if (tags != null)
-                    data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
-                if (pageSize > 0 && skip >= 0)
-                    data = data.Skip(skip).Take(pageSize);
-                var result = data.ToList();
-                foreach (RotationDashboard x in result)
-                {
-                    x.InboxId = db.Inboxes.Where(inbox => inbox.RotationId == x.Id).FirstOrDefault().Id;
-                    x.Creator.EncryptedId = Utilities.Encrypt(x.Creator.Id.ToString());
-                    foreach (RotationDashboard.UserDashboard y in x.RotationUsers)
-                    {
-                        var rNode = (from rotationNode in db.RotationNodes
-                                     where rotationNode.Rotation.Id == x.Id
-                                     && rotationNode.UserId == y.Id
-                                     select new RotationNodeInboxData
-                                     {
-                                         CreatedAt = rotationNode.CreatedAt,
-                                         Status = rotationNode.Status
-                                     }).FirstOrDefault();
-                        if (rNode != null)
-                        {
-                            y.InboxStatus = rNode.Status;
-                            y.InboxTimeStamp = rNode.CreatedAt;
-                        }
-                        else
-                        {
-                            y.InboxTimeStamp = DateTime.MaxValue;
-                            y.InboxStatus = -99;
-                        }
-                        y.EncryptedId = Utilities.Encrypt(y.Id.ToString());
-                    }
-                    x.RotationUsers = x.RotationUsers.OrderBy(i => i.InboxTimeStamp).ToList();
-                }
-                return result;
-            }
-        }
-        /// <summary>
-        /// Function to count all Rotation status of a Company from Models
-        /// </summary>
-        /// <param name="companyId"></param>
-        /// <param name="tags"></param>
-        /// <returns></returns>
-        public int CountRotationsByCompany(long companyId, ICollection<string> tags)
-        {
-            using (var db = new ServiceContext())
-            {
-                var data = (from rotation in db.Rotations
-                            where rotation.CompanyId == companyId
-                            orderby rotation.UpdatedAt descending
-                            select new RotationDashboard
-                            {
-                                Id = rotation.Id,
-                                Subject = rotation.Name,
-                                Status = rotation.Status,
-                                DateCreated = rotation.CreatedAt,
-                                DateUpdated = rotation.UpdatedAt,
-                                DateStarted = rotation.StartedAt,
-                                Tags = (from tagitem in rotation.TagItems
-                                        join tag in db.Tags on tagitem.TagId equals tag.Id
-                                        select tag.Name.ToLower()).ToList(),
-                                RotationUsers = (from rtuser in rotation.RotationUsers
-                                                 select new RotationDashboard.UserDashboard
-                                                 {
-                                                     Id = rtuser.User.Id,
-                                                     Name = rtuser.User.Name,
-                                                     ImageProfile = rtuser.User.ProfileImageFileName
-                                                 }).ToList(),
-                                Creator = (from user in db.Users
-                                           where user.Id == rotation.CreatorId
-                                           select new RotationDashboard.UserDashboard
-                                           {
-                                               Id = user.Id,
-                                               Name = user.Name,
-                                               ImageProfile = user.ProfileImageFileName
-                                           }).FirstOrDefault(),
-                                Workflow = new RotationDashboard.WorkflowDashboard
-                                {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name
-                                }
-                            });
-                if (tags != null)
-                    data = data.Where(item => tags.All(itag => item.Tags.Contains(itag.ToLower())));
-                var result = data.ToList().Count();
-                return result;
-            }
-        }
-        /// <summary>
-        /// CHECK if user has a company or not
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public bool CheckIsUserHasCompany(long userId)
-        {
-            UserService helper = new UserService();
-            return helper.HasCompany(userId);
         }
 
     }

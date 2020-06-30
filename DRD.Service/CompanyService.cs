@@ -109,7 +109,7 @@ namespace DRD.Service
         }
 
         /// <summary>
-        /// Obtain all company available in DRD 
+        /// GET all company available in DRD 
         /// </summary>
         /// <returns>only contains little details like id, name and code</returns>
         public ICollection<SmallCompanyData> GetCompanies()
@@ -128,7 +128,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain all company that user manage and own
+        /// GET all company that user manage and own
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -146,7 +146,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain all company that user manage
+        /// GET all company that user manage
         /// </summary>
         /// <param name="adminId"> user Id as admin</param>
         /// <returns></returns>
@@ -168,7 +168,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain all company that user own
+        /// GET all company that user own
         /// </summary>
         /// <param name="ownerId">user id as owner</param>
         /// <returns></returns>
@@ -206,11 +206,11 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain all company that user has
+        /// GET all company that user has
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>only contain small data like id, code and name of company</returns>
-        public ICollection<SmallCompanyData> GetAllCompanyOwnedbyUser(long userId)
+        public ICollection<SmallCompanyData> GetCompaniesOwnedByUser(long userId)
         {
             using (var db = new ServiceContext())
             {
@@ -226,7 +226,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain company details
+        /// GET company details
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -259,7 +259,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain company little details
+        /// GET company little details
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -279,7 +279,7 @@ namespace DRD.Service
             }
         }
         /// <summary>
-        /// Obtain company data raw from database it's mean one data contain all atribute that company has
+        /// GET company data raw from database it's mean one data contain all atribute that company has
         /// </summary>
         /// <param name="id"></param>
         /// <returns>company contain all atribute from db</returns>

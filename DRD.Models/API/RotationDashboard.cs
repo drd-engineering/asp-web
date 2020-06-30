@@ -4,14 +4,11 @@
     {
         public long Id { get; set; } // Id (Primary key)
         public long InboxId { get; set; } // Id (Primary key)
-        public string Subject { get; set; } // Subject (length: 100)
+        public string Name { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
-        public System.DateTime? DateCreated { get; set; } // DateCreated
-        public System.DateTime? DateUpdated { get; set; } // DateUpdated
-        public System.DateTime? DateStarted { get; set; } // DateStarted
-        // Document summaries
-        /*public virtual System.Collections.Generic.ICollection<RotationNodeDoc> SumRotationNodeDocs { get; set; }*/ // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-
+        public System.DateTime? CreatedAt { get; set; } // DateCreated
+        public System.DateTime? UpdatedAt { get; set; } // DateUpdated
+        public System.DateTime? StartedAt { get; set; } // DateStarted
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<string> Tags { get; set; }
         public virtual System.Collections.Generic.ICollection<UserDashboard> RotationUsers { get; set; } // RotationMember.FK_RotationMember_Rotation
@@ -28,7 +25,7 @@
             public long Id { get; set; }
             public string Name { get; set; }
             public string EncryptedId { get; set; }
-            public string ImageProfile { get; set; }
+            public string ProfileImageFileName { get; set; }
 
             public System.DateTime? InboxTimeStamp { get; set; } // DateCreated
             public int InboxStatus { get; set; } // string
