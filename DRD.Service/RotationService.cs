@@ -319,12 +319,12 @@ namespace DRD.Service
                     db.SaveChanges();
                 }
             }
-            // Tags
+            // Tags this implementation is for rotation save or update(there is rotation in db that editted)
             var tagItemListInDb = db.TagItems.Where(tagitemdb => tagitemdb.RotationId == rotationDb.Id).ToList();
             if (newRotation.Tags != null)
                 foreach (string tag in newRotation.Tags)
                 {
-                    var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.ToLower().Equals(tag.ToLower()));
+                    var tagfromDB = db.Tags.FirstOrDefault(tagdb => tagdb.Name.Equals(tag));
                     if (tagfromDB == null)
                     {
                         tagfromDB = new Tag();

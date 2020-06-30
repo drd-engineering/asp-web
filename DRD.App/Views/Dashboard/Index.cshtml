@@ -24,7 +24,7 @@
             <div class="row">
 
                 <!-- DASHBOARD - ROTATION -->
-                <div class="col-sm-12 col-md-8 col-lg-4" id="dashboard-rotation">
+                <div class="col-sm-12 col-md-8 col-lg-6" id="dashboard-rotation">
                     <div class="panel highlight-container">
                         <div class="highlight-card">
                             <!-- HEADER -->
@@ -348,7 +348,7 @@
                     item = item.replace(",","");
                     var alreadyUsed = false;
                     $scope.model.Tags.some(function (element, i) {
-                        if (item.toLowerCase() === element.toLowerCase()) {
+                        if (item === element) {
                             alreadyUsed = true;
                             return;
                         }
@@ -368,7 +368,7 @@
                 if ($scope.newTag != "" && $scope.newTag != ",") {
                     $scope.newTag = $scope.newTag.replace(",", "");
                     $scope.model.Tags.some(function (element, i) {
-                        if ($scope.newTag.toLowerCase() === element.toLowerCase()) {
+                        if ($scope.newTag === element) {
                             alreadyUsed = true;
                             return;
                         }
