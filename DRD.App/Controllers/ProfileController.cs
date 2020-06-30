@@ -9,103 +9,80 @@ using System.Web.Mvc;
 
 namespace DRD.App.Controllers
 {
-
     public class ProfileController : Controller
     {
-        LoginController login = new LoginController();
+        LoginController login;
         UserSession user;
-        Layout layout = new Layout();
-
-        public bool Initialize()
+        UserService userService;
+        Layout layout;
+        // HELPER
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
-                layout.Menus = login.GetMenus(this);
-                layout.User = login.GetUser(this);
+                userService = new UserService();
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
         }
-
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
-
         // GET: Profile
         public ActionResult Index()
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu:true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
-
-            layout.Object = login.GetUser(this);
-
-            return View(layout);
-        }
-
-        // GET: Profile/MemberList/
-        public ActionResult UserList()
-        {
-            InitializeAPI();
-
-            // begin decription menu
-            UserSession userSession = login.GetUser(this);
-            // end decription menu
-
-            layout.User = login.GetUser(this);
-
-            return View(layout);
-        }
-
-        // GET Profile/GetData
-        public ActionResult GetData()
-        {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            UserSession userSession = login.GetUser(this);
-
-            UserService userService = new UserService();
-
-            UserProfile user = userService.GetById(userSession.Id, userSession.Id);
-            user.EncryptedId = Utilities.Encrypt(user.Id.ToString());
-            var data = user;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult UserMenu()
-        {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            // begin decription menu
-            UserSession userSession = login.GetUser(this);
-            // end decription menu
-
-            UserProfile user = new UserProfile();
-           
-            Layout layout = new Layout();
-            layout.Menus = login.GetMenus(this);
-            layout.User = userSession;
             layout.Object = user;
-
             return View(layout);
         }
-
-        // redundant with the login method
-        public ActionResult GetUserLogin()
+        /// <summary>
+        /// API get profile data of user logged in
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetProfileUser()
         {
-            LoginController login = new LoginController();
-            UserService userService = new UserService();
-            long id = login.GetUser(this).Id;
-            var data = userService.GetById(id, id);
+            if (!CheckLogin(getMenu: false))
+                return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
+            UserProfile userProfile = userService.GetProfile(user.Id);
+            return Json(userProfile, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// SAVE user logged in profile updated data
+        /// </summary>
+        /// <param name="newUser"></param>
+        /// <returns></returns>
+        public ActionResult Update(UserProfile newUser)
+        {
+            if (!CheckLogin(getMenu: false))
+                return RedirectToAction("Index", "login", new { redirectUrl = "profile" });
+            // List of return status
+            var data = new List<int>();
+            System.Diagnostics.Debug.WriteLine(newUser.Id);
+            var ret1 = userService.UpdateProfile(newUser);
+            data.Add(1);
+            data.Add(MoveFromTemp(newUser, ret1.InitialImageFileName));
+            data.Add(MoveFromTemp(newUser, ret1.KTPImageFileName));
+            data.Add(MoveFromTemp(newUser, ret1.KTPVerificationImageFileName));
+            data.Add(MoveFromTemp(newUser, ret1.ProfileImageFileName));
+            data.Add(MoveFromTemp(newUser, ret1.SignatureImageFileName));
+            data.Add(MoveFromTemp(newUser, ret1.StampImageFileName));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-
+        /// <summary>
+        /// API upload image related to profile like signature image, profile image, etc. to a temporary directory
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult Upload(int idx)
         {
@@ -153,38 +130,15 @@ namespace DRD.App.Controllers
             result.Fileext = imageExtension.Replace(".", "");
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult Update(UserProfile user)
+        /// <summary>
+        /// HELPER move any image file user from folder temporary to user folder
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private int MoveFromTemp(UserProfile user, string filename)
         {
-            LoginController login = new LoginController();
-            login.CheckLogin(this);
-
-            // begin decription menu
-            UserSession userSession = login.GetUser(this);
-
-            // assign uneditable data
-            //user.Email = userSession.Email;
-
-            //user.CompanyId = userSession.CompanyId;
-
-            UserService userService = new UserService();
-            /*UserProfile oldUser = userService.GetById(user.Id, userSession.Id);*/ // no need to validate who is log in
-            var data = new List<int>();
-
-            var ret1 = userService.Update(user);
-            data.Add(1);
-            data.Add(MoveFromTemp(user, ret1.ImageInitials));
-            data.Add(MoveFromTemp(user, ret1.ImageKtp1));
-            data.Add(MoveFromTemp(user, ret1.ImageKtp2));
-            data.Add(MoveFromTemp(user, ret1.ImageProfile));
-            data.Add(MoveFromTemp(user, ret1.ImageSignature));
-            data.Add(MoveFromTemp(user, ret1.ImageStamp));
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        private int MoveFromTemp(UserProfile user, string location)
-        {
-            if (location == null)
+            if (filename == null)
                 return -2;
             string fromFolder = "Images/Member/temp";
             string toFolder = "Images/Member/" + user.EncryptedId.ToString();
@@ -194,12 +148,11 @@ namespace DRD.App.Controllers
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
             try
             {
-
                 string Tranfiles, ProcessedFiles;
-                Tranfiles = Server.MapPath("/" + fromFolder + "/") + location;
+                Tranfiles = Server.MapPath("/" + fromFolder + "/") + filename;
                 if (System.IO.File.Exists(Tranfiles))
                 {
-                    ProcessedFiles = Server.MapPath("/" + toFolder + "/") + location;
+                    ProcessedFiles = Server.MapPath("/" + toFolder + "/") + filename;
                     //Need to move or overwrite the new file with actual file.
                     System.IO.File.Move(Tranfiles, ProcessedFiles);
                     System.IO.File.Delete(Tranfiles);

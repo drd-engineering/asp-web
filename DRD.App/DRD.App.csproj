@@ -3612,7 +3612,6 @@
     <Folder Include="Scripts\contextMenu\font\" />
     <Folder Include="Scripts\flow\required\" />
     <Folder Include="Scripts\flow\scripts\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DRD.Models\DRD.Models.csproj">
