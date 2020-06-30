@@ -285,13 +285,13 @@ namespace DRD.Service
                     FirstNodeId = newWorkflow.WorkflowNodes.FirstOrDefault(workflow => workflow.element.Equals(newNodeLink.firstNode)).Id
                 };
 
-                var wfnod = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.SourceId);
-                var to = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.TargetId);
-                var first = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.FirstNodeId);
+                var nodeSourceDb = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.SourceId);
+                var nodeTargetDb = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.TargetId);
+                var FirstNodeDb = db.WorkflowNodes.FirstOrDefault(c => c.Id == nodelink.FirstNodeId);
 
-                nodelink.Source = wfnod;
-                nodelink.Target = to;
-                nodelink.FirstNode = first;
+                nodelink.Source = nodeSourceDb;
+                nodelink.Target = nodeTargetDb;
+                nodelink.FirstNode = FirstNodeDb;
                         
                 db.WorkflowNodeLinks.Add(nodelink);
                 db.SaveChanges();

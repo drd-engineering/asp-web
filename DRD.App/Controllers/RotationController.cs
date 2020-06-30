@@ -40,7 +40,6 @@ namespace DRD.App.Controllers
             return false;
         }
 
-
         // GET : Rotation/new
         public ActionResult New()
         {
@@ -72,14 +71,15 @@ namespace DRD.App.Controllers
         /// <summary>
         /// API save Rotation
         /// </summary>
-        /// <param name="updatedRotation"></param>
+        /// <param name="newRotation"></param>
         /// <returns></returns>
-        public ActionResult Save(RotationItem updatedRotation)
+        public ActionResult Save(RotationItem newRotation)
         {
             CheckLogin();
-            updatedRotation.CreatorId = user.Id;
-            updatedRotation.UserId = user.Id;
-            var data = rotationService.Save(updatedRotation);
+
+            newRotation.CreatorId = user.Id;
+            newRotation.UserId = user.Id;
+            var data = rotationService.Save(newRotation);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -108,14 +108,6 @@ namespace DRD.App.Controllers
             CheckLogin();
             int skip = totalItemPerPage * (page - 1);
             var data = rotationService.GetRotations(user.Id, criteria, skip, totalItemPerPage);
-            if (data != null)
-            {
-                MenuService menuService = new MenuService();
-                foreach (var item in data)
-                {
-                    item.Key = menuService.EncryptData(item.Id);
-                }
-            }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -139,18 +131,6 @@ namespace DRD.App.Controllers
         {
             CheckLogin();
             var data = rotationService.GetUsersWorkflow(id);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// API save workflow, workflow nodes and workflow links
-        /// </summary>
-        /// <param name="workflowUpdate"></param>
-        /// <returns></returns>
-        public ActionResult ProcessActivity(ProcessActivity param, int bit)
-        {
-            CheckLogin();
-            var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

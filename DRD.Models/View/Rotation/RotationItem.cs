@@ -3,10 +3,10 @@
     public class RotationItem
     {
         public long Id { get; set; } // Id (Primary key)
-        public string Subject { get; set; } // Subject (length: 100)
+        public string Name { get; set; } // Subject (length: 100)
         public long WorkflowId { get; set; } // WorkflowId
         public int Status { get; set; } // Status (length: 2)
-        public string Remark { get; set; } // Remark
+        public string Description { get; set; } // Remark
         public long UserId { get; set; } // MemberId
         public long? CreatorId { get; set; } // CreatorId
         public System.DateTime? DateCreated { get; set; } // DateCreated

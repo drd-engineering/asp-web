@@ -68,13 +68,13 @@ namespace DRD.App.Controllers
         /// <summary>
         /// API save workflow, workflow nodes and workflow links
         /// </summary>
-        /// <param name="updatedWorkflow"></param>
+        /// <param name="newWorkflow"></param>
         /// <returns></returns>
-        public ActionResult Save(WorkflowItem updatedWorkflow)
+        public ActionResult Save(WorkflowItem newWorkflow)
         {
             CheckLogin();
-            updatedWorkflow.CreatorId = user.Id;
-            var data = workflowService.Save(updatedWorkflow);
+            newWorkflow.CreatorId = user.Id;
+            var data = workflowService.Save(newWorkflow);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

@@ -24,7 +24,7 @@ namespace DRD.App.Controllers
                 //instantiate
                 user = login.GetUser(this);
                 dashboardService = new DashboardService();
-                if (hasCompany != null)
+                if (!hasCompany)
                     hasCompany = dashboardService.CheckIsUserHasCompany(user.Id);
                 if (getMenu)
                 {
