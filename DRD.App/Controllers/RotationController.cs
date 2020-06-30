@@ -9,103 +9,105 @@ namespace DRD.App.Controllers
 {
     public class RotationController : Controller
     {
-        LoginController login = new LoginController();
-        RotationService rotationService = new RotationService();
-        RotationProcessService rotationProcessService = new RotationProcessService();
-        UserSession user;
-        Layout layout = new Layout();
+        RotationService rotationService;
+        RotationProcessService rotationProcessService;
 
-        public bool Initialize()
+        private LoginController login;
+        private UserSession user;
+        private Layout layout;
+
+        //helper
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
-                layout.Menus = login.GetMenus(this);
-                layout.User = login.GetUser(this);
+                rotationService = new RotationService();
+                rotationProcessService = new RotationProcessService();
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
         }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
-        /// <summary>
-        /// New Rotation item Page
-        /// </summary>
-        /// <returns></returns>
+
+
+        // GET : Rotation/new
         public ActionResult New()
         {
-            if (!Initialize()) return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
+            if (!CheckLogin(getMenu: true)) return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/New" });
 
             return View(layout);
         }
 
-        /// <summary>
-        /// Rotation List Page
-        /// </summary>
-        /// <returns></returns>
+        //GET : Rotation/list
         public ActionResult List()
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation/List" });
             return View(layout);
         }
 
-        /// <summary>
-        /// Rotation Details Page by Id and user created
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        // GET : Rotation
         public ActionResult Index(long id)
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Rotation?id="+id });
-            
-            var product =  rotationService.GetRotationById(id, user.Id);
-            if (product == null) return RedirectToAction("list", "rotation");
 
-            layout.Object = product;
+            layout.Object =  rotationService.GetRotationById(id, user.Id);
+            if (layout.Object == null) return RedirectToAction("list", "rotation");
+
             return View(layout);
         }
 
-        public ActionResult GetById(long id)
+        /// <summary>
+        /// API save Rotation
+        /// </summary>
+        /// <param name="updatedRotation"></param>
+        /// <returns></returns>
+        public ActionResult Save(RotationItem updatedRotation)
         {
-            var rotationService = new RotationService();// getUserLogin().AppZone.Code);
-            var data = rotationService.GetById(id);
+            CheckLogin();
+            updatedRotation.CreatorId = user.Id;
+            updatedRotation.UserId = user.Id;
+            var data = rotationService.Save(updatedRotation);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Save(RotationItem prod)
-        {
-            InitializeAPI();
-            prod.CreatorId = user.Id;
-            prod.UserId = user.Id;
-            var data = rotationService.Save(prod);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
+        /// <summary>
+        /// API to start using the rotation and increase the usage of the subscription
+        /// </summary>
+        /// <param name="rotationId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
         public ActionResult Start(long rotationId, long subscriptionId)
         {
-            InitializeAPI();
-
-            //TODO make response status work and using the object instead of the code variable
+            CheckLogin();
             var data = rotationProcessService.Start(user.Id, rotationId, subscriptionId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// API to obtain rotation that user logged in have related to criteria
         /// </summary>
-        /// <param name="topCriteria"></param>
+        /// <param name="criteria"></param>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public ActionResult FindRotations(string criteria, int page, int pageSize)
+        public ActionResult GetRotations(string criteria, int page, int totalItemPerPage)
         {
-            InitializeAPI();
-            int skip = pageSize * (page - 1);
-            var data = rotationService.FindRotations(user.Id, criteria, skip, pageSize);
+            CheckLogin();
+            int skip = totalItemPerPage * (page - 1);
+            var data = rotationService.GetRotations(user.Id, criteria, skip, totalItemPerPage);
             if (data != null)
             {
                 MenuService menuService = new MenuService();
@@ -121,29 +123,45 @@ namespace DRD.App.Controllers
         /// </summary>
         /// <param name="topCriteria"></param>
         /// <returns></returns>
-        public ActionResult FindRotationCountAll(string criteria)
+        public ActionResult CountRotations(string criteria)
         {
-            InitializeAPI();
-            var data = rotationService.FindRotationCountAll(user.Id, criteria);
+            CheckLogin();
+            var data = rotationService.CountRotations(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="workflowUpdate"></param>
+        /// <returns></returns>
         public ActionResult GetUsersWorkflow(long id)
         {
+            CheckLogin();
             var data = rotationService.GetUsersWorkflow(id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="workflowUpdate"></param>
+        /// <returns></returns>
         public ActionResult ProcessActivity(ProcessActivity param, int bit)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = rotationProcessService.ProcessActivity(param, (Constant.EnumActivityAction)bit);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="workflowUpdate"></param>
+        /// <returns></returns>
         public ActionResult DeleteRotation(long id)
         {
-            InitializeAPI();
+            CheckLogin();
 
             var data = rotationService.Delete(id);
             return Json(data, JsonRequestBehavior.AllowGet);

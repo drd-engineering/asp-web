@@ -110,10 +110,6 @@
                                         <tr>
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission : </span>
-                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 1)}}" id="checkboxmt{{x.WorkflowNodeId}}-1"> Sign&ensp;&ensp;&ensp;
-                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 32)}}" id="checkboxmt{{x.WorkflowNodeId}}-32"> Stamp&ensp;&ensp;&ensp;*@
-                                                @*<input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 2)}}" id="checkboxmt{{x.WorkflowNodeId}}-2"> Add annotate&ensp;&ensp;&ensp;
-                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 4)}}" id="checkboxmt{{x.WorkflowNodeId}}-4"> View&ensp;&ensp;&ensp;*@
                                                 <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
                                                 <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
@@ -359,9 +355,9 @@
                 });
             }
 
-            $scope.GetWorkflows = function (criteria, page, row) {
+            $scope.GetWorkflows = function (criteria, page, totalItemPerPage) {
                 $scope.workflows = [];
-                $http.post('@Url.Action("GetWorkflows", "Workflow")', { topCriteria: criteria, page: page, pageSize: row}).then(function (response) {
+                $http.post('@Url.Action("GetWorkflows", "Workflow")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage}).then(function (response) {
                     if (response.data) {
                         $scope.workflows = response.data;
                         $scope.index = row * (page - 1);
@@ -508,13 +504,13 @@
                         if (response.data) {
                             if (response.data.status == "OK") {
                                 showSuccess("Successful data process.");
-                                $scope.findRotations($scope.criteria, $scope.page, $scope.row);
+      
                             }
                             else if (response.data.status == "ERROR_WORKFLOW_START_NODE_NOT_FOUND")
                                 showError("You use an invalid workflow. Make another rotation with valid worfklow.");
                             else if (response.data.status == "ERROR_ROTATION_ALREADY_STARTED") {
                                 showError("Rotation already started");
-                                $scope.findRotations($scope.criteria, $scope.page, $scope.row);
+                               
                             }
                             else if (response.data.status == "ADMINISTRATOR_EXCEED_LIMIT")
                                 showError("The number of administrators exceed limit, upgrade your subscription");
