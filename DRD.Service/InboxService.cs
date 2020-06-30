@@ -734,7 +734,7 @@ namespace DRD.Service
                 item.DocumentId = rndDb.DocumentId;
                 item.RotationNode.RotationId = rndDb.RotationId;
                 item.Document.Id = rndDb.Document.Id;
-                item.Document.Extention = rndDb.Document.Extention;
+                item.Document.Extension = rndDb.Document.Extension;
                 item.Document.FileUrl = rndDb.Document.FileUrl;
                 item.Document.FileName = rndDb.Document.FileName;
                 item.Document.FileSize = rndDb.Document.FileSize;

@@ -3,16 +3,10 @@
     ViewBag.Title = "Inbox";
     ViewBag.Submenu = "INBOX";
 }
-
-<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
-<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
-<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
-
-<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
-<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
-<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
-
-
+@section Scripts
+{
+    <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+}
 @section Styles
 {
     <link href="~/assets/css/pages/inbox-list.css" rel="stylesheet" type="text/css">
@@ -25,12 +19,12 @@
     <!-- Page container -->
     <section ng-controller="drdController">
         <!-- Content area -->
-        <div class="row">
+        <div class="totalItemPerPage">
             <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
                 <div class="input-group">
-                    <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && getInboxList(criteria, page, row)">
+                    <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && getInboxes(criteria, page, totalItemPerPage)">
                     <span class="input-group-btn">
-                        <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getInboxList(criteria, page, row)" style="background-color:#075685; color:white; width:50px;height:50px">
+                        <button id="my-button" class="btn btn-default btn-ladda btn-process" type="button" data-style="slide-down" data-spinner-color="#333" ng-click="getInboxes(criteria, page, totalItemPerPage)" style="background-color:#075685; color:white; width:50px;height:50px">
                             <span class="ladda-label"><i class="icon-search4"></i></span><span class="ladda-spinner"></span>
                             <div class="ladda-progress" style="width: 0px;"></div>
                         </button>
@@ -38,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div calss="row">
+        <div calss="totalItemPerPage">
             <div class="panel panel-flat">
                 <div ng-show="!completeLoad" style="text-align:center;padding:50px;">
                     Loading Inbox Data
@@ -57,9 +51,9 @@
                             </tr>
                         </thead>
                         <tbody style="width:95%">
-                            <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="do_edit(x.Id);" ng-repeat="x in products">
-                                <td width="200"><strong>{{x.prevUserName}}</strong> <small>({{x.prevUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
-                                <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.DateNote}}</td>
+                            <tr style="cursor:pointer;height:50px;width:90%;vertical-align:central;{{x.IsUnread ? 'font-weight:bold;' : 'font-weight:normal; background-color:#f3f3f9;'}}" ng-click="openInbox(x.Id);" ng-repeat="x in products">
+                                <td width="200"><strong>{{x.PreviousUserName}}</strong> <small>({{x.PreviousUserEmail}})</small><br><span style="font-size:10px;text-align:right">{{x.CompanyInbox.Name}}</span></td>
+                                <td><strong class="tag {{SetItemClass(x.LastStatus)}}">{{x.LastStatus}}</strong> {{x.Message}}</td>
                                 <td>{{x.RotationName}}</td>
                                 <td width="10%">{{getDateFormated(x.CreatedAt,1)}}</td>
                             </tr>
@@ -71,34 +65,30 @@
                 <div ng-show="hasInbox" class="pagination-container">
                     <div class="pagination">
                         <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="first page"
-                            ng-click="page > 1 && changePageInbox(criteria, 1, row)">&lt;&lt;</a>
+                           ng-click="page > 1 && changePageInbox(criteria, 1, totalItemPerPage)">&lt;&lt;</a>
                         <a class="{{page > 1?'':'disable'}}" data-toggle="tooltip" title="previous page"
-                            ng-click="page > 1 && changePageInbox(criteria, page - 1, row)">&lt;</a>
+                           ng-click="page > 1 && changePageInbox(criteria, page - 1, totalItemPerPage)">&lt;</a>
                         <a class="{{rot == page ? 'active':''}}" ng-repeat="rot in paging | limitTo : page+3>paging.length?paging.length:page+3 : page-4<0?0:page-4"
-                            ng-click="changePageInbox(criteria, rot, row)">
+                           ng-click="changePageInbox(criteria, rot, totalItemPerPage)">
                             {{rot}}
                         </a>
                         <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="next page"
-                            ng-click="page < paging.length && changePageInbox(criteria, page + 1, row)">&gt;</a>
+                           ng-click="page < paging.length && changePageInbox(criteria, page + 1, totalItemPerPage)">&gt;</a>
                         <a class="{{page < paging.length?'':'disable'}}" data-toggle="tooltip" title="last page"
-                            ng-click="page < paging.length && changePageInbox(criteria, paging.length, row)"> &gt; &gt;</a>
+                           ng-click="page < paging.length && changePageInbox(criteria, paging.length, totalItemPerPage)"> &gt; &gt;</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
     <script type="text/javascript">
-
-
-        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
-
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            // pagination
+            ////////////  INITIATE DATA  /////////////////
             $scope.paging = [];
             $scope.criteria = "";
             $scope.page = 1;
-            $scope.row = 20;
+            $scope.totalItemPerPage = 20;
 
             $scope.product = {};
             $scope.products = [];
@@ -111,34 +101,24 @@
             $scope.hasInbox = false;
             $scope.completeLoad = false;
 
-            /*--------------------------------------------------------------
-            INIT DATA
-            --------------------------------------------------------------*/
             angular.element(document).ready(function () {
-                $scope.getInboxList($scope.criteria, $scope.page, $scope.row);
+                $scope.getInboxes($scope.criteria, $scope.page, $scope.totalItemPerPage);
                 $(".content-wrapper").show();
             });
 
-            /*--------------------------------------------------------------
-            DO EDIT
-            --------------------------------------------------------------*/
-
-            $scope.do_edit = function (id) {
+            $scope.openInbox = function (id) {
                 location.href = "/inbox?id=" + id;
             }
-
-            /*--------------------------------------------------------------
-            GET PRODUCT
-            --------------------------------------------------------------*/
-            $scope.getInboxList = function (criteria, page, row) {
-                $http.post('@Url.Action("GetInboxList", "Inbox")', { criteria: criteria, page: page, pageSize: row }).then(function (response) {
+            ////////////  GET INBOX DATA BASED ON CATEGORY  /////////////////
+            $scope.getInboxes = function (criteria, page, totalItemPerPage) {
+                $http.post('@Url.Action("GetInboxes", "Inbox")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
                         console.log($scope.products);
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;
-                        $scope.InboxCountAll(criteria);
+                        $scope.countInboxes(criteria);
                     }
                     $scope.hasInbox = $scope.products.length > 0;
                 }, function (response) {
@@ -146,12 +126,12 @@
                     var x = 0;
                 });
             }
-            $scope.InboxCountAll = function (criteria) {
-                $http.post('@Url.Action("CountAll", "Inbox")', { criteria: criteria }).then(function (response) {
+            $scope.countInboxes = function (criteria) {
+                $http.post('@Url.Action("CountInboxes", "Inbox")', { criteria: criteria }).then(function (response) {
                     if (response.data) {
                         $scope.paging = [];
                         var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
+                        var jumlahPage = Math.ceil(jumlahData / $scope.totalItemPerPage);
                         $scope.hasInbox = jumlahData > 0;
                         for (var i = 1; i <= jumlahPage; i++) {
                             $scope.paging.push(i);
@@ -165,28 +145,17 @@
                     $scope.completeLoad = true;
                 });
             }
-            $scope.changePageInbox = function ( criteria, page, row) {
-                $http.post('@Url.Action("GetInboxList", "Inbox")', { criteria: criteria, page: page, pageSize: row }).then(function (response) {
+            $scope.changePageInbox = function ( criteria, page, totalItemPerPage) {
+                $http.post('@Url.Action("GetInboxes", "Inbox")', { criteria: criteria, page: page, pageSize: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
-                        $scope.index = row * (page - 1);
+                        $scope.index = totalItemPerPage * (page - 1);
                     }
                 }, function (response) {
                     //error handle\
                     var x = 0;
                 });
             }
-
-            /*--------------------------------------------------------------
-            CONVERT JSON DATE
-            --------------------------------------------------------------*/
-            $scope.convertJsonDate = function (val) {
-
-                if (val == undefined)
-                    return '';
-                return new Date(parseInt(val.substr(6)));
-            }
-
             $scope.SetItemClass = function (status) {
                     if (status == "REJECT" || status == "REJECTED") {
                         return "danger";
@@ -196,19 +165,10 @@
                         return "default";
                     }
                     return "info";
-
             }
-
         });
-
-        $(function () {
-
-        });
-
-        $(document).ready(function () {
-
-        });
-
+        $(function () { });
+        $(document).ready(function () { });
     </script>
 
 </body>

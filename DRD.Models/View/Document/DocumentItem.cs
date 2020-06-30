@@ -5,7 +5,7 @@
         public string Key { get; set; }
         public long Id { get; set; } // Id (Primary key)
         public string EncryptedId { get; set; } //generated encryptedid
-        public string Extention { get; set; } // Title (length: 500)
+        public string Extension { get; set; } // Title (length: 500)
         public string FileName { get; set; } // FileName (length: 100)
         public string FileNameOri { get; set; } // FileNameOri (length: 100)
         public int FileFlag { get; set; } // FileFlag

@@ -40,7 +40,7 @@ namespace DRD.Service
             Document document = new Document
             {
                 // mapping value
-                Extention = newDocument.Extention,
+                Extension = newDocument.Extension,
                 FileName = newDocument.FileName,
                 FileSize = newDocument.FileSize,
 
@@ -171,7 +171,7 @@ namespace DRD.Service
                         select new DocumentItem
                         {
                         Id = doc.Id,
-                        Extention = doc.Extention,
+                        Extension = doc.Extension,
                         FileName = doc.FileUrl,
                         FileNameOri = doc.FileName,
                         FileSize = doc.FileSize,
@@ -286,7 +286,7 @@ namespace DRD.Service
                      select new Document
                      {
                          Id = c.Id,
-                         Extention = c.Extention,
+                         Extension = c.Extension,
                          FileName = c.FileName,
                          FileUrl = c.FileUrl,
                          FileSize = c.FileSize,
@@ -395,7 +395,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = doc.Id,
-                     Extention = doc.Extention,
+                     Extension = doc.Extension,
                      FileNameOri = doc.FileName,
                      FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
@@ -453,7 +453,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Extention = c.Extention,
+                     Extension = c.Extension,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.UploaderId,
@@ -555,7 +555,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Extention = c.Extention,
+                     Extension = c.Extension,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.UploaderId
@@ -633,7 +633,7 @@ namespace DRD.Service
                      select new DocumentItem
                      {
                          Id = c.Id,
-                         Extention = c.Extention,
+                         Extension = c.Extension,
                          FileName = c.FileName,
 
                      }).Skip(skip).Take(pageSize).ToList();
@@ -1017,7 +1017,7 @@ namespace DRD.Service
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
 
                 // mapping value
-                document.Extention = newDocument.Extention;
+                document.Extension = newDocument.Extension;
                 document.FileName = newDocument.FileName;
 
                 document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
