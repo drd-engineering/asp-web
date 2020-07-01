@@ -199,7 +199,7 @@
     <Compile Include="API\ListWorkflowItem.cs" />
     <Compile Include="API\ResponseStatus.cs" />
     <Compile Include="API\DocUploadResult.cs" />
-    <Compile Include="API\InboxList.cs" />
+    <Compile Include="API\InboxListItem.cs" />
     <Compile Include="API\ListSubscription.cs" />
     <Compile Include="API\RotationListItem.cs" />
     <Compile Include="API\SubscriptionLimit.cs" />

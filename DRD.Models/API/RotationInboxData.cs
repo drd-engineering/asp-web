@@ -14,14 +14,11 @@ namespace DRD.Models.API
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public System.DateTime? StartedAt { get; set; } // DateStarted
         public long RotationNodeId { get; set; }
-        public long DefWorkflowNodeId { get; set; }
+        public long WorkflowNodeId { get; set; }
         public long WorkflowId { get; set; }
         public long? UserId { get; set; }
         public int FlagAction { get; set; }
-        public byte SubscriptionType { get; set; }
         public int AccessType { get; set; }
-        public long SubscriptionOf { set; get; }
-        public string DecissionInfo { get; set; }
         public DocumentInboxData Document { get; set; }
 
         // Document summaries
@@ -33,7 +30,6 @@ namespace DRD.Models.API
 
         // Foreign keys
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
-
         public virtual SmallCompanyData CompanyInbox { get; set; } // FK_Rotation_Company
         public ICollection<string> Tags { get; set; } // Tags
         //[ForeignKey("UserId")]
@@ -45,8 +41,8 @@ namespace DRD.Models.API
 
             Document = new DocumentInboxData();
 
-            RotationUsers = new System.Collections.Generic.List<RotationUser>();
-            RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
+            RotationUsers = new List<RotationUser>();
+            RotationNodes = new List<RotationNodeInboxData>();
             CompanyInbox = new SmallCompanyData();
             Tags = new List<string>();
         }

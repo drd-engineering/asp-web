@@ -28,10 +28,9 @@ namespace DRD.Service
 
         private void UpdateStatus(ServiceContext db, long rotationId, int previousStatus, int status)
         {
-            var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
-            rot.Status = status;
-            rot.UpdatedAt = DateTime.Now;
-            foreach (RotationNode rotationNode in rot.RotationNodes)
+            var rotationDb = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
+            rotationDb.Status = status;
+            foreach (RotationNode rotationNode in rotationDb.RotationNodes)
             {
                 if (rotationNode.Status.Equals(previousStatus))
                     rotationNode.Status = status;
@@ -65,65 +64,68 @@ namespace DRD.Service
 
         private void InsertDoc(IEnumerable<RotationNodeDoc> docs, ServiceContext db, ref RotationNode rotationNode)
         {
-            if (docs != null)
+            if (docs == null) return;
+            
+            foreach (RotationNodeDoc rotationNodeDoc in docs)
             {
-                foreach (RotationNodeDoc rnc in docs)
+                RotationNodeDoc newRotationNodeDoc = new RotationNodeDoc
                 {
-                    RotationNodeDoc rotationNodeDoc = new RotationNodeDoc
-                    {
-                        DocumentId = rnc.Document.Id,
-                        ActionStatus = rnc.ActionStatus,
-                        RotationNodeId = rotationNode.Id,
-                        RotationId = rotationNode.RotationId
-                    };
-                    rotationNode.RotationNodeDocs.Add(rotationNodeDoc);
+                    DocumentId = rotationNodeDoc.Document.Id,
+                    ActionStatus = rotationNodeDoc.ActionStatus,
+                    RotationNodeId = rotationNode.Id,
+                    RotationId = rotationNode.RotationId
+                };
+                rotationNode.RotationNodeDocs.Add(newRotationNodeDoc);
 
-                    // update flag action di master rotationNodeDoc member
-                    var userId = rotationNode.UserId;
-                    var rotationid = rotationNode.RotationId;
-                    var docm = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rnc.Document.Id && c.UserId == userId);
-                    var rotationUser = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == userId);
-                    if (docm != null)
-                    {
-                        if (((rnc.ActionStatus & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
-                            ((rnc.ActionStatus & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
-                            documentService.DocumentRemovedorRevisedFromRotation(rnc.DocumentId);
-                        else if (docm.ActionStatus != rnc.ActionStatus) documentService.DocumentUpdatedByRotation(rnc.DocumentId);
-                        docm.ActionStatus |= rnc.ActionStatus;
-                        // Also Document permission updating related to Rotation User that have permission
-                        docm.ActionPermission |= rotationUser.ActionPermission;
-                    }
-                    else
-                    {
-                        DocumentUser docmem = new DocumentUser();
-                        docmem.DocumentId = rnc.Document.Id;
-                        docmem.UserId = userId;
-                        if (((rnc.ActionStatus & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
-                            ((rnc.ActionStatus & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
-                            documentService.DocumentRemovedorRevisedFromRotation(rnc.DocumentId);
-                        else if (rnc.ActionStatus != 0) documentService.DocumentUpdatedByRotation(rnc.DocumentId); docmem.ActionStatus |= rnc.ActionStatus;
-                        docmem.ActionPermission = 6; // default view, add annotate
-                        // Also Document permission updating related to Rotation User that have permission
-                        docmem.ActionPermission |= rotationUser.ActionPermission;
-                        db.DocumentUsers.Add(docmem);
-                    }
+                // update flag action di master rotationNodeDoc member
+                var userId = rotationNode.UserId;
+                var rotationid = rotationNode.RotationId;
+                var documentUserDb = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rotationNodeDoc.Document.Id && c.UserId == userId);
+                var rotationUserDb = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == userId);
 
-                    if (rnc.Document != null)
-                    { // save annos first before set sign/initial/stamp
-                        ICollection<DocumentElementInboxData> docElement = new List<DocumentElementInboxData>();
-                        foreach (DocumentAnnotation x in rnc.Document.DocumentElements)
-                        {
-                            docElement.Add(new DocumentElementInboxData(x));
-                        }
-                        docElement = documentService.SaveAnnos(rnc.Document.Id, userId, "", docElement);
-                    }
-                    if ((rnc.ActionStatus & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
-                        documentService.Signature((long)rnc.Document.Id, userId, rotationNode.Rotation.Id);
-                    if ((rnc.ActionStatus & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
-                        documentService.Stamp((long)rnc.Document.Id, userId, rotationNode.Rotation.Id);
+                if (documentUserDb != null)
+                {
+                    if (((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                        ((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                        documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
+                    else if (documentUserDb.ActionStatus != rotationNodeDoc.ActionStatus) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId);
+                    documentUserDb.ActionStatus |= rotationNodeDoc.ActionStatus;
+                    // Also Document permission updating related to Rotation User that have permission
+                    documentUserDb.ActionPermission |= rotationUserDb.ActionPermission;
                 }
-                db.SaveChanges();
+                else
+                {
+                    DocumentUser newDocumentUser = new DocumentUser
+                    {
+                        DocumentId = rotationNodeDoc.Document.Id,
+                        UserId = userId
+                    };
+                    if (((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.REMOVE) == (int)Constant.EnumDocumentAction.REMOVE) ||
+                        ((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.REVISI) == (int)Constant.EnumDocumentAction.REVISI))
+                        documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
+                    else if (rotationNodeDoc.ActionStatus != 0) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId); newDocumentUser.ActionStatus |= rotationNodeDoc.ActionStatus;
+                    newDocumentUser.ActionPermission = 6; // default view, add annotate
+                    // Also Document permission updating related to Rotation User that have permission
+                    newDocumentUser.ActionPermission |= rotationUserDb.ActionPermission;
+                    db.DocumentUsers.Add(newDocumentUser);
+                }
+
+                if (rotationNodeDoc.Document != null)
+                { // save annos first before set sign/initial/stamp
+                    ICollection<DocumentElementInboxData> docElement = new List<DocumentElementInboxData>();
+                    foreach (DocumentAnnotation x in rotationNodeDoc.Document.DocumentElements)
+                    {
+                        docElement.Add(new DocumentElementInboxData(x));
+                    }
+                    docElement = documentService.SaveAnnos(rotationNodeDoc.Document.Id, userId, "", docElement);
+                }
+                if ((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.SIGN) == (int)Constant.EnumDocumentAction.SIGN)
+                    documentService.Signature((long)rotationNodeDoc.Document.Id, userId, rotationNode.Rotation.Id);
+                if ((rotationNodeDoc.ActionStatus & (int)Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Constant.EnumDocumentAction.PRIVATESTAMP)
+                    documentService.Stamp((long)rotationNodeDoc.Document.Id, userId, rotationNode.Rotation.Id);
             }
+            db.SaveChanges();
+            
         }
 
 
@@ -136,56 +138,54 @@ namespace DRD.Service
         /// <param name="pageSize"></param>
         /// <returns></returns>
         /// 
-        public List<InboxList> GetInboxes(long userId, string criteria, int skip, int take)
+        public List<InboxListItem> GetInboxes(long userId, string criteria, int skip, int take)
         {
             // all criteria
-            string[] allCriteria = new string[] { };
+            string[] criterias = new string[] { };
             if (!string.IsNullOrEmpty(criteria))
-            {
-                allCriteria = criteria.Split(' ');
-            }
+                criterias = criteria.Split(' ');
             else
                 criteria = "";
-            using (var db = new ServiceContext())
+
+            using var db = new ServiceContext();
+            if (db.Inboxes == null) return null;
+
+            var inboxesDb = db.Inboxes.Where(inbox => inbox.UserId == userId &&
+                    (criteria.Equals("") || criterias.All(crtr => (inbox.Message).ToLower().Contains(
+                        crtr.ToLower())))).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
+            List<InboxListItem> result = new List<InboxListItem>();
+            foreach (Inbox inbox in inboxesDb)
             {
-                if (db.Inboxes != null)
+                var activity = db.RotationNodes.Where(a => a.Id == inbox.ActivityId).FirstOrDefault();
+                InboxListItem inboxListItem = new InboxListItem
                 {
-                    var inboxes = db.Inboxes.Where(inbox => inbox.UserId == userId && 
-                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
-                            crtr.ToLower())))).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
-                    List<InboxList> result = new List<InboxList>();
-                    foreach (Inbox i in inboxes)
-                    {
-                        InboxList item = new InboxList();
-                        item.Id = i.Id;
-                        item.IsUnread = i.IsUnread;
+                    Id = inbox.Id,
+                    IsUnread = inbox.IsUnread,
 
-                        var activity = db.RotationNodes.Where(a => a.Id == i.ActivityId).FirstOrDefault();
-
-                        item.CurrentActivity = activity.WorkflowNode.Caption;
-                        item.RotationName = activity.Rotation.Name;
-                        item.RotationId = activity.RotationId;
-                        item.CompanyId = activity.Rotation.CompanyId.Value;
-                        item.Message = i.Note;
-                        item.LastStatus = i.LastStatus;
-                        item.prevUserEmail = i.PreviousUserEmail;
-                        item.prevUserName = i.PreviousUserName;
-                        item.DateNote = i.Message;
-                        item.WorkflowName = activity.WorkflowNode.Workflow.Name;
-                        item.CompanyInbox = (from cmpny in db.Companies
-                                             where cmpny.Id == item.CompanyId
-                                             select new SmallCompanyData
-                                             {
-                                                 Id = cmpny.Id,
-                                                 Code = cmpny.Code,
-                                                 Name = cmpny.Name,
-                                             }).FirstOrDefault();
-                        result.Add(item);
-                    }
-                    return result;
-                }
-                return null;
+                    CurrentActivity = activity.WorkflowNode.Caption,
+                    RotationName = activity.Rotation.Name,
+                    RotationId = activity.RotationId,
+                    CompanyId = activity.Rotation.CompanyId.Value,
+                    Message = inbox.Note,
+                    LastStatus = inbox.LastStatus,
+                    prevUserEmail = inbox.PreviousUserEmail,
+                    prevUserName = inbox.PreviousUserName,
+                    DateNote = inbox.Message,
+                    WorkflowName = activity.WorkflowNode.Workflow.Name
+                };
+                inboxListItem.CompanyInbox = (from cmpny in db.Companies
+                                        where cmpny.Id == inboxListItem.CompanyId
+                                        select new SmallCompanyData
+                                        {
+                                            Id = cmpny.Id,
+                                            Code = cmpny.Code,
+                                            Name = cmpny.Name,
+                                        }).FirstOrDefault();
+                result.Add(inboxListItem);
             }
+            return result;
+            
+
         }
         /// <summary>
         /// Count all inbox related to criteria. If criteria empty it will return all the inbox
@@ -198,22 +198,17 @@ namespace DRD.Service
             // all criteria
             string[] allCriteria = new string[] { };
             if (!string.IsNullOrEmpty(criteria))
-            {
                 allCriteria = criteria.Split(' ');
-            }
             else
                 criteria = "";
-            using (var db = new ServiceContext())
-            {
-                if (db.Inboxes != null)
-                {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId &&
-                        (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
-                            crtr.ToLower())))).ToList().Count();
-                    return inboxesCount;
-                }
-                return 0;
-            }
+
+            using var db = new ServiceContext();
+            if (db.Inboxes != null)
+                return db.Inboxes.Count(inbox => inbox.UserId == userId &&
+                    (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
+                        crtr.ToLower()))));
+
+            return 0;
 
         }
         /// <summary>
@@ -223,16 +218,13 @@ namespace DRD.Service
         /// <returns></returns>
         public int CountUnreadInboxes(long userId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            if (db.Inboxes != null)
             {
-                if (db.Inboxes != null)
-                {
-                    var inboxesCount = db.Inboxes.Where(inbox => inbox.UserId == userId && inbox.IsUnread).ToList().Count();
+                return db.Inboxes.Count(inbox => inbox.UserId == userId && inbox.IsUnread);
 
-                    return inboxesCount;
-                }
-                return 0;
             }
+            return 0;
 
         }
         /// <summary>
@@ -244,10 +236,7 @@ namespace DRD.Service
         {
             using var db = new ServiceContext();
             if (db.Inboxes != null)
-            {
-                var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
-                return inbox.ActivityId;
-            }
+                return db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault().ActivityId;
             return -1;
         }
 
@@ -259,35 +248,36 @@ namespace DRD.Service
         /// <returns></returns>
         public RotationInboxData GetInbox(long inboxId, long UserId)
         {
-            ChangeUnreadtoReadInbox(inboxId);
+            SetInboxToRead(inboxId);
             var rotationNodeId = GetRotationNodeId(inboxId);
             using var db = new ServiceContext();
+
             var result =
-                (from c in db.RotationNodes
-                where c.Id == rotationNodeId
+                (from rotationNode in db.RotationNodes
+                where rotationNode.Id == rotationNodeId
                 select new RotationInboxData
                 {
-                Id = c.Rotation.Id,
-                Name = c.Rotation.Name,
-                CreatorId = c.Rotation.CreatorId,
-                Status = c.Status,
-                CompanyId = c.Rotation.CompanyId,
-                WorkflowId = c.Rotation.WorkflowId,
-                UserId = c.UserId,
-                FirstNodeId = c.FirstNodeId,
-                DefWorkflowNodeId = c.WorkflowNodeId,
+                Id = rotationNode.Rotation.Id,
+                Name = rotationNode.Rotation.Name,
+                CreatorId = rotationNode.Rotation.CreatorId,
+                Status = rotationNode.Status,
+                CompanyId = rotationNode.Rotation.CompanyId,
+                WorkflowId = rotationNode.Rotation.WorkflowId,
+                UserId = rotationNode.UserId,
+                FirstNodeId = rotationNode.FirstNodeId,
+                WorkflowNodeId = rotationNode.WorkflowNodeId,
                 FlagAction = 0,
-                DecissionInfo = "",
-                RotationNodeId = c.Id,
+                RotationNodeId = rotationNode.Id,
                 }).FirstOrDefault();
-            result.CompanyInbox = (from cmpny in db.Companies
-                                   where cmpny.Id == result.CompanyId
+            result.CompanyInbox = (from company in db.Companies
+                                   where company.Id == result.CompanyId
                                    select new SmallCompanyData
                                    {
-                                       Id = cmpny.Id,
-                                       Code = cmpny.Code,
-                                       Name = cmpny.Name,
+                                       Id = company.Id,
+                                       Code = company.Code,
+                                       Name = company.Name,
                                    }).FirstOrDefault();
+
             var tagService = new TagService();
             var tags = tagService.GetTags(result.Id);
             foreach (var tag in tags) { result.Tags.Add(tag.Name); }
@@ -295,7 +285,7 @@ namespace DRD.Service
             RotationService rotationService = new RotationService();
             result = AssignNodes(db, result, UserId);
 
-            var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.DefWorkflowNodeId).ToList();
+            var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.WorkflowNodeId).ToList();
             foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
             {
                 if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
@@ -304,11 +294,7 @@ namespace DRD.Service
                     result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
                 else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
                     result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
-                else if (workflowNodeLink.SymbolCode.Equals("ALTER"))
-                    result.FlagAction |= (int)Constant.EnumActivityAction.ALTER;
-
             }
-            /*changeUnreadtoReadInbox(inboxId: inboxId);*/
             return result;
         }
         /// <summary>
@@ -316,7 +302,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="inboxId">id of inbox that want to marked as read</param>
         /// <returns></returns>
-        public bool ChangeUnreadtoReadInbox(long inboxId)
+        private bool SetInboxToRead(long inboxId)
         {
             using var db = new ServiceContext();
             var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
@@ -324,87 +310,87 @@ namespace DRD.Service
             db.SaveChanges();
             return inbox.IsUnread;
         }
+
         public int CreateInbox(ActivityItem activity)
         {
-            int returnItem = -1;
-            if (activity.ExitCode > 0)
+            //abort if thre is an error
+            if (activity.ExitCode <= 0) return activity.ExitCode;
+            
+            using var db = new ServiceContext();
+            Inbox inboxDb = new Inbox();
+            while (CheckIdExist(inboxDb.Id))
             {
-                using var db = new ServiceContext();
-                Inbox inboxItem;
-                inboxItem = new Inbox();
-                while (CheckIdExist(inboxItem.Id))
-                {
-                    inboxItem.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                }
-                inboxItem.IsUnread = true;
-                if (activity.RotationNodeId < 0)
-                {
-                    inboxItem.Note = "You success to start a Rotation";
-                    var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
-                    if (userResponsible != null)
-                    {
-                        inboxItem.UserId = activity.UserId;
-                    }
-                    else { return -1; }
-                }
-                else
-                {
-                    inboxItem.Note = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
-                    var activityItem = db.RotationNodes.FirstOrDefault(rtNode => rtNode.Id == activity.RotationNodeId);
-                    if (activityItem != null)
-                    {
-                        inboxItem.ActivityId = activity.RotationNodeId;
-                    }
-                    else { return -1; }
-                    var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
-                    if (userResponsible != null)
-                    {
-                        inboxItem.UserId = activity.UserId;
-                    }
-                    else { return -1; }
-                }
-
-                if (activity.LastActivityStatus != null && activity.LastActivityStatus.Equals("SUBMIT"))
-                {
-                    inboxItem.Message = "You need to review " + activity.RotationName;
-                    inboxItem.LastStatus = "REVIEW";
-                    UpdatePreviousInbox(activity);
-                }
-                else
-                {
-                    inboxItem.LastStatus = "UPLOAD";
-                    inboxItem.Message = "New Created Inbox from " + activity.RotationName;
-                    if (activity.PreviousUserId != activity.UserId)
-                    {
-                        Inbox inboxItem2;
-                        inboxItem2 = new Inbox();
-                        while (inboxItem2.Id == inboxItem.Id || CheckIdExist(inboxItem2.Id))
-                        {
-                            inboxItem2.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-                        }
-                        inboxItem2.IsUnread = true;
-                        inboxItem2.LastStatus = "ROTATION";
-                        inboxItem2.Message = "You have rotation - " + activity.RotationName;
-                        inboxItem2.PreviousUserEmail = activity.PreviousEmail;
-                        inboxItem2.PreviousUserName = activity.PreviousUserName;
-                        inboxItem2.UserId = activity.PreviousUserId;
-                        inboxItem2.ActivityId = activity.RotationNodeId;
-                        inboxItem2.RotationId = activity.RotationId;
-                        inboxItem2.CreatedAt = DateTime.Now;
-                        db.Inboxes.Add(inboxItem2);
-                        SendEmailActivity(inboxItem2);
-                    }
-                }
-                inboxItem.PreviousUserEmail = activity.PreviousEmail;
-                inboxItem.PreviousUserName = activity.PreviousUserName;
-                inboxItem.RotationId = activity.RotationId;
-                inboxItem.CreatedAt = DateTime.Now;
-                db.Inboxes.Add(inboxItem);
-                var dbsave = db.SaveChanges();
-                SendEmailActivity(inboxItem);
-                return dbsave;
+                inboxDb.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             }
-            return returnItem;
+            inboxDb.IsUnread = true;
+
+            if (activity.RotationNodeId < 0)
+            {
+                inboxDb.Note = "You success to start a Rotation";
+                var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
+                if (userResponsible != null)
+                {
+                    inboxDb.UserId = activity.UserId;
+                }
+                else { return -1; }
+            }
+            else
+            {
+                inboxDb.Note = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
+                var activityItem = db.RotationNodes.FirstOrDefault(rtNode => rtNode.Id == activity.RotationNodeId);
+                if (activityItem != null)
+                {
+                    inboxDb.ActivityId = activity.RotationNodeId;
+                }
+                else { return -1; }
+                var userResponsible = db.Users.FirstOrDefault(user => user.Id == activity.UserId);
+                if (userResponsible != null)
+                {
+                    inboxDb.UserId = activity.UserId;
+                }
+                else { return -1; }
+            }
+
+            if (activity.LastActivityStatus != null && activity.LastActivityStatus.Equals("SUBMIT"))
+            {
+                inboxDb.Message = "You need to review " + activity.RotationName;
+                inboxDb.LastStatus = "REVIEW";
+                UpdatePreviousInbox(activity);
+            }
+            else
+            {
+                inboxDb.LastStatus = "UPLOAD";
+                inboxDb.Message = "New Created Inbox from " + activity.RotationName;
+                if (activity.PreviousUserId != activity.UserId)
+                {
+                    Inbox inboxItem2;
+                    inboxItem2 = new Inbox();
+                    while (inboxItem2.Id == inboxDb.Id || CheckIdExist(inboxItem2.Id))
+                    {
+                        inboxItem2.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
+                    }
+                    inboxItem2.IsUnread = true;
+                    inboxItem2.LastStatus = "ROTATION";
+                    inboxItem2.Message = "You have rotation - " + activity.RotationName;
+                    inboxItem2.PreviousUserEmail = activity.PreviousEmail;
+                    inboxItem2.PreviousUserName = activity.PreviousUserName;
+                    inboxItem2.UserId = activity.PreviousUserId;
+                    inboxItem2.ActivityId = activity.RotationNodeId;
+                    inboxItem2.RotationId = activity.RotationId;
+                    inboxItem2.CreatedAt = DateTime.Now;
+                    db.Inboxes.Add(inboxItem2);
+                    SendEmailActivity(inboxItem2);
+                }
+            }
+            inboxDb.PreviousUserEmail = activity.PreviousEmail;
+            inboxDb.PreviousUserName = activity.PreviousUserName;
+            inboxDb.RotationId = activity.RotationId;
+            inboxDb.CreatedAt = DateTime.Now;
+            db.Inboxes.Add(inboxDb);
+            var dbsave = db.SaveChanges();
+            SendEmailActivity(inboxDb);
+            return dbsave;
+            
         }
         public int UpdatePreviousInbox(ActivityItem activity)
         {

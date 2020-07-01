@@ -3,7 +3,7 @@
 namespace DRD.Models.API
 {
     // inbox/inboxLisst
-    public class InboxList
+    public class InboxListItem
     {
         public long Id { get; set; }
         public bool IsUnread { get; set; }

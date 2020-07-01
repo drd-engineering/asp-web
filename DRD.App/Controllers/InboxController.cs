@@ -44,14 +44,14 @@ namespace DRD.App.Controllers
             if (!CheckLogin(getMenu: true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "Inbox?id="+id });
 
-            RotationInboxData product = inboxService.GetInbox(id, user.Id);
+            RotationInboxData inbox = inboxService.GetInbox(id, user.Id);
 
             //page authorization check if user has no access
-            if (product == null || product.AccessType.Equals((int)Constant.AccessType.noAccess))
+            if (inbox == null || inbox.AccessType.Equals((int)Constant.AccessType.noAccess))
                 return RedirectToAction("Index", "Inbox");
 
             //user have access
-            layout.Object = product;
+            layout.Object = inbox;
             return View(layout);
         }
 
