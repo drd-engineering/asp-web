@@ -14,10 +14,10 @@ namespace DRD.Models.API
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public System.DateTime? StartedAt { get; set; } // DateStarted
         public long RotationNodeId { get; set; }
-        public long WorkflowNodeId { get; set; }
+        public long CurrentActivity { get; set; }
         public long WorkflowId { get; set; }
         public long? UserId { get; set; }
-        public int FlagAction { get; set; }
+        public int ActionStatus { get; set; }
         public int AccessType { get; set; }
         public DocumentInboxData Document { get; set; }
 

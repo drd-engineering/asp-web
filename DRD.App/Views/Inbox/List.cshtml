@@ -19,7 +19,7 @@
     <!-- Page container -->
     <section ng-controller="drdController">
         <!-- Content area -->
-        <div class="totalItemPerPage">
+        <div class="row">
             <div class="col-sm-12 col-md-4" style="margin-bottom:20px">
                 <div class="input-group">
                     <input type="text" class="form-control" ng-model="criteria" placeholder="Search" style="height:50px" ng-keyup="$event.keyCode ==  13 && getInboxes(criteria, page, totalItemPerPage)">
@@ -114,7 +114,6 @@
                 $http.post('@Url.Action("GetInboxes", "Inbox")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
                         $scope.products = response.data;
-                        console.log($scope.products);
                         $scope.index = totalItemPerPage * (page - 1);
                         $scope.page = "1";
                         $scope.isView = true;

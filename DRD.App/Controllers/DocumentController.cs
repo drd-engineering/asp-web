@@ -245,23 +245,23 @@ namespace DRD.App.Controllers
         /// <summary>
         ///
         /// </summary>
-        /// <param name="prod"></param>
+        /// <param name="newDocument"></param>
         /// <returns></returns>
         ///
-        public ActionResult Save(DocumentInboxData prod, long companyId, long rotationId)
+        public ActionResult Save(DocumentInboxData newDocument, long companyId, long rotationId)
         {
             Initialize();
-            prod.CreatorId = user.Id;
-            prod.UserEmail = user.Email;
+            newDocument.CreatorId = user.Id;
+            newDocument.UserEmail = user.Email;
             //prod.CompanyId = (long)user.CompanyId;
             var fileController = DependencyResolver.Current.GetService<UpDownFileController>();
             fileController.ControllerContext = new ControllerContext(this.Request.RequestContext, fileController);
 
-            var moveDirResult = fileController.MoveFromTemporaryToActual(prod, companyId);
+            var moveDirResult = fileController.MoveFromTemporaryToActual(newDocument, companyId);
             if (moveDirResult.Equals(Constant.DocumentUploadStatus.OK.ToString()))
             {
                 var srv = new DocumentService();
-                var data = srv.Save(prod, companyId, rotationId);
+                var data = srv.Save(newDocument, companyId, rotationId);
                 data.status = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }

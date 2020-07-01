@@ -154,6 +154,7 @@ namespace DRD.Service
                     (criteria.Equals("") || criterias.All(crtr => (inbox.Message).ToLower().Contains(
                         crtr.ToLower())))).ToList().OrderByDescending(item => item.CreatedAt).Skip(skip).Take(take);
             List<InboxListItem> result = new List<InboxListItem>();
+
             foreach (Inbox inbox in inboxesDb)
             {
                 var activity = db.RotationNodes.Where(a => a.Id == inbox.ActivityId).FirstOrDefault();
@@ -166,20 +167,21 @@ namespace DRD.Service
                     RotationName = activity.Rotation.Name,
                     RotationId = activity.RotationId,
                     CompanyId = activity.Rotation.CompanyId.Value,
-                    Message = inbox.Note,
+                    Note = inbox.Note,
                     LastStatus = inbox.LastStatus,
-                    prevUserEmail = inbox.PreviousUserEmail,
-                    prevUserName = inbox.PreviousUserName,
-                    DateNote = inbox.Message,
-                    WorkflowName = activity.WorkflowNode.Workflow.Name
+                    PreviousUserEmail = inbox.PreviousUserEmail,
+                    PreviousUserName = inbox.PreviousUserName,
+                    Message = inbox.Message,
+                    WorkflowName = activity.WorkflowNode.Workflow.Name,
+                    CreatedAt = inbox.CreatedAt
                 };
-                inboxListItem.CompanyInbox = (from cmpny in db.Companies
-                                        where cmpny.Id == inboxListItem.CompanyId
+                inboxListItem.CompanyInbox = (from company in db.Companies
+                                        where company.Id == inboxListItem.CompanyId
                                         select new SmallCompanyData
                                         {
-                                            Id = cmpny.Id,
-                                            Code = cmpny.Code,
-                                            Name = cmpny.Name,
+                                            Id = company.Id,
+                                            Code = company.Code,
+                                            Name = company.Name,
                                         }).FirstOrDefault();
                 result.Add(inboxListItem);
             }
@@ -265,8 +267,8 @@ namespace DRD.Service
                 WorkflowId = rotationNode.Rotation.WorkflowId,
                 UserId = rotationNode.UserId,
                 FirstNodeId = rotationNode.FirstNodeId,
-                WorkflowNodeId = rotationNode.WorkflowNodeId,
-                FlagAction = 0,
+                CurrentActivity = rotationNode.WorkflowNodeId,
+                ActionStatus = 0,
                 RotationNodeId = rotationNode.Id,
                 }).FirstOrDefault();
             result.CompanyInbox = (from company in db.Companies
@@ -285,15 +287,15 @@ namespace DRD.Service
             RotationService rotationService = new RotationService();
             result = AssignNodes(db, result, UserId);
 
-            var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.WorkflowNodeId).ToList();
+            var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.SourceId == result.CurrentActivity).ToList();
             foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
             {
                 if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
-                    result.FlagAction |= (int)Constant.EnumActivityAction.SUBMIT;
+                    result.ActionStatus |= (int)Constant.EnumActivityAction.SUBMIT;
                 else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
-                    result.FlagAction |= (int)Constant.EnumActivityAction.REJECT;
+                    result.ActionStatus |= (int)Constant.EnumActivityAction.REJECT;
                 else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
-                    result.FlagAction |= (int)Constant.EnumActivityAction.REVISI;
+                    result.ActionStatus |= (int)Constant.EnumActivityAction.REVISI;
             }
             return result;
         }

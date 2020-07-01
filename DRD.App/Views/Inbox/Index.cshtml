@@ -89,14 +89,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-12">
 
-                            <div class="row" ng-show="model.DecissionInfo!=''">
-                                @*<div class="col-md-10">
-                                    <label class="control-label">Value to decision ({{model.DecissionInfo}})</label>
-                                    <input type="text" class="form-control" ng-model="model.Value" ng-required="wizarno=='product' && model.DecissionInfo!=''" maxlength="100" />*@
-                            </div>
-                        </div>
                         <hr />
                         <div class="row" ng-show="!isCompleteRotation() && checkIsActive()">
                             <div class="col-md-12">
@@ -242,7 +235,6 @@
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.DataId));
                 var product = @Html.Raw(Json.Encode(Model.Object));
                 assignProdut(product);
-                $('#checkbox1').bootstrapSwitch.defaults.size = 'mini';
             }
 
             function assignProdut(product) {
@@ -266,7 +258,6 @@
                     $scope.model.Tags= product.Tags;
                     
                     $scope.model.CurrentActivity = product.CurrentActivity;
-                    $scope.model.DecissionInfo = product.DecissionInfo;
                     $scope.workflow = product.Workflow;
                     if ($scope.model.Status == 0) {
                         if ($scope.currentRotationNode.SenderRotationNodeId != null) {
@@ -550,7 +541,7 @@
             };
 
             $scope.checkIsFirstPerson = function () {
-                return $scope.model.DefWorkflowNodeId == $scope.model.FirstNodeId && $scope.model.accessType !=1;
+                return $scope.model.CurrentActivity == $scope.model.FirstNodeId && $scope.model.accessType !=1;
             };
 
             $scope.checkIsActive = function () {
@@ -1232,7 +1223,7 @@
                 btn.start();
                 $http.post('@Url.Action("Save", "document")',
                     {
-                        prod: {
+                        newDocument: {
                             Id: $scope.model.Id,
                             Title: $scope.model.Title,
                             Description: $scope.model.Descr,
@@ -1297,6 +1288,7 @@
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
                         } else {
+                            console.log(response.data);
                             showInfo("An error has occurred");
                         }
                     }, function (response) {

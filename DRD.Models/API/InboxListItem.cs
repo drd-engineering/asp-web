@@ -14,10 +14,10 @@ namespace DRD.Models.API
         public DateTime? CreatedAt { get; set; }
         public String Message { get; set; }
         public long RotationId { get; set; }
-        public String DateNote { get; set; }
+        public String Note { get; set; }
         public String LastStatus { get; set; }
-        public string prevUserName { get; set; }
-        public string prevUserEmail { get; set; }
+        public string PreviousUserName { get; set; }
+        public string PreviousUserEmail { get; set; }
         public SmallCompanyData CompanyInbox { get; set; }
     }
 }
