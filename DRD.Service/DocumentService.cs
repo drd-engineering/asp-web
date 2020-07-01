@@ -49,8 +49,8 @@ namespace DRD.Service
                 UpdatedAt = DateTime.Now,
 
                 // NEW
-                MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity,
-                MaximumPrintPerUser = newDocument.MaxPrintPerActivity,
+                MaximumDownloadPerUser = newDocument.MaximumDownloadPerUser,
+                MaximumPrintPerUser = newDocument.MaximumPrintPerUser,
                 IsCurrent = true, //
 
                 // upload, get file directory, controller atau di service?
@@ -75,13 +75,14 @@ namespace DRD.Service
             var createdOrUpdated = new List<DocumentUser>();
             var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
             if (docs == null) return null;
-            foreach (DocumentAnnotation el in docs.DocumentElements)
+            foreach (DocumentAnnotation el in docs.DocumentAnnotations)
             {
                 if (el.UserId == null) continue;
                 var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.UserId.Value && du.DocumentId == el.DocumentId);
                 if (docUser == null)
                 {
                     docUser = new DocumentUser();
+                    docs.DocumentUsers.Add(docUser);
                     db.DocumentUsers.Add(docUser);
                 }
                 docUser.UserId = el.UserId.Value;
@@ -104,11 +105,10 @@ namespace DRD.Service
                 {
                     DocumentId = du.DocumentId,
                     Document = du.Document,
-                    FlagAction = du.ActionStatus,
-                    FlagPermission = du.ActionPermission,
+                    ActionStatus = du.ActionStatus,
+                    ActionPermission = du.ActionPermission,
                     UserId = du.UserId,
                     User = du.User,
-                    UserName = du.User.Name
                 };
                 returnValue.Add(item);
             }
@@ -293,8 +293,8 @@ namespace DRD.Service
                          CreatedAt = c.CreatedAt,
                          UpdatedAt = c.UpdatedAt,
                          UploaderId = c.UploaderId,
-                         DocumentElements = (
-                            from x in c.DocumentElements
+                         DocumentAnnotations = (
+                            from x in c.DocumentAnnotations
                             select new DocumentAnnotation
                             {
                                 Id = x.Id,
@@ -330,7 +330,7 @@ namespace DRD.Service
 
                 if (result != null)
                 {
-                    foreach (DocumentAnnotation da in result.DocumentElements)
+                    foreach (DocumentAnnotation da in result.DocumentAnnotations)
                     {
                         if (da.UserId == null) continue;
                         if (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
@@ -820,14 +820,14 @@ namespace DRD.Service
                 else document = Update(prod, companyId, rotationId);
                 if (document.Id != 0)
                     result = document.Id;
-                document.DocumentElements = SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentElements);
+                document.DocumentAnnotations = SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentAnnotations);
                 document.DocumentUsers = CreateDocumentUser(document.Id);
                 document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
-                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id, FlagPermission = 6 };
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData() { UserId = document.CreatorId, DocumentId = document.Id, ActionPermission = 6 };
             }
             return document;
         }
-        public ICollection<DocumentElementInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentElementInboxData> annos)
+        public ICollection<DocumentAnnotationsInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
             using var db = new ServiceContext();
             //
@@ -862,7 +862,7 @@ namespace DRD.Service
             //
             var dnew = db.DocumentElements.Where(c => c.Document.Id == documentId).ToList();
             int v = 0;
-            var retval = new List<DocumentElementInboxData>();
+            var retval = new List<DocumentAnnotationsInboxData>();
             foreach (DocumentAnnotation da in dnew)
             {
                 var epos = annos.ElementAt(v);
@@ -875,8 +875,8 @@ namespace DRD.Service
                 da.HeightPosition = epos.HeightPosition;
                 da.Color = epos.Color;
                 da.BackColor = epos.BackColor;
-                da.Text = epos.Data;
-                da.Unknown = epos.Data2;
+                da.Text = epos.Text;
+                da.Unknown = epos.Unknown;
                 da.Rotation = epos.Rotation;
                 da.ScaleX = epos.ScaleX;
                 da.ScaleY = epos.ScaleY;
@@ -885,11 +885,11 @@ namespace DRD.Service
                 da.StrokeWidth = epos.StrokeWidth;
                 da.Opacity = epos.Opacity;
                 da.Flag = epos.Flag;
-                da.AssignedAnnotationCode = epos.FlagCode;
-                da.AssignedAt = epos.FlagDate;
-                da.AssignedAnnotationImageFileName = epos.FlagImage;
+                da.AssignedAnnotationCode = epos.AssignedAnnotationCode;
+                da.AssignedAt = epos.AssignedAt;
+                da.AssignedAnnotationImageFileName = epos.AssignedAnnotationImageFileName;
                 da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
-                da.UserId = epos.ElementId;
+                da.UserId = epos.UserId;
                 da.Element = epos.Element;
                 da.CreatedAt = DateTime.Now;
                 v++;
@@ -897,7 +897,7 @@ namespace DRD.Service
             db.SaveChanges();
             foreach (DocumentAnnotation da in dnew)
             {
-                retval.Add(new DocumentElementInboxData(da));
+                retval.Add(new DocumentAnnotationsInboxData(da));
             }
             return retval;
         }
@@ -1023,8 +1023,8 @@ namespace DRD.Service
                 document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller
 
                 // NEW
-                document.MaximumDownloadPerUser = newDocument.MaxDownloadPerActivity;
-                document.MaximumPrintPerUser = newDocument.MaxPrintPerActivity;
+                document.MaximumDownloadPerUser = newDocument.MaximumDownloadPerUser;
+                document.MaximumPrintPerUser = newDocument.MaximumPrintPerUser;
 
                 // upload, get file directory, controller atau di service?
                 document.FileUrl = newDocument.FileUrl;

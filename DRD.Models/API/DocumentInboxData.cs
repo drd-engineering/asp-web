@@ -3,15 +3,15 @@
     public class DocumentInboxData
     {
         public long Id { get; set; } // Id (Primary key)
-        public string status { get; set; }
+        public string Status { get; set; }
         public string Extension { get; set; } // Title (length: 500)
         public string Description { get; set; } // Descr
         public string FileUrl { get; set; } // FileUrl --> file path
         public string FileName { get; set; } // FileName (length: 100)
         public int FileSize { get; set; } // FileSize
 
-        public int MaxPrintPerActivity { get; set; }
-        public int MaxDownloadPerActivity { get; set; }
+        public int MaximumPrintPerUser { get; set; }
+        public int MaximumDownloadPerUser { get; set; }
         public int ExpiryDay { get; set; } // Day Counter (Count Down
         // public bool IsCurrent { get; set; }
 
@@ -24,7 +24,7 @@
         public System.DateTime? CreatedAt { get; set; }
         public System.DateTime? UpdatedAt { get; set; }
 
-        public virtual System.Collections.Generic.ICollection<DocumentElementInboxData> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
+        public virtual System.Collections.Generic.ICollection<DocumentAnnotationsInboxData> DocumentAnnotations { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         public virtual System.Collections.Generic.ICollection<DocumentUserInboxData> DocumentUsers { get; set; }
         public DocumentUserInboxData DocumentUser { get; set; }
@@ -38,7 +38,7 @@
         public DocumentInboxData()
         {
             //DocumentUser = new DocumentUser();
-            DocumentElements = new System.Collections.Generic.List<DocumentElementInboxData>();
+            DocumentAnnotations = new System.Collections.Generic.List<DocumentAnnotationsInboxData>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
             DocumentUsers = new System.Collections.Generic.List<DocumentUserInboxData>();
         }

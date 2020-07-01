@@ -206,7 +206,7 @@
     <Compile Include="API\SmallCompanyData.cs" />
     <Compile Include="ConstantModel.cs" />
     <Compile Include="API\DocumentInboxData.cs" />
-    <Compile Include="Custom\DocumentElementInboxData.cs" />
+    <Compile Include="Custom\DocumentAnnotationsInboxData.cs" />
     <Compile Include="Custom\MemberData.cs" />
     <Compile Include="API\RotationInboxData.cs" />
     <Compile Include="API\RotationNodeDocInboxData.cs" />

@@ -262,7 +262,7 @@ namespace DRD.App.Controllers
             {
                 var srv = new DocumentService();
                 var data = srv.Save(newDocument, companyId, rotationId);
-                data.status = moveDirResult;
+                data.Status = moveDirResult;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
             else
@@ -279,7 +279,7 @@ namespace DRD.App.Controllers
         //    var data = srv.Signature(documentId, user.Id);
         //    return Json(data, JsonRequestBehavior.AllowGet);
         //}
-        public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentElementInboxData> annos)
+        public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
             var srv = new DocumentService();
             var data = srv.SaveAnnos(documentId, creatorId, "ANDRO", annos);

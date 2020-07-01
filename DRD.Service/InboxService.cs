@@ -108,14 +108,15 @@ namespace DRD.Service
                     // Also Document permission updating related to Rotation User that have permission
                     newDocumentUser.ActionPermission |= rotationUserDb.ActionPermission;
                     db.DocumentUsers.Add(newDocumentUser);
+                    db.SaveChanges();
                 }
 
                 if (rotationNodeDoc.Document != null)
                 { // save annos first before set sign/initial/stamp
-                    ICollection<DocumentElementInboxData> docElement = new List<DocumentElementInboxData>();
-                    foreach (DocumentAnnotation x in rotationNodeDoc.Document.DocumentElements)
+                    ICollection<DocumentAnnotationsInboxData> docElement = new List<DocumentAnnotationsInboxData>();
+                    foreach (DocumentAnnotation x in rotationNodeDoc.Document.DocumentAnnotations)
                     {
-                        docElement.Add(new DocumentElementInboxData(x));
+                        docElement.Add(new DocumentAnnotationsInboxData(x));
                     }
                     docElement = documentService.SaveAnnos(rotationNodeDoc.Document.Id, userId, "", docElement);
                 }
@@ -560,7 +561,7 @@ namespace DRD.Service
                             if (rtnode.Status.Equals((int)Constant.RotationStatus.Declined))
                                 UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
                             else
-                                UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
+                                UpdateStatus(db, rtnode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Completed);
                             retvalues.Add(CreateActivityResult(rtnode.UserId, rtnode.UserId, 1, rtnode.Rotation.Name, rtnode.RotationId, rtnode.Id, "END"));
                         }
                     }
@@ -666,14 +667,14 @@ namespace DRD.Service
                 foreach (RotationNodeDocInboxData rotationNodeDoc in rotationNode.RotationNodeDocs)
                 {
                     // get anno
-                    foreach (DocumentElementInboxData documentElement in rotationNodeDoc.Document.DocumentElements)
+                    foreach (DocumentAnnotationsInboxData documentElement in rotationNodeDoc.Document.DocumentAnnotations)
                     {
-                        if (documentElement.ElementId == null || documentElement.ElementId == 0) continue;
+                        if (documentElement.UserId == null || documentElement.UserId == 0) continue;
                         if (documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE
                             || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
                             || documentElement.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
-                            var user = db.Users.FirstOrDefault(c => c.Id == documentElement.ElementId);
+                            var user = db.Users.FirstOrDefault(c => c.Id == documentElement.UserId);
                             Element newElement = new Element();
                             newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
                             newElement.UserId = user.Id;
@@ -687,14 +688,13 @@ namespace DRD.Service
                     var dx = rotation.SumRotationNodeDocs.FirstOrDefault(c => c.Document.Id == rotationNodeDoc.Document.Id);
                     if (dx != null)
                     {
-                        dx.FlagAction |= rotationNodeDoc.FlagAction;
+                        dx.ActionStatus |= rotationNodeDoc.ActionStatus;
                     }
                     else
                     {
                         rotation.SumRotationNodeDocs.Add(DeepCopy(rotationNodeDoc));
                     }
                 }
-
             }
             return rotation;
         }
@@ -718,7 +718,7 @@ namespace DRD.Service
             {
                 var item = new RotationNodeDocInboxData();
                 item.Id = rndDb.Id;
-                item.FlagAction = rndDb.ActionStatus;
+                item.ActionStatus = rndDb.ActionStatus;
                 item.DocumentId = rndDb.DocumentId;
                 item.RotationNode.RotationId = rndDb.RotationId;
                 item.Document.Id = rndDb.Document.Id;
@@ -735,14 +735,14 @@ namespace DRD.Service
                     dUsrItem.Id = dusr.Id;
                     dUsrItem.DocumentId = dusr.DocumentId;
                     dUsrItem.UserId = dusr.UserId;
-                    dUsrItem.FlagAction = dusr.ActionStatus;
-                    dUsrItem.FlagPermission = dusr.ActionPermission;
-                    dUsrItem.FlagPermission |= documentService.GetPermission(usrId, curRnId.Value, dusr.DocumentId);
+                    dUsrItem.ActionStatus = dusr.ActionStatus;
+                    dUsrItem.ActionPermission = dusr.ActionPermission;
+                    dUsrItem.ActionPermission |= documentService.GetPermission(usrId, curRnId.Value, dusr.DocumentId);
                     item.Document.DocumentUsers.Add(dUsrItem);
                 }
-                foreach (var delm in rndDb.Document.DocumentElements)
+                foreach (var delm in rndDb.Document.DocumentAnnotations)
                 {
-                    var dElmItem = new DocumentElementInboxData();
+                    var dElmItem = new DocumentAnnotationsInboxData();
                     dElmItem.Id = delm.Id;
                     dElmItem.DocumentId = delm.DocumentId;
                     dElmItem.Page = delm.Page;
@@ -752,8 +752,8 @@ namespace DRD.Service
                     dElmItem.HeightPosition = delm.HeightPosition;
                     dElmItem.Color = delm.Color;
                     dElmItem.BackColor = delm.BackColor;
-                    dElmItem.Data = delm.Text;
-                    dElmItem.Data2 = delm.Unknown;
+                    dElmItem.Text = delm.Text;
+                    dElmItem.Unknown = delm.Unknown;
                     dElmItem.Rotation = delm.Rotation;
                     dElmItem.ScaleX = delm.ScaleX;
                     dElmItem.ScaleY = delm.ScaleY;
@@ -762,16 +762,16 @@ namespace DRD.Service
                     dElmItem.StrokeWidth = delm.StrokeWidth;
                     dElmItem.Opacity = delm.Opacity;
                     dElmItem.Flag = delm.Flag;
-                    dElmItem.FlagCode = delm.AssignedAnnotationCode;
-                    dElmItem.FlagDate = delm.AssignedAt;
-                    dElmItem.FlagImage = delm.AssignedAnnotationImageFileName;
+                    dElmItem.AssignedAnnotationCode = delm.AssignedAnnotationCode;
+                    dElmItem.AssignedAt = delm.AssignedAt;
+                    dElmItem.AssignedAnnotationImageFileName = delm.AssignedAnnotationImageFileName;
                     dElmItem.CreatorId = delm.CreatorId;
-                    dElmItem.ElementId = delm.UserId;
-                    dElmItem.UserId = delm.EmailOfUserAssigned;
+                    dElmItem.UserId = delm.UserId;
+                    dElmItem.EmailOfUserAssigned = delm.EmailOfUserAssigned;
                     dElmItem.CreatedAt = delm.CreatedAt;
                     dElmItem.UpdatedAt = delm.UpdatedAt;
                     dElmItem.ElementTypeId = delm.ElementTypeId;
-                    item.Document.DocumentElements.Add(dElmItem);
+                    item.Document.DocumentAnnotations.Add(dElmItem);
                 }
                 item.Document.DocumentUser = item.Document.DocumentUsers.FirstOrDefault(itmDocUsr => itmDocUsr.UserId == usrId);
                 result.Add(item);

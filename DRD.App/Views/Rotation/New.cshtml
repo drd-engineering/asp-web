@@ -110,8 +110,8 @@
                                         <tr>
                                             <td style="font-size:xx-small">
                                                 <span style="font-size:small;color:brown">Permission : </span>
-                                                <input type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
-                                                <input type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
+                                                <input type="checkbox" class="control-primary" ng-checked="{{getActionPermission(x.ActionPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8"> Print&ensp;&ensp;&ensp;
+                                                <input type="checkbox" class="control-success" ng-checked="{{getActionPermission(x.ActionPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16"> Download
                                             </td>
                                         </tr>
                                     </tbody>
@@ -224,9 +224,7 @@
                 $(".content").show();
             });
 
-
-
-            $scope.getFlagPermission = function (val, bit) {
+            $scope.getActionPermission = function (val, bit) {
                 return ((val & bit)==bit);
             };
             /*--------------------------------------------------------------
@@ -244,7 +242,7 @@
                         }
                         bit += bit;
                     }
-                    $scope.users[i].FlagPermission = flag;
+                    $scope.users[i].ActionPermission = flag;
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();

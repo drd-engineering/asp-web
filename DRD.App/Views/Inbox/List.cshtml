@@ -113,6 +113,7 @@
             $scope.getInboxes = function (criteria, page, totalItemPerPage) {
                 $http.post('@Url.Action("GetInboxes", "Inbox")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {
+                        console.log(response.data);
                         $scope.products = response.data;
                         $scope.index = totalItemPerPage * (page - 1);
                         $scope.page = "1";

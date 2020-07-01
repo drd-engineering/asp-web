@@ -53,15 +53,7 @@
                     <h4 style="margin-bottom:0px;margin-top:20px">Rotation : {{model.Name}}</h4>
                     {{currentRotationNode.WorkflowNode.Caption}}
                 <div ng-show="model.Tags.length>0" style="margin-top:5px">
-                    <div class="col-sm-2">
-                        Tags
-                    </div>
-                    <div class="col-sm-10">
-                        :
-                        <span class="tag-item" ng-repeat="tag in model.Tags">
-                            {{tag}}
-                        </span>
-                    </div>
+                    
                 </div>
                     <hr>
                 </div>
@@ -234,6 +226,7 @@
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.User));
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.DataId));
                 var product = @Html.Raw(Json.Encode(Model.Object));
+                console.log(product); 
                 assignProdut(product);
             }
 
@@ -270,6 +263,7 @@
                                 for (i = 0; i < tempDocs.length; i++) {
                                     if ((tempDocs[i].ActionStatus & 64) != 64) {
                                         tempDocs[i].ActionStatus = 0;
+                                        
                                         $scope.docs.push(tempDocs[i]);
                                     }
                                 }
@@ -608,6 +602,7 @@
                 Submit Button Activity Function
             --------------------------------------------------------------*/
             $scope.processActivity = function (bit) {
+                console.log($scope.docs);
                 if (!$scope.isValidForm($scope.myForm)) {
                     showInfo("There is a problem, please press submit again.");
                     $scope.btnDisabled = false;
@@ -615,12 +610,6 @@
                 }
                 if ($scope.docs.length < 1) {
                     showInfo("You should add at least one document to continue.");
-                    $scope.btnDisabled = false;
-                    return;
-                }
-
-                if ($scope.model.Value == undefined && $scope.model.DecissionInfo != '') {
-                    showInfo("Required value for decission");
                     $scope.btnDisabled = false;
                     return;
                 }
@@ -799,7 +788,7 @@
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
-                $http.post('@Url.Action("ProcessActivity", "Rotation")',
+                $http.post('@Url.Action("ProcessActivity", "Inbox")',
                     {
                         param: {
                             RotationNodeId: $scope.model.RotationNodeId,
@@ -1108,7 +1097,7 @@
                                 $scope.model.FileUrl = file.result.FileUrl;
                                 $scope.model.FileName = file.result.FileName;
                                 $scope.model.FileExtension = file.result.FileExtension;
-                                $scope.fileTypeImage = $scope.model.Extension + ".png";
+                                $scope.fileTypeImage = $scope.model.FileExtension + ".png";
                                 $scope.progressValueUploadFile = "Upload success";
                                 isdefineiframe = false;
                                 var doc = {};
@@ -1225,19 +1214,14 @@
                     {
                         newDocument: {
                             Id: $scope.model.Id,
-                            Title: $scope.model.Title,
                             Description: $scope.model.Descr,
                             FileUrl: $scope.model.FileUrl,
                             FileName: $scope.model.FileName,
-                            Extension: $scope.model.Extension,
+                            Extension: $scope.model.FileExtension,
                             FileSize: $scope.model.FileSize,
-                            MaxPrintPerActivity: $scope.model.MaxPrint,
-                            MaxDownloadPerActivity: $scope.model.MaxDownload,
-                            ExpiryDay: $scope.model.ExpiryDay,
-                            Version: $scope.model.Version,
-                            DocumentElements: $scope.annos,
-                            /*UserId: 'SYST',*/
-                            //DocumentMembers:$scope.users,
+                            MaximumPrintPerUser: $scope.model.MaxPrint,
+                            MaximumDownloadPerUser: $scope.model.MaxDownload,
+                            DocumentAnnotations: $scope.annos,
                         }, companyId: $scope.companyId,
                         rotationId: $scope.rotationId
                     }).then(function (response) {
@@ -1278,7 +1262,7 @@
                             $scope.progressValueUploadFile = "Failed";
                             return;
                         }
-                        else if (response.data.status == "OK") {
+                        else if (response.data.Status == "OK") {
                             response.data.Extension = $scope.tempDoc.Document.Extension;
                             $scope.tempDoc.Document = response.data;
                             $scope.tempDoc.DocumentId = response.data.Id;

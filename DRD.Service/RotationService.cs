@@ -307,10 +307,7 @@ namespace DRD.Service
                 db.Rotations.Add(rotationDb);
                 workflowDb.TotalUsed += 1;
             }
-
             var result = db.SaveChanges();
-
-
             // prepare data detail
             var cxold = db.RotationUsers.Count(c => c.Rotation.Id == rotationDb.Id);
             var cxnew = newRotation.RotationUsers.Count();
@@ -327,7 +324,6 @@ namespace DRD.Service
                         WorkflowNodeId = ep.Id
                     };
                     var wfl = db.WorkflowNodes.FirstOrDefault(c => c.Id == ep.WorkflowNodeId);
-
                     if (!startPersonAded)
                     {
                         var checkIsStartNode = (from workflowNode in db.WorkflowNodes
@@ -352,8 +348,8 @@ namespace DRD.Service
                     User gotUser = db.Users.FirstOrDefault(usr => usr.Id == ep.UserId);
                     newItem.User = gotUser;
                     newItem.UserId = gotUser.Id;
+                    rotationDb.RotationUsers.Add(newItem);
                     db.RotationUsers.Add(newItem);
-
                     db.SaveChanges();
                 }
             }

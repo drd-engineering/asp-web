@@ -3,7 +3,7 @@
     public class RotationNodeDocInboxData
     {
         public long Id { get; set; } // Id (Primary key)
-        public int FlagAction { get; set; } // FlagAction
+        public int ActionStatus { get; set; } // FlagAction
 
         public long DocumentId { get; set; }
         public long RotationNodeId { get; set; }
@@ -13,7 +13,7 @@
 
         public RotationNodeDocInboxData()
         {
-            FlagAction = 0;
+            ActionStatus = 0;
             Document = new DocumentInboxData();
             RotationNode = new RotationNodeInboxData();
         }

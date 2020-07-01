@@ -21,7 +21,7 @@ namespace DRD.Models
         public long CompanyId { get; set; } = 0;
         public long RotationId { get; set; }
 
-        public virtual System.Collections.Generic.ICollection<DocumentAnnotation> DocumentElements { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
+        public virtual System.Collections.Generic.ICollection<DocumentAnnotation> DocumentAnnotations { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } //DocumentUser.FK_document
 
@@ -42,7 +42,7 @@ namespace DRD.Models
             FileSize = 0;
             MaximumPrintPerUser = 0;
             MaximumDownloadPerUser = 0;
-            DocumentElements = new System.Collections.Generic.List<DocumentAnnotation>();
+            DocumentAnnotations = new System.Collections.Generic.List<DocumentAnnotation>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
         }
     }

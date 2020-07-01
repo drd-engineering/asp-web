@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DRD.Models
 {
 
-    public class DocumentElementInboxData
+    public class DocumentAnnotationsInboxData
     {
         public long Id { get; set; } // Id (Primary key)
         public int Page { get; set; } // Page
@@ -14,8 +14,8 @@ namespace DRD.Models
         public double? HeightPosition { get; set; } // HeightPosition
         public string Color { get; set; } // Color (length: 50)
         public string BackColor { get; set; } // BackColor (length: 50)
-        public string Data { get; set; } // Data
-        public string Data2 { get; set; } // Data2
+        public string Text { get; set; } // Data
+        public string Unknown { get; set; } // Data2
         public int Rotation { get; set; } // Rotation
         public double ScaleX { get; set; } // ScaleX
         public double ScaleY { get; set; } // ScaleY
@@ -24,23 +24,22 @@ namespace DRD.Models
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
-        public long? ElementId { get; set; } // ElementId
+        public long? UserId { get; set; } // ElementId
         public bool IsDeleted { get; set; }
         public int Flag { get; set; } // Flag
-        public string FlagCode { get; set; } // FlagCode (length: 20)
-        public System.DateTime? FlagDate { get; set; } // FlagDate
-        public string FlagImage { get; set; } // FlagImage (length: 100)
-        public string UserId { get; set; } // UserId (length: 50)
+        public string AssignedAnnotationCode { get; set; } // FlagCode (length: 20)
+        public System.DateTime? AssignedAt { get; set; } // FlagDate
+        public string AssignedAnnotationImageFileName { get; set; } // FlagImage (length: 100)
+        public string EmailOfUserAssigned { get; set; } // UserId (length: 50)
         public System.DateTime? CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }
         [ForeignKey("DocumentId")]
         public virtual DocumentInboxData Document { get; set; } // FK_DocumentAnnotate_Document
-        [ForeignKey("ElementId")]
         public Element Element { get; set; }
 
-        public DocumentElementInboxData()
+        public DocumentAnnotationsInboxData()
         {
             Rotation = 0;
             ScaleX = 1;
@@ -52,7 +51,7 @@ namespace DRD.Models
             Flag = 0;
             // Annotate = new JsonAnnotate();
         }
-        public DocumentElementInboxData(DocumentAnnotation item)
+        public DocumentAnnotationsInboxData(DocumentAnnotation item)
         {
             this.Id = item.Id;
             this.Page = item.Page;
@@ -62,8 +61,8 @@ namespace DRD.Models
             this.HeightPosition = item.HeightPosition;
             this.Color = item.Color;
             this.BackColor = item.BackColor;
-            this.Data = item.Text;
-            this.Data2 = item.Unknown;
+            this.Text = item.Text;
+            this.Unknown = item.Unknown;
             this.Rotation = item.Rotation;
             this.ScaleX = item.ScaleX;
             this.ScaleY = item.ScaleY;
@@ -72,12 +71,12 @@ namespace DRD.Models
             this.StrokeWidth = item.StrokeWidth;
             this.Opacity = item.Opacity;
             this.CreatorId = item.CreatorId;
-            this.ElementId = item.UserId;
+            this.UserId = item.UserId;
             this.Flag = item.Flag;
-            this.FlagCode = item.AssignedAnnotationCode;
-            this.FlagDate = item.AssignedAt;
-            this.FlagImage = item.AssignedAnnotationImageFileName;
-            this.UserId = item.EmailOfUserAssigned;
+            this.AssignedAnnotationCode = item.AssignedAnnotationCode;
+            this.AssignedAt = item.AssignedAt;
+            this.AssignedAnnotationImageFileName = item.AssignedAnnotationImageFileName;
+            this.EmailOfUserAssigned = item.EmailOfUserAssigned;
             this.DocumentId = item.DocumentId;
             this.ElementTypeId = item.ElementTypeId;
             this.Element = item.Element;
