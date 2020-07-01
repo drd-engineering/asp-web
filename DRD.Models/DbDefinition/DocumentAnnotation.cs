@@ -26,12 +26,12 @@ namespace DRD.Models
         public double StrokeWidth { get; set; } // StrokeWidth
         public double Opacity { get; set; } // Opacity
         public long? CreatorId { get; set; } // CreatorId
-        public long? ElementId { get; set; } // ElementId
+        public long? UserId { get; set; } // ElementId
         public int Flag { get; set; } // Flag
         public string AssignedAnnotationCode { get; set; } // stamp/signature/initial (length: 20)
         public System.DateTime? AssignedAt { get; set; } // date when signed, initialed, or stamped
         public string AssignedAnnotationImageFileName { get; set; } // stamp/signature/initial  (length: 100)
-        public string UserId { get; set; } // UserId (length: 50)
+        public string EmailOfUserAssigned { get; set; } // UserId (length: 50)
 
         public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }

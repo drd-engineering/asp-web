@@ -8,13 +8,7 @@
 
 @section Scripts
 {
-    <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
-    <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
     <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
-
-    <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
-    <script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
-    <script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
 
     <script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
     <script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
@@ -27,17 +21,8 @@
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
 
-    <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
-
     <script src="/html2pdf-master/dist/html2pdf.bundle.js"></script>
-    <script src="/assets/vendors/ng_only_number.js"></script>
     <script src="/assets/vendors/angular-1.5.5/angular-sanitize.min.js"></script>
-    <script src="~/Scripts/xpublic.js"></script>
-
-    <script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
 
 }
 @section Styles{
@@ -65,7 +50,7 @@
                 </div>
 
                 <div style="padding-left:20px; padding-right:20px">
-                    <h4 style="margin-bottom:0px;margin-top:20px">Rotation : {{model.Subject}}</h4>
+                    <h4 style="margin-bottom:0px;margin-top:20px">Rotation : {{model.Name}}</h4>
                     {{currentRotationNode.WorkflowNode.Caption}}
                 <div ng-show="model.Tags.length>0" style="margin-top:5px">
                     <div class="col-sm-2">
@@ -127,18 +112,17 @@
                                 <table class="table-xs table-hover datatable-highlight" style="font-size:small;width:100%">
                                     <tbody>
                                         <tr ng-show="docs.length==0"><td style="text-align:center"> You need to upload a pdf document</td></tr>
-                                        <tr style="vertical-align:central; cursor:pointer;" ng-repeat="x in docs" ng-show="!validAction(x.FlagAction, 64)">
+                                        <tr style="vertical-align:central; cursor:pointer;" ng-repeat="x in docs" ng-show="!validAction(x.ActionStatus, 64)">
                                             <td style="max-width:90%" ng-click="viewDocument($index)" class="text-top">
 
-                                                <img ng-src="/Images/FileType/{{x.Document.Extention}}.png" width="50" />
+                                                <img ng-src="/Images/FileType/{{x.Document.Extension}}.png" width="50" />
                                                 {{x.Document.FileName}}
 
                                             </td>
                                             <td style="height:50px;width:20%" class="text-top">
-                                                <!--<button class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin-bottom:5px;" data-toggle="tootltip" title="set up document" ng-click="removeDocument($index);">set up</button> -->
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="revisedDocument($index);">Set Up</button>
-                                                <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.FlagPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.FlagAction,2)?'Revised':'Revision')}}</button>
+                                                <button ng-show="(!checkIsFirstPerson() && validAction(x.Document.DocumentUser.ActionPermission,2))" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.ActionStatus,2)?'Revised':'Revision')}}</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -150,9 +134,9 @@
                         <div class="col-md-12" style="display:none" id="action-panel" ng-show="!isCompleteRotation()">
                             <div class="text-center">
                                 <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive()" class="btn bg-brown btn-ladda btn-submit" ng-disabled="btnDisabled" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(4)"><span class="ladda-label">Revision</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.FlagAction, 2))" ng-disabled="btnDisabled" class="btn btn-danger btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="validAction(model.FlagAction,8) && checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" data-spinner-color="#333" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
-                                <button style="width:100px;height:50px" type="button" ng-show="checkIsActive() && ((!validAction(model.FlagAction, 2)) || checkIsFirstPerson())" ng-disabled="btnDisabled" class="btn bg-grey-800 btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="!checkIsFirstPerson() && checkIsActive() && (!validAction(model.ActionStatus, 2))" ng-disabled="btnDisabled" class="btn btn-danger btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(2)"><span class="ladda-label">Reject</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="validAction(model.ActionStatus,8) && checkIsActive() && ((!validAction(model.ActionStatus, 2)) || checkIsFirstPerson())" data-spinner-color="#333" class="btn bg-info btn-ladda btn-submit" data-style="zoom-in" ng-click="processActivity(8)"><span class="ladda-label">Alter</span></button>
+                                <button style="width:100px;height:50px" type="button" ng-show="checkIsActive() && ((!validAction(model.ActionStatus, 2)) || checkIsFirstPerson())" ng-disabled="btnDisabled" class="btn bg-grey-800 btn-ladda btn-submit" data-spinner-color="#333" data-style="zoom-in" ng-click="processActivity(1)"><span class="ladda-label">Submit</span></button>
                             </div>
                         </div>
                     </div>
@@ -163,9 +147,6 @@
                 <ng-include src="'/Include/PopupPassword'"></ng-include>
                 <ng-include src="'/Include/PopupIdentityImage'"></ng-include>
                 <ng-include src="'/Include/PdfIViewer'" onload="finishLoading()"></ng-include>
-
-                <!-- View member modal -->
-                <!--/MEMBER DATA-->
                 <!--CONFIRMATION THANK YOU-->
             </div>
 
@@ -242,18 +223,12 @@
             $scope.btnDisabled = true;
             $scope.identities = [];
             initValues();
-
-
-            //initDocumentValues();
-
             $(".control-warning").uniform({
                 radioClass: 'choice',
                 wrapperClass: 'border-warning-600 text-warning-800'
             });
 
-            $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) {
-
-            });
+            $scope.$on('ngRepeatBindRoutesFinished', function (ngRepeatFinishedEvent) { });
             /*--------------------------------------------------------------
             INIT DATA
             --------------------------------------------------------------*/
@@ -266,35 +241,33 @@
                 $scope.curentUser = @Html.Raw(Json.Encode(Model.User));
                 $scope.inboxId = @Html.Raw(Json.Encode(Model.DataId));
                 var product = @Html.Raw(Json.Encode(Model.Object));
-
                 assignProdut(product);
-
                 $('#checkbox1').bootstrapSwitch.defaults.size = 'mini';
             }
 
             function assignProdut(product) {
                 if (product.id != 0) {
                     $scope.model.Id = $scope.inboxId;
+
                     $scope.rotationId = product.Id;
-                    $scope.companyId = product.CompanyId;
-                    $scope.model.RotationNodeId = product.RotationNodeId;
-                    $scope.model.FirstNodeId = product.FirstNodeId;
-                    $scope.model.DefWorkflowNodeId = product.DefWorkflowNodeId;
-                    $scope.model.Subject = product.Subject;
-                    $scope.model.CurrentActivity = product.CurrentActivity;
+                    $scope.model.Name = product.Name;
                     $scope.model.Status = product.Status;
-                    $scope.model.Remark = product.Remark;
-                    $scope.model.Value = product.RotationNodes[product.RotationNodes.length - 1].Value;
-                    $scope.model.FlagAction = product.FlagAction;
-                    $scope.model.DecissionInfo = product.DecissionInfo;
+                    $scope.companyId = product.CompanyId;
+                    $scope.model.FirstNodeId = product.FirstNodeId;
+                    $scope.model.RotationNodeId = product.RotationNodeId;
+                    $scope.model.WorkflowId = product.WorkflowId;
                     $scope.model.UserId = product.UserId;
-                    $scope.model.Tags= product.Tags;
+                    $scope.model.ActionStatus = product.ActionStatus;
+                    $scope.model.SubscriptionType = product.SubscriptionType;
                     $scope.model.accessType = product.AccessType;
-                    $scope.rotationNodes = product.RotationNodes;
-                    $scope.workflow = product.Workflow;
-                    $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.sumDocuments = product.SumRotationNodeDocs;
-                    $scope.sumAttachments = product.SumRotationNodeUpDocs;
+                    $scope.rotationNodes = product.RotationNodes;
+                    $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
+                    $scope.model.Tags= product.Tags;
+                    
+                    $scope.model.CurrentActivity = product.CurrentActivity;
+                    $scope.model.DecissionInfo = product.DecissionInfo;
+                    $scope.workflow = product.Workflow;
                     if ($scope.model.Status == 0) {
                         if ($scope.currentRotationNode.SenderRotationNodeId != null) {
                             $scope.btnDisabled = false;
@@ -304,105 +277,20 @@
                             if (sender.RotationNodeDocs.length > 0) {
                                 var tempDocs = sender.RotationNodeDocs;
                                 for (i = 0; i < tempDocs.length; i++) {
-                                    if ((tempDocs[i].FlagAction & 64) != 64) {
-                                        tempDocs[i].FlagAction = 0;
+                                    if ((tempDocs[i].ActionStatus & 64) != 64) {
+                                        tempDocs[i].ActionStatus = 0;
                                         $scope.docs.push(tempDocs[i]);
                                     }
                                 }
                             }
-                            if (sender.RotationNodeUpDocs.length > 0)
-                                $scope.updocs = sender.RotationNodeUpDocs;
                         }
                     }
-                    console.log($scope.sumDocuments);
                 } else {
                     // error response, 404 inbox
                 }
             }
+            $scope.initData = function () { };
 
-            function initDocumentValues() {
-                var product = @Html.Raw(Json.Encode(Model.Object));
-                if (product.Id!=0 ){
-                    $scope.model.Id=product.Id;
-                    $scope.model.Title=product.Title;
-                    $scope.model.Descr=product.Descr;
-                    $scope.model.FileName=product.FileName;
-                    $scope.model.FileNameOri = product.FileNameOri;
-                    $scope.model.Extention = product.Extention;
-                    $scope.model.FileSize=product.FileSize;
-                    $scope.model.MaxPrint=product.MaxPrint;
-                    $scope.model.MaxDownload=product.MaxDownload;
-                    $scope.model.ExpiryDay=product.ExpiryDay;
-                    $scope.model.Version=product.Version;
-                    $scope.model.AppZone=product.AppZone;
-                    $scope.model.UserId=product.UserId;
-                    $scope.pdfFileName=product.FileName;
-                    $scope.isUpload=1;
-                    $scope.fileTypeImage=product.Extention+".png";
-                    $scope.annos=[];
-                    for(i=0;i<product.DocumentAnnotates.length;i++){
-                        var ix=product.DocumentAnnotates[i];
-                        var item={};
-                        item.Id=ix.Id;
-                        item.SvgId='svg'+i;
-                        item.Page=ix.Page;
-                        item.AnnotateType=ix.AnnotateTypeId;
-                        item.LeftPosition=ix.LeftPosition;
-                        item.TopPosition=ix.TopPosition;
-                        item.WidthPosition=ix.WidthPosition;
-                        item.HeightPosition=ix.HeightPosition;
-                        item.Color=ix.Color;
-                        item.BackColor=ix.BackColor;
-                        item.Data=ix.Data;
-                        item.Data2=ix.Data2;
-                        item.Rotation=ix.Rotation;
-                        item.ScaleX=ix.ScaleX;
-                        item.ScaleY=ix.ScaleY;
-                        item.TransitionX=ix.TransitionX;
-                        item.TransitionY=ix.TransitionY;
-                        item.StrokeWidth=ix.StrokeWidth;
-                        item.Opacity=ix.Opacity;
-                        item.Flag=ix.Flag;
-                        item.FlagCode=ix.FlagCode;
-                        item.FlagDate=convertJsonDate(ix.FlagDate);
-                        item.FlagImage=ix.FlagImage;
-                        item.CreatorId=ix.CreatorId;
-                        item.ElementId = ix.ElementId;
-                        item.Element = ix.Element;
-                        item.Annotate=ix.Annotate;
-                        $scope.annos.push(item);
-                    }
-
-                }
-            };
-            $scope.initData = function () {
-
-            };
-
-            $scope.showPasswordModal = function () {
-                $scope.btnDisabled = true;
-                var val = document.getElementById("thePassword");
-                val.value = "";
-                $scope.thePassword = "";
-                $scope.passwordError = false;
-                $("#modal_password").modal("show");
-            };
-            $scope.setPassword = function () {
-                var val = document.getElementById("thePassword");
-                var thePassword = val.value;
-                $http.post('/user/ValidationPassword', { userId: $scope.model.UserId, password: thePassword }).then(function (response) {
-                    if (response.data) {
-                        $scope.passwordcheck = true;
-                        return true;
-                    } else {
-                        $scope.passwordcheck = false;
-                        return false;
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
             /*--------------------------------------------------------------
             CONVERT JSON DATE
             --------------------------------------------------------------*/
@@ -421,15 +309,14 @@
                     var item = {};
                     item.SvgId = 'svg' + i;
                     item.Page = ix.Page;
-                    item.ElementType = (ix.ElementTypeId == undefined ? ix.ElementType : ix.ElementTypeId);
                     item.LeftPosition = ix.LeftPosition;
                     item.TopPosition = ix.TopPosition;
                     item.WidthPosition = ix.WidthPosition;
                     item.HeightPosition = ix.HeightPosition;
                     item.Color = ix.Color;
                     item.BackColor = ix.BackColor;
-                    item.Data = ix.Data;
-                    item.Data2 = ix.Data2;
+                    item.Text = ix.Text;
+                    item.Unknown = ix.Unknown;
                     item.Rotation = ix.Rotation;
                     item.ScaleX = ix.ScaleX;
                     item.ScaleY = ix.ScaleY;
@@ -437,12 +324,13 @@
                     item.TransitionY = ix.TransitionY;
                     item.StrokeWidth = ix.StrokeWidth;
                     item.Opacity = ix.Opacity;
-                    item.Flag = ix.Flag;
-                    item.FlagCode = ix.FlagCode;
-                    item.FlagDate = $scope.convertJsonDate(ix.FlagDate);
-                    item.FlagImage = ix.FlagImage;
                     item.CreatorId = ix.CreatorId;
-                    item.ElementId = ix.ElementId;
+                    item.Flag = ix.Flag;
+                    item.AssignedAnnotationCode = ix.AssignedAnnotationCode;
+                    item.AssignedAt = ix.AssignedAt;
+                    item.AssignedAnnotationImageFileName = ix.AssignedAnnotationImageFileName;
+                    item.UserId = ix.UserId;
+                    item.ElementType = (ix.ElementTypeId == undefined ? ix.ElementType : ix.ElementTypeId);
                     item.Element = ix.Element;
                     item.IsDeleted = ix.IsDeleted;
                     $scope.annos.push(item);
@@ -460,7 +348,7 @@
                     showInfo("You don't have permission to his file.");
                     return;
                 }
-                if ((arg.Document.DocumentUser.FlagPermission & 4) != 4 ) {
+                if ((arg.Document.DocumentUser.ActionPermission & 4) != 4 ) {
                     showInfo("You rmission to open this file.");
                     return;
                 }
@@ -483,13 +371,13 @@
             };
             $scope.openDocumentSumarryViewer = function (iframe, arg, fileName) {
                 $scope.btnDisabled = true;
-                $scope.setAnnos(arg.Document.DocumentElements);
+                $scope.setAnnos(arg.Document.DocumentAnnotations);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
-                var permission = arg.Document.DocumentUser.FlagPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16) && ((arg.FlagAction & 64) != 64));
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8) && ((arg.FlagAction & 64) != 64));
+                var permission = arg.Document.DocumentUser.ActionPermission;
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16) && ((arg.ActionStatus & 64) != 64));
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8) && ((arg.ActionStatus & 64) != 64));
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
                 // used for print request and download request in document viewer.
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
@@ -518,9 +406,9 @@
             $scope.openDocumentViewer = function (iframe, idx, fileName) {
                 $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
-                $scope.model.FlagAction |= 4;
-                doc.FlagAction |= 4;
-                $scope.setAnnos(doc.Document.DocumentElements);
+                $scope.model.ActionStatus |= 4;
+                doc.ActionStatus |= 4;
+                $scope.setAnnos(doc.Document.DocumentAnnotations);
                 if (iframe.contentWindow == null)
                     return;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);
@@ -553,7 +441,7 @@
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
                 $scope.btnDisabled = true;
                 var doc = $scope.docs[idx];
-                $scope.setAnnos(doc.Document.DocumentElements);
+                $scope.setAnnos(doc.Document.DocumentAnnotations);
                 if (iframe.contentWindow == null)
                     return;
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);
@@ -585,25 +473,19 @@
                         },function (isConfirm) {
                             $scope.btnDisabled = false;
                             if (isConfirm) {
-                                $scope.docs[$scope.selectedIdx].Document.DocumentElements = items;
+                                $scope.docs[$scope.selectedIdx].Document.DocumentAnnotations = items;
                                 if (!$scope.checkIsFirstPerson()) {
-                                    $scope.model.FlagAction |= 2;
-                                    $scope.docs[$scope.selectedIdx].FlagAction |= 2;
+                                    $scope.model.ActionStatus |= 2;
+                                    $scope.docs[$scope.selectedIdx].ActionStatus |= 2;
                                 }
                                 $scope.$apply();
                                 if ($scope.fromSelectDoc) {
                                     $("#modal_select_document").modal("show");
                                 }
-                                $scope.btnDisabled = false;
-                                $scope.isRevising = false;
-                                $scope.isUploading = false;
                             }
                             $("#modal_pdf_viewer").modal("hide");
                         });
                     }
-                    $scope.btnDisabled = false;
-                    $scope.isRevising = false;
-                    $scope.isUploading = false;
                 } else if ($scope.isUploading) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                     $scope.annos = items;
@@ -612,20 +494,16 @@
                     if ($scope.fromSelectDoc) {
                         $("#modal_select_document").modal("show");
                     }
-                    $scope.btnDisabled = false;
-                    $scope.isRevising = false;
-                    $scope.isUploading = false;
                 } else {
                     $("#modal_pdf_viewer").modal("hide");
-                    $scope.btnDisabled = false;
-                    $scope.isRevising = false;
-                    $scope.isUploading = false;
                 }
+                $scope.btnDisabled = false;
+                $scope.isRevising = false;
+                $scope.isUploading = false;
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
            --------------------------------------------------------------*/
-            var isdefineiframe=false;
             $scope.annoDocument = function () {
                 $("#modal_select_document").modal("hide");
                 $scope.fromSelectDoc = true;
@@ -634,7 +512,7 @@
                 // Reset everytime document want to open
                 iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
                 iframe.contentWindow.angular.element("#xpdfController").scope().resetAnnoItems();
-                $http.post('/document/openfile', { fileName: $scope.model.FileName }).then(function (response) {
+                $http.post('/document/openfile', { fileName: $scope.model.FileUrl }).then(function (response) {
                     if (response.data) {
                         $scope.openDocument(iframe, response.data, true);
                     }
@@ -656,16 +534,6 @@
                 $(window).on('beforeunload', function(){ return "";});
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
             };
-            var annoFinished = function (e) {
-                $('#modal_pdf_viewer').off('hidden.bs.modal', revisiFinished);
-                var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
-                $scope.annos = items;
-                if ($scope.fromSelectDoc) {
-                    $("#modal_select_document").modal("show");
-                    $scope.fromSelectDoc = false;
-                }
-            };
-
             var isok=false;
             $scope.printDocument = function (idx) {
                 var doc = $scope.docs[idx];
@@ -691,7 +559,7 @@
 
             $scope.openPrintDocument = function (idx, fileName) {
                 var doc = $scope.docs[idx];
-                doc.FlagAction |= 8;
+                doc.ActionStatus |= 8;
                 setAnnos(idx);
                 if (!isok) {
                     var iframe = document.getElementById('xpdfIFrameView');
@@ -731,7 +599,7 @@
 
             $scope.openDownloadDocument = function (idx, fileName) {
                 var doc = $scope.docs[idx];
-                doc.FlagAction |= 16;
+                doc.ActionStatus |= 16;
                 setAnnos(idx);
                 var iframe = document.getElementById('xpdfIFrame');
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName);//doc.Document.FileName);
@@ -746,8 +614,60 @@
                 location.href = "/updownfile/xdownload?ufileName=" + atth.DocumentUpload.FileName + "&isDocument=false";
             };
             /*--------------------------------------------------------------
+                Submit Button Activity Function
+            --------------------------------------------------------------*/
+            $scope.processActivity = function (bit) {
+                if (!$scope.isValidForm($scope.myForm)) {
+                    showInfo("There is a problem, please press submit again.");
+                    $scope.btnDisabled = false;
+                    return;
+                }
+                if ($scope.docs.length < 1) {
+                    showInfo("You should add at least one document to continue.");
+                    $scope.btnDisabled = false;
+                    return;
+                }
+
+                if ($scope.model.Value == undefined && $scope.model.DecissionInfo != '') {
+                    showInfo("Required value for decission");
+                    $scope.btnDisabled = false;
+                    return;
+                }
+
+                $scope.submitActivity(bit);
+            };
+            $scope.submitActivity = function (bit) {
+                $scope.btnDisabled = true;
+                $scope.checkSignOrStamp();
+                if (bit == 1 && $scope.needPass != 0) {
+                    $scope.showPasswordModal();
+                } else {
+                    $scope.triggerSubmitSwal(bit);
+                }
+            }
+            /*--------------------------------------------------------------
                 User Signature Function
             --------------------------------------------------------------*/
+            $scope.checkSignOrStamp = function () {
+                for (var i = 0; i < $scope.docs.length; i++) {
+                    var doc = {};
+                    doc.Document = $scope.docs[i].Document;
+                    doc.DocumentId = $scope.docs[i].DocumentId;
+                    if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 1))) {
+                        // need sign
+                        $scope.needPass |= 1;
+                    }
+                    if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 32))) {
+                        // need stamp
+                        $scope.needPass |= 32;
+                    }
+                    if ($scope.needPass != 0) {
+                        $scope.checkUserSignatureData();
+                        return true;
+                    }
+                }
+                return false;
+            };
             $scope.checkUserSignatureData = function () {
                 $http.post('/document/CheckingSignature', { memberId: 0 }).then(function (response) {
                     if (response.data) {
@@ -763,40 +683,14 @@
                     var x = 0;
                 });
             };
-            $scope.checkSignOrStamp = function () {
-                for (var i = 0; i < $scope.docs.length; i++) {
-                    var doc = {};
-                    doc.Document = $scope.docs[i].Document;
-                    doc.DocumentId = $scope.docs[i].DocumentId;
-                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 1))) {
-                        // need sign
-                        $scope.needPass |= 1;
-                    }
-                    if (($scope.validAction(doc.Document.DocumentUser.FlagPermission, 32))) {
-                        // need stamp
-                        $scope.needPass |= 32;
-                    }
-                    if ($scope.needPass != 0) {
-                        $scope.checkUserSignatureData();
-                        return true;
-                    }
-                }
-                return false;
+            $scope.showPasswordModal = function () {
+                // $scope.btnDisabled = true;
+                var val = document.getElementById("thePassword");
+                val.value = "";
+                $scope.thePassword = "";
+                $scope.passwordError = false;
+                $("#modal_password").modal("show");
             };
-            /*--------------------------------------------------------------
-                Submit Button Activity Function
-            --------------------------------------------------------------*/
-            $scope.submitActivity = function (bit) {
-                $scope.btnDisabled = true;
-                $scope.checkSignOrStamp();
-                if (bit == 1 && $scope.needPass != 0) {
-                    $scope.showPasswordModal();
-                } else {
-                    $scope.triggerSubmitSwal(bit);
-                }
-            }
-
-
             $scope.triggerSubmitSwal = function (bit) {
                 $scope.btnDisabled = true;
                 $scope.setPassword();
@@ -840,43 +734,57 @@
                         }, 500);
                     });
             };
-
+            $scope.setPassword = function () {
+                var val = document.getElementById("thePassword");
+                var thePassword = val.value;
+                $http.post('/user/ValidationPassword', { userId: $scope.model.UserId, password: thePassword }).then(function (response) {
+                    if (response.data) {
+                        $scope.passwordcheck = true;
+                        return true;
+                    } else {
+                        $scope.passwordcheck = false;
+                        return false;
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+            };
             $scope.submitActivityProcess = function (bit) {
                 var rotNodeDocs = [];
                 for (var i = 0; i < $scope.docs.length; i++) {
                     var doc = $scope.docs[i];
                     doc.Document = $scope.docs[i].Document;
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                    if ((bit == 1) && (($scope.needPass & 1) == 1) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 1)) {
-                        doc.FlagAction |= 1;
+                    if ((bit == 1) && (($scope.needPass & 1) == 1) && $scope.validAction(doc.Document.DocumentUser.ActionPermission, 1)) {
+                        doc.ActionStatus |= 1;
                     }
 
-                    if ((bit == 1) && (($scope.needPass & 32) == 32) && $scope.validAction(doc.Document.DocumentUser.FlagPermission, 32)) {
-                        doc.FlagAction |= 32;
+                    if ((bit == 1) && (($scope.needPass & 32) == 32) && $scope.validAction(doc.Document.DocumentUser.ActionPermission, 32)) {
+                        doc.ActionStatus |= 32;
                     }
 
                     if ((bit != 1 || $scope.needPass == 0)) {
-                        doc.FlagAction = $scope.docs[i].FlagAction;
+                        doc.ActionStatus = $scope.docs[i].ActionStatus;
                     }
 
                     var annos = [];
-                    for (x = 0; x < $scope.docs[i].Document.DocumentElements.length; x++) {
-                        var ix = $scope.docs[i].Document.DocumentElements[x];
+                    for (x = 0; x < $scope.docs[i].Document.DocumentAnnotations.length; x++) {
+                        var ix = $scope.docs[i].Document.DocumentAnnotations[x];
                         if (ix.IsDeleted) continue;
                         var item = {};
                         item.id = ix.id;
                         item.Page = ix.Page;
                         item.DocumentId = ix.DocumentId;
                         item.Document = ix.Document;
-                        item.ElementTypeId = (ix.ElementTypeId == undefined ? ix.ElementType : ix.ElementTypeId);
                         item.LeftPosition = ix.LeftPosition;
                         item.TopPosition = ix.TopPosition;
                         item.WidthPosition = ix.WidthPosition;
                         item.HeightPosition = ix.HeightPosition;
                         item.Color = ix.Color;
                         item.BackColor = ix.BackColor;
-                        item.Data = ix.Data;
-                        item.Data2 = ix.Data2;
+                        item.Text = ix.Text;
+                        item.Unknown = ix.Unknown;
                         item.Rotation = ix.Rotation;
                         item.RotationId = ix.RotationId;
                         item.ScaleX = ix.ScaleX;
@@ -885,27 +793,18 @@
                         item.TransitionY = ix.TransitionY;
                         item.StrokeWidth = ix.StrokeWidth;
                         item.Opacity = ix.Opacity;
-                        item.Flag = ix.Flag;
-                        item.FlagCode = ix.FlagCode;
-                        item.FlagDate = ix.FlagDate;
-                        item.FlagImage = ix.FlagImage;
                         item.CreatorId = ix.CreatorId;
-                        item.ElementId = ix.ElementId;
+                        item.Flag = ix.Flag;
+                        item.AssignedAnnotationCode = ix.AssignedAnnotationCode;
+                        item.AssignedAt = ix.AssignedAt;
+                        item.AssignedAnnotationImageFileName = ix.AssignedAnnotationImageFileName;
+                        item.UserId = ix.UserId;
+                        item.ElementTypeId = (ix.ElementTypeId == undefined ? ix.ElementType : ix.ElementTypeId);
                         item.Element = ix.Element;
                         annos.push(item);
                     }
-                    doc.Document.DocumentElements = annos;
+                    doc.Document.DocumentAnnotations = annos;
                     rotNodeDocs.push(doc);
-                }
-                var rotNodeUpDocs = [];
-                for (i = 0; i < $scope.updocs.length; i++) {
-                    var doc = {};
-                    doc.DocumentUpload = {};
-                    doc.DocumentUpload.FileName = $scope.updocs[i].DocumentUpload.FileName;
-                    doc.DocumentUpload.FileNameOri = $scope.updocs[i].DocumentUpload.FileNameOri;
-                    doc.DocumentUpload.Extention = $scope.updocs[i].DocumentUpload.Extention;
-                    doc.DocumentUpload.FileSize = $scope.updocs[i].DocumentUpload.FileSize;
-                    rotNodeUpDocs.push(doc);
                 }
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
                 btn.start();
@@ -913,10 +812,7 @@
                     {
                         param: {
                             RotationNodeId: $scope.model.RotationNodeId,
-                            Remark: $scope.model.Remark,
-                            Value: $scope.model.Value,
                             RotationNodeDocs: rotNodeDocs,
-                            RotationNodeUpDocs: rotNodeUpDocs,
                         },
                         bit: bit,
                     }).then(function (response) {
@@ -929,7 +825,6 @@
                             }
                             $scope.wizarno = 'success';
                             $scope.model.Status = response.data;
-                            $scope.model.DefWorkflowNodeId = -1;
                             $scope.getUpdatedInbox();
                             setTimeout(function () {
                                      $scope.wizarno = 'product';
@@ -943,34 +838,6 @@
                         var x = 0;
                     });
             };
-
-            $scope.processActivity = function (bit) {
-                //var iframe=document.getElementById('xpdfIFrame');
-                //var iframeView=document.getElementById('xpdfIFrameView');
-                //var data=iframe.contentWindow.angular.element("#xpdfController").scope().getBase64Pdf();
-                //iframeView.src=data;
-                //return;
-
-                if (!$scope.isValidForm($scope.myForm)) {
-                    showInfo("There is a problem, please press submit again.");
-                    $scope.btnDisabled = false;
-                    return;
-                }
-                if ($scope.docs.length < 1) {
-                    showInfo("You should add at least one document to continue.");
-                    $scope.btnDisabled = false;
-                    return;
-                }
-
-                if ($scope.model.Value == undefined && $scope.model.DecissionInfo != '') {
-                    showInfo("Required value for decission");
-                    $scope.btnDisabled = false;
-                    return;
-                }
-
-                $scope.submitActivity(bit);
-            };
-
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;
@@ -1069,130 +936,11 @@
                     $scope.btnDisabled = false;
                 });
             };
-            $scope.setDocument = function (idx) {
-                if ($scope.docs.length>0){
-                    for(i=0;i<$scope.docs.length;i++){
-                        if ($scope.docs[i].DocumentId==$scope.documents[idx].Id)
-                            return;
-                    }
-                }
-
-                //var dxid=0;
-                //var docidx=0;
-                if ($scope.documentIdx==-1){
-                    var doc={};
-                    doc.Document={};
-                    doc.DocumentId=$scope.documents[idx].Id;
-                    doc.FlagAction=0;
-                    doc.Document.Title=$scope.documents[idx].Title;
-                    doc.Document.FileNameOri=$scope.documents[idx].FileNameOri;
-                    doc.Document.FileName = "Loading...";//$scope.documents[idx].FileName;
-                    doc.Document.Extention = $scope.documents[idx].Extention;
-                    //doc.Document.DocumentMember=$scope.documents[idx].DocumentMembers.filter((subject) => subject.MemberId == $scope.model.MemberId)[0];
-                    $scope.docs.push(doc);
-                    $scope.getDocument($scope.docs.length-1, $scope.model.RotationNodeId, doc.DocumentId);
-                    //dxid=doc.DocumentId;
-                    //docidx=$scope.docs.length-1;
-                }else{
-                    $scope.docs[$scope.documentIdx].DocumentId=$scope.documents[idx].Id;
-                    $scope.docs[$scope.documentIdx].FlagAction=0;
-                    $scope.docs[$scope.documentIdx].Document.Title=$scope.documents[idx].Title;
-                    $scope.docs[$scope.documentIdx].Document.FileNameOri=$scope.documents[idx].FileNameOri;
-                    $scope.docs[$scope.documentIdx].Document.FileName = "Loading...";//$scope.documents[idx].FileName;
-                    $scope.docs[$scope.documentIdx].Document.Extention = $scope.documents[idx].Extention;
-                    //$scope.docs[$scope.documentIdx].Document.DocumentMember=$scope.documents[idx].DocumentMembers.filter((subject) => subject.MemberId == $scope.model.MemberId)[0];
-                    $scope.getDocument($scope.documentIdx, $scope.model.RotationNodeId, $scope.documents[idx].Id);
-                    //dxid=$scope.documents[idx].Id;
-                    //docidx=$scope.documentIdx;
-                }
-
-                @*$http.post('@Url.Action("getpermission", "document")',
-                   {
-                        rotationNodeId:$scope.model.RotationNodeId,
-                        documentId:dxid,
-                   }).then(function (response) {
-                       if (response.data) {
-                           $scope.docs[docidx].Document.DocumentMember.FlagPermission=response.data;
-                       }
-                   }, function (response) {
-                       var x = 0;
-                   });*@
-
-            };
-
             $scope.removeDocument = function (idx) {
                 var docRemoved = $scope.docs[idx];
-                docRemoved.FlagAction |= 64;
+                docRemoved.ActionStatus |= 64;
                 $(window).on('beforeunload', function(){ return "";});
             };
-
-            $scope.removeUpDocument = function (idx) {
-                $scope.updocs.splice(idx, 1);
-            };
-
-            $scope.getLiteDocuments = function (criteria, page, row) {
-                $scope.documents = [];
-                $http.post('/Document/GetLiteAll3', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
-                    if (response.data) {
-                        $scope.documents = response.data;
-
-                        $scope.index = row * (page - 1);
-
-                        $scope.paging = [];
-                        $scope.getDocumentCount(criteria);
-
-                        $scope.isView = true;
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-
-            $scope.changePageDocument = function (criteria, page, row) {
-                $scope.documents = [];
-                $http.post('/Document/GetLiteAll3', { topCriteria: criteria, page: page, pageSize: row }).then(function (response) {
-                    if (response.data) {
-                        $scope.documents = response.data;
-                        $scope.index = row * (page - 1);
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-
-            $scope.getDocumentCount = function (criteria) {
-                $http.post('/Document/GetLiteAllCount3', { topCriteria: criteria }).then(function (response) {
-                    if (response.data) {
-
-                        var jumlahData = response.data;
-                        var jumlahPage = Math.ceil(jumlahData / $scope.row);
-                        for (var i = 1; i <= jumlahPage; i++) {
-                            $scope.paging.push({ value: i, text: i });
-                        }
-
-                        $scope.page = "1";
-
-                    }
-                }, function (response) {
-                    //error handle\
-                    var x = 0;
-                });
-            };
-
-            //$scope.getDocumentById = function (idx, id) {
-            //    $http.post('/Document/GetDocument', { id:id }).then(function (response) {
-            //        if (response.data) {
-            //            $scope.docs[idx].Document.FileName=response.data.FileName;
-            //            $scope.docs[idx].Document.DocumentAnnotates=response.data.DocumentAnnotates;
-            //        }
-            //    }, function (response) {
-            //        //error handle\
-            //        var x = 0;
-            //    });
-            //}
-
             $scope.getDocument = function (idx, rotationNodeId, documentId) {
                 $http.post('/Document/GetDocument', { rotationNodeId: rotationNodeId, documentId: documentId }).then(function (response) {
                     if (response.data) {
@@ -1327,57 +1075,56 @@
                         data: { FileUploaded: file }
                     });
                     file.upload.then(function (response) {
-                        if (response.data.status == "ADMINISTRATOR_EXCEED_LIMIT") {
+                        if (response.data.Status == "ADMINISTRATOR_EXCEED_LIMIT") {
                             showInfo("The number of administrators exceed limit, upgrade your subscription");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        } else if (response.data.status == "MEMBER_EXCEED_LIMIT") {
+                        } else if (response.data.Status == "MEMBER_EXCEED_LIMIT") {
                             showInfo("The number of members in this company exceed limit, upgrade your subscription.");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        }else if (response.data.status == "ROTATION_STARTED_EXCEED_LIMIT") {
+                        }else if (response.data.Status == "ROTATION_STARTED_EXCEED_LIMIT") {
                             showInfo("The number of rotation using this subscription is exceeding the limit, upgrade your subscription");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        }else if (response.data.status == "NO_ACTIVE_PLAN") {
+                        }else if (response.data.Status == "NO_ACTIVE_PLAN") {
                             showInfo("this subscription is invalid");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        }else if (response.data.status == "NOT_AUTHORIZED") {
+                        }else if (response.data.Status == "NOT_AUTHORIZED") {
                             showInfo("You are not authorized to use this subscription.");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        }else if (response.data.status == "EXPIRED") {
+                        }else if (response.data.Status == "EXPIRED") {
                             showInfo("This subscription is expired. Buy new subscription");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        }else if (response.data.status == "STORAGE_EXCEED_LIMIT") {
+                        }else if (response.data.Status == "STORAGE_EXCEED_LIMIT") {
                             showInfo("The storage is full, upgrade your subscription.");
                             $scope.resetFileUploadDetails();
                             $scope.progressValueUploadFile = "Failed";
                             return;
-                        } else if (response.data.status == "OK") {
+                        } else if (response.data.Status == "OK") {
                             
                             file.result = response.data;
                             if (file.result) {
-                                $scope.model.FileName = file.result.filename;
-                                $scope.model.Extention = file.result.fileext;
-                                $scope.model.FileNameOri = file.result.filenameori;
-                                $scope.fileTypeImage = $scope.model.Extention + ".png";
+                                $scope.model.FileUrl = file.result.FileUrl;
+                                $scope.model.FileUrl = file.result.FileName;
+                                $scope.model.FileExtension = file.result.FileExtension;
+                                $scope.fileTypeImage = $scope.model.Extension + ".png";
                                 $scope.progressValueUploadFile = "Upload success";
                                 isdefineiframe = false;
                                 var doc = {};
                                 doc.Document = {};
-                                doc.Document.FileName = file.result.filename;
-                                doc.FlagAction = $scope.model.FlagAction;
-                                doc.Document.FileNameOri = file.result.filenameori;
-                                doc.Document.Extention = file.result.fileext;
+                                doc.Document.FileName = file.result.FileName;
+                                doc.ActionStatus = $scope.model.ActionStatus;
+                                doc.Document.Extension = file.result.FileExtension;
                                 $scope.tempDoc = doc;
                                 $scope.isUpload = 1;
                                 $(window).off('beforeunload');
@@ -1417,7 +1164,6 @@
                     showInfo("document must be uploaded");
                     return;
                 }
-
                 if (!$scope.isValidForm($scope.myForm))
                     return;
 
@@ -1430,15 +1176,14 @@
                     var item = {};
                     item.Id = ix.Id;
                     item.Page = ix.Page;
-                    item.ElementTypeId = ix.ElementType;
                     item.LeftPosition = ix.LeftPosition;
                     item.TopPosition = ix.TopPosition;
                     item.WidthPosition = ix.WidthPosition;
                     item.HeightPosition = ix.HeightPosition;
                     item.Color = ix.Color;
                     item.BackColor = ix.BackColor;
-                    item.Data = ix.Data;
-                    item.Data2 = ix.Data2;
+                    item.Text = ix.Text;
+                    item.Unknown = ix.Unknown;
                     item.Rotation = ix.Rotation;
                     item.ScaleX = ix.ScaleX;
                     item.ScaleY = ix.ScaleY;
@@ -1446,12 +1191,13 @@
                     item.TransitionY = ix.TransitionY;
                     item.StrokeWidth = ix.StrokeWidth;
                     item.Opacity = ix.Opacity;
-                    item.Flag = ix.Flag;
-                    item.FlagCode = ix.FlagCode;
-                    item.FlagDate = ix.FlagDate;
-                    item.FlagImage = ix.FlagImage;
                     item.CreatorId = ix.CreatorId;
-                    item.ElementId = ix.ElementId;
+                    item.Flag = ix.Flag;
+                    item.AssignedAnnotationCode = ix.AssignedAnnotationCode;
+                    item.AssignedAt = ix.AssignedAt;
+                    item.AssignedAnnotationImageFileName = ix.AssignedAnnotationImageFileName;
+                    item.UserId = ix.UserId;
+                    item.ElementTypeId = ix.ElementType;
                     item.Element = ix.Element;
                     $scope.annos.push(item);
                 }
@@ -1467,9 +1213,9 @@
                 $scope.docFileName = "";
                 $scope.model.FileUrl = "";
                 $scope.model.FileSize = "";
+                $scope.model.FileUrl = "";
+                $scope.model.Extension = "";
                 $scope.model.FileName = "";
-                $scope.model.Extention = "";
-                $scope.model.FileNameOri = "";
                 $scope.model.MaxPrint = 0;
                 $scope.model.MaxDownload = 0;
                 $scope.fileTypeImage = "no_document.png";
@@ -1490,9 +1236,9 @@
                             Id: $scope.model.Id,
                             Title: $scope.model.Title,
                             Description: $scope.model.Descr,
-                            FileUrl: $scope.model.FileName,
-                            FileName: $scope.model.FileNameOri,
-                            Extention: $scope.model.Extention,
+                            FileUrl: $scope.model.FileUrl,
+                            FileName: $scope.model.FileName,
+                            Extension: $scope.model.Extension,
                             FileSize: $scope.model.FileSize,
                             MaxPrintPerActivity: $scope.model.MaxPrint,
                             MaxDownloadPerActivity: $scope.model.MaxDownload,
@@ -1542,7 +1288,7 @@
                             return;
                         }
                         else if (response.data.status == "OK") {
-                            response.data.Extention = $scope.tempDoc.Document.Extention;
+                            response.data.Extension = $scope.tempDoc.Document.Extension;
                             $scope.tempDoc.Document = response.data;
                             $scope.tempDoc.DocumentId = response.data.Id;
                             $scope.tempDoc.Document.IsCurrent = response.data.IsCurrent;
@@ -1651,7 +1397,7 @@
                 const queryString = window.location.search;
                 const urlParams = new URLSearchParams(queryString);
                 const inboxId = urlParams.get('id');
-                $http.post('/inbox/GetInboxDetail', { id: inboxId }).then(function (response) {
+                $http.post('/inbox/GetInbox', { id: inboxId }).then(function (response) {
                     if (response.data) {
                         if (response.data == -1 || response.data == -2) {
                             showError("");

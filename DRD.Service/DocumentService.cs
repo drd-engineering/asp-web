@@ -40,7 +40,7 @@ namespace DRD.Service
             Document document = new Document
             {
                 // mapping value
-                Extention = newDocument.Extention,
+                Extension = newDocument.Extension,
                 FileName = newDocument.FileName,
                 FileSize = newDocument.FileSize,
 
@@ -77,14 +77,14 @@ namespace DRD.Service
             if (docs == null) return null;
             foreach (DocumentAnnotation el in docs.DocumentElements)
             {
-                if (el.ElementId == null) continue;
-                var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.ElementId.Value && du.DocumentId == el.DocumentId);
+                if (el.UserId == null) continue;
+                var docUser = db.DocumentUsers.FirstOrDefault(du => du.UserId == el.UserId.Value && du.DocumentId == el.DocumentId);
                 if (docUser == null)
                 {
                     docUser = new DocumentUser();
                     db.DocumentUsers.Add(docUser);
                 }
-                docUser.UserId = el.ElementId.Value;
+                docUser.UserId = el.UserId.Value;
                 docUser.DocumentId = el.DocumentId;
                 string eltypename = Enum.GetName(typeof(Constant.EnumElementTypeId), el.ElementTypeId);
 
@@ -155,7 +155,7 @@ namespace DRD.Service
                 AssignedAt = x.AssignedAt,
                 AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
                 CreatorId = x.CreatorId,
-                ElementId = x.ElementId,
+                UserId = x.UserId,
                 }).ToList();
 
             return annos;
@@ -171,7 +171,7 @@ namespace DRD.Service
                         select new DocumentItem
                         {
                         Id = doc.Id,
-                        Extention = doc.Extention,
+                        Extension = doc.Extension,
                         FileName = doc.FileUrl,
                         FileNameOri = doc.FileName,
                         FileSize = doc.FileSize,
@@ -286,7 +286,7 @@ namespace DRD.Service
                      select new Document
                      {
                          Id = c.Id,
-                         Extention = c.Extention,
+                         Extension = c.Extension,
                          FileName = c.FileName,
                          FileUrl = c.FileUrl,
                          FileSize = c.FileSize,
@@ -320,8 +320,8 @@ namespace DRD.Service
                                 AssignedAt = x.AssignedAt,
                                 AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
                                 CreatorId = x.CreatorId,
-                                ElementId = x.ElementId,
                                 UserId = x.UserId,
+                                EmailOfUserAssigned = x.EmailOfUserAssigned,
                                 CreatedAt = x.CreatedAt,
                                 UpdatedAt = x.UpdatedAt,
                                 ElementTypeId = x.ElementTypeId
@@ -332,11 +332,11 @@ namespace DRD.Service
                 {
                     foreach (DocumentAnnotation da in result.DocumentElements)
                     {
-                        if (da.ElementId == null) continue;
+                        if (da.UserId == null) continue;
                         if (da.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL
                             || da.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
-                            var mem = db.Users.FirstOrDefault(c => c.Id == da.ElementId);
+                            var mem = db.Users.FirstOrDefault(c => c.Id == da.UserId);
                             da.Element.UserId = mem.Id;
                             da.Element.Name = mem.Name;
                             da.Element.Foto = mem.ProfileImageFileName;
@@ -395,7 +395,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = doc.Id,
-                     Extention = doc.Extention,
+                     Extension = doc.Extension,
                      FileNameOri = doc.FileName,
                      FileName = doc.FileUrl,
                      FileSize = doc.FileSize,
@@ -453,7 +453,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Extention = c.Extention,
+                     Extension = c.Extension,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.UploaderId,
@@ -555,7 +555,7 @@ namespace DRD.Service
                  select new DocumentItem
                  {
                      Id = c.Id,
-                     Extention = c.Extention,
+                     Extension = c.Extension,
                      FileName = c.FileName,
                      FileSize = c.FileSize,
                      CreatorId = c.UploaderId
@@ -633,7 +633,7 @@ namespace DRD.Service
                      select new DocumentItem
                      {
                          Id = c.Id,
-                         Extention = c.Extention,
+                         Extension = c.Extension,
                          FileName = c.FileName,
 
                      }).Skip(skip).Take(pageSize).ToList();
@@ -695,7 +695,7 @@ namespace DRD.Service
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.ElementId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
+                     where c.UserId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Constant.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
                         (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.AssignedAt descending
                      select new DocumentSign
@@ -845,7 +845,7 @@ namespace DRD.Service
                     da.Page = ep.Page;
                     da.ElementTypeId = ep.ElementTypeId;
 
-                    da.UserId = da.UserId = string.IsNullOrEmpty(userEmail) ? da.UserId : userEmail;
+                    da.EmailOfUserAssigned = da.EmailOfUserAssigned = string.IsNullOrEmpty(userEmail) ? da.EmailOfUserAssigned : userEmail;
                     da.CreatedAt = DateTime.Now;
                     db.DocumentElements.Add(da);
                 }
@@ -889,7 +889,7 @@ namespace DRD.Service
                 da.AssignedAt = epos.FlagDate;
                 da.AssignedAnnotationImageFileName = epos.FlagImage;
                 da.CreatorId = (epos.CreatorId == null ? creatorId : epos.CreatorId);
-                da.ElementId = epos.ElementId;
+                da.UserId = epos.ElementId;
                 da.Element = epos.Element;
                 da.CreatedAt = DateTime.Now;
                 v++;
@@ -945,7 +945,7 @@ namespace DRD.Service
             {
                 var datas = db.DocumentElements.Where(c => c.Document.Id == documentId 
                     && (c.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || c.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL) 
-                    && c.ElementId == userId && (c.Flag & 1) != 1).ToList();
+                    && c.UserId == userId && (c.Flag & 1) != 1).ToList();
                 if (datas == null)
                     return 0;
                 var user = db.Users.FirstOrDefault(c => c.Id == userId);
@@ -980,7 +980,7 @@ namespace DRD.Service
             {
                 var datas = db.DocumentElements.Where(c => c.Document.Id == documentId 
                     && c.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP 
-                    && c.ElementId == userId && (c.Flag & 1) != 1).ToList();
+                    && c.UserId == userId && (c.Flag & 1) != 1).ToList();
                 
                 if (datas == null)
                     return 0;
@@ -1017,7 +1017,7 @@ namespace DRD.Service
                 Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
 
                 // mapping value
-                document.Extention = newDocument.Extention;
+                document.Extension = newDocument.Extension;
                 document.FileName = newDocument.FileName;
 
                 document.UploaderId = newDocument.CreatorId; // harusnya current user bukan? diinject ke newDocument pas di-controller

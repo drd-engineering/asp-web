@@ -44,7 +44,7 @@ namespace DRD.App.Controllers
                                 XFEncryptionHelper xf = new XFEncryptionHelper();
                                 var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
                             }
-                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.Extention, CompressionLevel.Fastest);
+                            var inerFile = archive.CreateEntry(doc.FileNameOri + doc.Extension, CompressionLevel.Fastest);
                             using (var entryStream = inerFile.Open())
                             using (var streamWriter = new StreamWriter(entryStream))
                             {
@@ -156,9 +156,9 @@ namespace DRD.App.Controllers
                 }
             }
             DocUploadResult result = new DocUploadResult();
-            result.idx = idx;
-            result.filename = _imgname;
-            result.fileext = _ext.Replace(".", "");
+            result.Id = idx;
+            result.FileUrl = _imgname;
+            result.FileExtension = _ext.Replace(".", "");
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -223,11 +223,11 @@ namespace DRD.App.Controllers
                 {
                     // check storage quota
                     var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, file.ContentLength);
-                    result.status = SubscriptionStatus.ToString();
+                    result.Status = SubscriptionStatus.ToString();
 
                     if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                     {
-                        result.idx = (int)SubscriptionStatus;
+                        result.Id = (int)SubscriptionStatus;
                         return Json(result, JsonRequestBehavior.AllowGet); //The used rotation exceeds the data packet quota number
                     }
 
@@ -251,15 +251,14 @@ namespace DRD.App.Controllers
                 }
                 else
                 {
-                    result.idx = -5;
+                    result.Id = -5;
                     return Json(result, JsonRequestBehavior.AllowGet); //Invalid member plan
                 }
             }
-
-            result.idx = idx;
-            result.filename = _filename;
-            result.filenameori = filenameori;
-            result.fileext = _ext.Replace(".", "");
+            result.Id = idx;
+            result.FileUrl = _filename;
+            result.FileName = filenameori;
+            result.FileExtension = _ext.Replace(".", "");
             return Json(result, JsonRequestBehavior.AllowGet);
             // quota upload belum dipotong
         }
@@ -296,9 +295,9 @@ namespace DRD.App.Controllers
                 }
             }
 
-            result.idx = idx;
-            result.filename = _imgname;
-            result.fileext = _ext.Replace(".", "");
+            result.Id = idx;
+            result.FileUrl = _imgname;
+            result.FileExtension = _ext.Replace(".", "");
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 

@@ -53,7 +53,7 @@
 
     $scope.transform = { textAbsRotation: "0", scaleX: 1, scaleY: 1, transX: 0, transY: 0 };
 
-    var annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
+    var annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Text: null, Unknown: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, UserId: null, IsDeleted: false, Flag: 0, AssignedAnnotationCode: null, AssignedAt: null, AssignedAnnotationImageFileName: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null}};//, Signature: null, Initial: null } };
     $scope.annoItems = [];
     var tmpPenAnnoItem = {};
 
@@ -218,7 +218,7 @@
 
         enableAnnoLayer(false);
         var cno = item.SvgId.replace('svg', '');
-        var html = '<div class="' + editTextClass + '" id="' + editTextClass + cno + '" contenteditable="true" spellcheck="false" style="left:0px; top:0px; padding: ' + svgPadding + 'px;color:' + textColor + ';pointer-events:stroke;" onclick="annoSelector(' + "'" + editTextClass + cno + "'" + ')">' + (item.Data == null ? defaultText : item.Data) + '</div>';
+        var html = '<div class="' + editTextClass + '" id="' + editTextClass + cno + '" contenteditable="true" spellcheck="false" style="left:0px; top:0px; padding: ' + svgPadding + 'px;color:' + textColor + ';pointer-events:stroke;" onclick="annoSelector(' + "'" + editTextClass + cno + "'" + ')">' + (item.Text == null ? defaultText : item.Text) + '</div>';
         var field = $('#' + svgElement.id).append(html);
 
         document.getElementById(editTextClass + cno).addEventListener("input", onEditText, false);
@@ -249,7 +249,7 @@
         path.setAttribute("stroke-width", item.StrokeWidth);
         path.setAttribute("style", "cursor:pointer;pointer-events:stroke;opacity:" + item.Opacity);
         //
-        path.setAttribute('d', item.Data);
+        path.setAttribute('d', item.Text);
         path.setAttribute('id', penClass + cno);
         path.setAttribute('class', penClass);
         path.setAttribute('onclick', "annoSelector(" + "'" + penClass + cno + "'" + ")");
@@ -264,7 +264,7 @@
         $('#' + svgElement.id).css({ 'height': h + 'px' });
         $('#' + svgElement.id).css({ 'pointer-events': 'none' });
         $('#' + svgElement.id)[0].setAttribute('preserveAspectRatio', "none");
-        $('#' + svgElement.id)[0].setAttribute('viewBox', item.Data2);
+        $('#' + svgElement.id)[0].setAttribute('viewBox', item.Unknown);
     }
     $scope.insertPngToSvg = function () {
         var i = insertImgNo;
@@ -432,16 +432,16 @@
     var bindAnnoDataMember = function(i)
     {
         var item = $scope.annoItems[i];
-        if (item.ElementId == null || !(item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL || item.ElementType == elementType.PRIVATESTAMP))
+        if (item.UserId == null || !(item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL || item.ElementType == elementType.PRIVATESTAMP))
             return;
 
         var no = item.SvgId.replace('svg', '');
         if ((item.Flag & 1) == 1) {
             var foto = document.getElementById("signed-" + no);
-            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.FlagImage;
+            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.AssignedAnnotationImageFileName;
             if (item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL)
                 $("#signed-name-" + no).text(item.Element.Name);
-            $("#signed-code-" + no).text(item.FlagCode);
+            $("#signed-code-" + no).text(item.AssignedAnnotationCode);
         } else {
             var foto = document.getElementById("member-foto-" + no);
             foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
@@ -450,7 +450,7 @@
     }
     var bindAnnoDataStamp = function (i) {
         var item = $scope.annoItems[i];
-        if (item.ElementId == null || item.ElementType != elementType.STAMP)
+        if (item.UserId == null || item.ElementType != elementType.STAMP)
             return;
 
         var no = item.SvgId.replace('svg', '');
@@ -1223,7 +1223,7 @@
         item.ElementType = elementType.TEXT;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
-        item.Data = defaultText;
+        item.Text = defaultText;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1243,7 +1243,7 @@
         var text = e.target.innerText;
         var iItem = $scope.findAnnoItem(svgId);
         if (iItem != -1)
-            $scope.annoItems[iItem].Data = text;
+            $scope.annoItems[iItem].Text = text;
 
         var w = e.path[0].clientWidth;
         var h = e.path[0].clientHeight;
@@ -1400,7 +1400,7 @@
         tmpPenAnnoItem.Page = page;
         tmpPenAnnoItem.Color = colorDefault;
         //tmpPenAnnoItem.BackColor = backColor;
-        //tmpPenAnnoItem.Data = data;
+        //tmpPenAnnoItem.Text = data;
         //tmpPenAnnoItem.ScaleX = scale;
         //tmpPenAnnoItem.ScaleY = scale;
         tmpPenAnnoItem.StrokeWidth = strokeWidth;
@@ -1491,8 +1491,8 @@
             item.HeightPosition = h;
             item.Color = tmpPenAnnoItem.Color;
             item.BackColor = tmpPenAnnoItem.BackColor;
-            item.Data = newd;
-            item.Data2 = '0 0 ' + w + ' ' + h;
+            item.Text = newd;
+            item.Unknown = '0 0 ' + w + ' ' + h;
             item.ScaleX = 1;
             item.ScaleY = 1;
             item.StrokeWidth = tmpPenAnnoItem.StrokeWidth;
@@ -1681,7 +1681,7 @@
     }
     //setdefault
     $scope.resetAnnoItems = function () {
-        annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Data: null, Data2: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, ElementId: null, IsDeleted: false, Flag: 0, FlagCode: null, FlagDate: null, FlagImage: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null } };
+        annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Text: null, Unknown: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, UserId: null, IsDeleted: false, Flag: 0, AssignedAnnotationCode: null, AssignedAt: null, AssignedAnnotationImageFileName: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null } };
         $scope.annoItems = [];
         svgNo = 0;
     }
@@ -1800,7 +1800,7 @@
         if (item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.PRIVATESTAMP || item.ElementType == elementType.INITIAL) {
             $scope.memberUnassign -= 1;
         }
-        item.ElementId = id;
+        item.UserId = id;
         item.Element.EncryptedUserId = encryptedId;
         item.Element.UserId = id;
         item.Element.Name = name;
@@ -1896,7 +1896,7 @@
         var parent = $('#' + selectedNodeId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.ElementId = id;
+        item.UserId = id;
         item.Element.Name = descr;
         item.Element.Foto = stampFile;
 
@@ -1970,7 +1970,7 @@
         var parent = $('#' + defaultTextId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
-        item.Data = text;//$('#dataText').val();
+        item.Text = text;//$('#dataText').val();
         $('#' + defaultTextId)[0].innerHTML = text;//$('#dataText').val();
     }
 

@@ -4,7 +4,7 @@
     {
         public long Id { get; set; } // Id (Primary key)
         public string status { get; set; }
-        public string Extention { get; set; } // Title (length: 500)
+        public string Extension { get; set; } // Title (length: 500)
         public string Description { get; set; } // Descr
         public string FileUrl { get; set; } // FileUrl --> file path
         public string FileName { get; set; } // FileName (length: 100)
