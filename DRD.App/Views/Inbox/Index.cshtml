@@ -1115,7 +1115,7 @@
                             file.result = response.data;
                             if (file.result) {
                                 $scope.model.FileUrl = file.result.FileUrl;
-                                $scope.model.FileUrl = file.result.FileName;
+                                $scope.model.FileName = file.result.FileName;
                                 $scope.model.FileExtension = file.result.FileExtension;
                                 $scope.fileTypeImage = $scope.model.Extension + ".png";
                                 $scope.progressValueUploadFile = "Upload success";
