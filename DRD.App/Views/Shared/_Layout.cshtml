@@ -227,8 +227,6 @@
             var thisYear = myMoment.year() === now.year();
             var beforeYear = myMoment.year() < now.year();
 
-            console.log(thisYear +" "+ diff);
-
             var retVal =
                 beforeYear? 'sameElse':
                 diff < -6 && thisYear ? 'thisYear' :
@@ -237,7 +235,6 @@
                 diff < 1 ? 'sameDay' :
                 diff < 2 ? 'nextDay' :
                                 diff < 7 ? 'nextWeek' : 'sameElse';
-            console.log(retVal);
             return retVal;
         };
 
