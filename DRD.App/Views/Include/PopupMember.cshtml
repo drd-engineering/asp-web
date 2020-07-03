@@ -1,4 +1,5 @@
 ﻿
+
 @{
     Layout = null;
 }
@@ -12,14 +13,14 @@
             </div>
 
             <div class="input-group">
-                <input type="text" ng-keyup="$event.keyCode == 13 && findMembers($parent.criteria, $parent.page, $parent.row)" class="form-control" ng-model="$parent.criteria" placeholder="Enter nomor/name/email/phone" />
+                <input type="text" ng-keyup="$event.keyCode == 13 && getMembers($parent.criteria, $parent.page, $parent.totalItemPerPage)" class="form-control" ng-model="$parent.criteria" placeholder="Enter nomor/name/email/phone" />
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" ng-click="findMembers($parent.criteria, $parent.page, $parent.row)">Search</button>
+                    <button class="btn btn-default" type="button" ng-click="getMembers($parent.criteria, $parent.page, $parent.totalItemPerPage)">Search</button>
                 </span>
 
                 <span class="input-group-btn" style="width:75px">
-                    <select ng-model="$parent.page" class="form-control" ng-change="changePageMember($parent.criteria, $parent.page, $parent.row)">
+                    <select ng-model="$parent.page" class="form-control" ng-change="changePageMember($parent.criteria, $parent.page, $parent.totalItemPerPage)">
                         <option value="{{x.value}}" ng-repeat="x in paging">{{x.text}}</option>
                     </select>
                 </span>

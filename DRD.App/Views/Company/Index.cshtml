@@ -6,30 +6,7 @@
 }
 @section Scripts
 {
-    <!-- /theme JS files -->
-    <script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
-    <script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
-    <script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
 
-    <script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script>
-    <script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
-
-    <script src="/assets/vendors/ng_only_number.js"></script>
-
-    <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
-    <script src="~/Scripts/xpublic.js"></script>
-
-    <!-- Google map -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY&libraries=visualization,drawing,geometry,places"></script>
-
-    <script src="~/Scripts/autocomplete/autocomplete.min.js"></script>
-    <link href="~/Scripts/autocomplete/autocomplete.min.css" rel="stylesheet" />
-
-    <script src="~/Scripts/lodash.min.js"></script>
-    <script src="~/Scripts/angular-simple-logger.js"></script>
-    <script src="~/Scripts/angular-google-maps.min.js"></script>
-    <!-- /Google map -->
 }
 
 @section Styles{
@@ -61,7 +38,7 @@
                                     </div>
                                     <div class="col-md-6 ">
                                         <label class="control-label">Phone</label>
-                                        <input disabled type="text" class="form-control" ng-model="x.Phone" ng-required="wizarno=='product'" maxlength="20" ng-only-number ng-readonly="!x.IsVerified  && x.isOwnedByUser" />
+                                        <input disabled type="text" class="form-control" ng-model="x.Phone" ng-required="wizarno=='product'" maxlength="20" ng-readonly="!x.IsVerified  && x.isOwnedByUser" />
                                     </div>
                                 </div>
 
@@ -70,13 +47,7 @@
                                         <label class="control-label">Address</label><br />
                                         <textarea disabled ng-model="x.Address" rows="3" style="resize: none; overflow-y: hidden; height: 75px;width:100%;border:1px solid #ddd;background-color:#fafafa" ng-required="wizarno=='product'" ng-readonly="!x.IsVerified && x.isOwnedByUser"></textarea>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="control-label">Point Location</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" ng-model="x.PointLocation" readonly />
-                                            <span class="input-group-addon" style="cursor:pointer" ng-click="showLocation($index)" data-toggle="modal" data-target="#modal_select_map"><i class="icon-location3"></i></span>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
 
                                 <div class="row padding-bottom">
@@ -118,17 +89,7 @@
                         </fieldset>
 
                         <hr />
-                        <div class="col-md-12>
-                            <div class="text-right">
-                                <span class="input-group-btn">
-
-                                    <button class="btn bg-slate-700 pull-right btn-submit" data-style="slide-down" data-spinner-color="#333" ng-click="updateProduct()" style="width:200px">
-                                        <span class="ladda-label">&nbsp;&nbsp;Save Changes&nbsp;&nbsp;</span><span class="ladda-spinner"></span>
-                                        <div class="ladda-progress" style="width: 0px;"></div>
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
+                        
                     </div>
                 </form>
                 <!--/MEMBER DATA-->
@@ -148,35 +109,6 @@
                 </div>
                 <!--/CONFIRMATION THANK YOU-->
                 <!-- /basic layout -->
-                <!-- View map modal -->
-                <div id="modal_select_map" class="modal_hide">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header" style="background:black; color:white;padding:10px;">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h6 class="modal-title">Select Location</h6>
-                            </div>
-
-                            <input style="width:70%;margin:auto; margin-top:10px" type="text" class="form-control" g-places-autocomplete ng-model="model.Autocomplete" placeholder="Enter location" />
-                            <label style="text-align:center;width:100%;margin:10px">{{model.LocationDetail}}</label>
-                            <div id="map_canvas" class="modal-body" style="height:400px">
-                                <ui-gmap-google-map center='map.center'
-                                                    zoom='map.zoom'
-                                                    draggable="true"
-                                                    options="options"
-                                                    control="map.control" class="map_canvas">
-                                </ui-gmap-google-map>
-                            </div>
-
-                            <div class="modal-footer" style="margin-top:15px">
-                                @*<button type="button" class="btn btn-link" ng-click="refreshMap(map)()">Refresh Map</button>*@
-                                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-ladda " data-dismiss="modal" style="padding-left:20px;padding-right:20px;background-color:black;color:white;" ng-click="setLocation()">Set</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- View map modal -->
                 <!-- View Manage Admin modal -->
                 <div id="modal_manage_admin" class="modal_hide">
                     <div class="modal-dialog">
@@ -199,11 +131,9 @@
                                 <div class="col-sm-2">
                                     <div class="row" style="vertical-align:central;">
                                         <div class="col-md-12">
-                                            @*<input  class='btn btn-sm' id='btnRight' value='  >  ' />*@
                                             <input ng-click="makeAdmin(selectedMembers)" class='btn btn-sm' id='btnRight' value='>' style="border:1px solid black;margin-top:50px;" />
                                         </div>
                                         <div class="col-md-12">
-                                            @*<input class='btn btn-sm' id='btnLeft' value='  <  ' />*@
                                             <input ng-click="makeMember(selectedAdmins)" class='btn btn-sm' id='btnLeft' value='<' style="border:1px solid black;" />
                                         </div>
                                     </div>
@@ -244,15 +174,9 @@
 {
     <script type="text/javascript">
 
-        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngOnlyNumberApp', 'ngFileUpload', 'uiGmapgoogle-maps', 'google.places'])
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
 
-        myApp.config(['uiGmapGoogleMapApiProvider', function (GoogleMapApiProviders) {
-            GoogleMapApiProviders.configure({
-                china: true
-            });
-        }]);
-
-        myApp.controller("drdController", function ($scope, Upload, $location, $http, $filter, uiGmapGoogleMapApi, uiGmapIsReady) {
+        myApp.controller("drdController", function ($scope, $http) {
             // modal member
             $scope.model = {};
             $scope.wizarno = 'product';
@@ -263,9 +187,6 @@
             $scope.CompanyList = [];
             $scope.SubscriptionList = [];
             $scope.companyIndex=-1;
-            $scope.isUploadImage1 = 0;
-            $scope.isUploadImage2 = 0;
-            $scope.isUploadImageCard = 0
             $scope.index = 0;
             $scope.subscriptionId = "";
             $scope.userNumber = "";
@@ -293,73 +214,6 @@
             $scope.initData = function () {
 
             }
-
-            //
-            // MAP
-            //
-            $scope.xmarkers = [];
-
-            $scope.model.Autocomplete = null;
-
-            // for the map
-            $scope.map = {
-                control: {},
-                center: {
-                    latitude: -6.2893464,
-                    longitude: 106.9513492
-                },
-                draggable: true,
-                zoom: 16
-            };
-
-            // map options
-            $scope.options = {
-                scrollwheel: false,
-                //center: new google.maps.LatLng($scope.currentLocation.latitude, $scope.currentLocation.longitude),
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-
-            $scope.markerTemplate = {
-                id: 0,
-                coords: {
-                    latitude: 0,
-                    longitude: 0
-                },
-
-                icon: { url: "/assets/images/ic_markerred64.png" },
-                control: {},
-                options: { draggable: true }
-            };
-            $scope.currentLocation = { latitude: -6.2909744, longitude: 106.8046101 };
-            $scope.dummyCurrentLocation = { latitude: 0, longitude: 0 };
-
-            uiGmapIsReady.promise().then(function (map_instances) {
-
-                $scope.initMap();
-            });
-
-            uiGmapGoogleMapApi.then(function (maps) {
-
-            });
-
-            $scope.$on('g-places-autocomplete:select', function (event, place) {
-
-                $scope.currentLocation.latitude = place.geometry.location.lat();
-                $scope.currentLocation.longitude = place.geometry.location.lng();
-
-                $scope.map.center.latitude = $scope.currentLocation.latitude;
-                $scope.map.center.longitude = $scope.currentLocation.longitude;
-
-                $scope.getLocationAddress($scope.currentLocation.latitude, $scope.currentLocation.longitude);
-
-                $scope.createMarker();
-
-            });
-
-            //
-            //END MAP
-            //
-
              $scope.getOwnedandManagedCompany = function () {
                 $http.get('@Url.Action("GetOwnedandManagedCompany", "Company")')
                     .then(function (response) {
@@ -441,119 +295,7 @@
                     var x = 0;
                 });
             }
-            /*--------------------------------------------------------------
-            UPLOAD IMAGE FILE
-            --------------------------------------------------------------*/
-            $scope.uploadFiles = function (idx, file, errFiles) {
-                $scope.f = file;
-                $scope.errFile = errFiles && errFiles[0];
-                if (file) {
-                    file.upload = Upload.upload({
-                        url: '/updownfile/uploadimage?idx=' + idx + '&fileType=9',
-                        data: { MyImages: file }
-                    });
-
-                    file.upload.then(function (response) {
-                        //$timeout(function () {
-                        file.result = response.data;
-
-                        if (idx == 0) {
-                            $scope.model.Image1 = file.result.filename;
-                            $scope.isUploadImage1 = 1;
-                        } else if (idx == 1) {
-                            $scope.model.Image2 = file.result.filename;
-                            $scope.isUploadImage2 = 1;
-                        } else if (idx == 2) {
-                            $scope.model.ImageCard = file.result.filename;
-                            $scope.isUploadImageCard = 1;
-                        }
-                        //});
-                    }, function (response) {
-                        if (response.status > 0)
-                            $scope.errorMsg = response.status + ': ' + response.data;
-                    }, function (evt) {
-                        file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                    });
-                } else if ($scope.errFile != null) {
-                    showInfo("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
-                }
-            }
-
-            /*--------------------------------------------------------------
-            SAVE PRODUCT
-            --------------------------------------------------------------*/
-            $scope.saveProduct = function () {
-                var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
-                btn.start();
-
-                $http.post('@Url.Action("registration", "company")',
-                    {
-                        registry: {
-                            MemberTitleId: $scope.model.MemberTitleId,
-                            MemberName: $scope.model.MemberName,
-                            MemberPhone: $scope.model.MemberPhone,
-                            MemberEmail: $scope.model.MemberEmail,
-                            SubscriptTypeId:$scope.SubscriptType.Id,
-                            CompanyName: $scope.model.CompanyName,
-                            CompanyPhone: $scope.model.CompanyPhone,
-                            CompanyEmail: $scope.model.CompanyEmail,
-                            CompanyAddress: $scope.model.CompanyAddress,
-                            CompanyPointLocation: $scope.model.PointLocation,
-                            Latitude: $scope.currentLocation.latitude,
-                            Longitude: $scope.currentLocation.longitude,
-
-                        }
-                    }).then(function (response) {
-                        btn.stop();
-                        if (response.data) {
-                            var result = response.data;
-                            if (result.UserNumber == "DBLEMAIL") {
-                                showInfo("User email already used by other.");
-                                return;
-                            }
-                            if (result.SubscriptionId == "DBLEMAIL") {
-                                showInfo("Company email already used by other.");
-                                return;
-                            }
-
-                            $scope.wizarno = 'success';
-
-                            $scope.subscriptionId = result.SubscriptionId;
-                            $scope.userNumber = result.UserNumber;
-                        }
-                    }, function (response) {
-                        //error handle\
-                        btn.stop();
-                        var x = 0;
-                    });
-            }
-
-            $scope.updateProduct = function () {
-                if (!$scope.isValidForm($scope.myForm))
-                    return;
-
-                if ($scope.model.PointLocation == undefined) {
-                    showInfo("Point location must be filled.");
-                    return;
-                }
-
-                //if ($scope.isUploadImage1==0) {
-                //    showInfo("Logo harus di lengkapi");
-                //    return;
-                //}
-                //if ($scope.isUploadImage2==0) {
-                //    showInfo("Logo harus di lengkapi");
-                //    return;
-                //}
-
-                $scope.saveProduct();
-            }
-
-            $scope.isValidForm = function (theForm) {
-                var isvalid = theForm.$valid;
-                return isvalid;
-            };
-
+          
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top

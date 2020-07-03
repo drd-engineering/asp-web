@@ -15,89 +15,96 @@ namespace DRD.App.Controllers
 {
     public class SettingController : Controller
     {
-        LoginController login = new LoginController();
         SettingService settingService = new SettingService();
-        UserSession user;
-        Layout layout = new Layout();
 
-        public bool Initialize()
+        private LoginController login;
+        private UserSession user;
+        private Layout layout;
+
+        //helper
+        private bool CheckLogin(bool getMenu = false)
         {
+            login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
-                layout.Menus = login.GetMenus(this);
-                layout.User = login.GetUser(this);
+                settingService = new SettingService();
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
         }
-        public bool InitializeAPI()
-        {
-            user = login.GetUser(this);
-             return login.CheckLogin(this);
-        }
 
-        /// <summary>
-        /// Access Page Inbox related to the inbox id that user has
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        // GET : Setting
         public ActionResult Index()
         {
-            if (!Initialize())
+            if (!CheckLogin(getMenu : true))
                 return RedirectToAction("Index", "login", new { redirectUrl = "setting" });
-
-            layout.Object = login.GetUser(this);
-            
-
             return View(layout);
         }
 
-        public ActionResult GetAccountSetting(long id)
-        {
-            if (!Initialize())
-                return Json(-1, JsonRequestBehavior.AllowGet);
-
-            return Json(layout.User, JsonRequestBehavior.AllowGet);
-        }
-
+        // GET : Setting/Account
         public ActionResult Account()
         {
             return View();
         }
 
+        // GET : Setting/Company
         public ActionResult Company()
         {
             return View();
         }
 
+        // GET : Setting/Notification
         public ActionResult Notification()
         {
             return View();
         }
 
-        public ActionResult getCompanySetting()
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetCompanySetting()
         {
-            if (!InitializeAPI())
+            if (!CheckLogin())
                 return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
-            var data = settingService.getCompanySetting(user.Id);
+            var data = settingService.GetCompanySetting(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        // accept company invitation
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
         public ActionResult AcceptCompanyInvitation(long companyId)
         {
-            if (!InitializeAPI())
+            if (!CheckLogin())
                 return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
-            var data = settingService.acceptCompany(companyId, user.Id);
+            var data = settingService.AcceptCompany(companyId, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// API save workflow, workflow nodes and workflow links
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
         public ActionResult RejectCompanyInvitation(long companyId)
         {
-            if (!InitializeAPI())
+            if (!CheckLogin())
                 return Json(HttpStatusCode.Unauthorized, JsonRequestBehavior.AllowGet);
-            var data = settingService.resetState(companyId, user.Id);
+            var data = settingService.ResetState(companyId, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

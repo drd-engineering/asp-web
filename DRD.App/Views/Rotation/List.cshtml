@@ -6,7 +6,7 @@
 }
 @section Scripts
 {
-    <script src="~/Scripts/xpublic.js"></script>
+    
 }
 @section Styles
 {
@@ -99,7 +99,7 @@
     <script type="text/javascript">
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) 
-        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+        myApp.controller("drdController", function ($scope, $http, $filter) {
             $scope.rotation = {};
             $scope.rotations = [];
             $scope.rotationCount = [];
@@ -137,19 +137,6 @@
             $scope.checkFlag = function (val, bitval) {
                 return ((val & bitval) == bitval);
             }
-            $scope.runLog = function (status, id) {
-                var code='';
-                if (status=='01')
-                    code='INPROGRESS';
-                else if (status=='98')
-                    code='DECLINED';
-                else if (status=='90')
-                    code='COMPLETED';
-
-                var url=$filter('filter')($scope.dbmenus,{SecondaryKey:code})[0].UrlPage.replace('list?','?')+','+id;
-                location.href = url;
-            }
-
 
             $scope.showSubscription = function (rotationSelected) {
                 $scope.rotationSelected = rotationSelected;

@@ -125,10 +125,10 @@ namespace DRD.App.Controllers
         /// </summary>
         /// <param name="workflowUpdate"></param>
         /// <returns></returns>
-        public ActionResult GetUsersWorkflow(long id)
+        public ActionResult GetWorkflowActivities(long id)
         {
             CheckLogin();
-            var data = rotationService.GetUsersWorkflow(id);
+            var data = rotationService.GetWorkflowActivities(id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

@@ -24,15 +24,12 @@ namespace DRD.Service
         private static Symbol GetSymbolsFromCsvByCode(string code)
         {
             if (code.Equals("UPLOAD"))
-            {
                 code = "ACTIVITY";
-            }
             var root = System.Web.HttpContext.Current.Server.MapPath("~");
             var path = Path.Combine(root, @"Symbols.csv");
             Symbol values = File.ReadAllLines(path)
                                            .Select(v => Symbol.FromCsv(v))
                                            .Where(c => c.Code.Equals(code)).FirstOrDefault();
-
             return values;
         }
 
@@ -44,7 +41,6 @@ namespace DRD.Service
             Symbol values = File.ReadAllLines(path)
                                            .Select(v => Symbol.FromCsv(v))
                                            .Where(c => c.Id == id).FirstOrDefault();
-
             return values;
         }
 
@@ -70,7 +66,7 @@ namespace DRD.Service
                 }).FirstOrDefault();
 
             //check if null
-            if (result == null) return null;
+            if (result == null) return result;
             
             var links = db.WorkflowNodeLinks.Where(wfNdLink => wfNdLink.Source.WorkflowId == result.Id).ToList();
             var nodes = db.WorkflowNodes.Where(wfnode => wfnode.WorkflowId == result.Id).ToList();
@@ -152,6 +148,8 @@ namespace DRD.Service
                 criterias = criteria.Split(' ');
             else
                 criteria = "";
+
+            System.Diagnostics.Debug.WriteLine(criteria);
 
             //call db objects
             using var db = new ServiceContext();

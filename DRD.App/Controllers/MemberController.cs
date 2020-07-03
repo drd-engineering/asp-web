@@ -9,24 +9,23 @@ namespace DRD.App.Controllers
 {
     public class MemberController : Controller
     {
-        LoginController login = new LoginController();
-        MemberService memberService = new MemberService();
-
+        LoginController login;
+        MemberService memberService;
         UserSession user;
-        Layout layout = new Layout();
 
-        public void Initialize()
+        private bool CheckLogin(bool getMenu = false)
         {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.Menus = login.GetMenus(this);
-            layout.User = login.GetUser(this);
+            login = new LoginController();
+            if (login.CheckLogin(this))
+            {
+                user = login.GetUser(this);
+                memberService = new MemberService();
+                user = login.GetUser(this);
+                return true;
+            }
+            return false;
         }
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
+
         /// <summary>
         /// Request to get member data based on search query and page list requested
         /// </summary>
@@ -36,19 +35,19 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult GetMembers(string criteria, int page, int totalItemPerPage)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = memberService.GetMembers(user.Id, criteria, page, totalItemPerPage, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// Request to get all the member listed in search query, to help paging for searching member
         /// </summary>
-        /// <param name="topCriteria"></param>
+        /// <param name="criteria"></param>
         /// <returns></returns>
-        public ActionResult FindMembersCountAll(string topCriteria)
+        public ActionResult CountMembers(string criteria)
         {
-            InitializeAPI();
-            var data = memberService.FindMembersCountAll(user.Id, topCriteria);
+            CheckLogin();
+            var data = memberService.CountMembers(user.Id, criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -60,7 +59,7 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult FindMembersRotation(string topCriteria, int page, int pageSize, long rotationId)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = memberService.FindMembersRotation(user.Id, topCriteria, page, pageSize, rotationId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -71,13 +70,13 @@ namespace DRD.App.Controllers
         /// <returns></returns>
         public ActionResult FindMembersRotationCountAll(string topCriteria, long rotationId)
         {
-            InitializeAPI();
+            CheckLogin();
             var data = memberService.FindMembersRotationCountAll(user.Id, topCriteria, rotationId);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult AcceptInvitation(long memberId)
         {
-            InitializeAPI();
+            CheckLogin();
             if (user == null)
             {
                 return RedirectToAction("Index", "LoginController");
@@ -89,31 +88,31 @@ namespace DRD.App.Controllers
         }
         public ActionResult GetAcceptedMember(long companyId)
         {
-            InitializeAPI();
+            CheckLogin();
 
-            MemberList data = memberService.getAcceptedMember(companyId);
+            MemberList data = memberService.GetAcceptedMember(companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetAcceptedMemberOrAdmin(long companyId, bool isAdmin)
         {
-            InitializeAPI();
-            MemberList data = memberService.getAcceptedMember(companyId, isAdmin);
+            CheckLogin();
+            MemberList data = memberService.GetAcceptedMember(companyId, isAdmin);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetWaitingMember(long companyId)
         {
-            InitializeAPI();
+            CheckLogin();
 
-            MemberList data = memberService.getWaitingMember(companyId);
+            MemberList data = memberService.GetWaitingMember(companyId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult AddMemberToCompany(long companyId, long userId)
         {
-            InitializeAPI();
+            CheckLogin();
 
             long data = memberService.AddMemberToCompany(userId, companyId);
             bool returnValue = false;
@@ -124,7 +123,7 @@ namespace DRD.App.Controllers
 
         public ActionResult Delete(long memberId)
         {
-            InitializeAPI();
+            CheckLogin();
 
             long data = memberService.Delete(memberId);
 
@@ -133,7 +132,7 @@ namespace DRD.App.Controllers
 
         public ActionResult BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
         {
-            InitializeAPI();
+            CheckLogin();
 
             var data = memberService.BecomeAdmin(companyId, adminCandidate);
 
@@ -141,10 +140,9 @@ namespace DRD.App.Controllers
         }
         public ActionResult BecomeMember(long companyId, ICollection<MemberItem> memberCandidate)
         {
-            InitializeAPI();
+            CheckLogin();
 
             var data = memberService.BecomeMember(companyId, memberCandidate);
-
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
