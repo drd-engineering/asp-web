@@ -73,7 +73,7 @@
 
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap']) //, 'ui.select2'])
 
-        myApp.controller("drdController", function ($scope, $location, $http, $filter) {
+        myApp.controller("drdController", function ($scope, $http) {
             $scope.product = {};
             $scope.products = [];
             $scope.productCount = [];

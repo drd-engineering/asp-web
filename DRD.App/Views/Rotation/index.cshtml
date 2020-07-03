@@ -5,12 +5,7 @@
 }
 @section Scripts
 {
-
-
-    <script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
-
-    <script src="~/Scripts/xpublic.js"></script>
+    
 }
 
 @section Styles
@@ -19,7 +14,7 @@
 }
 
 <body @*ng-app="drdApp"*@>
-    <h4><a href="/rotation/list" style="border-radius:15px;text-align:center;padding:5px;margin-left:20px;font-weight:800;background-color:#5D90AE;color:white;"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
+    <h4><a href="/rotation/list" class="btn btn-logo-header"><i class="icon-infinite"></i></a> @ViewBag.Title</h4>
     <!-- Page container -->
     <div class="page-container" ng-controller="drdController">
         <!-- Content area -->
@@ -65,7 +60,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                    <div ng-show="model.Tags.lentgh>0" class="row">
                                         <div class="col-sm-2">
                                             Tags
                                         </div>
@@ -84,14 +79,12 @@
                                             <table class="table-xxs table-bordered table-striped" style="font-size:small;width:100%">
                                                 <thead>
                                                     <tr>
-                                                        <th width="25px">#</th>
                                                         <th>Activity</th>
                                                         <th>Recipient</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody ng-repeat="x in users" ng-init="topIdx = $index">
                                                     <tr style="vertical-align:top" on-finish-render="ngRepeatFinished">
-                                                        <td width="25px" rowspan="2">{{$index+1 + index}}</td>
                                                         <td rowspan="2">{{x.ActivityName}}</td>
                                                         <td>
                                                             <table style="width:100%;">
@@ -109,11 +102,11 @@
                                                             </table>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr ng-show="getFlagPermission(x.FlagPermission, 8) || getFlagPermission(x.FlagPermission, 16)">
                                                         <td style="font-size:xx-small">
                                                             <span style="font-size:small;color:brown">Permission :&ensp;</span>
-                                                            <input ng-show="{{getFlagPermission(x.FlagPermission, 8)}}" type="checkbox" class="control-primary" ng-checked="{{getFlagPermission(x.FlagPermission, 8)}}" id="checkboxmt{{x.WorkflowNodeId}}-8" readonly> Print&ensp;&ensp;&ensp;
-                                                            <input ng-show="{{getFlagPermission(x.FlagPermission, 16)}}" type="checkbox" class="control-success" ng-checked="{{getFlagPermission(x.FlagPermission, 16)}}" id="checkboxmt{{x.WorkflowNodeId}}-16" readonly> Download
+                                                            <span class="btn" ng-show="getFlagPermission(x.FlagPermission, 8)" id="checkboxmt{{x.WorkflowNodeId}}-8" readonly disabled> Print</span>
+                                                            <span class="btn" ng-show="getFlagPermission(x.FlagPermission, 16)" id="checkboxmt{{x.WorkflowNodeId}}-16" readonly disabled> Download</span>
                                                         </td>
                                                     </tr>
                                                 </tbody>

@@ -31,78 +31,104 @@ namespace DRD.Service
         //helper
         private List<ActivityItem> StartProcess(long userId, long rotationId, long usageId)
         {
-            List<ActivityItem> retvalues = new List<ActivityItem>();
+            List<ActivityItem> result = new List<ActivityItem>();
+
+            //Check Subscription
             Constant.BusinessUsageStatus subscriptionStatus = subscriptionService.IsSubscriptionValid(userId, usageId);
-            System.Diagnostics.Debug.WriteLine("LALALA: statbro " + subscriptionStatus);
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
             {
-                retvalues.Add(CreateActivityResult((int)subscriptionStatus, exitStatus: subscriptionStatus.ToString()));
-                return retvalues;
+                result.Add(CreateActivityResult((int)subscriptionStatus, exitStatus: subscriptionStatus.ToString()));
+                return result;
             }
 
-            using (var db = new ServiceContext())
+            //check rotation status before start
+            using var db = new ServiceContext();
+            var rotationDb = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
+            if (!rotationDb.Status.Equals((int)Constant.RotationStatus.Open))
             {
-                var rt = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
-                if (!rt.Status.Equals((int)Constant.RotationStatus.Open))
-                {
-                    retvalues.Add(CreateActivityResult((int)Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED, exitStatus: Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString()));
-                    return retvalues; //Invalid rotation
-                }
-
-                //update rotation
-                rt.Status = (int)Constant.RotationStatus.In_Progress;
-                var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
-                rt.CompanyId = companyUsage.CompanyId;
-                rt.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
-                rt.UpdatedAt = DateTime.Now;
-                rt.StartedAt = DateTime.Now;
-
-                // first node, node after start symbol
-                var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.Source.WorkflowId == rt.WorkflowId && c.Source.SymbolCode == 0).ToList();
-                if (workflowNodeLinks == null)
-                {
-                    retvalues.Add(CreateActivityResult((int)Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND, exitStatus: Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND.ToString()));
-                    return retvalues; //Invalid rotation
-                }
-
-                //check rotation started limit or add when limit passed
-                var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, rt.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
-
-
-                if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK))
-                {
-                    retvalues.Add(CreateActivityResult((int)rotationStartedLimitStatus, exitStatus: rotationStartedLimitStatus.ToString()));
-                    return retvalues;
-                }
-
-
-
-                long rotId = rt.Id;
-
-                // send to all activity under start node +
-                foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
-                {
-
-                    RotationNode rtnode = new RotationNode();
-                    rtnode.RotationId = rt.Id;
-                    rtnode.WorkflowNodeId = workflowNodeLink.TargetId;
-                    rtnode.WorkflowNode = workflowNodeLink.Target;
-                    rtnode.FirstNodeId = workflowNodeLink.FirstNodeId;
-                    long userNodeId = GetUserId(workflowNodeLink.TargetId, rt.Id);
-
-                    rtnode.UserId = userNodeId;
-                    rtnode.Status = (int)Constant.RotationStatus.Open;
-                    rtnode.CreatedAt = DateTime.Now;
-                    db.RotationNodes.Add(rtnode);
-                    db.SaveChanges();
-                    retvalues.Add(CreateActivityResult(1, rtnode.UserId, userId, rt.Name, rtnode.Id, rotationId, exitStatus: Constant.RotationStatus.OK.ToString()));
-                }
-
-                db.SaveChanges();
-                return retvalues;
+                result.Add(CreateActivityResult((int)Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED, exitStatus: Constant.RotationStatus.ERROR_ROTATION_ALREADY_STARTED.ToString()));
+                return result; //Invalid rotation
             }
+
+            //update rotation
+            var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
+            rotationDb.Status = (int)Constant.RotationStatus.In_Progress;
+            rotationDb.CompanyId = companyUsage.CompanyId;
+            rotationDb.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
+
+            // first node, node after start symbol
+            var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.Source.WorkflowId == rotationDb.WorkflowId && c.Source.SymbolCode == 0).ToList();
+            if (workflowNodeLinks == null)
+            {
+                result.Add(CreateActivityResult((int)Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND, exitStatus: Constant.RotationStatus.ERROR_WORKFLOW_START_NODE_NOT_FOUND.ToString()));
+                return result; //Invalid rotation
+            }
+
+            //check rotation started limit or add when limit passed
+            var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, rotationDb.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
+
+            if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK))
+            {
+                result.Add(CreateActivityResult((int)rotationStartedLimitStatus, exitStatus: rotationStartedLimitStatus.ToString()));
+                return result;
+            }
+
+            // send to all activity under start node +
+            foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
+            {
+                long userNodeId = GetUserId(workflowNodeLink.TargetId, rotationDb.Id);
+                RotationNode rtnode = new RotationNode
+                {
+                    RotationId = rotationDb.Id,
+                    WorkflowNodeId = workflowNodeLink.TargetId,
+                    WorkflowNode = workflowNodeLink.Target,
+                    FirstNodeId = workflowNodeLink.FirstNodeId,
+
+                    UserId = userNodeId,
+                    Status = (int)Constant.RotationStatus.Open,
+                    CreatedAt = DateTime.Now
+                };
+                db.RotationNodes.Add(rtnode);
+                db.SaveChanges();
+                result.Add(CreateActivityResult(1, rtnode.UserId, userId, rotationDb.Name, rtnode.Id, rotationId, exitStatus: Constant.RotationStatus.OK.ToString()));
+            }
+
+            db.SaveChanges();
+            return result;
+        }
+        //helper
+        private ActivityItem CreateActivityResult(int exitCode, long userId = 0, long previousUserId = 0, string rotationName = "", long rotationNodeId = 0, long rotationId = 0, string exitStatus = null)
+        {
+            using var db = new ServiceContext();
+            var currentUserDb = db.Users.FirstOrDefault(c => c.Id == userId);
+            var previousUserDb = db.Users.FirstOrDefault(c => c.Id == previousUserId);
+            ActivityItem result = new ActivityItem
+            {
+                RotationId = rotationId,
+                UserId = userId,
+                UserName = currentUserDb.Name,
+                Email = currentUserDb.Email,
+
+                PreviousUserId = previousUserId,
+                PreviousUserName = previousUserDb.Name,
+                PreviousEmail = previousUserDb.Email,
+
+                RotationName = rotationName,
+                RotationNodeId = rotationNodeId,
+
+                ExitCode = exitCode,
+                ExitStatus = exitStatus
+            };
+            result.ExitStatus ??= Constant.RotationStatus.OK.ToString();
+            return result;
         }
 
+        //helper
+        private long GetUserId(long WorkflowNodeToId, long RotationId)
+        {
+            using var db = new ServiceContext();
+            return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
+        }
 
         /// <summary>
         /// Obtain rotation that user has already made and search by Id of the rotation
@@ -112,59 +138,65 @@ namespace DRD.Service
         /// <returns></returns>
         public RotationIndex GetRotation(long id, long creatorId, bool isActive = true)
         {
-            using (var db = new ServiceContext())
-            {
-                var result =
-                    (from rotation in db.Rotations
-                     where rotation.Id == id && rotation.IsActive==isActive && rotation.CreatorId == creatorId
-                     select new RotationIndex
-                     {
-                         Id = rotation.Id,
-                         Name = rotation.Name,
-                         Description = rotation.Description,
-                         WorkflowId = rotation.WorkflowId,
-                         CompanyId = rotation.CompanyId,
-                         Workflow = new WorkflowItem
-                         {
-                             Id = rotation.Workflow.Id,
-                             Name = rotation.Workflow.Name,
-                         },
-                         Status = rotation.Status,
-                         UserId = rotation.UserId, // filled when using personal plan
-                         RotationUsers = (from x in rotation.RotationUsers
-                                          select new RotationUserItem
-                                          {
-                                              Id = x.Id,
-                                              UserId = x.UserId,
-                                              WorkflowNodeId = x.WorkflowNodeId,
-                                              ActivityName = x.WorkflowNode.Caption,
-                                              Number = (x.UserId == null ? (long?)null : x.User.Id),
-                                              Name = (x.UserId == null ? "Undefined" : x.User.Name),
-                                              Email = (x.UserId == null ? "" : x.User.Email),
-                                              Picture = (x.UserId == null ? "icon_user.png" : x.User.ProfileImageFileName),
-                                              FlagPermission = x.ActionPermission
-                                          }).ToList(),
-                     }).FirstOrDefault();
-                foreach (RotationUserItem x in result.RotationUsers)
-                {
-                    x.EncryptedId = Utilities.Encrypt(x.UserId.ToString());
-                }
-                if (result == null) return result;
-                result.CompanyRotation = (from cmpny in db.Companies
-                                          where cmpny.Id == result.CompanyId
-                                          select new SmallCompanyData
-                                          {
-                                              Id = cmpny.Id,
-                                              Code = cmpny.Code,
-                                              Name = cmpny.Name,
-                                          }).FirstOrDefault();
-                var tagService = new TagService();
-                var tags = tagService.GetTags(result.Id);
-                result.Tags = (from tag in tags select tag.Name).ToList();
-                return result;
-            }
+            using var db = new ServiceContext();
+            var result =
+                        (from rotation in db.Rotations
+                        where rotation.Id == id && rotation.IsActive == isActive && rotation.CreatorId == creatorId
+                        select new RotationIndex
+                        {
+                        Id = rotation.Id,
+                        Name = rotation.Name,
+                        Description = rotation.Description,
+                        WorkflowId = rotation.WorkflowId,
+                        CompanyId = rotation.CompanyId,
+                        Workflow = new WorkflowItem
+                                    {
+                                    Id = rotation.Workflow.Id,
+                                    Name = rotation.Workflow.Name,
+                                    },
+                        Status = rotation.Status,
+                        UserId = rotation.UserId, // filled when using personal plan
+                        RotationUsers = (from x in rotation.RotationUsers
+                                        select new RotationUserItem
+                                        {
+                                        Id = x.Id,
+                                        UserId = x.UserId,
+                                        WorkflowNodeId = x.WorkflowNodeId,
+                                        ActivityName = x.WorkflowNode.Caption,
+                                        Number = (x.UserId == null ? (long?)null : x.User.Id),
+                                        Name = (x.UserId == null ? "Undefined" : x.User.Name),
+                                        Email = (x.UserId == null ? "" : x.User.Email),
+                                        Picture = (x.UserId == null ? "icon_user.png" : x.User.ProfileImageFileName),
+                                        FlagPermission = x.ActionPermission
+                                        }).ToList(),
+                                        }).FirstOrDefault();
+            //check if result null
+            if (result == null) return result;
+
+            //add encrypted id to access image folder
+            foreach (RotationUserItem x in result.RotationUsers)
+                x.EncryptedId = Utilities.Encrypt(x.UserId.ToString());
+            
+            result.CompanyRotation = (from cmpny in db.Companies
+                                      where cmpny.Id == result.CompanyId
+                                      select new SmallCompanyData
+                                      {
+                                          Id = cmpny.Id,
+                                          Code = cmpny.Code,
+                                          Name = cmpny.Name,
+                                      }).FirstOrDefault();
+            var tagService = new TagService();
+            var tags = tagService.GetTags(result.Id);
+            result.Tags = (from tag in tags select tag.Name).ToList();
+            return result;
         }
-        public IEnumerable<RotationUserData> GetUsersWorkflow(long workflowId)
+
+        /// <summary>
+        /// Obtain activities/Workflow Node from Workflow
+        /// </summary>
+        /// <param name="workflowId"></param>
+        /// <returns></returns>
+        public IEnumerable<RotationUserData> GetWorkflowActivities(long workflowId)
         {
             using var db = new ServiceContext();
             var result =
@@ -273,7 +305,7 @@ namespace DRD.Service
         }
 
         /// <summary>
-        /// 
+        /// Save new or updated rotation
         /// </summary>
         /// <param name="newRotation"></param>
         /// <returns></returns>
@@ -436,7 +468,11 @@ namespace DRD.Service
 
             return rotationDb.Id;
         }
-
+        /// <summary>
+        /// Delete(inactive) specific rotation from id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Delete(long id)
         {
             using var db = new ServiceContext();
@@ -453,56 +489,23 @@ namespace DRD.Service
             db.SaveChanges();
             return Constant.RotationStatus.OK.ToString();
         }
+        /// <summary>
+        /// Start the subscription to first node/activity and use the subscription
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ResponseStatus Start(long userId, long rotationId, long subscriptionId)
         {
             var returnItem = StartProcess(userId, rotationId, subscriptionId);
             InboxService inboxService = new InboxService();
             List<int> returnValue = new List<int>();
 
-            if (returnItem != null)
-            {
-                foreach (ActivityItem act in returnItem)
-                {
-                    returnValue.Add(inboxService.CreateInbox(act));
-                }
-
-                return new ResponseStatus() { code = returnItem[0].ExitCode, status = returnItem[0].ExitStatus };
-            }
-
-            return new ResponseStatus() { code = -6, status = "" };
-        }
-
-        private ActivityItem CreateActivityResult(int exitCode, long userId=0, long previousUserId=0, string rotationName="", long rotationNodeId=0, long rotationId=0, string exitStatus = null)
-        {
-            using var db = new ServiceContext();
-            var currentUserDb = db.Users.FirstOrDefault(c => c.Id == userId);
-            var previousUserDb = db.Users.FirstOrDefault(c => c.Id == previousUserId);
-            ActivityItem ret = new ActivityItem
-            {
-                RotationId = rotationId,
-                UserId = userId,
-                UserName = currentUserDb.Name,
-                Email = currentUserDb.Email,
-
-                PreviousUserId = previousUserId,
-                PreviousUserName = previousUserDb.Name,
-                PreviousEmail = previousUserDb.Email,
-
-                RotationName = rotationName,
-                RotationNodeId = rotationNodeId,
-
-                ExitCode = exitCode,
-                ExitStatus = exitStatus
-            };
-            ret.ExitStatus ??= Constant.RotationStatus.OK.ToString();
-            return ret;
-        }
-
-
-        private long GetUserId(long WorkflowNodeToId, long RotationId)
-        {
-            using var db = new ServiceContext();
-            return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
+            //if rotation dint exist
+            if (returnItem == null) return new ResponseStatus() { code = -6, status = "" };
+            
+            foreach (ActivityItem act in returnItem)
+                returnValue.Add(inboxService.CreateInbox(act));
+            return new ResponseStatus() { code = returnItem[0].ExitCode, status = returnItem[0].ExitStatus };
         }
     }
 }
