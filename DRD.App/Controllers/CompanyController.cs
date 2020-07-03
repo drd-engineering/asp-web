@@ -12,14 +12,13 @@ namespace DRD.App.Controllers
     public class CompanyController : Controller
     {
         private CompanyService companyService;
-        private MemberService memberService;
-        private SubscriptionService subscriptionService;
         private UserService userService;
 
         private LoginController login;
         private UserSession user;
         private Layout layout;
 
+        //helper
         private bool CheckLogin(bool getMenu = false)
         {
             login = new LoginController();
@@ -27,10 +26,7 @@ namespace DRD.App.Controllers
             {
                 user = login.GetUser(this);
                 companyService = new CompanyService();
-                memberService = new MemberService();
-                subscriptionService = new SubscriptionService();
                 userService = new UserService();
-
                 if (getMenu)
                 {
                     layout = new Layout
@@ -44,17 +40,32 @@ namespace DRD.App.Controllers
             return false;
         }
 
+        // GET: Company
         public ActionResult Index()
         {
-            if (!CheckLogin(getMenu:true))
+            if (!CheckLogin(getMenu:true)) 
                 return RedirectToAction("Index", "login", new { redirectUrl = "company" });
             
-            if (!userService.IsAdminOrOwnerofAnyCompany(user.Id)) return RedirectToAction("List", "Inbox");
+            if (!userService.IsAdminOrOwnerofAnyCompany(user.Id)) 
+                return RedirectToAction("Index", "Dashboard");
             
-            return View(layout);
-            
-            
+            return View(layout);   
         }
+
+        // GET: Company
+        public ActionResult Member(long id = Constant.ID_NOT_FOUND)
+        {
+            if (!CheckLogin(getMenu: true))
+                return RedirectToAction("Index", "login", new { redirectUrl = "Company/Member?id=" + id });
+
+            var company = companyService.GetCompany(id, user.Id);
+            if (company == null)
+                return RedirectToAction("Index", "Dashboard");
+
+            ViewBag.Company = company.Name;
+            return View(layout);
+        }
+
         /// <summary>
         /// API to get company owned by user
         /// </summary>
@@ -63,37 +74,22 @@ namespace DRD.App.Controllers
         {
             if (!CheckLogin(getMenu: false))
                 return RedirectToAction("Index", "login", new { redirectUrl = "dashboard" });
+
             var data = companyService.GetCompaniesOwnedByUser(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Member(long id = Constant.ID_NOT_FOUND)
-        {
-            if (!CheckLogin(getMenu: true))
-                return RedirectToAction("Index", "login", new { redirectUrl = "Company/Member?id"+id });
-            var company = companyService.GetCompany(id);
-            if (company == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-            }
-            if (!memberService.checkIsAdmin(user.Id, id) && !memberService.checkIsOwner(user.Id, id))
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
-            }
-            ViewBag.Company = company.Name;
-            return View(layout);
-        }
-
+        /// <summary>
+        /// Invite bulk emails to be company members need to be accepted by the recipient
+        /// </summary>
+        /// <returns></returns>
         public ActionResult AddMembers(long companyId, string emails)
         {
             CheckLogin();
-            var data = memberService.AddMembers(companyId, user.Id, emails);
-            foreach (AddMemberResponse item in data)
-            {
-                memberService.SendEmailAddMember(item);
-            }
+            var data = companyService.AddMembers(companyId,user.Id, emails);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// API to get all the company Owned and Managed by the user logged in
         /// </summary>
@@ -104,27 +100,25 @@ namespace DRD.App.Controllers
             var data = companyService.GetOwnedandManagedCompany(user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult GetSubscriptionList()
-        {
-            CheckLogin();
-            List<BusinessPackage> data = subscriptionService.GetAllPublicSubscription();
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
+        /// <summary>
+        /// Accept member request in company member invitation management
+        /// </summary>
+        /// <returns></returns>
         public ActionResult AcceptMember(long memberId)
         {
             CheckLogin();
             var data = companyService.AcceptMember(memberId);
-
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// Reject member request in company member invitation management
+        /// </summary>
+        /// <returns></returns>
         public ActionResult RejectMember(long memberId)
         {
             CheckLogin();
             var data = companyService.RejectMember(memberId);
-
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

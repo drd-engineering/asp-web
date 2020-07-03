@@ -12,9 +12,9 @@ namespace DRD.Service
 {
     public class MemberService
     {
-        private CompanyService companyService = new CompanyService();
-        private ContactService contactService = new ContactService();
-        private SubscriptionService subscriptionService = new SubscriptionService();
+        private CompanyService companyService;
+        private ContactService contactService;
+        private SubscriptionService subscriptionService ;
         /// <summary>
         /// CHECK if id member already exist or not
         /// </summary>
@@ -27,20 +27,16 @@ namespace DRD.Service
         }
         public Member getMember(long memberId)
         {
-            using (var db = new ServiceContext())
-            {
-                return db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-            }
+            using var db = new ServiceContext();
+            return db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
         }
 
         public Member GetMember(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                return db.Members.Where(memberItem => memberItem.UserId == userId && memberItem.CompanyId == companyId).FirstOrDefault();
-            }
+            using var db = new ServiceContext();
+            return db.Members.Where(memberItem => memberItem.UserId == userId && memberItem.CompanyId == companyId).FirstOrDefault();
         }
-        public void mappingMember(List<Member> membersFromDb, MemberList listReturn)
+        private void MappingMember(List<Member> membersFromDb, MemberList listReturn)
         {
             companyService = new CompanyService();
             contactService = new ContactService();
@@ -48,10 +44,12 @@ namespace DRD.Service
             foreach (Member x in membersFromDb)
             {
 
-                var memberItem = new MemberItem();
-                memberItem.Id = x.Id;
-                memberItem.CompanyId = x.CompanyId;
-                memberItem.UserId = x.UserId;
+                var memberItem = new MemberItem
+                {
+                    Id = x.Id,
+                    CompanyId = x.CompanyId,
+                    UserId = x.UserId
+                };
                 memberItem.Company = companyService.GetCompany(memberItem.CompanyId);
                 memberItem.User = contactService.getContact(memberItem.UserId);
                 memberItem.User.EncryptedId = Utilities.Encrypt(memberItem.UserId.ToString());
@@ -59,78 +57,66 @@ namespace DRD.Service
                 listReturn.addMember(memberItem);
             }
         }
-        public MemberList getAcceptedMember(long companyId)
+        public MemberList GetAcceptedMember(long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var listReturn = new MemberList();
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
+            using var db = new ServiceContext();
+            var listReturn = new MemberList();
+            var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
 
-                mappingMember(membersFromDb, listReturn);
-                return listReturn;
-            }
+            MappingMember(membersFromDb, listReturn);
+            return listReturn;
         }
-        public MemberList getWaitingMember(long companyId)
+        public MemberList GetWaitingMember(long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var listReturn = new MemberList(); ;
-                var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
+            using var db = new ServiceContext();
+            var listReturn = new MemberList(); ;
 
-                mappingMember(membersFromDb, listReturn);
-                return listReturn;
-            }
+            var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
+
+            MappingMember(membersFromDb, listReturn);
+            return listReturn;
         }
 
-        public MemberList getAcceptedMember(long companyId, bool isAdmin)
+        public MemberList GetAcceptedMember(long companyId, bool isAdmin)
         {
             using (var db = new ServiceContext())
             {
                 var listReturn = new MemberList(); ;
                 var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive && memberItem.IsAdministrator == isAdmin).ToList();
 
-                mappingMember(membersFromDb, listReturn);
+                MappingMember(membersFromDb, listReturn);
                 return listReturn;
             }
         }
 
-        public bool checkIsAdmin(long userId, long companyId)
+        public bool CheckIsAdmin(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var admin = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId).FirstOrDefault();
-                return admin == null ? false : true;
-            }
+            using var db = new ServiceContext();
+            return db.Members.Any(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId);
         }
 
-        public bool checkIsOwner(long userId, long companyId)
+        public bool CheckIsOwner(long userId, long companyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var owner = db.Companies.Where(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId).FirstOrDefault();
-                return owner == null ? false : true;
-            }
+            using var db = new ServiceContext();
+            return db.Companies.Any(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId);
         }
 
-        public List<MemberItem> getAdministrators(long CompanyId)
+        public List<MemberItem> GetAdministrators(long CompanyId)
         {
-            using (var db = new ServiceContext())
-            {
-                var admins = (from Member in db.Members
-                              join User in db.Users on Member.UserId equals User.Id
-                              where Member.CompanyId == CompanyId && Member.IsCompanyAccept && Member.IsMemberAccept && Member.IsActive && Member.IsAdministrator
-                              select new MemberItem
+            using var db = new ServiceContext();
+            var admins = (from Member in db.Members
+                          join User in db.Users on Member.UserId equals User.Id
+                          where Member.CompanyId == CompanyId && Member.IsCompanyAccept && Member.IsMemberAccept && Member.IsActive && Member.IsAdministrator
+                          select new MemberItem
+                          {
+                              Id = Member.Id,
+                              User = new ContactItem
                               {
-                                  Id = Member.Id,
-                                  User = new ContactItem
-                                  {
-                                      Id = User.Id,
-                                      Name = User.Name
-                                  }
-                              }).ToList(); ;
-                return admins;
-                //return db.Members.Where(memberItem => memberItem.CompanyId == CompanyId && memberItem.IsAdministrator).ToList();
-            }
+                                  Id = User.Id,
+                                  Name = User.Name
+                              }
+                          }).ToList(); ;
+            return admins;
         }
         /// <summary>
         /// Obtain all the user data as a member who managed a company or more
@@ -139,36 +125,18 @@ namespace DRD.Service
         /// <returns></returns>
         public ICollection<Member> GetAllAdminDataofUser(long adminId)
         {
-            using (var db = new ServiceContext())
-            {
-                return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
-            }
-        }
-
-        public bool changeAdministratorAccess(long memberId, bool beAdmin)
-        {
-            using (var db = new ServiceContext())
-            {
-                Member member = getMember(memberId);
-                member.IsAdministrator = beAdmin;
-
-                bool result = db.Members.Add(member).IsAdministrator;
-                db.SaveChanges();
-
-                return result;
-            }
+            using var db = new ServiceContext();
+            return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
         }
 
         public long Delete(long memberId)
         {
-            using (var db = new ServiceContext())
-            {
-                Member member = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
-                member.IsActive = false;
-                db.SaveChanges();
+            using var db = new ServiceContext();
+            Member member = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
+            member.IsActive = false;
+            db.SaveChanges();
 
-                return member.UserId;
-            }
+            return member.Id;
         }
         /// <summary>
         /// SAVE member data requested by company to a user
@@ -181,9 +149,8 @@ namespace DRD.Service
             using var db = new ServiceContext();
             var member = new Member(userId, companyId, false, true);
             while (CheckIdIsExist(member.Id))
-            {
                 member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-            }
+
             db.Members.Add(member);
             db.SaveChanges();
             return member.Id;
@@ -199,9 +166,8 @@ namespace DRD.Service
             using var db = new ServiceContext();
             var member = new Member(userId, companyId, true, false);
             while (CheckIdIsExist(member.Id))
-            {
                 member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
-            }
+
             db.Members.Add(member);
             db.SaveChanges();
             return member.Id;
@@ -215,26 +181,28 @@ namespace DRD.Service
         /// <returns></returns>
         public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
         {
-            List<AddMemberResponse> retVal = new List<AddMemberResponse>();
+            System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ emails);
+            List<AddMemberResponse> returnValue = new List<AddMemberResponse>();
             string[] listOfEmail = emails.Split(',');
             using var db = new ServiceContext();
-            if (!checkIsAdmin(userId, companyId) && !checkIsOwner(userId, companyId))
+            if (!CheckIsAdmin(userId, companyId) && !CheckIsOwner(userId, companyId))
             {
                 // user editting member is not administrator or owner
-                retVal.Add(new AddMemberResponse("", 0, "", -1, ""));
+                returnValue.Add(new AddMemberResponse("", 0, "", -1, ""));
             }
             else
             {
-                CompanyService cpserv = new CompanyService();
-                SmallCompanyData companyInviting = cpserv.GetCompany(companyId);
+                companyService = new CompanyService();
+                SmallCompanyData companyInviting = companyService.GetCompany(companyId);
                 foreach (var emailItem in listOfEmail)
                 {
                     var email = emailItem.Replace(" ", string.Empty);
                     User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
                     if (target == null)
                     {
+                        System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ email);
                         // user that wanted to invite is not found (not registered)
-                        retVal.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
+                        returnValue.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
                         continue;
                     }
 
@@ -244,7 +212,7 @@ namespace DRD.Service
                     if (existingMember == null)
                     {
                         long memberId = AddMemberToCompany(target.Id, companyInviting.Id);
-                        retVal.Add(new AddMemberResponse(email, memberId, target.Name, 1, companyInviting.Name));
+                        returnValue.Add(new AddMemberResponse(email, memberId, target.Name, 1, companyInviting.Name));
                         continue;
                     }
                     //exist but company hasn't accepeted yet
@@ -253,20 +221,20 @@ namespace DRD.Service
                         existingMember.IsCompanyAccept = true;
                         existingMember.JoinedAt = DateTime.Now;
                         db.SaveChanges();
-                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                        returnValue.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
                         continue;
                     }
                     //exist and already accepted by both side
                     if (existingMember.IsMemberAccept)
                     {
-                        retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
+                        returnValue.Add(new AddMemberResponse(email, existingMember.Id, target.Name, -2, companyInviting.Name));
                         continue;
                     }
                     //exist and not accepted yet by user
-                    retVal.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
+                    returnValue.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
                 }
             }
-            return retVal;
+            return returnValue;
         }
 
         /// <summary>
@@ -387,7 +355,7 @@ namespace DRD.Service
         /// <param name="userId"></param>
         /// <param name="topCriteria"></param>
         /// <returns></returns>
-        public int FindMembersCountAll(long userId, string topCriteria)
+        public int CountMembers(long userId, string topCriteria)
         {
             // top criteria
             string[] tops = new string[] { };
@@ -527,6 +495,7 @@ namespace DRD.Service
         }
         public MemberList BecomeAdmin(long companyId, ICollection<MemberItem> adminCandidate)
         {
+            subscriptionService = new SubscriptionService();
             MemberList data = new MemberList();
             int totalAdmin = 0;
 

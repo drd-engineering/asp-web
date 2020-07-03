@@ -388,7 +388,7 @@
             }
             $scope.getMembersCountAll = function (criteria) {
                 $scope.paging = [];
-                $http.post('/Member/getMembersCountAll', { criteria: criteria }).then(function (response) {
+                $http.post('/Member/CountMembers', { criteria: criteria }).then(function (response) {
                     if (response.data) {
                         var jumlahData = response.data;
                         var jumlahPage = Math.ceil(jumlahData / $scope.totalItemPerPage);

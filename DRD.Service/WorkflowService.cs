@@ -149,6 +149,8 @@ namespace DRD.Service
             else
                 criteria = "";
 
+            System.Diagnostics.Debug.WriteLine(criteria);
+
             //call db objects
             using var db = new ServiceContext();
             var result =
