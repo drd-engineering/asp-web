@@ -23,7 +23,6 @@ namespace DRD.Models.API
         // Reverse navigation
         public virtual System.Collections.Generic.ICollection<RotationNodeInboxData> RotationNodes { get; set; } // RotationNode.FK_RotationNode_RotationNode
         public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_RotationNode
-        public virtual System.Collections.Generic.ICollection<RotationNodeUpDocInboxData> RotationNodeUpDocs { get; set; } // RotationNodeUpDoc.FK_RotationNodeUpDoc_RotationNode
 
         // Foreign keys
         public virtual UserInboxData User { get; set; } // FK_RotationNode_Member
@@ -38,9 +37,24 @@ namespace DRD.Models.API
         {
             RotationNodes = new System.Collections.Generic.List<RotationNodeInboxData>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
-            RotationNodeUpDocs = new System.Collections.Generic.List<RotationNodeUpDocInboxData>();
             User = new UserInboxData();
             WorkflowNode = new WorkflowNodeInboxData();
+        }
+        public RotationNodeInboxData(RotationNode rotationNodeDb)
+        {
+            Id = rotationNodeDb.Id;
+            CreatedAt = rotationNodeDb.CreatedAt;
+            Status = rotationNodeDb.Status;
+            WorkflowNodeId = rotationNodeDb.WorkflowNodeId;
+            PrevWorkflowNodeId = rotationNodeDb.PreviousWorkflowNodeId;
+            SenderRotationNodeId = rotationNodeDb.SenderRotationNodeId;
+            User = new UserInboxData(rotationNodeDb.User);
+            WorkflowNode = new WorkflowNodeInboxData(rotationNodeDb.WorkflowNode);
+            RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
+            foreach(RotationNodeDoc rndDb in rotationNodeDb.RotationNodeDocs)
+            {
+                RotationNodeDocs.Add(new RotationNodeDocInboxData(rndDb));
+            }
         }
     }
 }

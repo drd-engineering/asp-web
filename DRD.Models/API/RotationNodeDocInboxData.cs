@@ -9,13 +9,18 @@
         public long RotationNodeId { get; set; }
         // Foreign keys
         public virtual DocumentInboxData Document { get; set; } // FK_RotationNodeDoc_Document
-        public virtual RotationNodeInboxData RotationNode { get; set; } // FK_RotationNodeDoc_RotationNode1
 
         public RotationNodeDocInboxData()
         {
             ActionStatus = 0;
             Document = new DocumentInboxData();
-            RotationNode = new RotationNodeInboxData();
+        }
+        public RotationNodeDocInboxData(RotationNodeDoc rotationNodeDocDb)
+        {
+            Id = rotationNodeDocDb.Id;
+            ActionStatus = rotationNodeDocDb.ActionStatus;
+            DocumentId = rotationNodeDocDb.DocumentId;
+            Document = new DocumentInboxData(rotationNodeDocDb.Document);
         }
     }
 }

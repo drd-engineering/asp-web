@@ -34,7 +34,7 @@ namespace DRD.Service
                                 Name = company.Name,
                                 OwnerId = company.OwnerId,
                                 OwnerName = user.Name,
-                                       Role = member.IsMemberAccept ? (member.IsAdministrator ? Constant.MemberRole.Administrator.ToString() : Constant.MemberRole.Member.ToString()) : Constant.MemberRole.Not_Member.ToString(),
+                                       Role = member.IsMemberAccept ? (member.IsAdministrator ? ConstantModel.MemberRole.Administrator.ToString() : ConstantModel.MemberRole.Member.ToString()) : ConstantModel.MemberRole.Not_Member.ToString(),
                                 Status = member.IsMemberAccept ? (int)Constant.InivitationStatus.Connected : (int)Constant.InivitationStatus.Pending
                             }).ToList();
                 if (pendingData != null)
@@ -53,7 +53,7 @@ namespace DRD.Service
 
                 if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
-                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
+                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
                 if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
 
 
@@ -70,7 +70,7 @@ namespace DRD.Service
                 var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
                 if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
-                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, companyId, -1, addAfterSubscriptionValid: true);
+                var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, companyId, -1, addAfterSubscriptionValid: true);
                 if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
 
                 member.IsActive = false;

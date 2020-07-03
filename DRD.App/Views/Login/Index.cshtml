@@ -115,7 +115,7 @@
         var myApp = angular.module('drdApp', ['ui.bootstrap'])
 
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            ////////////  INITIATE DATA  /////////////////
+            ////////////////////////////  INITIATE DATA  ////////////////////////////
             angular.element(document).ready(function () {
                 $(".styled, .multiselect-container input").uniform({
                     radioClass: 'choice'
@@ -138,7 +138,7 @@
                     $scope.isPasswordShown = false;
                 }
             }
-            ////////////  LOGIN  /////////////////
+            ////////////////////////////  LOGIN  ////////////////////////////
             $scope.isValidForm = function (theForm) {
                 var isvalid = theForm.$valid;
                 return isvalid;

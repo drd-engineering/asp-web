@@ -25,22 +25,34 @@
         public System.DateTime? UpdatedAt { get; set; }
 
         public virtual System.Collections.Generic.ICollection<DocumentAnnotationsInboxData> DocumentAnnotations { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
-        public virtual System.Collections.Generic.ICollection<RotationNodeDocInboxData> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
         public virtual System.Collections.Generic.ICollection<DocumentUserInboxData> DocumentUsers { get; set; }
         public DocumentUserInboxData DocumentUser { get; set; }
-        public Rotation Rotations { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
-
-        // FK
-        public Company Company { get; set; } //FK to Company
-        public User User { get; set; } //FK to User
-        public Rotation Rotation { get; set; }
-
+        
         public DocumentInboxData()
         {
-            //DocumentUser = new DocumentUser();
             DocumentAnnotations = new System.Collections.Generic.List<DocumentAnnotationsInboxData>();
-            RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();
             DocumentUsers = new System.Collections.Generic.List<DocumentUserInboxData>();
+        }
+        public DocumentInboxData(Document documentDb)
+        {
+            Id = documentDb.Id;
+            Extension = documentDb.Extension;
+            FileUrl = documentDb.FileUrl;
+            FileName = documentDb.FileName;
+            FileSize = documentDb.FileSize;
+            IsCurrent = documentDb.IsCurrent;
+            CreatedAt = documentDb.CreatedAt;
+            UpdatedAt = documentDb.CreatedAt;
+            DocumentUsers = new System.Collections.Generic.List<DocumentUserInboxData>();
+            foreach (var documentUserDb in documentDb.DocumentUsers)
+            {
+                DocumentUsers.Add(new DocumentUserInboxData(documentUserDb));
+            }
+            DocumentAnnotations = new System.Collections.Generic.List<DocumentAnnotationsInboxData>();
+            foreach (var documentAnnotationDb in documentDb.DocumentAnnotations)
+            {
+                DocumentAnnotations.Add(new DocumentAnnotationsInboxData(documentAnnotationDb));
+            }
         }
     }
 }

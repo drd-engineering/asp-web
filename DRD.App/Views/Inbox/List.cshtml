@@ -84,7 +84,7 @@
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
         myApp.controller("drdController", function ($scope, $location, $http, $filter) {
-            ////////////  INITIATE DATA  /////////////////
+            ////////////////////////////  INITIATE DATA  ////////////////////////////
             $scope.paging = [];
             $scope.criteria = "";
             $scope.page = 1;
@@ -109,7 +109,7 @@
             $scope.openInbox = function (id) {
                 location.href = "/inbox?id=" + id;
             }
-            ////////////  GET INBOX DATA BASED ON CATEGORY  /////////////////
+            ////////////////////////////  GET INBOX DATA BASED ON CATEGORY  ////////////////////////////
             $scope.getInboxes = function (criteria, page, totalItemPerPage) {
                 $http.post('@Url.Action("GetInboxes", "Inbox")', { criteria: criteria, page: page, totalItemPerPage: totalItemPerPage }).then(function (response) {
                     if (response.data) {

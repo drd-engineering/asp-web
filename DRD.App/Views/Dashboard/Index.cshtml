@@ -24,7 +24,7 @@
             <div class="row">
 
                 <!-- DASHBOARD - ROTATION -->
-                <div class="col-sm-12 col-md-8 col-lg-6" id="dashboard-rotation">
+                <div class="col-sm-12 col-md-8 col-lg-5" id="dashboard-rotation">
                     <div class="panel highlight-container">
                         <div class="highlight-card">
                             <!-- HEADER -->
@@ -313,7 +313,7 @@
             $scope.openInbox = function (id) {
                 location.href = "/inbox?id=" + id;
             }
-            /////////////////// TAG MANIPULATION ////////////////////////////
+            ////////////////////////////     TAG MANIPULATION     ////////////////////////////
             $scope.backCount = 0;
             $("#newTag").bind("paste", function (e) {
                 // Short pause to wait for paste to complete
@@ -386,7 +386,7 @@
                 $scope.backCount = 0;
                 $scope.getDashboardRotationStatus();
             }
-            /////////////////// END TAG MANIPULATION ////////////////////////////
+            ////////////////////////////     END TAG MANIPULATION     ////////////////////////////
             /*--------------------------------------------------------------
             Dashboard Rotation Status
             --------------------------------------------------------------*/

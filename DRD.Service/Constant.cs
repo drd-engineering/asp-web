@@ -34,21 +34,12 @@ namespace DRD.Service
             BAD_REQUEST = 500
         }
 
-
         public enum InivitationStatus
         {
             Connected = 0,
             Pending = 1,
             Inactive = 2,
             ERROR_NOT_FOUND = 404
-        }
-
-        public enum MemberRole
-        {
-            Not_Member = 0,
-            Member = 1,
-            Administrator = 2,
-            Owner = 3
         }
 
         public enum WorkflowStatus
@@ -77,24 +68,6 @@ namespace DRD.Service
             Expired = 97
         }
 
-        public enum AccessType
-        {
-            //restricted, cannot access at all
-            noAccess = 0,
-            //read only access
-            readOnly = 1,
-            //can access page
-            responsible = 2,
-            //fully access granted if there are multiple feature access in a pages
-            fullAccess = 3
-        }
-        public enum BusinessPackageItem
-        {
-            Administrator = 0,
-            Member = 1,
-            Rotation_Started = 4,
-            Storage = 99
-        }
         public enum BusinessUsageStatus
         {
             OK = 200,
@@ -114,40 +87,5 @@ namespace DRD.Service
             SERVER_ERROR = 3
 
         }
-
-        public enum SubscriptionType : byte
-        {
-            PERSONAL = 1,
-            BUSINESS = 0
-        }
-
-        public enum EnumActivityAction
-        {
-            SUBMIT = 1,
-            REJECT = 2,
-            REVISI = 4,
-            ALTER = 8
-        }
-        public enum EnumDocumentAction
-        {
-            SIGN = 1,
-            REVISI = 2,
-            VIEW = 4,
-            PRINT = 8,
-            DOWNLOAD = 16,
-            PRIVATESTAMP = 32,
-            REMOVE = 64,
-        }
-        public enum EnumElementTypeId
-        {
-            PEN = 1,
-            HIGHLIGHTER = 2,
-            TEXT = 3,
-            SIGNATURE = 4,
-            INITIAL = 5,
-            STAMP = 6,
-            PRIVATESTAMP = 7
-        }
-
     }
 }

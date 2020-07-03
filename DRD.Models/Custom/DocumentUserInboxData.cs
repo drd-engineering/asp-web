@@ -10,14 +10,19 @@
         public int PrintCount { get; set; } //Counter for user print call
         public int DownloadCount { get; set; } //Counter for user Download call
 
-        // Foreign keys
-        public virtual Document Document { get; set; } // FK_DocumentMember_Document
-        public virtual User User { get; set; } // FK_DocumentMember_Member
-
         public DocumentUserInboxData()
         {
             ActionPermission = 0;
             ActionStatus = 0;
+        }
+        public DocumentUserInboxData(DocumentUser documentUserDb)
+        {
+            Id = documentUserDb.Id;
+            DocumentId = documentUserDb.DocumentId;
+            UserId = documentUserDb.UserId;
+            ActionStatus = documentUserDb.ActionStatus;
+            ActionPermission = documentUserDb.ActionPermission;
+            UserId = documentUserDb.UserId;
         }
     }
 }

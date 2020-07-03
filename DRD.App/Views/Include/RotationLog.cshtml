@@ -2,15 +2,13 @@
 @{
     Layout = null;
 }
-
-
 <br />
 <div style="border-bottom:dotted;border-bottom-width:1px;"></div>
 <div class="table-responsive" ng-repeat="x in rotationNodes">
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId && x.Status==0?(x.Id==model.RotationNodeId?'#FCD097': '#AFC9D8'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
-                <img alt="" src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;" ng-click="showIdentityImage(x.User)" />
+                <img alt="" src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;"/>
             </td>
             <td class="style-date" style="padding:10px">{{convertJsonDate(x.CreatedAt) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
             <td class="style-name" style="padding:10px">
@@ -62,15 +60,5 @@
             </td>
             <td class="style-status" rowspan="2" style="padding:10px"><label class="status {{SetItemClass(x.Status)}}">{{getStatusName(x.Status,x.WorkflowNodeId)}}</label></td>
         </tr>
-        @*<tr>
-                <td class="style-blank">&nbsp;</td>
-                <td class="style-remark">
-                    <div ng-repeat="xx in x.RotationNodeRemarks">
-                        <span class="style-date-remark"><u>{{convertJsonDate(xx.DateStamp) | date:'dd/MM/yyyy HH:mm:ss'}}</u>:</span>
-                        <i>{{xx.Remark}}</i><br />
-                    </div>
-                    <label class="style-note">{{x.Note}}</label>
-                </td>
-            </tr>*@
     </table>
 </div>

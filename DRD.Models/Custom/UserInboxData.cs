@@ -40,5 +40,17 @@ namespace DRD.Models
 
             return (Math.Abs(longRand % (maximumValue - minimumValue)) + minimumValue);
         }
+        public UserInboxData(User userDb)
+        {
+            Id = userDb.Id;
+            EncryptedUserId = UtilitiesModel.Encrypt(Id.ToString());
+            Name = userDb.Name;
+            ImageProfile = userDb.ProfileImageFileName;
+            ImageInitials = userDb.InitialImageFileName;
+            ImageSignature = userDb.SignatureImageFileName;
+            ImageStamp = userDb.StampImageFileName;
+            ImageKtp1 = userDb.KTPImageFileName;
+            ImageKtp2 = userDb.KTPVerificationImageFileName;
+        }
     }
 }

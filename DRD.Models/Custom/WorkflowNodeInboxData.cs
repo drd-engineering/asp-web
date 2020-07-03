@@ -43,5 +43,10 @@ namespace DRD.Models
             WorkflowNodeLinks = new System.Collections.Generic.List<WorkflowNodeLink>();
             WorkflowNodeLinkTos = new System.Collections.Generic.List<WorkflowNodeLink>();
         }
+        public WorkflowNodeInboxData(WorkflowNode wfnDb)
+        {
+            Id = wfnDb.Id;
+            Caption = wfnDb.Caption;
+        }
     }
 }

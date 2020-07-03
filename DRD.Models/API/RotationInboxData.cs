@@ -7,6 +7,7 @@ namespace DRD.Models.API
         public long Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Subject (length: 100)
         public int Status { get; set; } // Status (length: 2)
+        public int RotationStatus { get; set; } // 
         public long? CreatorId { get; set; } // CreatorId
         public long? CompanyId { get; set; } // filled only if rotation started
         public long FirstNodeId { get; set; }
@@ -32,9 +33,6 @@ namespace DRD.Models.API
         public virtual Workflow Workflow { get; set; } // FK_Rotation_Workflow
         public virtual SmallCompanyData CompanyInbox { get; set; } // FK_Rotation_Company
         public ICollection<string> Tags { get; set; } // Tags
-        //[ForeignKey("UserId")]
-        //public virtual User User { get; set; } // FK_Rotation_Member
-
         public RotationInboxData()
         {
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDocInboxData>();

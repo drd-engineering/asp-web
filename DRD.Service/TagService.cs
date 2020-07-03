@@ -7,16 +7,14 @@ namespace DRD.Service
 {
     public class TagService
     {
-        public ICollection<Tag> GetTags(long rotationId)
+        public ICollection<string> GetTagsAsString(long rotationId)
         {
-            using (var db = new ServiceContext())
-            {
-                var result = (from tag in db.Tags
-                              join tagitem in db.TagItems on tag.Id equals tagitem.TagId
-                              where tagitem.RotationId == rotationId
-                              select tag).ToList();
-                return result;
-            }
+            using var db = new ServiceContext();
+            var result = (from tag in db.Tags
+                            join tagitem in db.TagItems on tag.Id equals tagitem.TagId
+                            where tagitem.RotationId == rotationId
+                            select tag.Name).ToList();
+            return result;
         }
     }
 }

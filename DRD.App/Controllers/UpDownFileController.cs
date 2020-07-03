@@ -89,7 +89,7 @@ namespace DRD.App.Controllers
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
 
                 // check storage quota
-                Constant.BusinessUsageStatus SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, newDocument.FileSize, true);
+                Constant.BusinessUsageStatus SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Storage, companyId, newDocument.FileSize, true);
                 var status = SubscriptionStatus.ToString();
 
                 if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
@@ -222,7 +222,7 @@ namespace DRD.App.Controllers
                 if (file.ContentLength > 0)
                 {
                     // check storage quota
-                    var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Storage, companyId, file.ContentLength);
+                    var SubscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Storage, companyId, file.ContentLength);
                     result.Status = SubscriptionStatus.ToString();
 
                     if (!SubscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))

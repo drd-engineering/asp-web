@@ -1,5 +1,4 @@
 ﻿using DRD.Models.API;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DRD.Models
 {
@@ -35,8 +34,6 @@ namespace DRD.Models
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated
         public long DocumentId { set; get; }
         public int ElementTypeId { set; get; }
-        [ForeignKey("DocumentId")]
-        public virtual DocumentInboxData Document { get; set; } // FK_DocumentAnnotate_Document
         public Element Element { get; set; }
 
         public DocumentAnnotationsInboxData()
@@ -51,35 +48,37 @@ namespace DRD.Models
             Flag = 0;
             // Annotate = new JsonAnnotate();
         }
-        public DocumentAnnotationsInboxData(DocumentAnnotation item)
+        public DocumentAnnotationsInboxData(DocumentAnnotation documentAnnotationDb)
         {
-            this.Id = item.Id;
-            this.Page = item.Page;
-            this.LeftPosition = item.LeftPosition;
-            this.TopPosition = item.TopPosition;
-            this.WidthPosition = item.WidthPosition;
-            this.HeightPosition = item.HeightPosition;
-            this.Color = item.Color;
-            this.BackColor = item.BackColor;
-            this.Text = item.Text;
-            this.Unknown = item.Unknown;
-            this.Rotation = item.Rotation;
-            this.ScaleX = item.ScaleX;
-            this.ScaleY = item.ScaleY;
-            this.TransitionX = item.TransitionX;
-            this.TransitionY = item.TransitionY;
-            this.StrokeWidth = item.StrokeWidth;
-            this.Opacity = item.Opacity;
-            this.CreatorId = item.CreatorId;
-            this.UserId = item.UserId;
-            this.Flag = item.Flag;
-            this.AssignedAnnotationCode = item.AssignedAnnotationCode;
-            this.AssignedAt = item.AssignedAt;
-            this.AssignedAnnotationImageFileName = item.AssignedAnnotationImageFileName;
-            this.EmailOfUserAssigned = item.EmailOfUserAssigned;
-            this.DocumentId = item.DocumentId;
-            this.ElementTypeId = item.ElementTypeId;
-            this.Element = item.Element;
+            this.Id = documentAnnotationDb.Id;
+            this.Page = documentAnnotationDb.Page;
+            this.LeftPosition = documentAnnotationDb.LeftPosition;
+            this.TopPosition = documentAnnotationDb.TopPosition;
+            this.WidthPosition = documentAnnotationDb.WidthPosition;
+            this.HeightPosition = documentAnnotationDb.HeightPosition;
+            this.Color = documentAnnotationDb.Color;
+            this.BackColor = documentAnnotationDb.BackColor;
+            this.Text = documentAnnotationDb.Text;
+            this.Unknown = documentAnnotationDb.Unknown;
+            this.Rotation = documentAnnotationDb.Rotation;
+            this.ScaleX = documentAnnotationDb.ScaleX;
+            this.ScaleY = documentAnnotationDb.ScaleY;
+            this.TransitionX = documentAnnotationDb.TransitionX;
+            this.TransitionY = documentAnnotationDb.TransitionY;
+            this.StrokeWidth = documentAnnotationDb.StrokeWidth;
+            this.Opacity = documentAnnotationDb.Opacity;
+            this.CreatorId = documentAnnotationDb.CreatorId;
+            this.UserId = documentAnnotationDb.UserId;
+            this.Flag = documentAnnotationDb.Flag;
+            this.AssignedAnnotationCode = documentAnnotationDb.AssignedAnnotationCode;
+            this.AssignedAt = documentAnnotationDb.AssignedAt;
+            this.AssignedAnnotationImageFileName = documentAnnotationDb.AssignedAnnotationImageFileName;
+            this.EmailOfUserAssigned = documentAnnotationDb.EmailOfUserAssigned;
+            this.DocumentId = documentAnnotationDb.DocumentId;
+            this.ElementTypeId = documentAnnotationDb.ElementTypeId;
+            this.Element = documentAnnotationDb.Element;
+            this.CreatedAt = documentAnnotationDb.CreatedAt;
+            this.UpdatedAt = documentAnnotationDb.UpdatedAt;
         }
     }
 }

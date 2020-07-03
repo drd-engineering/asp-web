@@ -245,7 +245,7 @@
             }
         });
         myApp.controller("drdController", function ($scope, $sce, Upload, $location, $http, $filter) {
-            ////////////  INITIATE DATA  /////////////////
+            ////////////////////////////  INITIATE DATA  ////////////////////////////
             $scope.isLoading = true;
             $scope.model = {};
             $scope.wizarno = 'product';
@@ -278,7 +278,7 @@
             $scope.initData = function () {
             }
             $scope.finishLoading = function () { }
-            ////////////  SAVE SIGN DRAW  /////////////////
+            ////////////////////////////  SAVE SIGN DRAW  ////////////////////////////
             $scope.signatureDone = function(data) {
                 $("#modal_signature_pad").modal("hide");
                 if (signatureNo==0)
@@ -350,7 +350,7 @@
                 var blob = new Blob(byteArrays, {type: contentType});
                 return blob;
             }
-            ////////////  GET USER PROFILE  /////////////////
+            ////////////////////////////  GET USER PROFILE  ////////////////////////////
             $scope.getUserProfile = function () {
                 $http.get('@Url.Action("GetProfileUser", "Profile")').then(function (response)
                 {
@@ -380,7 +380,7 @@
                 signatureNo=idx;
                 $("#modal_signature_pad").modal("show");
             }
-            ////////////  UPLOAD IMAGE FILE  /////////////////
+            ////////////////////////////  UPLOAD IMAGE FILE  ////////////////////////////
             $scope.uploadFiles = function (idx, file, errFiles) {
                 $scope.f = file;
                 $scope.errFile = errFiles && errFiles[0];
@@ -417,7 +417,7 @@
                     showInfo("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
                 }
             }
-            ////////////  UPDATE USER PROFILE  /////////////////
+            ////////////////////////////  UPDATE USER PROFILE  ////////////////////////////
             $scope.updateUserProfile = function () {
                 if (!$scope.isValidForm($scope.userProfileForm))
                     return;
@@ -427,7 +427,7 @@
                 }
                 $scope.saveUserProfile();
             }
-            ////////////  SAVE PROFILE UPDATED  /////////////////
+            ////////////////////////////  SAVE PROFILE UPDATED  ////////////////////////////
             $scope.saveUserProfile = function () {
                 console.log($scope.model);
                 var btn = Ladda.create(document.querySelector('.btn-submit'));
@@ -456,7 +456,7 @@
                 var isvalid = theForm.$valid;
                 return isvalid;
             };
-            ////////////  PAGE SCROLLING  /////////////////
+            ////////////////////////////  PAGE SCROLLING  ////////////////////////////
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top

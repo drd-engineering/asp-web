@@ -17,14 +17,14 @@
                 <td class="push-left">
                     <img ng-src="/Images/FileType/{{x.Document.Extension}}.png" width="13" /> {{x.Document.FileName}}
                     <span style="font-size:small;color:white">
-                        <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.FlagAction,2) && !validAction(x.FlagAction,64)">completed</span>
-                        <span style="background-color:#bb2124; padding:5px;" ng-show="validAction(x.FlagAction,64)">removed</span>
-                        <span style="background-color:#f0ad4e; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,2)">revised</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,1)">signed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,32)">stamped</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,4)">viewed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,8)">printed</span>
-                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.FlagAction,64) && validAction(x.FlagAction,16)">downloaded</span>
+                        <span style="background-color:#5bc0de; padding:5px" ng-show="isCompleteRotation() && !validAction(x.ActionStatus,2) && !validAction(x.ActionStatus,64)">completed</span>
+                        <span style="background-color:#bb2124; padding:5px;" ng-show="validAction(x.ActionStatus,64)">removed</span>
+                        <span style="background-color:#f0ad4e; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,2)">revised</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,1)">signed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,32)">stamped</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,4)">viewed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,8)">printed</span>
+                        <span style="background-color:#aaaaaa; padding:5px;" ng-show="!validAction(x.ActionStatus,64) && validAction(x.ActionStatus,16)">downloaded</span>
                     </span>
                     <br />
                     <br />

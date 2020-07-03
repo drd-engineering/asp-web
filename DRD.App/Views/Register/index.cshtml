@@ -153,6 +153,7 @@
     <script type="text/javascript">
         var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap', 'ngOnlyNumberApp', 'ngFileUpload'])
         myApp.controller("drdController", function ($scope, Upload, $http, $filter) {
+            ////////////////////////////  INITIATE DATA  ////////////////////////////
             $scope.model = {};
             $scope.wizarno = 'product';
             $scope.model.Id = 0;
@@ -165,8 +166,6 @@
             $scope.subscriptionId = "";
             $scope.userNumber = "";
             $scope.aggrement = false;
-
-            ////////////  INITIATE DATA  /////////////////
             function initValues() {
             }
             angular.element(document).ready(function () {
@@ -179,7 +178,7 @@
             $scope.initData = function () {
 
             }
-            ////////////  EMAIL CHECKER  /////////////////
+            ////////////////////////////  EMAIL CHECKER ////////////////////////////
             $scope.typingTimer;
             $scope.doneTypingInterval = 500;
             $scope.checkAvailability = function (emailUser) {
@@ -198,7 +197,7 @@
                     });
                 }, $scope.doneTypingInterval);
             }
-            ////////////  COMPANY SELECTION  /////////////////
+            ////////////////////////////  COMPANY SELECTION  ////////////////////////////
             $scope.autocompleteCompany = function () {
                 $('#autocomplete-company').autocomplete({
                     lookup: $scope.companyAll ,
@@ -219,7 +218,7 @@
                     }
                 });
             }
-            ////////////  SAVE USER REGISTRATION  /////////////////
+            ////////////////////////////  SAVE USER REGISTRATION  ////////////////////////////
             $scope.saveUser = function () {
                 var btn = Ladda.create( document.querySelector( '.btn-submit' ) );
                 btn.start();
@@ -279,7 +278,7 @@
                 $("#modal_tnc").modal("hide");
                 $scope.saveUser();
             }
-            ////////////  ADDITIONAL  /////////////////
+            ////////////////////////////  ADDITIONAL  ////////////////////////////
             $scope.scrollingPage = function (id) {
                 $('html, body').animate({
                     scrollTop: $(id).offset().top

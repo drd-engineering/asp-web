@@ -534,7 +534,7 @@ namespace DRD.Service
                 totalAdmin = adminCandidate.Count;
 
             //check admin limit
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Administrator, companyId, totalAdmin, addAfterSubscriptionValid: true, reset: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Administrator, companyId, totalAdmin, addAfterSubscriptionValid: true, reset: true);
             data.status = subscriptionStatus.ToString();
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK) || adminCandidate==null)
                 return data;
