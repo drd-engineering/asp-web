@@ -84,7 +84,7 @@ namespace DRD.Service
             if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
             
             memberSearch.IsCompanyAccept = true;
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid: true);
             
             if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                 db.SaveChanges();
@@ -220,7 +220,7 @@ namespace DRD.Service
             if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
             //check subscription
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                 return subscriptionStatus.ToString();
 

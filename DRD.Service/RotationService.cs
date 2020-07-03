@@ -68,7 +68,7 @@ namespace DRD.Service
             var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
             rotationDb.Status = (int)Constant.RotationStatus.In_Progress;
             rotationDb.CompanyId = companyUsage.CompanyId;
-            rotationDb.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Constant.SubscriptionType.BUSINESS : (byte)Constant.SubscriptionType.PERSONAL;
+            rotationDb.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)ConstantModel.SubscriptionType.BUSINESS : (byte)ConstantModel.SubscriptionType.PERSONAL;
 
             // first node, node after start symbol
             var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.Source.WorkflowId == rotationDb.WorkflowId && c.Source.SymbolCode == 0).ToList();
@@ -79,7 +79,7 @@ namespace DRD.Service
             }
 
             //check rotation started limit or add when limit passed
-            var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Constant.BusinessPackageItem.Rotation_Started, rotationDb.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
+            var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Rotation_Started, rotationDb.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
 
             if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK))
             {
@@ -143,7 +143,6 @@ namespace DRD.Service
             using var db = new ServiceContext();
             return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
         }
-
         /// <summary>
         /// Obtain rotation that user has already made and search by Id of the rotation
         /// </summary>
@@ -200,8 +199,7 @@ namespace DRD.Service
                                           Name = cmpny.Name,
                                       }).FirstOrDefault();
             var tagService = new TagService();
-            var tags = tagService.GetTags(result.Id);
-            result.Tags = (from tag in tags select tag.Name).ToList();
+            result.Tags = tagService.GetTagsAsString(result.Id);
             return result;
         }
 
@@ -502,59 +500,6 @@ namespace DRD.Service
             rotationDb.UpdatedAt = DateTime.Now;
             db.SaveChanges();
             return Constant.RotationStatus.OK.ToString();
-        }
-<<<<<<< HEAD
-
-        private ActivityItem CreateActivityResult(int exitCode, long userId=0, long previousUserId=0, string rotationName="", long rotationNodeId=0, long rotationId=0, string exitStatus = null)
-        {
-            using var db = new ServiceContext();
-            var currentUserDb = db.Users.FirstOrDefault(c => c.Id == userId);
-            var previousUserDb = db.Users.FirstOrDefault(c => c.Id == previousUserId);
-            ActivityItem ret = new ActivityItem
-            {
-                RotationId = rotationId,
-                UserId = userId,
-                UserName = currentUserDb.Name,
-                Email = currentUserDb.Email,
-
-                PreviousUserId = previousUserId,
-                PreviousUserName = previousUserDb.Name,
-                PreviousEmail = previousUserDb.Email,
-
-                RotationName = rotationName,
-                RotationNodeId = rotationNodeId,
-
-                ExitCode = exitCode,
-                ExitStatus = exitStatus
-            };
-            ret.ExitStatus ??= Constant.RotationStatus.OK.ToString();
-            return ret;
-        }
-
-
-        private long GetUserId(long WorkflowNodeToId, long RotationId)
-        {
-            using var db = new ServiceContext();
-            return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
-=======
-        /// <summary>
-        /// Start the subscription to first node/activity and use the subscription
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ResponseStatus Start(long userId, long rotationId, long subscriptionId)
-        {
-            var returnItem = StartProcess(userId, rotationId, subscriptionId);
-            InboxService inboxService = new InboxService();
-            List<int> returnValue = new List<int>();
-
-            //if rotation dint exist
-            if (returnItem == null) return new ResponseStatus() { code = -6, status = "" };
-            
-            foreach (ActivityItem act in returnItem)
-                returnValue.Add(inboxService.CreateInbox(act));
-            return new ResponseStatus() { code = returnItem[0].ExitCode, status = returnItem[0].ExitStatus };
->>>>>>> f9811f412c686b6eda70b3d258c653562b01eabc
         }
     }
 }
