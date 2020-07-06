@@ -279,17 +279,19 @@ namespace DRD.Service
         public DocumentUser CreateDocumentUser(long documentId, long userId)
         {
             using var db = new ServiceContext();
-            var docUser = new DocumentUser
+            var documentUserDb = db.DocumentUsers.FirstOrDefault(u => u.UserId == userId && u.DocumentId == documentId);
+            if (documentUserDb != null) return documentUserDb;
+            var newDocumentUser = new DocumentUser
             {
                 UserId = userId,
                 DocumentId = documentId,
                 ActionPermission = 0,
                 ActionStatus = 0,
             };
-            db.DocumentUsers.Add(docUser);
+            db.DocumentUsers.Add(newDocumentUser);
             db.SaveChanges();
             // after save the value, then return value as api response data
-            return docUser;
+            return newDocumentUser;
         }
 
         public IEnumerable<DocumentItem> GetAllCompanyDocument(long companyId)

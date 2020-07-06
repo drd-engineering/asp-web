@@ -113,32 +113,16 @@ namespace DRD.Service
                 var documentUserDb = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == rotationNodeDoc.DocumentId && c.UserId == userId);
                 var rotationUserDb = db.RotationUsers.FirstOrDefault(rtUsr => rtUsr.RotationId == rotationid && rtUsr.UserId == userId);
 
-                if (documentUserDb != null)
+                if (documentUserDb == null)
                 {
-                    if (((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REMOVE) == (int)ConstantModel.EnumDocumentAction.REMOVE) ||
-                        ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REVISI) == (int)ConstantModel.EnumDocumentAction.REVISI))
-                        documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
-                    else if (documentUserDb.ActionStatus != rotationNodeDoc.ActionStatus) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId);
-                    documentUserDb.ActionStatus |= rotationNodeDoc.ActionStatus;
-                    // Also Document permission updating related to Rotation User that have permission
-                    documentUserDb.ActionPermission |= rotationUserDb.ActionPermission;
+                    documentUserDb = documentService.CreateDocumentUser(rotationNodeDoc.DocumentId, userId);
                 }
-                else
-                {
-                    documentUserDb = new DocumentUser
-                    {
-                        DocumentId = rotationNodeDoc.DocumentId,
-                        UserId = userId
-                    };
-                    if (((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REMOVE) == (int)ConstantModel.EnumDocumentAction.REMOVE) ||
-                        ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REVISI) == (int)ConstantModel.EnumDocumentAction.REVISI))
-                        documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
-                    else if (rotationNodeDoc.ActionStatus != 0) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId);
-                    documentUserDb.ActionPermission = 0;
-                    // Also Document permission updating related to Rotation User that have permission
-                    documentUserDb.ActionPermission |= rotationUserDb.ActionPermission;
-                    db.DocumentUsers.Add(documentUserDb);
-                }
+                if (((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REMOVE) == (int)ConstantModel.EnumDocumentAction.REMOVE) ||
+                    ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REVISI) == (int)ConstantModel.EnumDocumentAction.REVISI))
+                    documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
+                else if (documentUserDb.ActionStatus != rotationNodeDoc.ActionStatus) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId);
+                documentUserDb.ActionStatus |= rotationNodeDoc.ActionStatus;
+                documentUserDb.ActionPermission |= rotationUserDb.ActionPermission;
                 db.SaveChanges();
 
                 if (rotationNodeDoc.Document == null) continue;
