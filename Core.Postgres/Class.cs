@@ -620,8 +620,7 @@ namespace Core.Postgres
             modelBuilder.Entity<RotationNode>().HasData(rtn1);
             modelBuilder.Entity<RotationUser>().HasData(rtnusr1);
             modelBuilder.Entity<Inbox>().HasData(inbox1);
-            */
         }
-                */
+            */
     }
 }

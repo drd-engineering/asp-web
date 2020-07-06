@@ -129,7 +129,6 @@ namespace Core.Postgres
             {
                 new Company
                 {
-                    Id = -1,
                     Code = "SOLTC202007001",
                     Name = "PT Solobhakti Trading & Contractor",
                     Phone = "0214556372",
@@ -145,8 +144,7 @@ namespace Core.Postgres
              
             };
 
-            // Owner
-            Member member6 = new Member
+            Member member1 = new Member
             {
                 CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
@@ -156,18 +154,41 @@ namespace Core.Postgres
                 IsAdministrator = false
             };
 
+            Member member2 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[1].Id,
+                IsAdministrator = true
+            };
+            Member member3 = new Member
+            {
+                CompanyId = listOfCompanyCreated[1].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[2].Id,
+                IsAdministrator = true
+            };
+            Member member4 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[3].Id,
+                IsAdministrator = true
+            };
 
-            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,CreatedAt=DateTime.Now,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
-           
-
+            BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
             Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
-
             BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
-            
-            Contact contact1 = new Contact { ContactOwnerId = listOfUserCreated[0].Id, ContactItemId = listOfUserCreated[1].Id };
-           
+
 
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2], listOfCompanyCreated[3]);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4);
 
             modelBuilder.Entity<BusinessPackage>().HasData(package1);
             modelBuilder.Entity<Price>().HasData(price1);
