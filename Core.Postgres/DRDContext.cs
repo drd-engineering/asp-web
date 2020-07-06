@@ -123,7 +123,7 @@ namespace Core.Postgres
 
             };
 
-            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3], listOfUserCreated[4]);
+            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3]);
 
             List<Company> listOfCompanyCreated = new List<Company>
             {
@@ -165,7 +165,7 @@ namespace Core.Postgres
             };
             Member member3 = new Member
             {
-                CompanyId = listOfCompanyCreated[1].Id,
+                CompanyId = listOfCompanyCreated[0].Id,
                 IsActive = true,
                 IsCompanyAccept = true,
                 IsMemberAccept = true,
@@ -187,7 +187,7 @@ namespace Core.Postgres
             BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
 
 
-            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1], listOfCompanyCreated[2], listOfCompanyCreated[3]);
+            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0]);
             modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4);
 
             modelBuilder.Entity<BusinessPackage>().HasData(package1);
