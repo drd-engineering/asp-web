@@ -85,7 +85,14 @@ namespace DRD.Service
             OK = 1,
             NOT_FOUND = 2,
             SERVER_ERROR = 3
+        }
 
+        public enum DocumentPrintOrDownloadStatus
+        {
+            OK = 1,
+            NOT_FOUND = 2,
+            USER_HAS_NO_ACCESS = 3,
+            EXCEED_LIMIT = 4
         }
     }
 }

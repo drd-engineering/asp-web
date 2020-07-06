@@ -644,6 +644,7 @@ namespace DRD.Service
             IEnumerable<RotationNode> rotationNodesDb = db.RotationNodes.Where(item => item.RotationId == rotation.Id).OrderBy(item => item.CreatedAt).ToList();
             //if owner has access to readonly
             rotation.AccessType = rotation.CreatorId == userId ? (int)ConstantModel.AccessType.readOnly : (int)ConstantModel.AccessType.noAccess;
+            rotation.DocumentActionPermissionType = rotation.CreatorId == userId ? (int)ConstantModel.DocumentActionPermissionType.FullAccess : (int)ConstantModel.DocumentActionPermissionType.DependsOnRotationUser;
             foreach (RotationNode rotationNodeDb in rotationNodesDb)
             {
                 var newRotationNode = new RotationNodeInboxData(rotationNodeDb);

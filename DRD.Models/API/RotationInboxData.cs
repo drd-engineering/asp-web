@@ -20,6 +20,7 @@ namespace DRD.Models.API
         public long? UserId { get; set; }
         public int ActionStatus { get; set; }
         public int AccessType { get; set; }
+        public int DocumentActionPermissionType { get; set; }
         public DocumentInboxData Document { get; set; }
 
         // Document summaries

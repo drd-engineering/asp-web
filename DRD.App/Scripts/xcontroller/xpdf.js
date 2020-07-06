@@ -9,6 +9,12 @@
         STAMP: 6,
         PRIVATESTAMP: 7
     };
+    var printOrDownloadStatus = {
+        OK: 1,
+        NOT_FOUND: 2,
+        USER_HAS_NO_ACCESS: 3,
+        EXCEED_LIMIT: 4
+    };
 
 
     var annoLayerClass = "xannoLayer";
@@ -672,14 +678,14 @@
         $http.post('/document/RequestDownloadDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
             if (response.data) {
                 var val = response.data;
-                if (val == -1) {
-                    showInfo("Sorry you can't print this document, the print count is up");
+                if (val == printOrDownloadStatus.EXCEED_LIMIT) {
+                    alert("Sorry you can't download this document, the download count is up");
                     return;
-                } else if (val == -2) {
-                    showInfo("Sorry you can't print this document, the document has expired");
+                } else if (val == printOrDownloadStatus.NOT_FOUND) {
+                    alert("Sorry you can't download this document, the document has removed or not found");
                     return;
-                } else if (val == -4) {
-                    showInfo("Sorry you can't print this document, there is an error");
+                } else if (val == printOrDownloadStatus.USER_HAS_NO_ACCESS) {
+                    alert("Sorry you can't download this document, you don't have permission to download this document");
                     return;
                 }
                 insertImgNo = 0;
@@ -692,17 +698,18 @@
         });        
     }
     $scope.clickPrint = function () {
+        console.log($scope.defaultDocumentName);
         $http.post('/document/RequestPrintDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
             if (response.data) {
                 var val = response.data;
-                if (val == -1) {
-                    showInfo("Sorry you can't print this document, the print count is up");
+                if (val == printOrDownloadStatus.EXCEED_LIMIT) {
+                    alert("Sorry you can't print this document, the print count is up");
                     return;
-                } else if (val == -2) {
-                    showInfo("Sorry you can't print this document, the document has expired");
+                } else if (val == printOrDownloadStatus.NOT_FOUND) {
+                    alert("Sorry you can't print this document, the document has removed or not found");
                     return;
-                } else if (val == -4) {
-                    showInfo("Sorry you can't print this document, there is an error");
+                } else if (val == printOrDownloadStatus.USER_HAS_NO_ACCESS) {
+                    alert("Sorry you can't print this document, you don't have permission to print this document");
                     return;
                 }
                 insertImgNo = 0;

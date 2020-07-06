@@ -773,66 +773,75 @@ namespace DRD.Service
 
         public int RequestDownloadDocument(string docName, long userId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var documentDb = db.Documents.FirstOrDefault(c => c.FileUrl.Contains(docName) && c.IsCurrent);
+            if (documentDb == null)
+                return (int)Constant.DocumentPrintOrDownloadStatus.NOT_FOUND;
+            // check if user login is creator of rotation
+            var rotationDb = db.Rotations.FirstOrDefault(r => r.Id == documentDb.RotationId);
+            if (rotationDb != null)
             {
-                var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
-                if (doc == null)
-                    return -4;
-                // Harus di improve lagi untuk tau status saat ini
-                // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
-                var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
-                if (docMem == null)
-                    return -4;
-                // calc from rotation is completed
-                // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
-                //    return -3;
-                if ((docMem.ActionPermission & (int)ConstantModel.EnumDocumentAction.DOWNLOAD) == (int)ConstantModel.EnumDocumentAction.DOWNLOAD)
-                    return -3;
-
-                // out of max // There may be a race condition
-                if (docMem.PrintCount + 1 > doc.MaximumPrintPerUser)
-                    return -1;
-
-                docMem.PrintCount++;
-                db.SaveChanges();
-
-                return 1;
+                if (rotationDb.CreatorId == userId)
+                    return (int)Constant.DocumentPrintOrDownloadStatus.OK;
             }
+            var rotationUserDb = db.RotationUsers.FirstOrDefault(r => r.UserId == userId && r.RotationId == documentDb.RotationId);
+            if (rotationUserDb == null)
+                return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
+            // calc from rotation is completed
+            // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
+            //    return -3;
+            if ((rotationUserDb.ActionPermission & (int)ConstantModel.EnumDocumentAction.DOWNLOAD) != (int)ConstantModel.EnumDocumentAction.DOWNLOAD)
+                return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
+
+            // out of max // There may be a race condition
+            var documentUserDb = db.DocumentUsers.FirstOrDefault(d => d.DocumentId == documentDb.Id && d.UserId == userId);
+            if ((documentDb.MaximumDownloadPerUser!= 0) && (documentUserDb.DownloadCount+ 1 > documentDb.MaximumDownloadPerUser))
+                return (int)Constant.DocumentPrintOrDownloadStatus.EXCEED_LIMIT;
+
+            documentUserDb.DownloadCount++;
+            db.SaveChanges();
+
+            return (int)Constant.DocumentPrintOrDownloadStatus.OK;
         }
 
         /// <summary>
-        /// Requesting to print document, if user have permission and not out of limit, so the request return int 1 as status OK, also will save print counter
+        /// REQUEST to print document, if user have permission and not out of limit, so the request return int 1 as status OK, also will save print counter
         /// </summary>
         /// <param name="docName"></param>
-        /// <param name="memberId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         public int RequestPrintDocument(string docName, long userId)
         {
-            using (var db = new ServiceContext())
+            using var db = new ServiceContext();
+            var documentDb = db.Documents.FirstOrDefault(c => c.FileUrl.Contains(docName) && c.IsCurrent);
+            if (documentDb == null)
+                return (int)Constant.DocumentPrintOrDownloadStatus.NOT_FOUND;
+            // check if user login is creator of rotation
+            var rotationDb = db.Rotations.FirstOrDefault(r => r.Id == documentDb.RotationId);
+            if (rotationDb != null)
             {
-                var doc = db.Documents.FirstOrDefault(c => c.FileUrl.Equals(docName));
-                if (doc == null)
-                    return -4;
-                // Harus di improve lagi untuk tau status saat ini
-                // var rot = db.RotationNodeDocs.FirstOrDefault(c => c.DocumentId == doc.Id);
-                var docMem = db.DocumentUsers.FirstOrDefault(c => c.DocumentId == doc.Id && c.UserId == userId);
-                if (docMem == null)
-                    return -4;
-                // calc from rotation is completed
-                // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
-                //    return -3;
-                if ((docMem.ActionPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
-                    return -3;
-
-                // out of max // There may be a race condition
-                if (docMem.PrintCount + 1 > doc.MaximumPrintPerUser)
-                    return -1;
-
-                docMem.PrintCount++;
-                db.SaveChanges();
-
-                return 1;
+                if (rotationDb.CreatorId == userId)
+                    return (int)Constant.DocumentPrintOrDownloadStatus.OK;
             }
+            var rotationUserDb = db.RotationUsers.FirstOrDefault(r => r.UserId == userId && r.RotationId == documentDb.RotationId);
+            if (rotationUserDb == null)
+                return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
+            // calc from rotation is completed
+            // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
+            //    return -3;
+            System.Diagnostics.Debug.WriteLine(rotationUserDb.ActionPermission);
+            if ((rotationUserDb.ActionPermission & (int)ConstantModel.EnumDocumentAction.PRINT) != (int)ConstantModel.EnumDocumentAction.PRINT)
+                return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
+
+            // out of max // There may be a race condition
+            var documentUserDb = db.DocumentUsers.FirstOrDefault(d => d.DocumentId == documentDb.Id && d.UserId == userId);
+            if ((documentDb.MaximumPrintPerUser != 0) && (documentUserDb.PrintCount + 1 > documentDb.MaximumPrintPerUser))
+                return (int)Constant.DocumentPrintOrDownloadStatus.EXCEED_LIMIT;
+
+            documentUserDb.PrintCount++;
+            db.SaveChanges();
+
+            return (int)Constant.DocumentPrintOrDownloadStatus.OK;
         }
     }
 }

@@ -180,6 +180,7 @@
             $scope.master = {};
             $scope.model.IsActive = true;
             $scope.model.accessType = 0;
+            $scope.model.DocumentActionPermissionType = 0;
             $scope.model.Image = "no_picture.png";
             $scope.docFileName = "";
             $scope.fileTypeImage = "no_document.png";
@@ -252,6 +253,7 @@
                     $scope.model.ActionStatus = product.ActionStatus;
                     $scope.model.SubscriptionType = product.SubscriptionType;
                     $scope.model.accessType = product.AccessType;
+                    $scope.model.DocumentActionPermissionType = product.DocumentActionPermissionType;
                     $scope.sumDocuments = product.SumRotationNodeDocs;
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
@@ -316,8 +318,14 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var permission = arg.Document.DocumentUser.ActionPermission;
-                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload($scope.isCompleteRotation() && ((permission & 16) == 16) && ((arg.ActionStatus & 64) != 64));
-                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint($scope.isCompleteRotation() && ((permission & 8) == 8) && ((arg.ActionStatus & 64) != 64));
+                iframe.contentWindow.angular.element("#xpdfController").scope().showDownload
+                    (
+                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ( $scope.model.DocumentActionPermissionType == 2 || ((permission & 16) == 16))
+                    );
+                iframe.contentWindow.angular.element("#xpdfController").scope().showPrint
+                    (
+                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ( $scope.model.DocumentActionPermissionType == 2 || ((permission & 8) == 8))
+                    );
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
                 // used for print request and download request in document viewer.
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
@@ -804,7 +812,7 @@
                 if (!pdfCanClose) {
                     swal({
                         title: "Information",
-                        text: "There is still unassign member in Document Annotation",
+                        text: "You need to assign user to SIgnature, Initial, or Stamp. Double click on the user icon to assign",
                         type: "warning",
                         showCancelButton: false,
                         closeOnConfirm: true,
@@ -828,18 +836,6 @@
                 $scope.documents = [];
                 $("#modal_select_document").modal("show");
             };
-
-            $scope.popupDocument = function () {
-                $('#criteria').val("");
-                $scope.documentIdx = -1;
-                $scope.documents = [];
-                $scope.annos = [];
-                $scope.fromSelectDoc = true;
-                $("#modal_select_document").modal("show");
-                $('#modal_select_document').on('hidden.bs.modal', function () {
-                    $scope.btnDisabled = false;
-                });
-            };
             $scope.removeDocument = function (idx) {
                 var docRemoved = $scope.docs[idx];
                 docRemoved.ActionStatus |= 64;
@@ -859,6 +855,17 @@
             };
 
             ////////////////////////////   DOCUMENT UPLOAD AND SAVE CONTROL  ////////////////////////////
+            $scope.popupDocument = function () {
+                $('#criteria').val("");
+                $scope.documentIdx = -1;
+                $scope.documents = [];
+                $scope.annos = [];
+                $scope.fromSelectDoc = true;
+                $("#modal_select_document").modal("show");
+                $('#modal_select_document').on('hidden.bs.modal', function () {
+                    $scope.btnDisabled = false;
+                });
+            };
             $scope.uploadDocFile = function (idx, file, errFiles) {
                 $scope.finit = $scope.f;
                 $scope.f = file;
@@ -925,6 +932,7 @@
                                 $scope.tempDoc = doc;
                                 $scope.isUpload = 1;
                                 $(window).off('beforeunload');
+                                $scope.btnDisabled = false;
                                 document.querySelector('.submit-document').disabled = false;
                             }
                         }else {
@@ -1061,6 +1069,8 @@
                             $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
+                            document.querySelector('.submit-document').disabled = false;
+                            $scope.btnDisabled = false;
                         } else {
                             showInfo("An error has occurred");
                         }

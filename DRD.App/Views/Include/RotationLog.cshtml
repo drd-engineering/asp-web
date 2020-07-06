@@ -23,13 +23,13 @@
                         <span>
                             <b>{{d.Document.FileName}}</b>
                             <span style="font-size:xx-small;color:darkgrey">
-                                <span ng-show="validAction(d.FlagAction,1)">signed</span>
-                                <span ng-show="validAction(d.FlagAction,32)">stamped</span>
-                                <span ng-show="validAction(d.FlagAction,2)">revised</span>
-                                <span ng-show="validAction(d.FlagAction,4)">viewed</span>
-                                <span ng-show="validAction(d.FlagAction,8)">printed</span>
-                                <span ng-show="validAction(d.FlagAction,16)">downloaded</span>
-                                <span ng-show="validAction(d.FlagAction,64)">removed</span>
+                                <span ng-show="validAction(d.ActionStatus,1)">signed</span>
+                                <span ng-show="validAction(d.ActionStatus,32)">stamped</span>
+                                <span ng-show="validAction(d.ActionStatus,2)">revised</span>
+                                <span ng-show="validAction(d.ActionStatus,4)">viewed</span>
+                                <span ng-show="validAction(d.ActionStatus,8)">printed</span>
+                                <span ng-show="validAction(d.ActionStatus,16)">downloaded</span>
+                                <span ng-show="validAction(d.ActionStatus,64)">removed</span>
                             </span>
                         </span>
                     </span>

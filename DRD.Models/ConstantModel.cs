@@ -46,6 +46,15 @@ namespace DRD.Models
             //fully access granted if there are multiple feature access in a pages
             fullAccess = 3
         }
+        public enum DocumentActionPermissionType
+        {
+            //restricted, cannot access at all
+            NoAccess = 0,
+            //depends on rotation User to allow 
+            DependsOnRotationUser = 1,
+            //fully access granted if there are multiple feature access in a pages
+            FullAccess = 2
+        }
         public enum BusinessPackageItem
         {
             Administrator = 0,
