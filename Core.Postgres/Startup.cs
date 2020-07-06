@@ -21,7 +21,7 @@ namespace Core.Postgres
         {
             //services.AddControllers();
             services.AddMvc();
-            services.AddEntityFrameworkNpgsql().AddDbContext<DRDContext>(opt =>
+            services.AddEntityFrameworkNpgsql().AddDbContext<context>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("DRDConection")));
         }
 
