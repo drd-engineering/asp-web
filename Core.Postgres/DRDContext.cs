@@ -58,7 +58,8 @@ namespace Core.Postgres
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            List<User> listOfUserCreated = new List<User>
+            String passEncrypted = UtilitiesModel.Encrypt("solobhakti2020");
+            List <User> listOfUserCreated = new List<User>
             {
                 new User
                 {
@@ -67,7 +68,7 @@ namespace Core.Postgres
                     Email = "lalisa@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
                     ProfileImageFileName = "user.jpg",
-                    Password = "solobhakti2020",
+                    Password = passEncrypted,
                     SignatureImageFileName = "",
                     InitialImageFileName = "",
                     StampImageFileName = "",
@@ -82,7 +83,7 @@ namespace Core.Postgres
                     Email = "bam@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
                     ProfileImageFileName = "user.jpg",
-                    Password = "solobhakti2020",
+                    Password = passEncrypted,
                     SignatureImageFileName = "",
                     InitialImageFileName = "",
                     StampImageFileName = "",
@@ -97,7 +98,7 @@ namespace Core.Postgres
                     Email = "seraphina@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
                     ProfileImageFileName = "user.jpg",
-                    Password = "solobhakti2020",
+                    Password = passEncrypted,
                     SignatureImageFileName = "",
                     InitialImageFileName = "",
                     StampImageFileName = "",
@@ -112,7 +113,7 @@ namespace Core.Postgres
                     Email = "arlo@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
                     ProfileImageFileName = "user.jpg",
-                    Password = "solobhakti2020",
+                    Password = passEncrypted,
                     SignatureImageFileName = "",
                     InitialImageFileName = "",
                     StampImageFileName = "",
