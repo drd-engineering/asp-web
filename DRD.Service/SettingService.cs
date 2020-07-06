@@ -17,7 +17,7 @@ namespace DRD.Service
 {
     public class SettingService
     {
-        SubscriptionService subscriptionService;
+        private SubscriptionService subscriptionService;
 
         /// <summary>
         /// get setting for company
@@ -28,6 +28,7 @@ namespace DRD.Service
         public CompanySettingData GetCompanySetting(long userId)
         {
             using var db = new ServiceContext();
+            subscriptionService = new SubscriptionService();
             CompanySettingData companyData = new CompanySettingData();
             var pendingData = (from member in db.Members
                                orderby member.IsMemberAccept
@@ -55,6 +56,8 @@ namespace DRD.Service
         /// <returns></returns>
         public string AcceptCompany(long companyId, long userId)
         {
+            subscriptionService = new SubscriptionService();
+
             using var db = new ServiceContext();
             var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
 
@@ -77,6 +80,8 @@ namespace DRD.Service
         public string ResetState(long companyId, long userId)
         {
             using var db = new ServiceContext();
+            subscriptionService = new SubscriptionService();
+
             var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
             if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
