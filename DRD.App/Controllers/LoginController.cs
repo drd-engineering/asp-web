@@ -48,6 +48,7 @@ namespace DRD.App.Controllers
             }
             return Json(ret, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// LOGOUT Clear session of a user logged in
         /// </summary>

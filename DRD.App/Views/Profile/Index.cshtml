@@ -55,7 +55,7 @@
                                 <div ng-show="wizarno=='product'">
                                     <fieldset>
                                         <div class="row flexible-row">
-                                            <div class="col-md-3 vertically-center">
+                                            <div class="col-md-3 vertically-center" style="min-width:200px;">
                                                 <div class="image-wrapper">
                                                     <img ng-src="/Images/Member/{{model.ProfileImageFileName}}" class="image-content"
                                                          ngf-drop="uploadFiles(0,$file, $invalidFiles)"
@@ -445,6 +445,7 @@
                             $scope.infoSuccess+="<br/>Success update User info";
                             $scope.infoSuccess=$sce.trustAsHtml($scope.infoSuccess);
                             $scope.wizarno = 'success';
+                            location.reload();
                         }
                     }, function (response) {
                         btn.stop();

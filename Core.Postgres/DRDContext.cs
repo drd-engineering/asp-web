@@ -67,13 +67,7 @@ namespace Core.Postgres
                     Phone = "0897287837382",
                     Email = "lalisa@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
-                    ProfileImageFileName = "user.jpg",
                     Password = passEncrypted,
-                    SignatureImageFileName = "",
-                    InitialImageFileName = "",
-                    StampImageFileName = "",
-                    KTPImageFileName = "",
-                    KTPVerificationImageFileName = "",
                     IsActive = true
                 },
                 new User
@@ -82,13 +76,7 @@ namespace Core.Postgres
                     Phone = "0897287837382",
                     Email = "bam@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
-                    ProfileImageFileName = "user.jpg",
                     Password = passEncrypted,
-                    SignatureImageFileName = "",
-                    InitialImageFileName = "",
-                    StampImageFileName = "",
-                    KTPImageFileName = "",
-                    KTPVerificationImageFileName = "",
                     IsActive = true
                 },
                 new User
@@ -97,13 +85,7 @@ namespace Core.Postgres
                     Phone = "0897287837382",
                     Email = "seraphina@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
-                    ProfileImageFileName = "user.jpg",
                     Password = passEncrypted,
-                    SignatureImageFileName = "",
-                    InitialImageFileName = "",
-                    StampImageFileName = "",
-                    KTPImageFileName = "",
-                    KTPVerificationImageFileName = "",
                     IsActive = true
                 },
                 new User
@@ -112,19 +94,12 @@ namespace Core.Postgres
                     Phone = "0897287837382",
                     Email = "arlo@solobhakti.com",
                     OfficialIdNo = 2511100909080001,
-                    ProfileImageFileName = "user.jpg",
                     Password = passEncrypted,
-                    SignatureImageFileName = "",
-                    InitialImageFileName = "",
-                    StampImageFileName = "",
-                    KTPImageFileName = "",
-                    KTPVerificationImageFileName = "",
                     IsActive = true
                 },
 
             };
 
-            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3]);
 
             List<Company> listOfCompanyCreated = new List<Company>
             {
@@ -154,7 +129,6 @@ namespace Core.Postgres
                 UserId = listOfUserCreated[0].Id,
                 IsAdministrator = false
             };
-
             Member member2 = new Member
             {
                 CompanyId = listOfCompanyCreated[0].Id,
@@ -188,6 +162,7 @@ namespace Core.Postgres
             BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
 
 
+            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3]);
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0]);
             modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4);
 

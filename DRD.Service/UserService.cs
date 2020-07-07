@@ -121,6 +121,18 @@ namespace DRD.Service
             UserSession loginUser = new UserSession(userGet);
             return loginUser;
         }
+
+        public UserSession getUpdatedUser(long id)
+        {
+            using var db = new ServiceContext();
+
+            User userGet = db.Users.Where(user => user.Id == id).FirstOrDefault();
+            if (userGet == null) return null;
+
+            UserSession loginUser = new UserSession(userGet);
+            return loginUser;
+        }
+
         /// <summary>
         /// CHECK is email is never used by other user
         /// </summary>
@@ -143,12 +155,12 @@ namespace DRD.Service
             user = db.Users.FirstOrDefault(u => u.Id == userProfile.Id);
             if (user == null) return null;
 
-            user.InitialImageFileName = (userProfile.InitialImageFileName == null ? null : RemovePrefixLocation(userProfile.InitialImageFileName));
-            user.KTPImageFileName = (userProfile.KTPImageFileName == null ? null : RemovePrefixLocation(userProfile.KTPImageFileName));
-            user.KTPVerificationImageFileName = (userProfile.KTPVerificationImageFileName == null ? null : RemovePrefixLocation(userProfile.KTPVerificationImageFileName));
-            user.ProfileImageFileName = (userProfile.ProfileImageFileName == null ? null : RemovePrefixLocation(userProfile.ProfileImageFileName));
-            user.SignatureImageFileName = (userProfile.SignatureImageFileName == null ? null : RemovePrefixLocation(userProfile.SignatureImageFileName));
-            user.StampImageFileName = (userProfile.StampImageFileName == null ? null : RemovePrefixLocation(userProfile.StampImageFileName));
+            user.InitialImageFileName = (userProfile.InitialImageFileName == null || userProfile.InitialImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.InitialImageFileName));
+            user.KTPImageFileName = (userProfile.KTPImageFileName == null || userProfile.KTPImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.KTPImageFileName));
+            user.KTPVerificationImageFileName = (userProfile.KTPVerificationImageFileName == null || userProfile.KTPVerificationImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.KTPVerificationImageFileName));
+            user.ProfileImageFileName = (userProfile.ProfileImageFileName == null || userProfile.ProfileImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.ProfileImageFileName));
+            user.SignatureImageFileName = (userProfile.SignatureImageFileName == null || userProfile.SignatureImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.SignatureImageFileName));
+            user.StampImageFileName = (userProfile.StampImageFileName == null || userProfile.StampImageFileName.Equals("no_picture.png") ? null : RemovePrefixLocation(userProfile.StampImageFileName));
             user.OfficialIdNo = userProfile.OfficialIdNo;
             user.Name = userProfile.Name;
             user.Phone = userProfile.Phone;
