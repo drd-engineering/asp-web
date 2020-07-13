@@ -9,7 +9,7 @@ namespace DRD.App.Controllers
     {
         private CompanyService companyService = new CompanyService();
         private UserService userService = new UserService();
-        private ServiceContext db = new ServiceContext();
+        private Connection db = new Connection();
 
         // GET: Register
         // Index of register page

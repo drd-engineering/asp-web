@@ -22,18 +22,18 @@ namespace DRD.Service
         /// <returns></returns>
         private bool CheckIdIsExist(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Any(i => i.Id == id);
         }
         public Member getMember(long memberId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
         }
 
         public Member GetMember(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Where(memberItem => memberItem.UserId == userId && memberItem.CompanyId == companyId).FirstOrDefault();
         }
         private void MappingMember(List<Member> membersFromDb, MemberList listReturn)
@@ -59,7 +59,7 @@ namespace DRD.Service
         }
         public MemberList GetAcceptedMember(long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var listReturn = new MemberList();
             var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
 
@@ -68,7 +68,7 @@ namespace DRD.Service
         }
         public MemberList GetWaitingMember(long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var listReturn = new MemberList(); ;
 
             var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && !memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive).ToList();
@@ -79,7 +79,7 @@ namespace DRD.Service
 
         public MemberList GetAcceptedMember(long companyId, bool isAdmin)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var listReturn = new MemberList(); ;
                 var membersFromDb = db.Members.Where(memberItem => memberItem.CompanyId == companyId && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.IsActive && memberItem.IsAdministrator == isAdmin).ToList();
@@ -91,19 +91,19 @@ namespace DRD.Service
 
         public bool CheckIsAdmin(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Any(memberItem => memberItem.CompanyId == companyId && memberItem.IsAdministrator && memberItem.UserId == userId);
         }
 
         public bool CheckIsOwner(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Companies.Any(memberItem => memberItem.Id == companyId && memberItem.OwnerId == userId);
         }
 
         public List<MemberItem> GetAdministrators(long CompanyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var admins = (from Member in db.Members
                           join User in db.Users on Member.UserId equals User.Id
                           where Member.CompanyId == CompanyId && Member.IsCompanyAccept && Member.IsMemberAccept && Member.IsActive && Member.IsAdministrator
@@ -125,13 +125,13 @@ namespace DRD.Service
         /// <returns></returns>
         public ICollection<Member> GetAllAdminDataofUser(long adminId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Where(memberItem => memberItem.UserId == adminId && memberItem.IsActive & memberItem.IsAdministrator).ToList();
         }
 
         public long Delete(long memberId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             Member member = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
             member.IsActive = false;
             db.SaveChanges();
@@ -146,7 +146,7 @@ namespace DRD.Service
         /// <returns></returns>
         public long AddMemberToCompany(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var member = new Member(userId, companyId, false, true);
             while (CheckIdIsExist(member.Id))
                 member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
@@ -163,7 +163,7 @@ namespace DRD.Service
         /// <returns></returns>
         public long AddMemberRequestToJoinCompany(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var member = new Member(userId, companyId, true, false);
             while (CheckIdIsExist(member.Id))
                 member.Id = Utilities.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
@@ -184,7 +184,7 @@ namespace DRD.Service
             System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ emails);
             List<AddMemberResponse> returnValue = new List<AddMemberResponse>();
             string[] listOfEmail = emails.Split(',');
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (!CheckIsAdmin(userId, companyId) && !CheckIsOwner(userId, companyId))
             {
                 // user editting member is not administrator or owner
@@ -310,7 +310,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var contactListAllMatch = (from Contact in db.Contacts
                                            join User in db.Users on Contact.ContactItemId equals User.Id
@@ -364,7 +364,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var countContactListAllMatch = (from Contact in db.Contacts
                                                 join User in db.Users on Contact.ContactItemId equals User.Id
@@ -416,7 +416,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var contactListAllMatch = (from RotationUser in db.RotationUsers
                                            join User in db.Users on RotationUser.UserId equals User.Id
@@ -456,7 +456,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var countContactListAllMatch = (from RotationUser in db.RotationUsers
                                                 join User in db.Users on RotationUser.UserId equals User.Id
@@ -481,7 +481,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool AcceptInvitation(long userId, long memberId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 Member theUser = db.Members.FirstOrDefault(m => m.Id == memberId && m.UserId == userId && m.IsCompanyAccept && !m.IsMemberAccept);
                 if (theUser != null)
@@ -503,12 +503,12 @@ namespace DRD.Service
                 totalAdmin = adminCandidate.Count;
 
             //check admin limit
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Administrator, companyId, totalAdmin, addAfterSubscriptionValid: true, reset: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Administrator, companyId, totalAdmin, addAfterSubscriptionValid: true, reset: true);
             data.status = subscriptionStatus.ToString();
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK) || adminCandidate==null)
                 return data;
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 foreach (MemberItem x in adminCandidate)
                 {
@@ -542,7 +542,7 @@ namespace DRD.Service
         public MemberList BecomeMember(long companyId, ICollection<MemberItem> memberCandidate)
         {
             MemberList data = new MemberList();
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 foreach (MemberItem x in memberCandidate)
                 {

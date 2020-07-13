@@ -11,16 +11,16 @@ namespace DRD.Service
     {
         UserService userService = new UserService();
 
-        public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false, bool reset = false)
+        public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false, bool reset = false)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
 
                 BusinessUsage usage = db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 BusinessPackage package = db.BusinessPackages.Where(c => c.Id == usage.PackageId && c.IsActive).FirstOrDefault();
                 int additionalUsage = 0;
 
-                if (!packageType.Equals(ConstantModel.BusinessPackageItem.Storage))
+                if (!packageType.Equals(Models.Constant.BusinessPackageItem.Storage))
                 {
                     additionalUsage = (int)additional;
                 }
@@ -32,25 +32,25 @@ namespace DRD.Service
 
                 switch (packageType)
                 {
-                    case ConstantModel.BusinessPackageItem.Administrator:
+                    case Models.Constant.BusinessPackageItem.Administrator:
                         if (!package.IsExceedLimitAllowed && package.Administrator != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Administrator + additionalUsage > package.Administrator) || (reset && additionalUsage > package.Administrator)))
                             return Constant.BusinessUsageStatus.ADMINISTRATOR_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
                             usage.Administrator = reset ? additionalUsage : additionalUsage + usage.Administrator;
                         break;
-                    case ConstantModel.BusinessPackageItem.Rotation_Started:
+                    case Models.Constant.BusinessPackageItem.Rotation_Started:
                         if (!package.IsExceedLimitAllowed && package.RotationStarted != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.RotationStarted + additionalUsage > package.RotationStarted) || (reset && additionalUsage > package.RotationStarted)))
                             return Constant.BusinessUsageStatus.ROTATION_STARTED_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
                             usage.RotationStarted = reset? additionalUsage: additionalUsage + usage.RotationStarted;
                         break;
-                    case ConstantModel.BusinessPackageItem.Member:
+                    case Models.Constant.BusinessPackageItem.Member:
                         if (!package.IsExceedLimitAllowed && package.Member != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Member + additionalUsage > package.Member) || (reset && additionalUsage > package.Member)))
                             return Constant.BusinessUsageStatus.MEMBER_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
                             usage.Member = reset ? additionalUsage : additionalUsage + usage.Member;
                         break;
-                    case ConstantModel.BusinessPackageItem.Storage:
+                    case Models.Constant.BusinessPackageItem.Storage:
                         if (!package.IsExceedLimitAllowed && package.Storage != Constant.ALLOW_EXCEED_LIMIT && ((!reset && usage.Storage + additionalUsage > package.Storage) || (reset && additionalUsage > package.Storage)))
                             return Constant.BusinessUsageStatus.STORAGE_EXCEED_LIMIT;
                         else if (addAfterSubscriptionValid.Value)
@@ -71,7 +71,7 @@ namespace DRD.Service
 
         public BusinessUsage EditBusinessPackage(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 BusinessUsage planBusiness = (from c in db.BusinessUsages
                                       where c.CompanyId == companyId && c.IsActive
@@ -89,7 +89,7 @@ namespace DRD.Service
 
         public ActiveUsage GetActiveBusinessSubscriptionByCompany(long companyId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 return (from company in db.Companies
                         join usage in db.BusinessUsages on company.Id equals usage.CompanyId
@@ -120,7 +120,7 @@ namespace DRD.Service
 
         public List<BusinessPackage> GetAllPublicSubscription()
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 return db.BusinessPackages.Where(bs => bs.IsPublic && bs.IsActive).ToList();
             }
@@ -128,7 +128,7 @@ namespace DRD.Service
 
         public ActiveUsageList GetBusinessSubscriptionByUser(long userId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var returnList = new ActiveUsageList();
                 var OwnerSubscriptions = new ActiveUsageList();
@@ -170,7 +170,7 @@ namespace DRD.Service
 
         internal Price getActivePricePackage(long packageId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 return db.Prices.Where(p => p.PackageId == packageId && p.IsActive).LastOrDefault();
             }
@@ -178,7 +178,7 @@ namespace DRD.Service
 
         public BusinessPackage GetCompanyPackage(long packageId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).FirstOrDefault();
                 return plan;
@@ -193,7 +193,7 @@ namespace DRD.Service
 
         public BusinessUsage GetCompanyUsage(long companyId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 BusinessUsage plan = db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
                 return plan;
@@ -202,7 +202,7 @@ namespace DRD.Service
 
         public BusinessUsage getCompanyUsageById(long id)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 BusinessUsage plan = db.BusinessUsages.Where(c => c.Id == id).FirstOrDefault();
                 return plan;
@@ -211,7 +211,7 @@ namespace DRD.Service
 
         public Constant.BusinessUsageStatus IsSubscriptionValid(long userId, long usageId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 BusinessUsage usage = getCompanyUsageById(usageId);
                 //check if having any active usage
@@ -264,7 +264,7 @@ namespace DRD.Service
         {
             BusinessUsage oldUsage = DeactivateActiveUsage(companyId);
             BusinessPackage businessPackage = getCompanyPackageByCompany(companyId);
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 DateTime? extendedTime = oldUsage.ExpiredAt.Value.AddDays(businessPackage.Duration);
                 BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);

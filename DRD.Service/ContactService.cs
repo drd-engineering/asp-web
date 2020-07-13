@@ -39,7 +39,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 // Scenario:
                 // login using user with id = "11111211"
@@ -73,7 +73,7 @@ namespace DRD.Service
 
         public long GetTotalPersonalContact(UserSession user)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 // Scenario:
                 // login using user with id = "11111211"
@@ -114,7 +114,7 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var hisSelfAsMember = db.Members.Where(member => member.UserId == user.Id).ToList();
                 if (hisSelfAsMember.Count == 0) { return null; }
@@ -151,7 +151,7 @@ namespace DRD.Service
 
         public long CountMemberOfCompany(long CompanyIdOfUser)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var MemberOfCompany = db.Members.Where(memberItem => memberItem.CompanyId == CompanyIdOfUser).ToList();
 
@@ -161,7 +161,7 @@ namespace DRD.Service
         }
         public ContactItem getContact(long userId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var result = (from User in db.Users
                               where User.Id == userId
@@ -180,7 +180,7 @@ namespace DRD.Service
         // list all company that relate to the user (a member)
         public ICollection<CompanyItem> GetListOfCompany(UserSession user)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 long[] CompanyIds = db.Members.Where(member => member.UserId == user.Id).Select(c => c.CompanyId).ToArray();
 

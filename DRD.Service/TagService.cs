@@ -9,7 +9,7 @@ namespace DRD.Service
     {
         public ICollection<string> GetTagsAsString(long rotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = (from tag in db.Tags
                             join tagitem in db.TagItems on tag.Id equals tagitem.TagId
                             where tagitem.RotationId == rotationId

@@ -18,7 +18,7 @@ namespace DRD.Service
         public int CheckIsUserProfileComplete(long userId)
         {
             int ret = 1;
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var mem = db.Users.FirstOrDefault(c => c.Id == userId);
             if (mem.SignatureImageFileName == null || mem.InitialImageFileName == null || mem.KTPImageFileName == null || mem.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
                 ret = -1;
@@ -33,7 +33,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int GetPermission(long usrId, long rotationNodeId, long documentId)
         {
-            var db = new ServiceContext();
+            var db = new Connection();
             if (rotationNodeId == 0)
                 return 0;
 
@@ -62,7 +62,7 @@ namespace DRD.Service
         {
             long result = 0;
             DocumentInboxData document;
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 if (prod.Id == 0)
                     document = Create(prod, companyId, rotationId);
@@ -85,7 +85,7 @@ namespace DRD.Service
         /// <returns></returns>
         private DocumentInboxData Create(DocumentInboxData newDocument, long companyId, long rotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             Document document = new Document
             {
                 // mapping value
@@ -124,7 +124,7 @@ namespace DRD.Service
         /// <returns></returns>
         private DocumentInboxData Update(DocumentInboxData newDocument, long companyId, long rotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             Document document = db.Documents.FirstOrDefault(c => c.Id == newDocument.Id);
 
             // mapping value
@@ -159,7 +159,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ICollection<DocumentAnnotationsInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             //
             // prepare data 
             var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
@@ -238,7 +238,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ICollection<DocumentUserInboxData> CreateDocumentUserFromAnnotations(long documentId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var returnValue = new List<DocumentUserInboxData>();
             var createdOrUpdated = new List<DocumentUser>();
             var docs = db.Documents.FirstOrDefault(doc => doc.Id == documentId);
@@ -256,13 +256,13 @@ namespace DRD.Service
                 docUser.UserId = el.UserId.Value;
                 docUser.DocumentId = el.DocumentId;
 
-                string eltypename = Enum.GetName(typeof(ConstantModel.EnumElementTypeId), el.ElementTypeId);
+                string eltypename = Enum.GetName(typeof(Models.Constant.EnumElementTypeId), el.ElementTypeId);
 
                 if (("SIGNATURE,INITIAL").Contains(eltypename))
-                    docUser.ActionPermission |= (int)ConstantModel.EnumDocumentAction.SIGN;
+                    docUser.ActionPermission |= (int)Models.Constant.EnumDocumentAction.SIGN;
 
                 if (("PRIVATESTAMP").Contains(eltypename))
-                    docUser.ActionPermission |= (int)ConstantModel.EnumDocumentAction.PRIVATESTAMP;
+                    docUser.ActionPermission |= (int)Models.Constant.EnumDocumentAction.PRIVATESTAMP;
 
                 db.SaveChanges();
                 returnValue.Add(new DocumentUserInboxData(docUser));
@@ -278,7 +278,7 @@ namespace DRD.Service
         /// <returns></returns>
         public DocumentUser CreateDocumentUser(long documentId, long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var documentUserDb = db.DocumentUsers.FirstOrDefault(u => u.UserId == userId && u.DocumentId == documentId);
             if (documentUserDb != null) return documentUserDb;
             var newDocumentUser = new DocumentUser
@@ -296,7 +296,7 @@ namespace DRD.Service
 
         public IEnumerable<DocumentItem> GetAllCompanyDocument(long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                         (from doc in db.Documents
                         where doc.CompanyId == companyId
@@ -321,7 +321,7 @@ namespace DRD.Service
             if (!string.IsNullOrEmpty(searchKeyword))
                 keywords = searchKeyword.Split(' ');
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var result =
                     (from c in db.Documents
@@ -392,9 +392,9 @@ namespace DRD.Service
         /// <returns></returns>
         public int Signature(long documentId, long userId, long rotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var datas = db.DocumentElements.Where(c => c.Document.Id == documentId
-                && (c.ElementTypeId == (int)ConstantModel.EnumElementTypeId.SIGNATURE || c.ElementTypeId == (int)ConstantModel.EnumElementTypeId.INITIAL)
+                && (c.ElementTypeId == (int)Constant.EnumElementTypeId.SIGNATURE || c.ElementTypeId == (int)Constant.EnumElementTypeId.INITIAL)
                 && c.UserId == userId && (c.Flag & 1) != 1).ToList();
             if (datas == null)
                 return 0;
@@ -409,7 +409,7 @@ namespace DRD.Service
                 da.Flag = 1;
                 da.AssignedAt = dt;
                 da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
-                da.AssignedAnnotationImageFileName = (da.ElementTypeId == (int)ConstantModel.EnumElementTypeId.SIGNATURE ? user.SignatureImageFileName : user.InitialImageFileName);
+                da.AssignedAnnotationImageFileName = (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE ? user.SignatureImageFileName : user.InitialImageFileName);
                 if (!numbers.Equals(""))
                     numbers += ", ";
                 numbers += da.AssignedAnnotationCode;
@@ -431,9 +431,9 @@ namespace DRD.Service
         /// <returns></returns>
         public int Stamp(long documentId, long userId, long rotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var datas = db.DocumentElements.Where(c => c.Document.Id == documentId
-                && c.ElementTypeId == (int)ConstantModel.EnumElementTypeId.PRIVATESTAMP
+                && c.ElementTypeId == (int)Constant.EnumElementTypeId.PRIVATESTAMP
                 && c.UserId == userId && (c.Flag & 1) != 1).ToList();
 
             if (datas == null)
@@ -469,7 +469,7 @@ namespace DRD.Service
         /// <returns>status db save</returns>
         public int DocumentUpdatedByRotation(long documentId)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var docitem = db.Documents.FirstOrDefault(d => d.Id == documentId);
                 docitem.UpdatedAt = DateTime.Now;
@@ -483,7 +483,7 @@ namespace DRD.Service
         /// <returns>status db save</returns>
         public int DocumentRemovedorRevisedFromRotation(long documentId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var docitem = db.Documents.FirstOrDefault(d => d.Id == documentId);
             docitem.IsCurrent = false;
             docitem.UpdatedAt = DateTime.Now;
@@ -507,11 +507,11 @@ namespace DRD.Service
             else
                 topCriteria = null;
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(ConstantModel.EnumElementTypeId), c.ElementTypeId)) &&
+                     where c.CreatorId == memberId && !("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Models.Constant.EnumElementTypeId), c.ElementTypeId)) &&
                             (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.AssignedAt descending
                      select new DocumentSign
@@ -563,7 +563,7 @@ namespace DRD.Service
         public Document GetById(long id)
         {
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var result =
                     (from c in db.Documents
@@ -618,8 +618,8 @@ namespace DRD.Service
                     foreach (DocumentAnnotation da in result.DocumentAnnotations)
                     {
                         if (da.UserId == null) continue;
-                        if (da.ElementTypeId == (int)ConstantModel.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)ConstantModel.EnumElementTypeId.INITIAL
-                            || da.ElementTypeId == (int)ConstantModel.EnumElementTypeId.PRIVATESTAMP)
+                        if (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL
+                            || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
                             var mem = db.Users.FirstOrDefault(c => c.Id == da.UserId);
                             da.Element.UserId = mem.Id;
@@ -635,7 +635,7 @@ namespace DRD.Service
         public DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument, bool isTemp)
         {
             DocumentItem doc = new DocumentItem();
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 if (isTemp)
                 {
@@ -667,7 +667,7 @@ namespace DRD.Service
             //else
             //    keywords = null;
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var result =
                 (from doc in db.Documents
@@ -719,18 +719,18 @@ namespace DRD.Service
             else
                 topCriteria = null;
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var tmps =
                     (from c in db.DocumentElements
-                     where c.UserId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(ConstantModel.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
+                     where c.UserId == memberId && ("SIGNATURE,INITIAL").Contains(Enum.GetName(typeof(Models.Constant.EnumElementTypeId), c.ElementTypeId)) && (c.Flag & 1) == 1 &&
                         (topCriteria == null || tops.All(x => (c.Document.FileName).Contains(x)))
                      orderby c.AssignedAt descending
                      select new DocumentSign
                      {
                          Id = c.Document.Id,
-                         CxSignature = (c.ElementTypeId == (int)ConstantModel.EnumElementTypeId.SIGNATURE ? 1 : 0),
-                         CxInitial = (c.ElementTypeId == (int)ConstantModel.EnumElementTypeId.INITIAL ? 1 : 0),
+                         CxSignature = (c.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE ? 1 : 0),
+                         CxInitial = (c.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL ? 1 : 0),
                          CreatedAt = c.AssignedAt,
                      }).ToList();
 
@@ -775,7 +775,7 @@ namespace DRD.Service
 
         public int RequestDownloadDocument(string docName, long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var documentDb = db.Documents.FirstOrDefault(c => c.FileUrl.Contains(docName) && c.IsCurrent);
             if (documentDb == null)
                 return (int)Constant.DocumentPrintOrDownloadStatus.NOT_FOUND;
@@ -792,7 +792,7 @@ namespace DRD.Service
             // calc from rotation is completed
             // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
             //    return -3;
-            if ((rotationUserDb.ActionPermission & (int)ConstantModel.EnumDocumentAction.DOWNLOAD) != (int)ConstantModel.EnumDocumentAction.DOWNLOAD)
+            if ((rotationUserDb.ActionPermission & (int)Models.Constant.EnumDocumentAction.DOWNLOAD) != (int)Models.Constant.EnumDocumentAction.DOWNLOAD)
                 return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
 
             // out of max // There may be a race condition
@@ -814,7 +814,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int RequestPrintDocument(string docName, long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var documentDb = db.Documents.FirstOrDefault(c => c.FileUrl.Contains(docName) && c.IsCurrent);
             if (documentDb == null)
                 return (int)Constant.DocumentPrintOrDownloadStatus.NOT_FOUND;
@@ -832,7 +832,7 @@ namespace DRD.Service
             // if (!rot.RotationNode.Rotation.Status.Equals("90") || (docMem.FlagPermission & (int)ConstantModel.EnumDocumentAction.PRINT) == (int)ConstantModel.EnumDocumentAction.PRINT)
             //    return -3;
             System.Diagnostics.Debug.WriteLine(rotationUserDb.ActionPermission);
-            if ((rotationUserDb.ActionPermission & (int)ConstantModel.EnumDocumentAction.PRINT) != (int)ConstantModel.EnumDocumentAction.PRINT)
+            if ((rotationUserDb.ActionPermission & (int)Models.Constant.EnumDocumentAction.PRINT) != (int)Models.Constant.EnumDocumentAction.PRINT)
                 return (int)Constant.DocumentPrintOrDownloadStatus.USER_HAS_NO_ACCESS;
 
             // out of max // There may be a race condition

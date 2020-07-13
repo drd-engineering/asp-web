@@ -18,7 +18,7 @@ namespace DRD.Service
         public CounterRotation GetActivityCounter(long userId, long companyId = 0)
         {
             var counter = new CounterRotation();
-            using var db = new ServiceContext();
+            using var db = new Connection();
             // Personal
             if (companyId == 0)
             {
@@ -34,12 +34,12 @@ namespace DRD.Service
             /// EXECUTE ONLY IF COMPANY ID IS FILLED
             CompanyService companyService = new CompanyService();
 
-            var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)ConstantModel.SubscriptionType.BUSINESS && c.CompanyId == companyId).ToList();
+            var rotationsCompany = db.Rotations.Where(c => c.SubscriptionType == (byte)Constant.SubscriptionType.BUSINESS && c.CompanyId == companyId).ToList();
             if (rotationsCompany  != null)
             {
-                counter.New.InProgress = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.In_Progress);
-                counter.New.Completed = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.Completed);
-                counter.New.Rejected = rotationsCompany.Count(c => c.Status == (int)Constant.RotationStatus.Declined);
+                counter.New.InProgress = Enumerable.Count<Rotation>(rotationsCompany, (Func<Rotation, bool>)(c => (bool)(c.Status == (int)Constant.RotationStatus.In_Progress)));
+                counter.New.Completed = Enumerable.Count<Rotation>(rotationsCompany, (Func<Rotation, bool>)(c => (bool)(c.Status == (int)Constant.RotationStatus.Completed)));
+                counter.New.Rejected = Enumerable.Count<Rotation>(rotationsCompany, (Func<Rotation, bool>)(c => (bool)(c.Status == (int)Constant.RotationStatus.Declined)));
             }
             return counter;
         }
@@ -51,7 +51,7 @@ namespace DRD.Service
         /// <returns>the counting result is filled in value from subscriptionLimit.new</returns>
         public SubscriptionLimit GetCompanySubscriptionLimit(long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             CompanyService companyService = new CompanyService();
             SubscriptionService subscriptionService = new SubscriptionService();
             var storage = new SubscriptionLimit();
@@ -75,7 +75,7 @@ namespace DRD.Service
         public ICollection<RotationDashboard> GetRotationsByCompany(long companyId, int page, int totalItemPerPage, ICollection<string> tags = null)
         {
             int skip = totalItemPerPage * (page - 1);
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var data = (from rotation in db.Rotations
                         where rotation.CompanyId == companyId
                         orderby rotation.UpdatedAt descending
@@ -147,7 +147,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int CountRotationsByCompany(long companyId, ICollection<string> tags = null)
         {
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 var data = (from rotation in db.Rotations
                             where rotation.CompanyId == companyId

@@ -34,7 +34,7 @@ namespace DRD.Models
 
         public Rotation()
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             SumRotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
 
             IsActive = true;

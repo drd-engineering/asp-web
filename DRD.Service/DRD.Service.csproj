@@ -63,7 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constant.cs" />
     <Compile Include="Setting.cs" />
     <Compile Include="SettingService.cs" />
     <Compile Include="SymbolService.cs" />
@@ -80,7 +79,7 @@
     <Compile Include="Config.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Context\ServiceContext.cs" />
+    <Compile Include="Context\Connection.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotationService.cs" />

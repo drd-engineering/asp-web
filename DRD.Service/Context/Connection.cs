@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DRD.Service.Context
 {
-    public class ServiceContext : DbContext
+    public class Connection : DbContext
     {
-        public ServiceContext() : base("AppContext")
+        public Connection() : base(Constant.CONSTRING)
         {
         }
 

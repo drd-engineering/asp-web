@@ -19,7 +19,7 @@ namespace DRD.Service
         /// <returns></returns>
         public User SaveRegistration(RegistrationData register)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email.ToLower())).Count();
             if (result != 0)
             {
@@ -47,7 +47,7 @@ namespace DRD.Service
         /// <returns></returns>
         private long Save(User user)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var encryptedUserId = Utilities.Encrypt(user.Id.ToString());
             while(Constant.RESTRICTED_FOLDER_NAME.Any(w => encryptedUserId.Contains(w)) && CheckIdIsExist(user.Id))
             {
@@ -66,7 +66,7 @@ namespace DRD.Service
         /// <returns></returns>
         private bool CheckIdIsExist(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Users.Any(i => i.Id == id);
         }
         /// <summary>
@@ -101,7 +101,7 @@ namespace DRD.Service
         /// <returns></returns>
         public UserSession Login(string username, string password)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             string encryptedPassword = Utilities.Encrypt(password);
 
             Expression<Func<User, bool>> findUsername = s => s.Email == username;
@@ -124,7 +124,7 @@ namespace DRD.Service
 
         public UserSession getUpdatedUser(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
 
             User userGet = db.Users.Where(user => user.Id == id).FirstOrDefault();
             if (userGet == null) return null;
@@ -140,7 +140,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool CheckIsEmailAvailable(string email)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return !db.Users.Any(userItem => userItem.Email.Equals(email.ToLower()));
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace DRD.Service
         public UserProfile UpdateProfile(UserProfile userProfile)
         {
             User user;
-            using var db = new ServiceContext();
+            using var db = new Connection();
             user = db.Users.FirstOrDefault(u => u.Id == userProfile.Id);
             if (user == null) return null;
 
@@ -192,7 +192,7 @@ namespace DRD.Service
         }
         public string GetName(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Users.Find(id).Name;
         }
         /// <summary>
@@ -202,7 +202,7 @@ namespace DRD.Service
         /// <returns></returns>
         public UserProfile GetProfile(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var userDb = db.Users.FirstOrDefault(u => u.Id == id);
             UserProfile result = new UserProfile(userDb);
             return result;
@@ -214,7 +214,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ListSubscription GetAllSubscription(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var returnValue = new ListSubscription();
             //var userHasSubscription = db.PlanPersonal.Where(p => p.UserId.equals(userId));
             var userBusinessPlan = (from member in db.Members
@@ -248,7 +248,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int UpdatePassword(UserSession user, String oldPassword, String newPassword)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var encryptedPassword = Utilities.Encrypt(oldPassword);
             User getUser = db.Users.Where(userdb => userdb.Id == user.Id && userdb.Password.Equals(encryptedPassword)).FirstOrDefault();
             if (getUser == null)
@@ -264,7 +264,7 @@ namespace DRD.Service
         /// <returns></returns>
         public User ResetPassword(string emailUser)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
             if (userGet == null) return userGet;
 
@@ -307,7 +307,7 @@ namespace DRD.Service
         public bool ValidationPassword(long id, string password)
         {
             var equals = false;
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var User = db.Users.FirstOrDefault(c => c.Id == id);
             if (User == null)
                 return equals;  // invalid User
@@ -328,7 +328,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool HasCompany(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Companies.Any(c => c.OwnerId == userId && c.IsActive);
         }
         /// <summary>
@@ -338,7 +338,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsMemberofCompany(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Any(m => m.UserId == userId && m.IsCompanyAccept && m.IsMemberAccept);
         }
         /// <summary>
@@ -348,7 +348,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsAdminOfCompany(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Any(m => m.UserId == userId && 
                 m.IsAdministrator && m.IsActive && 
                 m.IsCompanyAccept && m.IsMemberAccept);
@@ -360,7 +360,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsAdminOrOwnerofAnyCompany(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return IsAdminOfCompany(userId) || HasCompany(userId);
         }
         /// <summary>
@@ -371,7 +371,7 @@ namespace DRD.Service
         /// <returns></returns>
         public bool IsAdminOrOwnerofSpecificCompany(long userId, long companyId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Members.Any(memberItem => memberItem.UserId == userId
                 && memberItem.IsActive && memberItem.IsAdministrator && memberItem.IsActive
                 && memberItem.IsCompanyAccept && memberItem.IsMemberAccept && memberItem.CompanyId==companyId) 

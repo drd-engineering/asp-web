@@ -29,7 +29,7 @@ namespace DRD.Models
 
         public Inbox()
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID,ConstantModel.MAXIMUM_VALUE_ID);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID,Constant.MAXIMUM_VALUE_ID);
         }
     }
 }
