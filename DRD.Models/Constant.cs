@@ -171,6 +171,5 @@ namespace DRD.Models
             Company = 16,
             Document = 32
         }
-
     }
 }

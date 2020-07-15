@@ -179,9 +179,8 @@ namespace DRD.Service
         /// <param name="userId"></param>
         /// <param name="emails"></param>
         /// <returns></returns>
-        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails, long loginUserId)
         {
-            System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ emails);
             List<AddMemberResponse> returnValue = new List<AddMemberResponse>();
             string[] listOfEmail = emails.Split(',');
             using var db = new Connection();
@@ -200,7 +199,6 @@ namespace DRD.Service
                     User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
                     if (target == null)
                     {
-                        System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ email);
                         // user that wanted to invite is not found (not registered)
                         returnValue.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
                         continue;
@@ -218,6 +216,8 @@ namespace DRD.Service
                     //exist but company hasn't accepeted yet
                     if (!existingMember.IsCompanyAccept)
                     {
+                        AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(existingMember.UserId, existingMember.CompanyId));
+
                         existingMember.IsCompanyAccept = true;
                         existingMember.JoinedAt = DateTime.Now;
                         db.SaveChanges();
@@ -231,6 +231,9 @@ namespace DRD.Service
                         continue;
                     }
                     //exist and not accepted yet by user
+
+                    AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.InviteMember(existingMember.UserId, existingMember.CompanyId));
+
                     returnValue.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
                 }
             }
