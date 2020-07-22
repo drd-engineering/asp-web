@@ -21,8 +21,8 @@ namespace DRD.App.Controllers
 
         public ActionResult ChangePassword()
         {
-            CheckLogin(this);
-            GetUser(this);
+            if (!CheckLogin(this))
+                return RedirectToAction("Index", "login", new { redirectUrl = "login/changepassword" });
             return View();
         }
 
