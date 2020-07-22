@@ -421,9 +421,9 @@ namespace DRD.Service
 
             using (var db = new Connection())
             {
-                var contactListAllMatch = (from RotationUser in db.RotationUsers
+                var usersInRotation = (from RotationUser in db.RotationUsers
                                            join User in db.Users on RotationUser.UserId equals User.Id
-                                           where User.Id != userId && RotationUser.RotationId == rotationId
+                                           where RotationUser.RotationId == rotationId
                                            && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                            select new MemberData
                                            {
@@ -433,14 +433,17 @@ namespace DRD.Service
                                                Email = User.Email,
                                                ImageProfile = User.ProfileImageFileName
                                            }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
-                if (contactListAllMatch != null)
-                    for (var i = 0; i < contactListAllMatch.Count(); i++)
+                if (usersInRotation.Where(u => u.Id == userId).Count() > 1)
+                    usersInRotation.Remove(usersInRotation.FirstOrDefault(u => u.Id == userId));
+                usersInRotation = usersInRotation.Distinct(new MemberDataComparer()).ToList();
+                if (usersInRotation != null)
+                    for (var i = 0; i < usersInRotation.Count(); i++)
                     {
-                        var item = contactListAllMatch.ElementAt(i);
+                        var item = usersInRotation.ElementAt(i);
                         item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
-                        contactListAllMatch[i] = item;
+                        usersInRotation[i] = item;
                     }
-                return contactListAllMatch;
+                return usersInRotation;
             }
         }
         /// <summary>
