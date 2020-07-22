@@ -24,7 +24,7 @@ namespace DRD.Service
         //helper
         private bool CheckIdExist(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Rotations.Any(i => i.Id == id);
         }
         public ResponseStatus Start(long userId, long rotationId, long subscriptionId)
@@ -56,7 +56,7 @@ namespace DRD.Service
             }
 
             //check rotation status before start
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var rotationDb = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
             if (!rotationDb.Status.Equals((int)Constant.RotationStatus.Open))
             {
@@ -68,7 +68,7 @@ namespace DRD.Service
             var companyUsage = db.BusinessUsages.FirstOrDefault(c => c.Id == usageId && c.IsActive);
             rotationDb.Status = (int)Constant.RotationStatus.In_Progress;
             rotationDb.CompanyId = companyUsage.CompanyId;
-            rotationDb.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)ConstantModel.SubscriptionType.BUSINESS : (byte)ConstantModel.SubscriptionType.PERSONAL;
+            rotationDb.SubscriptionType = companyUsage.CompanyId != 0 ? (byte)Models.Constant.SubscriptionType.BUSINESS : (byte)Models.Constant.SubscriptionType.PERSONAL;
 
             // first node, node after start symbol
             var workflowNodeLinks = db.WorkflowNodeLinks.Where(c => c.Source.WorkflowId == rotationDb.WorkflowId && c.Source.SymbolCode == 0).ToList();
@@ -79,7 +79,7 @@ namespace DRD.Service
             }
 
             //check rotation started limit or add when limit passed
-            var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Rotation_Started, rotationDb.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
+            var rotationStartedLimitStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Rotation_Started, rotationDb.CompanyId.Value, additional: 1, addAfterSubscriptionValid: true);
 
             if (!rotationStartedLimitStatus.Equals(Constant.BusinessUsageStatus.OK))
             {
@@ -113,7 +113,7 @@ namespace DRD.Service
         //helper
         private ActivityItem CreateActivityResult(int exitCode, long userId = 0, long previousUserId = 0, string rotationName = "", long rotationNodeId = 0, long rotationId = 0, string exitStatus = null)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var currentUserDb = db.Users.FirstOrDefault(c => c.Id == userId);
             var previousUserDb = db.Users.FirstOrDefault(c => c.Id == previousUserId);
             ActivityItem result = new ActivityItem
@@ -140,7 +140,7 @@ namespace DRD.Service
         //helper
         private long GetUserId(long WorkflowNodeToId, long RotationId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace DRD.Service
         /// <returns></returns>
         public RotationIndex GetRotation(long id, long creatorId, bool isActive = true)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                         (from rotation in db.Rotations
                         where rotation.Id == id && rotation.IsActive == isActive && rotation.CreatorId == creatorId
@@ -210,7 +210,7 @@ namespace DRD.Service
         /// <returns></returns>
         public IEnumerable<RotationUserData> GetWorkflowActivities(long workflowId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                 (from workflowNode in db.WorkflowNodes
                 where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
@@ -253,7 +253,7 @@ namespace DRD.Service
             }
             else
                 criteria = "";
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (db.Rotations == null) return null;
             var result = (from rotation in db.Rotations
                           where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (criteria.Equals("") || criterias.All(criteria => (rotation.Name).ToLower().Contains(criteria.ToLower())))
@@ -299,7 +299,7 @@ namespace DRD.Service
             else
                 criteria = "";
 
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 if (db.Rotations != null)
                 {
@@ -324,7 +324,7 @@ namespace DRD.Service
         public long Save(RotationItem newRotation)
         {
             Rotation rotationDb;
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (newRotation.Id != 0)
             {
                 rotationDb = db.Rotations.FirstOrDefault(c => c.Id == newRotation.Id);
@@ -487,7 +487,7 @@ namespace DRD.Service
         /// <returns></returns>
         public string Delete(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var rotationDb = db.Rotations.Where(i => i.Id == id).FirstOrDefault();
 
             //check if rotation exist

@@ -8,7 +8,7 @@
     <table class="style-table" style="font-size:medium;background-color:{{(x.User.Id==model.UserId && x.Status==0?(x.Id==model.RotationNodeId?'#FCD097': '#AFC9D8'):'')}}">
         <tr style="border-bottom:dotted;border-bottom-width:1px;">
             <td class="style-foto" rowspan="2" style="padding:10px">
-                <img alt="" src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;"/>
+                <img alt="" src="{{x.User.ImageProfile!=null || x.User.ImageProfile==''? '/Images/Member/' + x.User.EncryptedUserId + '/' + x.User.ImageProfile : '/Images/Member/user.png'}}" width="50" height="50" style="border-radius: 50%; cursor:pointer;"/>
             </td>
             <td class="style-date" style="padding:10px">{{convertJsonDate(x.CreatedAt) | date:'dd/MM/yyyy HH:mm:ss'}}</td>
             <td class="style-name" style="padding:10px">

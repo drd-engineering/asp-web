@@ -55,9 +55,7 @@ namespace DRD.App.Controllers
         public ActionResult Document(long documentId)
         {
             CheckLogin();
-            Document doc = new Document();
-
-            doc = documentService.GetById(documentId);
+            Document doc = documentService.GetById(documentId);
             layout.Object = doc;
 
             return View(layout);
@@ -130,28 +128,12 @@ namespace DRD.App.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public void Initialize()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-            layout.Menus = login.GetMenus(this);
-            layout.User = login.GetUser(this);
-        }
-
-        public void InitializeAPI()
-        {
-            user = login.GetUser(this);
-            login.CheckLogin(this);
-        }
-
         public ActionResult List()
         {
             CheckLogin();
             layout.Menus = login.GetMenus(this);
             layout.User = user;
             return RedirectToAction("Index", "Dashboard");
-
-            //return View(layout);
         }
 
         public string OpenFile(string fileName)
@@ -202,13 +184,6 @@ namespace DRD.App.Controllers
             }
         }
 
-        //public ActionResult Signature(long documentId)
-        //{
-        //    UserSession user = getUserLogin();
-        //    var srv = new DocumentService();
-        //    var data = srv.Signature(documentId, user.Id);
-        //    return Json(data, JsonRequestBehavior.AllowGet);
-        //}
         public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
             var srv = new DocumentService();
@@ -221,13 +196,8 @@ namespace DRD.App.Controllers
             Layout layout = new Layout();
             DocumentService dsvr = new DocumentService();
             Document doc = dsvr.GetById(documentId);
-            UserService msvr = new UserService();
-            //UserSession user = msvr.GetById(memberId);
-            LoginController login = new LoginController();
-            //login.SetLogin(this, user);
             
             layout.Menus = null;
-            //layout.user = user;
             layout.Object = doc;
             layout.DataId = type;
 

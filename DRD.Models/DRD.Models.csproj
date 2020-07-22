@@ -204,7 +204,7 @@
     <Compile Include="API\RotationListItem.cs" />
     <Compile Include="API\SubscriptionLimit.cs" />
     <Compile Include="API\SmallCompanyData.cs" />
-    <Compile Include="ConstantModel.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="API\DocumentInboxData.cs" />
     <Compile Include="Custom\DocumentAnnotationsInboxData.cs" />
     <Compile Include="Custom\MemberData.cs" />
@@ -216,6 +216,7 @@
     <Compile Include="Custom\UserInboxData.cs" />
     <Compile Include="API\WorkflowListItem.cs" />
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
+    <Compile Include="DbDefinition\AuditTrail.cs" />
     <Compile Include="DbDefinition\BusinessUsage.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />
     <Compile Include="DbDefinition\Price.cs" />

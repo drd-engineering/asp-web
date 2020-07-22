@@ -18,13 +18,13 @@ namespace DRD.Models
 
         public Member()
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             IsAdministrator = false;
             IsActive = true;
         }
         public Member(long userId, long companyId, bool isMemberAccept, bool isCompanyAccept)
         {
-            Id = UtilitiesModel.RandomLongGenerator(minimumValue: ConstantModel.MINIMUM_VALUE_ID, maximumValue: ConstantModel.MAXIMUM_VALUE_ID);
+            Id = UtilitiesModel.RandomLongGenerator(minimumValue: Constant.MINIMUM_VALUE_ID, maximumValue: Constant.MAXIMUM_VALUE_ID);
             UserId = userId;
             CompanyId = companyId;
             IsMemberAccept = isMemberAccept;

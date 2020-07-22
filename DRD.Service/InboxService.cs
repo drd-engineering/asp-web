@@ -26,7 +26,7 @@ namespace DRD.Service
         /// <returns></returns>
         private bool CheckIdExist(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Inboxes.Any(i => i.Id == id);
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace DRD.Service
         /// <param name="rotationId"></param>
         /// <param name="previousStatus"></param>
         /// <param name="newStatus"></param>
-        private void UpdateStatus(ServiceContext db, long rotationId, int previousStatus, int newStatus)
+        private void UpdateStatus(Connection db, long rotationId, int previousStatus, int newStatus)
         {
             var rotationDb = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
             rotationDb.Status = newStatus;
@@ -59,7 +59,7 @@ namespace DRD.Service
         /// <returns></returns>
         private ActivityItem CreateActivityResult(long userId, long previousUserId, int exitCode, string rotationName, long rotationId, long rotationNodeId, string lastActivityStatus = "")
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var mem = db.Users.FirstOrDefault(c => c.Id == userId);
             var prev = db.Users.FirstOrDefault(c => c.Id == previousUserId);
             ActivityItem ret = new ActivityItem
@@ -87,7 +87,7 @@ namespace DRD.Service
         /// <param name="docs"></param>
         /// <param name="db"></param>
         /// <param name="rotationNode"></param>
-        private void InsertDoc(IEnumerable<RotationNodeDoc> docs, ServiceContext db, ref RotationNode rotationNode)
+        private void InsertDoc(IEnumerable<RotationNodeDoc> docs, Connection db, ref RotationNode rotationNode)
         {
             if (docs == null) return;
             var userId = rotationNode.UserId;
@@ -117,8 +117,8 @@ namespace DRD.Service
                 {
                     documentUserDb = documentService.CreateDocumentUser(rotationNodeDoc.DocumentId, userId);
                 }
-                if (((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REMOVE) == (int)ConstantModel.EnumDocumentAction.REMOVE) ||
-                    ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.REVISI) == (int)ConstantModel.EnumDocumentAction.REVISI))
+                if (((rotationNodeDoc.ActionStatus & (int)Models.Constant.EnumDocumentAction.REMOVE) == (int)Models.Constant.EnumDocumentAction.REMOVE) ||
+                    ((rotationNodeDoc.ActionStatus & (int)Models.Constant.EnumDocumentAction.REVISI) == (int)Models.Constant.EnumDocumentAction.REVISI))
                     documentService.DocumentRemovedorRevisedFromRotation(rotationNodeDoc.DocumentId);
                 else if (documentUserDb.ActionStatus != rotationNodeDoc.ActionStatus) documentService.DocumentUpdatedByRotation(rotationNodeDoc.DocumentId);
                 documentUserDb.ActionStatus |= rotationNodeDoc.ActionStatus;
@@ -134,9 +134,9 @@ namespace DRD.Service
                 }
                 docElement = documentService.SaveAnnos(rotationNodeDoc.DocumentId, userId, "", docElement);
 
-                if ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.SIGN) == (int)ConstantModel.EnumDocumentAction.SIGN)
+                if ((rotationNodeDoc.ActionStatus & (int)Models.Constant.EnumDocumentAction.SIGN) == (int)Models.Constant.EnumDocumentAction.SIGN)
                     documentService.Signature((long)rotationNodeDoc.DocumentId, userId, rotationNode.RotationId);
-                if ((rotationNodeDoc.ActionStatus & (int)ConstantModel.EnumDocumentAction.PRIVATESTAMP) == (int)ConstantModel.EnumDocumentAction.PRIVATESTAMP)
+                if ((rotationNodeDoc.ActionStatus & (int)Models.Constant.EnumDocumentAction.PRIVATESTAMP) == (int)Models.Constant.EnumDocumentAction.PRIVATESTAMP)
                     documentService.Stamp((long)rotationNodeDoc.DocumentId, userId, rotationNode.RotationId);
             }
             db.SaveChanges();
@@ -162,7 +162,7 @@ namespace DRD.Service
             else
                 criteria = "";
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (db.Inboxes == null) return null;
 
             var inboxesDb = db.Inboxes.Where(inbox => inbox.UserId == userId &&
@@ -217,7 +217,7 @@ namespace DRD.Service
             else
                 criteria = "";
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (db.Inboxes != null)
                 return db.Inboxes.Count(inbox => inbox.UserId == userId &&
                     (criteria.Equals("") || allCriteria.All(crtr => (inbox.Message).ToLower().Contains(
@@ -233,7 +233,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int CountUnreadInboxes(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (db.Inboxes != null) return db.Inboxes.Count(inbox => inbox.UserId == userId && inbox.IsUnread);
             return 0;
 
@@ -245,7 +245,7 @@ namespace DRD.Service
         /// <returns></returns>
         public long GetRotationNodeId(long inboxId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             if (db.Inboxes != null)
                 return db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault().ActivityId;
             return -1;
@@ -261,7 +261,7 @@ namespace DRD.Service
         {
             SetInboxToRead(inboxId);
             var rotationNodeId = GetRotationNodeId(inboxId);
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                 (from rotationNode in db.RotationNodes
                 where rotationNode.Id == rotationNodeId
@@ -292,11 +292,11 @@ namespace DRD.Service
             foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinks)
             {
                 if (workflowNodeLink.SymbolCode.Equals("SUBMIT"))
-                    result.ActionStatus |= (int)ConstantModel.EnumActivityAction.SUBMIT;
+                    result.ActionStatus |= (int)Models.Constant.EnumActivityAction.SUBMIT;
                 else if (workflowNodeLink.SymbolCode.Equals("REJECT"))
-                    result.ActionStatus |= (int)ConstantModel.EnumActivityAction.REJECT;
+                    result.ActionStatus |= (int)Models.Constant.EnumActivityAction.REJECT;
                 else if (workflowNodeLink.SymbolCode.Equals("REVISI"))
-                    result.ActionStatus |= (int)ConstantModel.EnumActivityAction.REVISI;
+                    result.ActionStatus |= (int)Models.Constant.EnumActivityAction.REVISI;
             }
             return result;
         }
@@ -307,7 +307,7 @@ namespace DRD.Service
         /// <returns></returns>
         private bool SetInboxToRead(long inboxId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var inbox = db.Inboxes.Where(i => i.Id == inboxId).FirstOrDefault();
             inbox.IsUnread = false;
             db.SaveChanges();
@@ -323,7 +323,7 @@ namespace DRD.Service
             //abort if thre is an error
             if (activity.ExitCode <= 0) return activity.ExitCode;
             
-            using var db = new ServiceContext();
+            using var db = new Connection();
             Inbox inboxDb = new Inbox();
             while (CheckIdExist(inboxDb.Id))
             {
@@ -406,7 +406,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int UpdatePreviousInbox(ActivityItem activity)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var prevInbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId != activity.UserId).ToList();
             if (prevInbox != null)
             {
@@ -448,7 +448,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int GenerateNewInbox(ActivityItem activity)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId == activity.UserId).FirstOrDefault();
             if (inbox != null)
             {
@@ -494,11 +494,11 @@ namespace DRD.Service
         /// <param name="parameter"></param>
         /// <param name="bit"></param>
         /// <returns></returns>
-        public List<ActivityItem> ProcessActivity(ProcessActivity parameter, ConstantModel.EnumActivityAction bit)
+        public List<ActivityItem> ProcessActivity(ProcessActivity parameter, Models.Constant.EnumActivityAction bit)
         {
             List<ActivityItem> returnValue = new List<ActivityItem>();
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var stringBit = bit.ToString();
 
             //get current rotation node
@@ -602,7 +602,7 @@ namespace DRD.Service
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
             var user = new User();
-            using (var db = new ServiceContext())
+            using (var db = new Connection())
             {
                 user = db.Users.FirstOrDefault(c => c.Id == inbox.UserId);
             }
@@ -623,23 +623,23 @@ namespace DRD.Service
         /// <param name="db"></param>
         /// <param name="rotation"></param>
         /// <param name="userId"></param>
-        private void AssignNodes(ServiceContext db, RotationInboxData rotation, long userId)
+        private void AssignNodes(Connection db, RotationInboxData rotation, long userId)
         {
             IEnumerable<RotationNode> rotationNodesDb = db.RotationNodes.Where(item => item.RotationId == rotation.Id).OrderBy(item => item.CreatedAt).ToList();
             //if owner has access to readonly
-            rotation.AccessType = rotation.CreatorId == userId ? (int)ConstantModel.AccessType.readOnly : (int)ConstantModel.AccessType.noAccess;
-            rotation.DocumentActionPermissionType = rotation.CreatorId == userId ? (int)ConstantModel.DocumentActionPermissionType.FullAccess : (int)ConstantModel.DocumentActionPermissionType.DependsOnRotationUser;
+            rotation.AccessType = rotation.CreatorId == userId ? (int)Models.Constant.AccessType.readOnly : (int)Models.Constant.AccessType.noAccess;
+            rotation.DocumentActionPermissionType = rotation.CreatorId == userId ? (int)Models.Constant.DocumentActionPermissionType.FullAccess : (int)Models.Constant.DocumentActionPermissionType.DependsOnRotationUser;
             foreach (RotationNode rotationNodeDb in rotationNodesDb)
             {
                 var newRotationNode = new RotationNodeInboxData(rotationNodeDb);
                 //set page access to specific user
                 if (newRotationNode.User.Id == userId)
                 {
-                    rotation.AccessType = (int)ConstantModel.AccessType.readOnly;
+                    rotation.AccessType = (int)Models.Constant.AccessType.readOnly;
                     // responsible access for the current user
                     if (newRotationNode.Status.Equals((int)Constant.RotationStatus.Open))
                     {
-                        rotation.AccessType = (int)ConstantModel.AccessType.responsible;
+                        rotation.AccessType = (int)Models.Constant.AccessType.responsible;
                     }
                 }
                 //document summaries document
@@ -662,9 +662,9 @@ namespace DRD.Service
                     foreach (DocumentAnnotationsInboxData documentElement in rotationNodeDoc.Document.DocumentAnnotations)
                     {
                         if (documentElement.UserId == null || documentElement.UserId == 0) continue;
-                        if (documentElement.ElementTypeId == (int)ConstantModel.EnumElementTypeId.SIGNATURE
-                            || documentElement.ElementTypeId == (int)ConstantModel.EnumElementTypeId.INITIAL
-                            || documentElement.ElementTypeId == (int)ConstantModel.EnumElementTypeId.PRIVATESTAMP)
+                        if (documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE
+                            || documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL
+                            || documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.UserId);
                             Element newElement = new Element();

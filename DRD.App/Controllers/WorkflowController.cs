@@ -1,4 +1,5 @@
-﻿using DRD.Models.Custom;
+﻿using DRD.Models;
+using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
 using System.Web.Mvc;

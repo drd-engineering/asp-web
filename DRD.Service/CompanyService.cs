@@ -17,7 +17,7 @@ namespace DRD.Service
         private ICollection<CompanyItem> GetAllCompanyDetailByAdminId(long adminId)
         {
             memberService = new MemberService();
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var companies = new List<CompanyItem>();
             var memberAsAdmins = memberService.GetAllAdminDataofUser(adminId);
             foreach (Member member in memberAsAdmins)
@@ -33,7 +33,7 @@ namespace DRD.Service
         //helper
         private ICollection<CompanyItem> GetAllCompanyDetailByOwnerId(long ownerId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             memberService = new MemberService();
             userService = new UserService();
             subscriptionService = new SubscriptionService();
@@ -74,9 +74,9 @@ namespace DRD.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns></returns>
-        public string AcceptMember(long memberId)
+        public string AcceptMember(long memberId, long loginUserId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             subscriptionService = new SubscriptionService();
 
             Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
@@ -84,11 +84,14 @@ namespace DRD.Service
             if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
             
             memberSearch.IsCompanyAccept = true;
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid: true);
-            
-            if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
-                db.SaveChanges();
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid: true);
 
+            if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+            {
+                AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(memberSearch.UserId, memberSearch.CompanyId));
+                db.SaveChanges();
+            }
+            
             return subscriptionStatus.ToString();    
         }
 
@@ -98,7 +101,7 @@ namespace DRD.Service
         /// <returns>only contains little details like id, name and code</returns>
         public ICollection<SmallCompanyData> GetCompanies()
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = (from cmpny in db.Companies
                           where cmpny.IsActive
                           select new SmallCompanyData
@@ -117,7 +120,7 @@ namespace DRD.Service
         /// <returns></returns>
         public ICollection<CompanyItem> GetOwnedandManagedCompany(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var managedCompany = GetAllCompanyDetailByAdminId(userId);
             var ownedCompany = GetAllCompanyDetailByOwnerId(userId);
             // merge two list of company
@@ -135,7 +138,7 @@ namespace DRD.Service
         /// <returns>only contain small data like id, code and name of company</returns>
         public ICollection<SmallCompanyData> GetCompaniesOwnedByUser(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = (from cmpny in db.Companies
                           where cmpny.OwnerId == userId && cmpny.IsActive
                           select new SmallCompanyData
@@ -150,7 +153,7 @@ namespace DRD.Service
         //helper
         private CompanyItem GetCompanyDetail(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             memberService = new MemberService();
             userService = new UserService();
             subscriptionService = new SubscriptionService();
@@ -193,7 +196,7 @@ namespace DRD.Service
             if (userId != Constant.ID_NOT_FOUND && !memberService.CheckIsAdmin(userId, id) && !memberService.CheckIsOwner(userId, id))
                 return null;
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = (from cmpny in db.Companies
                           where cmpny.Id == id && cmpny.IsActive
                           select new SmallCompanyData
@@ -210,9 +213,9 @@ namespace DRD.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns> return user id if member rejected, return -1 if member not found. </returns>
-        public string RejectMember(long memberId)
+        public string RejectMember(long memberId, long loginUserId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             subscriptionService = new SubscriptionService();
 
             Member memberSearch = db.Members.Where(memberItem => memberItem.Id == memberId).FirstOrDefault();
@@ -220,13 +223,16 @@ namespace DRD.Service
             if (memberSearch == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
             //check subscription
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Member, memberSearch.CompanyId, -1, addAfterSubscriptionValid: true);
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
                 return subscriptionStatus.ToString();
 
             //rejectmember
             memberSearch.IsActive = false;
             memberSearch.IsCompanyAccept = false;
+
+            AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(memberSearch.UserId, memberSearch.CompanyId));
+
             db.SaveChanges();
             return subscriptionStatus.ToString();
         }
@@ -238,11 +244,11 @@ namespace DRD.Service
         /// <param name="userId"></param>
         /// <param name="emails"></param>
         /// <returns></returns>
-        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails, long loginUserId)
         {
 
             memberService = new MemberService();
-            var data = memberService.AddMembers(companyId, userId, emails);
+            var data = memberService.AddMembers(companyId, userId, emails, loginUserId);
             foreach (AddMemberResponse item in data)
                 memberService.SendEmailAddMember(item);
             

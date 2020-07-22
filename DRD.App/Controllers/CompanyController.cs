@@ -86,7 +86,7 @@ namespace DRD.App.Controllers
         public ActionResult AddMembers(long companyId, string emails)
         {
             CheckLogin();
-            var data = companyService.AddMembers(companyId,user.Id, emails);
+            var data = companyService.AddMembers(companyId,user.Id, emails, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -107,7 +107,7 @@ namespace DRD.App.Controllers
         public ActionResult AcceptMember(long memberId)
         {
             CheckLogin();
-            var data = companyService.AcceptMember(memberId);
+            var data = companyService.AcceptMember(memberId, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -118,7 +118,7 @@ namespace DRD.App.Controllers
         public ActionResult RejectMember(long memberId)
         {
             CheckLogin();
-            var data = companyService.RejectMember(memberId);
+            var data = companyService.RejectMember(memberId, user.Id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

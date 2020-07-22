@@ -47,7 +47,7 @@ namespace DRD.App.Controllers
             RotationInboxData inbox = inboxService.GetInbox(id, user.Id);
 
             //page authorization check if user has no access
-            if (inbox == null || inbox.AccessType.Equals((int)ConstantModel.AccessType.noAccess))
+            if (inbox == null || inbox.AccessType.Equals((int)DRD.Models.Constant.AccessType.noAccess))
                 return RedirectToAction("Index", "Inbox");
 
             //user have access
@@ -76,7 +76,7 @@ namespace DRD.App.Controllers
             var data = inboxService.GetInbox(id, user.Id);
 
             //page authorization check if user has no access
-            if(data.AccessType.Equals((int)ConstantModel.AccessType.noAccess))
+            if(data.AccessType.Equals((int)DRD.Models.Constant.AccessType.noAccess))
                 return Json(-2, JsonRequestBehavior.AllowGet);
             
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -133,7 +133,7 @@ namespace DRD.App.Controllers
         public ActionResult ProcessActivity(ProcessActivity param, int bit)
         {
             CheckLogin();
-            var data = inboxService.ProcessActivity(param, (ConstantModel.EnumActivityAction)bit);
+            var data = inboxService.ProcessActivity(param, (DRD.Models.Constant.EnumActivityAction)bit);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

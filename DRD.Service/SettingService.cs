@@ -27,7 +27,7 @@ namespace DRD.Service
         /// <returns></returns>
         public CompanySettingData GetCompanySetting(long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             subscriptionService = new SubscriptionService();
             CompanySettingData companyData = new CompanySettingData();
             var pendingData = (from member in db.Members
@@ -41,7 +41,7 @@ namespace DRD.Service
                                    Name = company.Name,
                                    OwnerId = company.OwnerId,
                                    OwnerName = user.Name,
-                                   Role = member.IsMemberAccept ? (member.IsAdministrator ? ConstantModel.MemberRole.Administrator.ToString() : ConstantModel.MemberRole.Member.ToString()) : ConstantModel.MemberRole.Not_Member.ToString(),
+                                   Role = member.IsMemberAccept ? (member.IsAdministrator ? Models.Constant.MemberRole.Administrator.ToString() : Models.Constant.MemberRole.Member.ToString()) : Models.Constant.MemberRole.Not_Member.ToString(),
                                    Status = member.IsMemberAccept ? (int)Constant.InivitationStatus.Connected : (int)Constant.InivitationStatus.Pending
                                }).ToList();
             if (pendingData != null)
@@ -58,12 +58,12 @@ namespace DRD.Service
         {
             subscriptionService = new SubscriptionService();
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
 
             if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Member, companyId, 1, addAfterSubscriptionValid: true);
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
 
 
@@ -79,13 +79,13 @@ namespace DRD.Service
         /// <returns></returns>
         public string ResetState(long companyId, long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             subscriptionService = new SubscriptionService();
 
             var member = db.Members.Where(i => i.UserId == userId && i.CompanyId == companyId).FirstOrDefault();
             if (member == null) return Constant.InivitationStatus.ERROR_NOT_FOUND.ToString();
 
-            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(ConstantModel.BusinessPackageItem.Member, companyId, -1, addAfterSubscriptionValid: true);
+            var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Member, companyId, -1, addAfterSubscriptionValid: true);
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK)) return subscriptionStatus.ToString();
 
             member.IsActive = false;

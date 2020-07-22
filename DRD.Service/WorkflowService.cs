@@ -16,7 +16,7 @@ namespace DRD.Service
         //helper
         private bool CheckIdExist(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             return db.Workflows.Any(i => i.Id == id);
         }
 
@@ -51,7 +51,7 @@ namespace DRD.Service
         /// <returns></returns>
         public WorkflowItem GetWorkflow(long id, long userId)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                 (from workflow in db.Workflows
                 where workflow.Id == id && workflow.CreatorId == userId && workflow.IsActive
@@ -152,7 +152,7 @@ namespace DRD.Service
             System.Diagnostics.Debug.WriteLine(criteria);
 
             //call db objects
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result =
                 (from workflow in db.Workflows
                 where workflow.CreatorId == creatorId && workflow.IsActive == isActive && (criteria.Equals("") || criterias.All(x => (workflow.Name + " " + workflow.Description).ToLower().Contains(x.ToLower())))
@@ -182,7 +182,7 @@ namespace DRD.Service
             else
                 criteria = "";
 
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var result = db.Workflows.Count(workflow =>
                 workflow.CreatorId == creatorId &&
                 workflow.IsActive == isActive &&
@@ -203,7 +203,7 @@ namespace DRD.Service
         public int Save(WorkflowItem newWorkflow)
         {
             Workflow workflowDb;
-            using var db = new ServiceContext();
+            using var db = new Connection();
 
             // validity subscription type
             var creator = db.Users.FirstOrDefault(user => user.Id == newWorkflow.CreatorId);
@@ -305,7 +305,7 @@ namespace DRD.Service
         /// <returns></returns>
         public string Delete(long id)
         {
-            using var db = new ServiceContext();
+            using var db = new Connection();
             var workflow = db.Workflows.Where(i => i.Id == id).FirstOrDefault();
 
             //check if workflow exist
