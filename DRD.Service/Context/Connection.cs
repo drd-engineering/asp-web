@@ -8,8 +8,8 @@ namespace DRD.Service.Context
 {
     public class Connection : DbContext
     {
-        public Connection() : base(Constant.CONSTRING)
-        {
+        public Connection() :   base(Constant.CONSTRING)
+        { 
         }
 
         public DbSet<AuditTrail> AuditTrails { get; set; }

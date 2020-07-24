@@ -179,9 +179,8 @@ namespace DRD.Service
         /// <param name="userId"></param>
         /// <param name="emails"></param>
         /// <returns></returns>
-        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails, long loginUserId)
         {
-            System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ emails);
             List<AddMemberResponse> returnValue = new List<AddMemberResponse>();
             string[] listOfEmail = emails.Split(',');
             using var db = new Connection();
@@ -200,7 +199,6 @@ namespace DRD.Service
                     User target = db.Users.Where(user => user.Email.Equals(email)).FirstOrDefault();
                     if (target == null)
                     {
-                        System.Diagnostics.Debug.WriteLine("ADD MEMBERS :: "+ email);
                         // user that wanted to invite is not found (not registered)
                         returnValue.Add(new AddMemberResponse(email, 0, "", 0, companyInviting.Name));
                         continue;
@@ -218,6 +216,8 @@ namespace DRD.Service
                     //exist but company hasn't accepeted yet
                     if (!existingMember.IsCompanyAccept)
                     {
+                        AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(existingMember.UserId, existingMember.CompanyId));
+
                         existingMember.IsCompanyAccept = true;
                         existingMember.JoinedAt = DateTime.Now;
                         db.SaveChanges();
@@ -231,6 +231,9 @@ namespace DRD.Service
                         continue;
                     }
                     //exist and not accepted yet by user
+
+                    AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.InviteMember(existingMember.UserId, existingMember.CompanyId));
+
                     returnValue.Add(new AddMemberResponse(email, existingMember.Id, target.Name, 2, companyInviting.Name));
                 }
             }
@@ -418,9 +421,9 @@ namespace DRD.Service
 
             using (var db = new Connection())
             {
-                var contactListAllMatch = (from RotationUser in db.RotationUsers
+                var usersInRotation = (from RotationUser in db.RotationUsers
                                            join User in db.Users on RotationUser.UserId equals User.Id
-                                           where User.Id != userId && RotationUser.RotationId == rotationId
+                                           where RotationUser.RotationId == rotationId
                                            && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
                                            select new MemberData
                                            {
@@ -430,14 +433,17 @@ namespace DRD.Service
                                                Email = User.Email,
                                                ImageProfile = User.ProfileImageFileName
                                            }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
-                if (contactListAllMatch != null)
-                    for (var i = 0; i < contactListAllMatch.Count(); i++)
+                if (usersInRotation.Where(u => u.Id == userId).Count() > 1)
+                    usersInRotation.Remove(usersInRotation.FirstOrDefault(u => u.Id == userId));
+                usersInRotation = usersInRotation.Distinct(new MemberDataComparer()).ToList();
+                if (usersInRotation != null)
+                    for (var i = 0; i < usersInRotation.Count(); i++)
                     {
-                        var item = contactListAllMatch.ElementAt(i);
+                        var item = usersInRotation.ElementAt(i);
                         item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
-                        contactListAllMatch[i] = item;
+                        usersInRotation[i] = item;
                     }
-                return contactListAllMatch;
+                return usersInRotation;
             }
         }
         /// <summary>

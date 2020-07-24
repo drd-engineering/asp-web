@@ -74,7 +74,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns></returns>
-        public string AcceptMember(long memberId)
+        public string AcceptMember(long memberId, long loginUserId)
         {
             using var db = new Connection();
             subscriptionService = new SubscriptionService();
@@ -85,10 +85,13 @@ namespace DRD.Service
             
             memberSearch.IsCompanyAccept = true;
             var subscriptionStatus = subscriptionService.CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem.Member, memberSearch.CompanyId, 1, addAfterSubscriptionValid: true);
-            
-            if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
-                db.SaveChanges();
 
+            if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
+            {
+                AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(memberSearch.UserId, memberSearch.CompanyId));
+                db.SaveChanges();
+            }
+            
             return subscriptionStatus.ToString();    
         }
 
@@ -210,7 +213,7 @@ namespace DRD.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns> return user id if member rejected, return -1 if member not found. </returns>
-        public string RejectMember(long memberId)
+        public string RejectMember(long memberId, long loginUserId)
         {
             using var db = new Connection();
             subscriptionService = new SubscriptionService();
@@ -227,6 +230,9 @@ namespace DRD.Service
             //rejectmember
             memberSearch.IsActive = false;
             memberSearch.IsCompanyAccept = false;
+
+            AuditTrailService.RecordLog(loginUserId, Constant.AuditTrail.Company.ToString(), AuditTrailMessages.AcceptMember(memberSearch.UserId, memberSearch.CompanyId));
+
             db.SaveChanges();
             return subscriptionStatus.ToString();
         }
@@ -238,11 +244,11 @@ namespace DRD.Service
         /// <param name="userId"></param>
         /// <param name="emails"></param>
         /// <returns></returns>
-        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails)
+        public List<AddMemberResponse> AddMembers(long companyId, long userId, string emails, long loginUserId)
         {
 
             memberService = new MemberService();
-            var data = memberService.AddMembers(companyId, userId, emails);
+            var data = memberService.AddMembers(companyId, userId, emails, loginUserId);
             foreach (AddMemberResponse item in data)
                 memberService.SendEmailAddMember(item);
             

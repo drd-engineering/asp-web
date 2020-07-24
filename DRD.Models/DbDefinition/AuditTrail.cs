@@ -10,6 +10,6 @@ namespace DRD.Models
         public long Id { get; set; } // Id (Primary key)
         public long UserId { get; set; }
         public string Activity { get; set; }
-        public int Type { get; set; }
+        public string Type { get; set; }
     }
 }

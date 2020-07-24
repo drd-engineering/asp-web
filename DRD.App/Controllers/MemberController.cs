@@ -12,15 +12,26 @@ namespace DRD.App.Controllers
         LoginController login;
         MemberService memberService;
         UserSession user;
+        private Layout layout;
 
+        //helper
         private bool CheckLogin(bool getMenu = false)
         {
             login = new LoginController();
             if (login.CheckLogin(this))
             {
+                //instantiate
                 user = login.GetUser(this);
                 memberService = new MemberService();
-                user = login.GetUser(this);
+                if (getMenu)
+                {
+                    //get menu if user authenticated
+                    layout = new Layout
+                    {
+                        Menus = login.GetMenus(this),
+                        User = login.GetUser(this)
+                    };
+                }
                 return true;
             }
             return false;
@@ -76,14 +87,12 @@ namespace DRD.App.Controllers
         }
         public ActionResult AcceptInvitation(long memberId)
         {
-            CheckLogin();
-            if (user == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
+            if (!CheckLogin())
+                return RedirectToAction("Index", "login", new { redirectUrl = "member/AcceptInvitation?memberId=" + memberId });
+
             var data = memberService.AcceptInvitation(user.Id, memberId);
             if (!data) return RedirectToAction("Index", "LoginController");
-            
+
             return RedirectToAction("Index", "Setting");
         }
         public ActionResult GetAcceptedMember(long companyId)

@@ -63,6 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuditTrailMessages.cs" />
+    <Compile Include="AuditTrailService.cs" />
     <Compile Include="Setting.cs" />
     <Compile Include="SettingService.cs" />
     <Compile Include="SymbolService.cs" />

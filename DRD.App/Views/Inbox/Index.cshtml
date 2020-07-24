@@ -258,7 +258,7 @@
                     $scope.rotationNodes = product.RotationNodes;
                     $scope.currentRotationNode = product.RotationNodes.filter((subject) => subject.Id == product.RotationNodeId)[0];
                     $scope.model.Tags = product.Tags;
-                    
+
                     $scope.model.CurrentActivity = product.CurrentActivity;
                     $scope.workflow = product.Workflow;
                     if ($scope.model.Status == 0) {
@@ -322,11 +322,11 @@
                 var permission = arg.Document.DocumentUser.ActionPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload
                     (
-                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ( $scope.model.DocumentActionPermissionType == 2 || ((permission & 16) == 16))
+                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ($scope.model.DocumentActionPermissionType == 2 || ((permission & 16) == 16))
                     );
                 iframe.contentWindow.angular.element("#xpdfController").scope().showPrint
                     (
-                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ( $scope.model.DocumentActionPermissionType == 2 || ((permission & 8) == 8))
+                        $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ($scope.model.DocumentActionPermissionType == 2 || ((permission & 8) == 8))
                     );
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDownloadFileName(arg.Document.FileName);
                 // used for print request and download request in document viewer.
@@ -383,7 +383,7 @@
                     }
                 }, function (response) {
                     //error handle\
-                        $scope.btnDisabled = false;
+                    $scope.btnDisabled = false;
                     var x = 0;
                 });
             };
@@ -400,9 +400,9 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setFirstPersonToolbar($scope.checkIsFirstPerson());
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 isdefineiframe = true;
-                $scope.selectedIdx=idx;
+                $scope.selectedIdx = idx;
                 $("#modal_pdf_viewer").modal("show");
-                $(window).on('beforeunload', function(){ return "";});
+                $(window).on('beforeunload', function () { return ""; });
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
             $scope.closePdf = function () {
@@ -420,7 +420,7 @@
                             showLoaderOnConfirm: true,
                             confirmButtonText: "Yes ",
                             cancelButtonText: "No",
-                        },function (isConfirm) {
+                        }, function (isConfirm) {
                             $scope.btnDisabled = false;
                             if (isConfirm) {
                                 $scope.docs[$scope.selectedIdx].Document.DocumentAnnotations = items;
@@ -480,10 +480,10 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 isdefineiframe = true;
                 $("#modal_pdf_viewer").modal("show");
-                $(window).on('beforeunload', function(){ return "";});
+                $(window).on('beforeunload', function () { return ""; });
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
             };
-            var isok=false;
+            var isok = false;
             $scope.printDocument = function (idx) {
                 var doc = $scope.docs[idx];
                 var iframe = document.getElementById('xpdfIFrame');
@@ -499,11 +499,11 @@
             };
 
             $scope.checkIsFirstPerson = function () {
-                return $scope.model.CurrentActivity == $scope.model.FirstNodeId && $scope.model.accessType !=1;
+                return $scope.model.CurrentActivity == $scope.model.FirstNodeId && $scope.model.accessType != 1;
             };
 
             $scope.checkIsActive = function () {
-                return $scope.model.Status == '00'  && $scope.model.accessType !=1;
+                return $scope.model.Status == '00' && $scope.model.accessType != 1;
             };
 
             $scope.openPrintDocument = function (idx, fileName) {
@@ -626,6 +626,9 @@
                     var x = 0;
                 });
             };
+            $scope.resetButtonState = function () {
+                $scope.btnDisabled = false;
+            }
             $scope.showPasswordModal = function () {
                 // $scope.btnDisabled = true;
                 var val = document.getElementById("thePassword");

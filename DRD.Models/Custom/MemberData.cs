@@ -1,4 +1,6 @@
-﻿namespace DRD.Models.Custom
+﻿using System.Collections.Generic;
+
+namespace DRD.Models.Custom
 {
     public class MemberData
     {
@@ -13,5 +15,17 @@
         public string CompanyName { get; set; }
 
         public MemberData() { }
+    }
+    public class MemberDataComparer : IEqualityComparer<MemberData>
+    {
+        public bool Equals(MemberData g1, MemberData g2)
+        {
+            return g1.Id == g2.Id;
+        }
+
+        public int GetHashCode(MemberData obj)
+        {
+            return obj.Id.GetHashCode();
+        }
     }
 }
