@@ -17,10 +17,10 @@
                 <span class="style-node" style="color:{{x.WorkflowNode.TextColor}};background-color:{{x.WorkflowNode.BackColor}}">{{x.WorkflowNode.Caption}}</span>
 
                 <!--Document-->
-                <div ng-show="x.RotationNodeDocs.length>0 && x.Status!=0" style="font-size:x-small">
+                <div ng-show="x.RotationNodeDocs.length>0 && x.Status!=0" style="font-size:x-small;">
                     <span><u>Documents:</u></span> <br />
                     <span ng-repeat="d in x.RotationNodeDocs">
-                        <span>
+                        <span style="white-space: nowrap;width: 50px; overflow: hidden;text-overflow: clip;">
                             <b>{{d.Document.FileName}}</b>
                             <span style="font-size:xx-small;color:darkgrey">
                                 <span ng-show="validAction(d.ActionStatus,1)">signed</span>

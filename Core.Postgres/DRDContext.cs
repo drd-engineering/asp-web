@@ -33,6 +33,7 @@ namespace Core.Postgres
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
+        public DbSet<AuditTrail> AuditTrails { get; set; }
 
         public override int SaveChanges()
         {
