@@ -37,7 +37,7 @@
     var strPath;
     var colorDefault = 'red';
     var colorPen = 'red';
-    var colorHighlight = 'orange';
+    var colorHighlight = 'yellow';
     var textColor = 'red';
     var opacityColor = 1;
     var lineStraight = false;
@@ -318,7 +318,7 @@
     $scope.removePngInSvg = function () {
 
     }
-    $scope.doPrint = function () {
+    $scope.doPrint2 = function () {
 
         $("#viewer").printThis({
             //debug: false,               // show the iframe for debugging
@@ -386,7 +386,7 @@
             }).save().then(function (e) { $(".xtmpimg").remove(); });
         }, 1000);
     }
-    $scope.doDownload = function () {
+    $scope.doDownload2 = function () {
 
         /*
         <select id="mode">
@@ -669,10 +669,40 @@
     $scope.getBase64Pdf = function () {
         return base64Pdf;
     }
-
-    var downloadFileName = null;
-    $scope.setDownloadFileName = function (fname) {
-        downloadFileName = fname;
+    $scope.prepareRealAnnotation = function (theAnno) {
+        var annos = [];
+        for (i = 0; i < theAnno.length; i++) {
+            var ix = theAnno[i];
+            if (ix.IsDeleted) continue;
+            var item = {};
+            item.Id = ix.Id;
+            item.Page = ix.Page;
+            item.LeftPosition = ix.LeftPosition;
+            item.TopPosition = ix.TopPosition;
+            item.WidthPosition = ix.WidthPosition;
+            item.HeightPosition = ix.HeightPosition;
+            item.Color = ix.Color;
+            item.BackColor = ix.BackColor;
+            item.Text = ix.Text;
+            item.Unknown = ix.Unknown;
+            item.Rotation = ix.Rotation;
+            item.ScaleX = ix.ScaleX;
+            item.ScaleY = ix.ScaleY;
+            item.TransitionX = ix.TransitionX;
+            item.TransitionY = ix.TransitionY;
+            item.StrokeWidth = ix.StrokeWidth;
+            item.Opacity = ix.Opacity;
+            item.CreatorId = ix.CreatorId;
+            item.Flag = ix.Flag;
+            item.AssignedAnnotationCode = ix.AssignedAnnotationCode;
+            item.AssignedAt = ix.AssignedAt;
+            item.AssignedAnnotationImageFileName = ix.AssignedAnnotationImageFileName;
+            item.UserId = ix.UserId;
+            item.ElementTypeId = ix.ElementType;
+            item.Element = ix.Element;
+            annos.push(item);
+        }
+        return annos;
     }
     $scope.clickDownload = function () {
         $http.post('/document/RequestDownloadDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
@@ -688,17 +718,22 @@
                     alert("Sorry you can't download this document, you don't have permission to download this document");
                     return;
                 }
-                insertImgNo = 0;
-                $scope.command = "DOWNLOAD";
-                $scope.insertPngToSvg();
+                // If Valid to download, document will started to downloaded
+                const linkSource = `data:application/pdf;base64,${$scope.pdfString}`;
+                const downloadLink = document.createElement("a");
+                const fileName = $scope.downloadFileName;
+
+                downloadLink.href = linkSource;
+                downloadLink.download = fileName;
+                downloadLink.click();
             }
         }, function (response) {
             //error handle\
             var x = 0;
-        });        
+        });
     }
     $scope.clickPrint = function () {
-        console.log($scope.defaultDocumentName);
+        // Update Database document will be print
         $http.post('/document/RequestPrintDocument', { docName: $scope.defaultDocumentName }).then(function (response) {
             if (response.data) {
                 var val = response.data;
@@ -712,9 +747,20 @@
                     alert("Sorry you can't print this document, you don't have permission to print this document");
                     return;
                 }
-                insertImgNo = 0;
-                $scope.command = "PRINT";
-                $scope.insertPngToSvg();
+                // If valid to print, Document will be print
+                var base64str = $scope.pdfString;
+                // decode base64 string, remove space for IE compatibility
+                var binary = atob(base64str.replace(/\s/g, ''));
+                var len = binary.length;
+                var buffer = new ArrayBuffer(len);
+                var view = new Uint8Array(buffer);
+                for (var i = 0; i < len; i++) {
+                    view[i] = binary.charCodeAt(i);
+                }
+                // create the blob object with content-type "application/pdf"               
+                var blobpdf = new Blob([view], { type: "application/pdf" });
+                var pdfUrl = URL.createObjectURL(blobpdf);
+                printJS(pdfUrl);
             }
         }, function (response) {
             //error handle\
@@ -1688,7 +1734,12 @@
     }
     //setdefault
     $scope.resetAnnoItems = function () {
-        annoItem = { Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null, BackColor: null, Text: null, Unknown: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1, CreatorId: null, UserId: null, IsDeleted: false, Flag: 0, AssignedAnnotationCode: null, AssignedAt: null, AssignedAnnotationImageFileName: null, Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null } };
+        annoItem = {
+            Id: 0, SvgId: '', Page: 0, ElementType: '', LeftPosition: 0, TopPosition: 0, WidthPosition: null, HeightPosition: null, Color: null,
+            BackColor: null, Text: null, Unknown: null, Rotation: 0, ScaleX: 1, ScaleY: 1, TransitionX: 0, TransitionY: 0, StrokeWidth: 4, Opacity: 1,
+            CreatorId: null, UserId: null, IsDeleted: false, Flag: 0, AssignedAnnotationCode: null, AssignedAt: null, AssignedAnnotationImageFileName: null,
+            Element: { EncryptedUserId: 0, UserId: null, Name: null, Foto: null }
+        };
         $scope.annoItems = [];
         svgNo = 0;
     }
@@ -1726,11 +1777,16 @@
     $scope.setAnnoElementEnable = function (flag) {
         isAnnoElementEnable = flag;
     }
-
-    $scope.setDefaultPdf = function (filename, isNew) {
-        $scope.defaultDocumentName = filename;
-        $http.post('/updownfile/XGetPdfData', { keyf: filename, isNew: isNew }).then(function (response) {
+    $scope.pdfString = "";
+    $scope.downloadFileName = null;
+    $scope.setDownloadFileName = function (fname) {
+        $scope.downloadFileName = fname;
+    }
+    $scope.setDefaultPdf = function (fileUrlName, isNew) {
+        $scope.defaultDocumentName = fileUrlName;
+        $http.post('/updownfile/XGetPdfData', { fileUrlName: fileUrlName, isNew: isNew }).then(function (response) {
             if (response.data) {
+                $scope.pdfString = response.data;
                 PDFViewerApplication.open('data:application/pdf;base64, ' + response.data);
             }
         }, function (response) {

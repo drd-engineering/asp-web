@@ -1,4 +1,4 @@
-﻿ 
+﻿
 @{
     ViewBag.Title = "PdfViewer";
     Layout = null;
@@ -54,6 +54,9 @@ See https://github.com/adobe-type-tools/cmap-resources
 <script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
 <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
 <script type="text/javascript" src="/assets/js/plugins/loaders/blockui.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.css"></script>
+
 
 <script src="/assets/vendors/angular-1.5.5/angular.js"></script>
 <script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
@@ -80,7 +83,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 <style>
     .btn-active {
-        background-color:limegreen;
+        background-color: limegreen;
     }
 </style>
 
@@ -251,7 +254,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                                             <span data-l10n-id="tools_label">Tools</span>
                                         </button>
                                     </div>
-                                    <div  style="display:none" id="toolbarViewerMiddle">
+                                    <div style="display:none" id="toolbarViewerMiddle">
                                         <div class="splitToolbarButton">
                                             <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" data-l10n-id="zoom_out">
                                                 <span data-l10n-id="zoom_out_label">Zoom Out</span>
@@ -292,12 +295,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                                                     <button type="button" id="pointer" class="btn-anno btn btn-xs btn-icon btn-tt btn-active" ng-click="clickPointer($event)" title="Pointer" @*data-original-title="Pointer" data-popup="tooltip" data-placement="bottom"*@><img src="~/Images/Toolbar/pointer.png" width="16" /></button>
                                                 </div>
                                                 <div class="btn-group">
-                                                    <button type="button" id="pen" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPen(false, $event)" title="Pen"><img src="~/Images/Toolbar/pen.png" width="16" /></button>
-                                                    <button type="button" id="penx" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPen(true, $event)" title="Pen Straight"><img src="~/Images/Toolbar/penstgr.png" width="16" /></button>
+                                                    @*<button type="button" id="pen" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPen(false, $event)" title="Pen"><img src="~/Images/Toolbar/pen.png" width="16" /></button>*@
+                                                    <button type="button" id="penx" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickPen(true, $event)" title="Pen"><img src="~/Images/Toolbar/penstgr.png" width="16" /></button>
                                                 </div>
                                                 <div class="btn-group">
-                                                    <button type="button" id="highlighter" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickHighlight(false, $event)" title="Highlighter"><img src="~/Images/Toolbar/highlighter.png" width="16" /></button>
-                                                    <button type="button" id="highlighterx" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickHighlight(true, $event)" title="Highlighter Straight"><img src="~/Images/Toolbar/highlighterstgr.png" width="16" /></button>
+                                                    @*<button type="button" id="highlighter" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickHighlight(false, $event)" title="Highlighter"><img src="~/Images/Toolbar/highlighter.png" width="16" /></button*@
+                                                    <button type="button" id="highlighterx" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickHighlight(true, $event)" title="Highlighter"><img src="~/Images/Toolbar/highlighterstgr.png" width="16" /></button>
                                                 </div>
                                                 <div class="btn-group">
                                                     <button type="button" id="text" class="btn-anno btn btn-xs btn-icon btn-tt" ng-click="clickText($event)" title="Text"><img src="~/Images/Toolbar/text.png" width="16" /></button>
@@ -316,7 +319,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                                         </div>
                                     </div>
                                 </div>
-                                
+
 
                                 <div id="loadingBar">
                                     <div class="progress">
@@ -499,7 +502,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                         </tr>
                     </table>
                     <svg class="svg-selection-xx" id="svg-selection-xx" style="left: 0px; top: 0px; width: 64px; height: 55px;display:none;z-index:1000;">
-                        <rect class="rect-selection-xx" id="rect-selection-xx" x="4" y="4" style="width:50px; height:41px; stroke-width: 2; background-color:black;opacity:0.2"/>
+                        <rect class="rect-selection-xx" id="rect-selection-xx" x="4" y="4" style="width:50px; height:41px; stroke-width: 2; background-color:black;opacity:0.2" />
                         <circle cx="4" cy="4" r="4" stroke-width="1" class="circle-selection resize-cursor-topleft" title="Resize top left"></circle>
                         <circle cx="32" cy="4" r="4" stroke-width="1" class="circle-selection resize-cursor-topcenter" title="Resize top"></circle>
                         <circle cx="57" cy="4" r="4" stroke-width="1" class="circle-selection resize-cursor-topright" title="Resize top right"></circle>
@@ -508,14 +511,14 @@ See https://github.com/adobe-type-tools/cmap-resources
                         <circle cx="32" cy="48" r="4" stroke-width="1" class="circle-selection resize-cursor-bottomcenter" title="Resize bottom"></circle>
                         <circle cx="4" cy="48" r="4" stroke-width="1" class="circle-selection resize-cursor-bottomleft" title="Resize bottom left"></circle>
                         <circle cx="4" cy="27.5" r="4" stroke-width="1" class="circle-selection resize-cursor-left" title="Resize left"></circle>
-                        
+
                     </svg>
-                    
-                    
+
+
 
                     <canvas id="xcanvas" style="position:absolute;top:-2000px;width:1000px;height:1000px"></canvas>
                     @*<div id="png-container"></div>
-                    <div id="editor"></div>*@
+                        <div id="editor"></div>*@
 
 
 

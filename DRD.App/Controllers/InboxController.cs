@@ -4,6 +4,7 @@ using DRD.Models.View;
 using DRD.Service;
 using System.Web.Mvc;
 using DRD.Models;
+using System.Threading.Tasks;
 
 namespace DRD.App.Controllers
 {
@@ -134,8 +135,20 @@ namespace DRD.App.Controllers
         {
             CheckLogin();
             var data = inboxService.ProcessActivity(param, (DRD.Models.Constant.EnumActivityAction)bit);
+            UpDownFileController fileController;
+            Task<bool> finalizeDocumentTask;
+            foreach (ActivityItem item in data)
+            {
+                if (item.LastActivityStatus == "END")
+                {
+                    //prod.CompanyId = (long)user.CompanyId;
+                    fileController = DependencyResolver.Current.GetService<UpDownFileController>();
+                    fileController.ControllerContext = new ControllerContext(this.Request.RequestContext, fileController);
+                    finalizeDocumentTask = Task.Run(() => fileController.FinalizeDocuments(param.RotationNodeDocs));
+                    break;
+                }
+            }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

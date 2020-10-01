@@ -39,6 +39,125 @@ namespace DRD.Service
         {
             return Encoding.UTF8.GetBytes(Constant.ENCRYPT_DECRYPT_SALT);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
+        public string FileEncryptRequest(HttpRequestBase request, string inputFile)
+        {
+            string password = Constant.ENCRYPT_DECRYPT_PWD;
+            string salt = Constant.ENCRYPT_DECRYPT_SALT;
+
+            // For additional security Pin the password of your files
+            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
+
+            // Encrypt the file
+            var result = FileEncryptRequest(request, inputFile, password, salt);
+
+            // To increase the security of the encryption, delete the given password from the memory !
+            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
+            //gch.Free();
+
+            // You can verify it by displaying its value later on the console (the password won't appear)
+            //Console.WriteLine("The given password is surely nothing: " + password);
+
+            return result;
+        }
+        /// <summary>
+        /// Encrypts a file from its path and a plain password.
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <param name="password"></param>
+        private string FileEncryptRequest(HttpRequestBase request, string inputFile, string password, string salt)
+        {
+
+            //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
+
+            //generate random salt
+            //byte[] salt = StringToSalt();// GenerateRandomSalt();
+
+            //create output file name
+            FileStream fsCrypt = new FileStream(inputFile + ".drd", FileMode.Create);
+
+            //convert password string to byte arrray
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
+            byte[] saltBytes = System.Text.Encoding.UTF8.GetBytes(salt);
+
+            //Set Rijndael symmetric encryption algorithm
+            RijndaelManaged AES = new RijndaelManaged();
+            AES.KeySize = 256;
+            AES.BlockSize = 128;
+            AES.Padding = PaddingMode.PKCS7;
+
+            //http://stackoverflow.com/questions/2659214/why-do-i-need-to-use-the-rfc2898derivebytes-class-in-net-instead-of-directly
+            //"What it does is repeatedly hash the user password along with the salt." High iteration counts.
+            var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 50000);
+            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+            //Cipher modes: http://security.stackexchange.com/questions/52665/which-is-the-best-cipher-mode-and-padding-mode-for-aes-encryption
+            AES.Mode = CipherMode.CFB;
+
+            // write salt to the begining of the output file, so in this case can be random every time
+            //fsCrypt.Write(salt, 0, salt.Length);
+
+            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+
+            //create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
+            byte[] buffer = new byte[1048576];
+            int read;
+            string result = "OK";
+            try
+            {
+                var binaryReader = new BinaryReader(request.Files[0].InputStream);
+                while ((read = binaryReader.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    //Application.DoEvents(); // -> for responsive GUI, using Task will be better!
+                    cs.Write(buffer, 0, read);
+                }
+                cs.FlushFinalBlock();
+                binaryReader.Close();
+                binaryReader.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                result = ex.Message;
+            }
+            finally
+            {
+                cs.Close();
+                fsCrypt.Close();
+            }
+
+            return result;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
+        public string FileEncrypt(string inputFile)
+        {
+            string password = Constant.ENCRYPT_DECRYPT_PWD;
+            string salt = Constant.ENCRYPT_DECRYPT_SALT;
+            // For additional security Pin the password of your files
+            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
+
+            // Encrypt the file
+            var result = FileEncrypt(inputFile, password, salt);
+
+            // To increase the security of the encryption, delete the given password from the memory !
+            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
+            //gch.Free();
+
+            // You can verify it by displaying its value later on the console (the password won't appear)
+            //Console.WriteLine("The given password is surely nothing: " + password);
+
+            return result;
+        }
 
         /// <summary>
         /// Encrypts a file from its path and a plain password.
@@ -110,22 +229,49 @@ namespace DRD.Service
 
             return result;
         }
+        /// <summary>
+        /// Encrypt File from a direct Byte Stream
+        /// </summary>
+        /// <param name="fileStream"></param>
+        /// <param name="outputFile"></param>
+        /// <returns></returns>
+        public string FileStreamEncrypt(Stream fileStream, string outputFile)
+        {
+            string password = Constant.ENCRYPT_DECRYPT_PWD;
+            string salt = Constant.ENCRYPT_DECRYPT_SALT;
+            // For additional security Pin the password of your files
+            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
+
+            // Encrypt the file
+            var result = FileStreamEncrypt(fileStream, outputFile, password, salt);
+
+            // To increase the security of the encryption, delete the given password from the memory !
+            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
+            //gch.Free();
+
+            // You can verify it by displaying its value later on the console (the password won't appear)
+            //Console.WriteLine("The given password is surely nothing: " + password);
+
+            return result;
+        }
 
         /// <summary>
-        /// Encrypts a file from its path and a plain password.
+        /// Encrypts a file from direct Byte Stream and a plain password.
         /// </summary>
-        /// <param name="inputFile"></param>
+        /// <param name="fileStream"></param>
+        /// <param name="outputFile"></param>
         /// <param name="password"></param>
-        private string FileEncryptRequest(HttpRequestBase request, string inputFile, string password, string salt)
+        /// <param name="salt"></param>
+        /// <returns></returns>
+        private string FileStreamEncrypt(Stream fileStream, string outputFile, string password, string salt)
         {
-
             //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
 
             //generate random salt
             //byte[] salt = StringToSalt();// GenerateRandomSalt();
 
             //create output file name
-            FileStream fsCrypt = new FileStream(inputFile + ".drd", FileMode.Create);
+            FileStream fsCrypt = new FileStream(outputFile + ".drd", FileMode.Create);
 
             //convert password string to byte arrray
             byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
@@ -157,7 +303,7 @@ namespace DRD.Service
             string result = "OK";
             try
             {
-                var binaryReader = new BinaryReader(request.Files[0].InputStream);
+                var binaryReader = new BinaryReader(fileStream);
                 while ((read = binaryReader.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     //Application.DoEvents(); // -> for responsive GUI, using Task will be better!
@@ -177,6 +323,30 @@ namespace DRD.Service
                 cs.Close();
                 fsCrypt.Close();
             }
+
+            return result;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
+        public string FileDecrypt(string inputFile)
+        {
+            string password = Constant.ENCRYPT_DECRYPT_PWD;
+            string salt = Constant.ENCRYPT_DECRYPT_SALT;
+            // For additional security Pin the password of your files
+            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
+
+            // Decrypt the file
+            var result = FileDecrypt(inputFile + ".drd", inputFile, password, salt);
+
+            // To increase the security of the decryption, delete the used password from the memory !
+            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
+            //gch.Free();
+
+            // You can verify it by displaying its value later on the console (the password won't appear)
+            //Console.WriteLine("The given password is surely nothing: " + password);
 
             return result;
         }
@@ -246,6 +416,31 @@ namespace DRD.Service
                 fsOut.Close();
                 fsCrypt.Close();
             }
+
+            return result;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataBytes"></param>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
+        public string FileDecryptRequest(ref byte[] dataBytes, string inputFile)
+        {
+            string password = Constant.ENCRYPT_DECRYPT_PWD;
+            string salt = Constant.ENCRYPT_DECRYPT_SALT;
+
+            // For additional security Pin the password of your files
+            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
+
+            // Decrypt the file
+            var result = FileDecryptRequest(ref dataBytes, inputFile + ".drd", inputFile, password, salt);
+
+            // To increase the security of the decryption, delete the used password from the memory !
+            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
+            //gch.Free();
+            // You can verify it by displaying its value later on the console (the password won't appear)
+            //Console.WriteLine("The given password is surely nothing: " + password);
 
             return result;
         }
@@ -321,107 +516,6 @@ namespace DRD.Service
                 //fsOut.Close();
                 fsCrypt.Close();
             }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="inputFile"></param>
-        /// <returns></returns>
-        public string FileEncryptRequest(HttpRequestBase request, string inputFile)
-        {
-            string password = Constant.ENCRYPT_DECRYPT_PWD;
-            string salt = Constant.ENCRYPT_DECRYPT_SALT;
-
-            // For additional security Pin the password of your files
-            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
-
-            // Encrypt the file
-            var result = FileEncryptRequest(request, inputFile, password, salt);
-
-            // To increase the security of the encryption, delete the given password from the memory !
-            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
-            //gch.Free();
-
-            // You can verify it by displaying its value later on the console (the password won't appear)
-            //Console.WriteLine("The given password is surely nothing: " + password);
-
-            return result;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="inputFile"></param>
-        /// <returns></returns>
-        public string FileEncrypt(string inputFile)
-        {
-            string password = Constant.ENCRYPT_DECRYPT_PWD;
-            string salt = Constant.ENCRYPT_DECRYPT_SALT;
-            // For additional security Pin the password of your files
-            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
-
-            // Encrypt the file
-            var result = FileEncrypt(inputFile, password, salt);
-
-            // To increase the security of the encryption, delete the given password from the memory !
-            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
-            //gch.Free();
-
-            // You can verify it by displaying its value later on the console (the password won't appear)
-            //Console.WriteLine("The given password is surely nothing: " + password);
-
-            return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="inputFile"></param>
-        /// <returns></returns>
-        public string FileDecrypt(string inputFile)
-        {
-            string password = Constant.ENCRYPT_DECRYPT_PWD;
-            string salt = Constant.ENCRYPT_DECRYPT_SALT;
-            // For additional security Pin the password of your files
-            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
-
-            // Decrypt the file
-            var result = FileDecrypt(inputFile + ".drd", inputFile, password, salt);
-
-            // To increase the security of the decryption, delete the used password from the memory !
-            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
-            //gch.Free();
-
-            // You can verify it by displaying its value later on the console (the password won't appear)
-            //Console.WriteLine("The given password is surely nothing: " + password);
-
-            return result;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dataBytes"></param>
-        /// <param name="inputFile"></param>
-        /// <returns></returns>
-        public string FileDecryptRequest(ref byte[] dataBytes, string inputFile)
-        {
-            string password = Constant.ENCRYPT_DECRYPT_PWD;
-            string salt = Constant.ENCRYPT_DECRYPT_SALT;
-
-            // For additional security Pin the password of your files
-            //GCHandle gch = GCHandle.Alloc(password, GCHandleType.Pinned);
-
-            // Decrypt the file
-            var result = FileDecryptRequest(ref dataBytes, inputFile + ".drd", inputFile, password, salt);
-
-            // To increase the security of the decryption, delete the used password from the memory !
-            //ZeroMemory(gch.AddrOfPinnedObject(), password.Length * 2);
-            //gch.Free();
-            // You can verify it by displaying its value later on the console (the password won't appear)
-            //Console.WriteLine("The given password is surely nothing: " + password);
 
             return result;
         }

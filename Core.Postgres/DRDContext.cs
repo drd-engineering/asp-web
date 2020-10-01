@@ -34,6 +34,7 @@ namespace Core.Postgres
         public DbSet<WorkflowNode> WorkflowNodes { get; set; }
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         public DbSet<AuditTrail> AuditTrails { get; set; }
+        public DbSet<DocumentHistory> DocumentHistories { get; set; }
 
         public override int SaveChanges()
         {
@@ -173,7 +174,6 @@ namespace Core.Postgres
 
             modelBuilder.Entity<Contact>().HasKey(c => new { c.ContactOwnerId, c.ContactItemId });
             modelBuilder.Entity<TagItem>().HasKey(e => new { e.TagId, e.RotationId });
-
         }
     }
 }

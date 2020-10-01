@@ -3,11 +3,17 @@ using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace DRD.App.Controllers
 {
@@ -18,6 +24,7 @@ namespace DRD.App.Controllers
         private UserSession user;
 
         private SubscriptionService subscriptionService = new SubscriptionService();
+        private DocumentService documentService = new DocumentService();
         
         public ActionResult DownloadAllDocumentfromCompany(long companyId)
         {
@@ -78,12 +85,19 @@ namespace DRD.App.Controllers
             //Tranfiles = Server.MapPath(@"~\godurian\sth100\transfiles\" + Filename);
             var tempFolder = "doc/company/temp";
             var encryptedCompanyId = Utilities.Encrypt(companyId.ToString());
+            // FirstTime create the directory
             var actualPath = "doc/company/" + encryptedCompanyId;
             var targetDir = "/" + actualPath + "/";
             bool exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
             if (!exists)
                 System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
 
+            // always start with version 0.0
+            actualPath = "doc/company/" + encryptedCompanyId + "/v0.0";
+            targetDir = "/" + actualPath + "/";
+            exists = System.IO.Directory.Exists(Server.MapPath(targetDir));
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath(targetDir));
             try
             {
                 Tranfiles = Server.MapPath("/" + tempFolder + "/") + newDocument.FileUrl + ".drd";
@@ -163,26 +177,45 @@ namespace DRD.App.Controllers
         }
 
         /// <summary>
-        ///
+        /// API service to get pdfstring data using unique filename
         /// </summary>
         /// <param name="keyf"></param>
         /// <returns></returns>
-        public string XGetPdfData(string keyf, bool isNew)
+        public string XGetPdfData(string fileUrlName, bool isNew)
         {
             Initialize();
 
             DocumentService docsvr = new DocumentService();
-            DocumentItem doc = docsvr.GetByUniqFileName(keyf, true, isNew);
+            DocumentItem doc = docsvr.GetByUniqFileName(fileUrlName, true, isNew);
 
-            byte[] pdfByte = new byte[] { };
-            string filepath = "";
+            string filePath = "";
             if (isNew)
-                filepath = Server.MapPath("/doc/company/temp/" + doc.FileName);
+                filePath = Server.MapPath("/doc/company/temp/" + doc.FileName);
             else
-                filepath = Server.MapPath("/doc/company/" + doc.EncryptedId + "/" + doc.FileName);
+                filePath = Server.MapPath("/doc/company/" + doc.EncryptedId + "/v" + doc.LatestVersion + "/" + doc.FileName);
 
+            string result = OpenPdfFileAsString(filePath);
+            return result;
+        }
+        private string GetPdfData(string fileUrlName, bool isNew)
+        {
+            DocumentService docsvr = new DocumentService();
+            DocumentItem doc = docsvr.GetByUniqFileName(fileUrlName, true, isNew);
+
+            string filePath = "";
+            if (isNew)
+                filePath = Server.MapPath("/doc/company/temp/" + doc.FileName);
+            else
+                filePath = Server.MapPath("/doc/company/" + doc.EncryptedId + "/v" + doc.LatestVersion + "/" + doc.FileName);
+
+            string result = OpenPdfFileAsString(filePath);
+            return result;
+        }
+        private string OpenPdfFileAsString(string filePath)
+        {
+            byte[] pdfByte = new byte[] { };
             XFEncryptionHelper xf = new XFEncryptionHelper();
-            var xresult = xf.FileDecryptRequest(ref pdfByte, filepath);
+            var xresult = xf.FileDecryptRequest(ref pdfByte, filePath);
             if (xresult.Equals("OK"))
             {
                 return Convert.ToBase64String(pdfByte);
@@ -190,7 +223,100 @@ namespace DRD.App.Controllers
             else
                 return Convert.ToBase64String(new byte[] { });
         }
+        async public Task<bool> CreatePdfAnnotated(string pdfString, DocumentInboxData doc)
+        {
+            RequestToAnnotatePdf requestData = new RequestToAnnotatePdf(pdfString, doc.DocumentAnnotations);
+            HttpClient client = new HttpClient();
 
+            var stringPayload = JsonConvert.SerializeObject(requestData);
+
+            var content = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("http://127.0.0.1:8000/makepdf/", content);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                System.Diagnostics.Debug.WriteLine(response.Content);
+                return false;
+            }
+            var value = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(value);
+            var newPdfString = result["result"];
+
+            var ok = await Task.Run(()=>SavePdfToDirectory(newPdfString, doc));
+            if (!ok)
+                return false;
+            var saved = await Task.Run(() => documentService.UpdateVersion(doc.Id, "1.0"));
+            if (saved == 0)
+                return false;
+            return true;
+        }
+        /// <summary>
+        /// save pdfstring to directory
+        /// </summary>
+        /// <param name="pdfString"></param>
+        /// <param name="document"></param>
+        /// <returns></returns>
+        public bool SavePdfToDirectory(string pdfString, DocumentInboxData document)
+        {
+            //initiating variable folder and doc
+            string folder = "doc/company/" + document.EncryptedCompanyId;
+
+            var targetdir = "/" + folder + "/";
+            bool exists = Directory.Exists(Server.MapPath(targetdir));
+            if (!exists)
+                Directory.CreateDirectory(Server.MapPath(targetdir));
+
+            // Save to version 1.0 this will need to be reviewed
+            folder = "doc/company/" + document.EncryptedCompanyId + "/v1.0";
+
+            targetdir = "/" + folder + "/";
+            exists = Directory.Exists(Server.MapPath(targetdir));
+            if (!exists)
+                Directory.CreateDirectory(Server.MapPath(targetdir));
+
+            //checking pdf string
+            if (pdfString != null || pdfString != "")
+            {
+                byte[] bytes = Convert.FromBase64String(pdfString);
+                Stream fileStream = new MemoryStream(bytes);
+
+                //generate unique identity for each file
+                var _comPath = Server.MapPath("/" + folder + "/") + document.FileUrl;
+                var path = _comPath;
+
+                XFEncryptionHelper xf = new XFEncryptionHelper();
+                var xresult = xf.FileStreamEncrypt(fileStream, path);
+                if (xresult == "OK")
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        /// <summary>
+        /// This is asyncronous task to creating all final document in rotation
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public async Task<bool> FinalizeDocuments(IEnumerable<RotationNodeDoc> items)
+        {
+            List<Task> taskToCreateDocumentWithAnnotation = new List<Task>();
+            foreach (RotationNodeDoc item in items)
+            {
+                var doc = documentService.GetDocumentInboxData(item.DocumentId);
+                if (!doc.IsCurrent) { continue; }
+                var pdfString = GetPdfData(doc.FileUrl, false);
+                var anno = doc.DocumentAnnotations;
+                Task pdfNew = CreatePdfAnnotated(pdfString, doc);
+                taskToCreateDocumentWithAnnotation.Add(pdfNew);
+            }
+            while (taskToCreateDocumentWithAnnotation.Count > 0)
+            {
+                Task finishedTask = await Task.WhenAny(taskToCreateDocumentWithAnnotation);
+                taskToCreateDocumentWithAnnotation.Remove(finishedTask);
+            }
+            return true;
+        }
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult XUploadAsTemporary(int idx, int fileType, long companyId)
         {

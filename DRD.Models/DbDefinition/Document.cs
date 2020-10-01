@@ -12,6 +12,7 @@ namespace DRD.Models
         public string FileUrl { get; set; } // FileUrl --> file path
         public string FileName { get; set; } // FileName (length: 100)
         public int FileSize { get; set; } // FileSize
+        public string LatestVersion { get; set; } // Latest version of document
 
         public int MaximumPrintPerUser { get; set; }
         public int MaximumDownloadPerUser { get; set; }
@@ -23,10 +24,10 @@ namespace DRD.Models
 
         public virtual System.Collections.Generic.ICollection<DocumentAnnotation> DocumentAnnotations { get; set; } // DocumentAnnotate.FK_DocumentAnnotate_Document
         public virtual System.Collections.Generic.ICollection<RotationNodeDoc> RotationNodeDocs { get; set; } // RotationNodeDoc.FK_RotationNodeDoc_Document
-        public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } //DocumentUser.FK_document
-
+        public virtual System.Collections.Generic.ICollection<DocumentUser> DocumentUsers { get; set; } // DocumentUser.FK_document
+        public virtual System.Collections.Generic.ICollection<DocumentHistory> DocumentHistories { get; set; } // DocumentHistories
+        
         // FK
-
         [ForeignKey("UploaderId")]
         public User Uploader { get; set; } //FK to User
 
@@ -36,7 +37,6 @@ namespace DRD.Models
         [ForeignKey("RotationId")]
         public Rotation Rotation { get; set; }
 
-
         public Document()
         {
             FileSize = 0;
@@ -44,6 +44,7 @@ namespace DRD.Models
             MaximumDownloadPerUser = 0;
             DocumentAnnotations = new System.Collections.Generic.List<DocumentAnnotation>();
             RotationNodeDocs = new System.Collections.Generic.List<RotationNodeDoc>();
+            DocumentHistories = new System.Collections.Generic.List<DocumentHistory>();
         }
     }
 }

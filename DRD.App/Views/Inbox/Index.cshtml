@@ -317,7 +317,9 @@
                 $scope.btnDisabled = true;
                 $scope.setAnnos(arg.Document.DocumentAnnotations);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, false);
-                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                if (arg.Document.LatestVersion == "0.0") {
+                    iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                }
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var permission = arg.Document.DocumentUser.ActionPermission;
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload
@@ -581,9 +583,9 @@
             };
             $scope.submitActivity = function (bit) {
                 $scope.btnDisabled = true;
-                $scope.checkSignOrStamp();
-                if (bit == 1 && $scope.needPassword != 0) {
-                    $scope.showPasswordModal();
+                var needSign = $scope.checkSignOrStamp();
+                if (needSign && bit == 1 && $scope.needPassword != 0) {
+                    $scope.checkIsUserProfileComplete();
                 } else {
                     $scope.triggerSubmitSwal(bit);
                 }
@@ -605,7 +607,6 @@
                         $scope.needPassword |= 32;
                     }
                     if ($scope.needPassword != 0) {
-                        $scope.checkIsUserProfileComplete();
                         return true;
                     }
                 }
@@ -616,10 +617,11 @@
                     if (response.data) {
                         if (response.data == -1) {
                             showError("Complete your user profiles to continue to sign this document. (KTP, initial, signature, and stamp)");
-                            return false;
+                            $scope.btnDisabled = false;
+                            return;
+                        } else {
+                            $scope.showPasswordModal();
                         }
-                        return true;
-
                     }
                 }, function (response) {
                     //error handle\
@@ -966,7 +968,7 @@
                     showError("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
                 }
             };
-            $scope.updateProduct = function () {
+            $scope.prepareStoreDocument = function () {
                 if ($scope.isUpload == 0) {
                     showInfo("document must be uploaded");
                     return;
@@ -1008,9 +1010,9 @@
                     item.Element = ix.Element;
                     $scope.annos.push(item);
                 }
-                $scope.saveProduct();
+                $scope.storeDocument();
             };
-            $scope.saveProduct = function () {
+            $scope.storeDocument = function () {
                 var btn = Ladda.create(document.querySelector('.submit-document'));
                 btn.start();
                 $http.post('@Url.Action("Save", "document")',

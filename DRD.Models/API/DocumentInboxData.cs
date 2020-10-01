@@ -14,11 +14,13 @@
         public int MaximumDownloadPerUser { get; set; }
         public int ExpiryDay { get; set; } // Day Counter (Count Down
         // public bool IsCurrent { get; set; }
+        public string LatestVersion { get; set; } // Version
 
         public string UserEmail { get; set; } // this existance's questionable
         public bool IsCurrent { get; set; }
         public long CreatorId { get; set; }
         public long CompanyId { get; set; }
+        public string EncryptedCompanyId { get; set; }
         public long RotationId { get; set; }
 
         public System.DateTime? CreatedAt { get; set; }
@@ -40,9 +42,16 @@
             FileUrl = documentDb.FileUrl;
             FileName = documentDb.FileName;
             FileSize = documentDb.FileSize;
+            MaximumDownloadPerUser = documentDb.MaximumDownloadPerUser;
+            MaximumPrintPerUser = documentDb.MaximumPrintPerUser;
+            LatestVersion = documentDb.LatestVersion;
             IsCurrent = documentDb.IsCurrent;
+            CompanyId = documentDb.CompanyId;
+            EncryptedCompanyId = UtilitiesModel.Encrypt(CompanyId.ToString());
+            RotationId = documentDb.RotationId;
             CreatedAt = documentDb.CreatedAt;
             UpdatedAt = documentDb.CreatedAt;
+
             DocumentUsers = new System.Collections.Generic.List<DocumentUserInboxData>();
             foreach (var documentUserDb in documentDb.DocumentUsers)
             {

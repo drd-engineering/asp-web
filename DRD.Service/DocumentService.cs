@@ -66,6 +66,7 @@ namespace DRD.Service
             {
                 if (prod.Id == 0)
                     document = Create(prod, companyId, rotationId);
+                // SHOULD BE REVIEWED THIS UPDATE IS NOT USED YET
                 else document = Update(prod, companyId, rotationId);
                 if (document.Id != 0)
                     result = document.Id;
@@ -77,7 +78,7 @@ namespace DRD.Service
             return document;
         }
         /// <summary>
-        /// CREAT new document data in db after uploading document for a company
+        /// CREATE new document data in db after uploading document for a company
         /// </summary>
         /// <param name="newDocument"></param>
         /// <param name="companyId"></param>
@@ -106,12 +107,23 @@ namespace DRD.Service
                 FileUrl = newDocument.FileUrl,
 
                 RotationId = rotationId,
-                CompanyId = companyId
+                CompanyId = companyId,
+                LatestVersion = "0.0",
             };
-
             db.Documents.Add(document);
+            DocumentHistory documentHistory = new DocumentHistory
+            {
+                Version = "0.0",
+                Latest = true,
+                DocumentId = document.Id,
+                Details = "Document uploaded by user " + document.UploaderId+ " and stored in company " + document.CompanyId
+            };
+            document.DocumentHistories.Add(documentHistory);
+            db.Documents.Add(document);
+            db.DocumentHistories.Add(documentHistory);
             db.SaveChanges();
             newDocument.Id = document.Id;
+            newDocument.LatestVersion = document.LatestVersion;
 
             return newDocument;
         }
@@ -160,11 +172,11 @@ namespace DRD.Service
         public ICollection<DocumentAnnotationsInboxData> SaveAnnos(long documentId, long creatorId, string userEmail, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
             using var db = new Connection();
-            //
+            Document item = GetById(documentId);
             // prepare data 
             var cxold = db.DocumentElements.Count(c => c.DocumentId == documentId);
             var cxnew = annos.Count();
-            //nambah old document
+            // nambah annotasi baru
             if (cxold < cxnew)
             {
                 var ep = annos.ElementAt(0); // get 1 data for sample
@@ -179,12 +191,14 @@ namespace DRD.Service
                     da.CreatedAt = DateTime.Now;
                     db.DocumentElements.Add(da);
                 }
+                WriteDocumentHistory(document: item, details: "Some annotation added to document by User " + creatorId.ToString());
                 db.SaveChanges();
             }
             else if (cxold > cxnew)
             {
                 var dremove = db.DocumentElements.Where(c => c.Document.Id == documentId).Take(cxold - cxnew).ToList();
                 db.DocumentElements.RemoveRange(dremove);
+                WriteDocumentHistory(document: item, details: "Some annotation in document removed by User " + creatorId.ToString());
                 db.SaveChanges();
             }
             //
@@ -271,7 +285,7 @@ namespace DRD.Service
             return returnValue;
         }
         /// <summary>
-        /// Create default document user
+        /// CREATE default document user
         /// </summary>
         /// <param name="documentId"></param>
         /// <param name="userId"></param>
@@ -420,6 +434,7 @@ namespace DRD.Service
                 db.SaveChanges();
                 SendEmailSignature(user, rot.Name, doc.FileName, numbers);
             }
+            WriteDocumentHistory(document: doc, details: "Document was Signed by User " + user.Id.ToString() + "("+user.Name+")");
             return cx;
         }
         /// <summary>
@@ -460,6 +475,7 @@ namespace DRD.Service
                 db.SaveChanges();
                 SendEmailStamp(user, rot.Name, doc.FileName, numbers);
             }
+            WriteDocumentHistory(document: doc, details: "Document was Stamped by User " + user.Id.ToString() + "(" + user.Name + ")");
             return cx;
         }
         /// <summary>
@@ -487,6 +503,7 @@ namespace DRD.Service
             var docitem = db.Documents.FirstOrDefault(d => d.Id == documentId);
             docitem.IsCurrent = false;
             docitem.UpdatedAt = DateTime.Now;
+            WriteDocumentHistory(document: docitem, details: "Document was Removed from rotation ");
             return db.SaveChanges();
         }
         public IEnumerable<DocumentSign> GetAnnotateDocs(long memberId, string topCriteria, int page, int pageSize, string order, string criteria)
@@ -562,74 +579,25 @@ namespace DRD.Service
 
         public Document GetById(long id)
         {
-
-            using (var db = new Connection())
+            using var db = new Connection();
+            var result = db.Documents.Where(doc => doc.Id == id).FirstOrDefault();
+            if (result != null)
             {
-                var result =
-                    (from c in db.Documents
-                     where c.Id == id
-                     select new Document
-                     {
-                         Id = c.Id,
-                         Extension = c.Extension,
-                         FileName = c.FileName,
-                         FileUrl = c.FileUrl,
-                         FileSize = c.FileSize,
-                         CreatedAt = c.CreatedAt,
-                         UpdatedAt = c.UpdatedAt,
-                         UploaderId = c.UploaderId,
-                         DocumentAnnotations = (
-                            from x in c.DocumentAnnotations
-                            select new DocumentAnnotation
-                            {
-                                Id = x.Id,
-                                Document = x.Document,
-                                Page = x.Page,
-                                LeftPosition = x.LeftPosition,
-                                TopPosition = x.TopPosition,
-                                WidthPosition = x.WidthPosition,
-                                HeightPosition = x.HeightPosition,
-                                Color = x.Color,
-                                BackColor = x.BackColor,
-                                Text = x.Text,
-                                Unknown = x.Unknown,
-                                Rotation = x.Rotation,
-                                ScaleX = x.ScaleX,
-                                ScaleY = x.ScaleY,
-                                TransitionX = x.TransitionX,
-                                TransitionY = x.TransitionY,
-                                StrokeWidth = x.StrokeWidth,
-                                Opacity = x.Opacity,
-                                Flag = x.Flag,
-                                AssignedAnnotationCode = x.AssignedAnnotationCode,
-                                AssignedAt = x.AssignedAt,
-                                AssignedAnnotationImageFileName = x.AssignedAnnotationImageFileName,
-                                CreatorId = x.CreatorId,
-                                UserId = x.UserId,
-                                EmailOfUserAssigned = x.EmailOfUserAssigned,
-                                CreatedAt = x.CreatedAt,
-                                UpdatedAt = x.UpdatedAt,
-                                ElementTypeId = x.ElementTypeId
-                            }).ToList(),
-                     }).FirstOrDefault();
-
-                if (result != null)
+                foreach (DocumentAnnotation da in result.DocumentAnnotations)
                 {
-                    foreach (DocumentAnnotation da in result.DocumentAnnotations)
+                    if (da.UserId == null) continue;
+                    if (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL
+                        || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
                     {
-                        if (da.UserId == null) continue;
-                        if (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL
-                            || da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
-                        {
-                            var mem = db.Users.FirstOrDefault(c => c.Id == da.UserId);
-                            da.Element.UserId = mem.Id;
-                            da.Element.Name = mem.Name;
-                            da.Element.Foto = mem.ProfileImageFileName;
-                        }
+                        var mem = db.Users.FirstOrDefault(c => c.Id == da.UserId);
+                        da.Element = new Element();
+                        da.Element.UserId = mem.Id;
+                        da.Element.Name = mem.Name;
+                        da.Element.Foto = mem.ProfileImageFileName;
                     }
                 }
-                return result;
             }
+            return result;
         }
 
         public DocumentItem GetByUniqFileName(string uniqFileName, bool isDocument, bool isTemp)
@@ -640,7 +608,6 @@ namespace DRD.Service
                 if (isTemp)
                 {
                     doc.FileName = uniqFileName;
-
                 }
                 else if (isDocument)
                 {
@@ -650,9 +617,9 @@ namespace DRD.Service
                         doc.Id = result.Id;
                         doc.FileName = result.FileUrl;
                         doc.EncryptedId = Utilities.Encrypt(result.CompanyId.ToString());
+                        doc.LatestVersion = result.LatestVersion;
                     }
                 }
-
             }
             return doc;
         }
@@ -802,7 +769,7 @@ namespace DRD.Service
 
             documentUserDb.DownloadCount++;
             db.SaveChanges();
-
+            WriteDocumentHistory(document: documentDb, details: "Document downloaded by User " + rotationUserDb.Id.ToString() + "(" + rotationUserDb.User.Name + ")");
             return (int)Constant.DocumentPrintOrDownloadStatus.OK;
         }
 
@@ -842,8 +809,75 @@ namespace DRD.Service
 
             documentUserDb.PrintCount++;
             db.SaveChanges();
-
+            WriteDocumentHistory(document: documentDb, details: "Document printed by User " + rotationUserDb.Id.ToString() + "(" + rotationUserDb.User.Name + ")");
             return (int)Constant.DocumentPrintOrDownloadStatus.OK;
         }
+        /// <summary>
+        /// GET document data as inbox data
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
+        public DocumentInboxData GetDocumentInboxData(long documentId)
+        {
+            using var db = new Connection();
+            var documentDb = db.Documents.Where(d => d.Id == documentId).First();
+            var returnVal = new DocumentInboxData(documentDb);
+            foreach (DocumentAnnotationsInboxData documentElement in returnVal.DocumentAnnotations)
+            {
+                if (documentElement.UserId == null || documentElement.UserId == 0) continue;
+                if (documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE
+                    || documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.INITIAL
+                    || documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
+                {
+                    var user = db.Users.FirstOrDefault(c => c.Id == documentElement.UserId);
+                    Element newElement = new Element();
+                    newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
+                    newElement.UserId = user.Id;
+                    newElement.Name = user.Name;
+                    newElement.Foto = user.ProfileImageFileName;
+                    documentElement.Element = newElement;
+                }
+            }
+            return returnVal;
+        }
+        /// <summary>
+        /// UPDATE version of document to new one, its used after saving new document to directory
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <param name="newVersion"></param>
+        /// <returns></returns>
+        public int UpdateVersion(long documentId, string newVersion)
+        {
+            var db = new Connection();
+            var doc = db.Documents.First(d => d.Id == documentId);
+            doc.LatestVersion = newVersion;
+            db.SaveChanges();
+            return WriteDocumentHistory(doc, "Create pdf annotated and update document version");
+        }
+        /// <summary>
+        /// Upadate history of Document everytime there is a change
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="details"></param>
+        /// <returns></returns>
+        public int WriteDocumentHistory(Document document, string details)
+        {
+            using var db = new Connection();
+            if (db.DocumentHistories != null)
+            {
+                DocumentHistory old = db.DocumentHistories.Where(h => h.DocumentId == document.Id && h.Latest).First();
+                old.Latest = false;
+            }
+            DocumentHistory newHistory = new DocumentHistory
+            {
+                DocumentId = document.Id,
+                Details = details,
+                Version = document.LatestVersion,
+                Latest = true,
+            };
+            db.DocumentHistories.Add(newHistory);
+            return db.SaveChanges();
+        }
+
     }
 }
