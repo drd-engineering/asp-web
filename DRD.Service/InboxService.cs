@@ -14,11 +14,13 @@ namespace DRD.Service
         private DocumentService documentService;
         private SymbolService symbolService;
         private CompanyService companyService;
+
         public InboxService()
         {
             documentService = new DocumentService();
             symbolService = new SymbolService();
         }
+
         /// <summary>
         /// HELPER
         /// </summary>
@@ -29,6 +31,7 @@ namespace DRD.Service
             using var db = new Connection();
             return db.Inboxes.Any(i => i.Id == id);
         }
+
         /// <summary>
         /// UPDATE status of rotation from previous to the new status
         /// </summary>
@@ -46,6 +49,7 @@ namespace DRD.Service
                     rotationNode.Status = newStatus;
             }
         }
+
         /// <summary>
         /// CREATE result of rotation processing
         /// </summary>
@@ -81,6 +85,7 @@ namespace DRD.Service
             ret.ExitStatus ??= Constant.RotationStatus.OK.ToString();
             return ret;
         }
+
         /// <summary>
         /// INSERT all document from document list to the rotation node with document permission, action status, annotation, etc.
         /// </summary>
@@ -140,9 +145,7 @@ namespace DRD.Service
                     documentService.Stamp((long)rotationNodeDoc.DocumentId, userId, rotationNode.RotationId);
             }
             db.SaveChanges();
-            
         }
-
 
         /// <summary>
         /// GET all inbox data related to user as many as pageSize
@@ -152,7 +155,7 @@ namespace DRD.Service
         /// <param name="page"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        /// 
+        ///
         public List<InboxListItem> GetInboxes(long userId, string criteria, int skip, int take)
         {
             // all criteria
@@ -191,17 +194,18 @@ namespace DRD.Service
                     CreatedAt = inbox.CreatedAt
                 };
                 inboxListItem.CompanyInbox = (from company in db.Companies
-                                        where company.Id == inboxListItem.CompanyId
-                                        select new SmallCompanyData
-                                        {
-                                            Id = company.Id,
-                                            Code = company.Code,
-                                            Name = company.Name,
-                                        }).FirstOrDefault();
+                                              where company.Id == inboxListItem.CompanyId
+                                              select new SmallCompanyData
+                                              {
+                                                  Id = company.Id,
+                                                  Code = company.Code,
+                                                  Name = company.Name,
+                                              }).FirstOrDefault();
                 result.Add(inboxListItem);
             }
             return result;
         }
+
         /// <summary>
         /// GET the total inbox related to criteria. If criteria empty it will return all the inbox
         /// </summary>
@@ -224,8 +228,8 @@ namespace DRD.Service
                         crtr.ToLower()))));
 
             return 0;
-
         }
+
         /// <summary>
         /// GET total Inbox that still not read by user
         /// </summary>
@@ -236,8 +240,8 @@ namespace DRD.Service
             using var db = new Connection();
             if (db.Inboxes != null) return db.Inboxes.Count(inbox => inbox.UserId == userId && inbox.IsUnread);
             return 0;
-
         }
+
         /// <summary>
         /// HELPER function to know id of rotation that inbox is attached
         /// </summary>
@@ -264,22 +268,22 @@ namespace DRD.Service
             using var db = new Connection();
             var result =
                 (from rotationNode in db.RotationNodes
-                where rotationNode.Id == rotationNodeId
-                select new RotationInboxData()
-                {
-                    Id = rotationNode.Rotation.Id,
-                    Name = rotationNode.Rotation.Name,
-                    CreatorId = rotationNode.Rotation.CreatorId,
-                    CompanyId = rotationNode.Rotation.CompanyId,
-                    WorkflowId = rotationNode.Rotation.WorkflowId,
-                    ActionStatus = 0,
-                    Status = rotationNode.Status,
-                    RotationStatus = rotationNode.Rotation.Status,
-                    UserId = rotationNode.UserId,
-                    FirstNodeId = rotationNode.FirstNodeId,
-                    CurrentActivity = rotationNode.WorkflowNodeId,
-                    RotationNodeId = rotationNode.Id,
-                }).FirstOrDefault();
+                 where rotationNode.Id == rotationNodeId
+                 select new RotationInboxData()
+                 {
+                     Id = rotationNode.Rotation.Id,
+                     Name = rotationNode.Rotation.Name,
+                     CreatorId = rotationNode.Rotation.CreatorId,
+                     CompanyId = rotationNode.Rotation.CompanyId,
+                     WorkflowId = rotationNode.Rotation.WorkflowId,
+                     ActionStatus = 0,
+                     Status = rotationNode.Status,
+                     RotationStatus = rotationNode.Rotation.Status,
+                     UserId = rotationNode.UserId,
+                     FirstNodeId = rotationNode.FirstNodeId,
+                     CurrentActivity = rotationNode.WorkflowNodeId,
+                     RotationNodeId = rotationNode.Id,
+                 }).FirstOrDefault();
             companyService = new CompanyService();
             result.CompanyInbox = companyService.GetCompany(result.CompanyId.Value);
             var tagService = new TagService();
@@ -300,6 +304,7 @@ namespace DRD.Service
             }
             return result;
         }
+
         /// <summary>
         /// SAVE status inbox as read
         /// </summary>
@@ -313,6 +318,7 @@ namespace DRD.Service
             db.SaveChanges();
             return inbox.IsUnread;
         }
+
         /// <summary>
         /// CREATE new inbox depends on rotation process result
         /// </summary>
@@ -322,7 +328,7 @@ namespace DRD.Service
         {
             //abort if thre is an error
             if (activity.ExitCode <= 0) return activity.ExitCode;
-            
+
             using var db = new Connection();
             Inbox inboxDb = new Inbox();
             while (CheckIdExist(inboxDb.Id))
@@ -397,8 +403,8 @@ namespace DRD.Service
             var dbsave = db.SaveChanges();
             SendEmailActivity(inboxDb);
             return dbsave;
-            
         }
+
         /// <summary>
         /// UPDATE previous inbox depends on rotation processing result
         /// </summary>
@@ -416,7 +422,6 @@ namespace DRD.Service
                     {
                         inbox.Message = activity.UserName + "(" + activity.Email + ")" + " is reviewing " + activity.RotationName;
                         inbox.LastStatus = "INFO";
-
                     }
                     else if (activity.LastActivityStatus.Equals("REVISI"))
                     {
@@ -441,6 +446,7 @@ namespace DRD.Service
             }
             return -1;
         }
+
         /// <summary>
         /// CREATE new inbox from rotation processing response
         /// </summary>
@@ -488,6 +494,7 @@ namespace DRD.Service
                 return CreateInbox(activity);
             }
         }
+
         /// <summary>
         /// UPDATE rotation node status and creating new inbox after that
         /// </summary>
@@ -512,6 +519,8 @@ namespace DRD.Service
             if (stringBit.Equals("REVISI"))
             {
                 rotationNode.Status = (int)Constant.RotationStatus.Revision;
+                UpdateStatus(db,rotationNode.RotationId,(int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Revision);
+
                 var workflowNodeLink = db.WorkflowNodeLinks.Where(c => c.SourceId == rotationNode.WorkflowNodeId).FirstOrDefault();
                 RotationNode rotationNode2 = new RotationNode
                 {
@@ -541,41 +550,33 @@ namespace DRD.Service
             {
                 Symbol symbol = symbolService.getSymbol(stringBit);
                 int symbolCode = symbol == null ? 0 : symbol.Id;
-                var workflowNodeLinksDb = db.WorkflowNodeLinks.Where(c => c.SourceId == rotationNode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
-                List<RotationNode> rotnodes = new List<RotationNode>();
 
-                foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinksDb)
+/*                var workflowNodeCheckSourceLinksDb = db.WorkflowNodeLinks.Where(c => c.TargetId == rotationNode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
+                //check if current activity has multiple source
+                if (workflowNodeCheckSourceLinksDb.Count > 1)
                 {
-                    var nodeto = workflowNodeLink.Target;
-
-                    if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
+                    foreach (WorkflowNodeLink workflowNodeLink in workflowNodeCheckSourceLinksDb)
                     {
-                        RotationNode rotationNode2 = db.RotationNodes.Create<RotationNode>();
-
-                        rotationNode2.RotationId = rotationNode.RotationId;
-                        rotationNode2.WorkflowNodeId = workflowNodeLink.TargetId;
-                        rotationNode2.FirstNodeId = rotationNode.FirstNodeId;
-                        rotationNode2.SenderRotationNodeId = rotationNode.Id;
-                        rotationNode2.UserId = (long)workflowNodeLink.Target.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.TargetId && c.RotationId == rotationNode.RotationId).User.Id;
-                        rotationNode2.PreviousWorkflowNodeId = workflowNodeLink.SourceId;// tested OK
-                        rotationNode2.Status = (int)Constant.RotationStatus.Open;
-                        rotationNode2.CreatedAt = DateTime.Now;
-                        db.RotationNodes.Add(rotationNode2);
-
-                        db.SaveChanges();
-                        //TODO change how to get last id inserted
-                        long lastProductId = rotationNode2.Id;
-                        returnValue.Add(CreateActivityResult(rotationNode2.UserId, rotationNode.UserId, (int)Constant.RotationStatus.In_Progress, rotationNode2.Rotation.Name, rotationNode2.RotationId, lastProductId, stringBit));
+                        var rotationNodeCheck = db.RotationNodes.FirstOrDefault(rn => rn.WorkflowNodeId == workflowNodeLink.Source.WorkflowId);
+                        //if any parallel source target to current still open, pending the current submit
+                        if (rotationNodeCheck.Status.Equals(Constant.RotationStatus.Open))
+                        {
+                            //change current status to pending
+                            rotationNode.Status = (int)Constant.RotationStatus.Pending;
+                            returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, (int)Constant.RotationStatus.Pending, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, stringBit));
+                            return returnValue;
+                        }
                     }
-                    else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
+                    //change all pending source to next activity
+                    foreach (WorkflowNodeLink workflowNodeLink in workflowNodeCheckSourceLinksDb)
                     {
-                        if (rotationNode.Status.Equals((int)Constant.RotationStatus.Declined))
-                            UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
-                        else
-                            UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Completed);
-                        returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, 1, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, "END"));
+                        var rotationNodeCheck = db.RotationNodes.FirstOrDefault(rn => rn.WorkflowNodeId == workflowNodeLink.Source.WorkflowId);
+                        returnValue = ProcessNextSubmitActivity(returnValue, rotationNodeCheck, symbolCode, stringBit);
                     }
-                }
+                }*/
+
+                //process current Rotation Node
+                returnValue = ProcessNextSubmitActivity(returnValue, rotationNode, symbolCode, stringBit);
             }
             var result = db.SaveChanges();
 
@@ -586,6 +587,79 @@ namespace DRD.Service
             }
             return returnValue;
         }
+
+        private List<ActivityItem> ProcessNextSubmitActivity(List<ActivityItem> returnValue, RotationNode rotationNode, int symbolCode, string stringBit)
+        {
+            using var db = new Connection();
+            //get workflow node in db
+            var workflowNodeLinksDb = db.WorkflowNodeLinks.Where(c => c.SourceId == rotationNode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
+            List<RotationNode> rotnodes = new List<RotationNode>();
+
+            //loop workflownode in db to spread the workflow if parallel happen
+            foreach (WorkflowNodeLink workflowNodeLink in workflowNodeLinksDb)
+            {
+                var nodeto = workflowNodeLink.Target;
+
+                if (nodeto.SymbolCode == symbolService.getSymbolId("ACTIVITY"))
+                {
+
+                    //Find all the IDs of source workflow link 
+                    var workflownodelinktargetsources = db.WorkflowNodeLinks.Where(c => c.TargetId == workflowNodeLink.TargetId && c.SourceId != workflowNodeLink.SourceId && c.SymbolCode == symbolCode).Select(c => c.SourceId).ToHashSet();
+
+                    //check if any other parallel source whish is still ongoing
+                    bool anyUnfinishParallel = db.RotationNodes.Any(rn => rn.RotationId == rotationNode.RotationId && rn.Status == (int)Constant.RotationStatus.Open && workflownodelinktargetsources.Contains(rn.WorkflowNodeId));
+
+                    //check if this next node has already initiated (open/pending)
+                    var rotationNodeLookup = db.RotationNodes.FirstOrDefault(rn => rn.RotationId == rotationNode.RotationId && ( rn.Status == (int)Constant.RotationStatus.Open || rn.Status == (int)Constant.RotationStatus.Pending) && rn.WorkflowNodeId == workflowNodeLink.TargetId);
+                    
+                    //if rotation node never initiated
+                    if (rotationNodeLookup == null)
+                    {
+                        RotationNode rotationNode2 = db.RotationNodes.Create<RotationNode>();
+                        //change status to pending, waiting for all parallel sources finished
+                        rotationNode2.Status = anyUnfinishParallel? (int)Constant.RotationStatus.Pending:(int)Constant.RotationStatus.Open;
+
+                        rotationNode2.RotationId = rotationNode.RotationId;
+                        rotationNode2.WorkflowNodeId = workflowNodeLink.TargetId;
+                        rotationNode2.FirstNodeId = rotationNode.FirstNodeId;
+                        rotationNode2.SenderRotationNodeId = rotationNode.Id;
+                        rotationNode2.UserId = (long)workflowNodeLink.Target.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == workflowNodeLink.TargetId && c.RotationId == rotationNode.RotationId).User.Id;
+                        rotationNode2.PreviousWorkflowNodeId = workflowNodeLink.SourceId;// tested OK
+                        rotationNode2.CreatedAt = DateTime.Now;
+
+                        rotationNodeLookup = rotationNode2;
+
+                        db.RotationNodes.Add(rotationNode2);
+                    }
+
+                    //change status to pending, waiting for all parallel sources finished
+                    rotationNodeLookup.Status = anyUnfinishParallel ? (int)Constant.RotationStatus.Pending : (int)Constant.RotationStatus.Open;
+
+                    db.SaveChanges();
+                    long lastProductId = rotationNodeLookup.Id;
+                    returnValue.Add(CreateActivityResult(rotationNodeLookup.UserId, rotationNode.UserId, (int)Constant.RotationStatus.In_Progress, rotationNodeLookup.Rotation.Name, rotationNodeLookup.RotationId, lastProductId, stringBit));
+                }
+                else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
+                {
+                    //Find all the IDs of source workflow link 
+                    var workflownodelinktargetsources = db.WorkflowNodeLinks.Where(c => c.TargetId == workflowNodeLink.TargetId && c.SourceId != workflowNodeLink.SourceId && c.SymbolCode == symbolCode).Select(c => c.SourceId).ToHashSet();
+
+                    //check if any other parallel source whish is still ongoing
+                    bool anyUnfinishParallel = db.RotationNodes.Any(rn => rn.RotationId == rotationNode.RotationId && rn.Status == (int)Constant.RotationStatus.Open && workflownodelinktargetsources.Contains(rn.WorkflowNodeId));
+
+                    if (!anyUnfinishParallel)
+                    {
+                        if (rotationNode.Status.Equals((int)Constant.RotationStatus.Declined))
+                            UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
+                        else
+                            UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Completed);
+                        returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, 1, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, "END"));
+                    }
+                }
+            }
+            return returnValue;
+        }
+
         /// <summary>
         /// SEND email to user about the update rotation processing
         /// </summary>
@@ -617,6 +691,7 @@ namespace DRD.Service
 
             var task = emailService.Send(senderEmail, senderName, user.Email, "You have a task in DRD", body, false, new string[] { });
         }
+
         /// <summary>
         /// HELPER assign all rotation node to the rotation
         /// </summary>
@@ -688,6 +763,7 @@ namespace DRD.Service
                 rotation.RotationNodes.Add(newRotationNode);
             }
         }
+
         /// <summary>
         /// HELPER to copy rotation node documnet to a new instance
         /// </summary>
