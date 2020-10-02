@@ -206,11 +206,12 @@
     <Compile Include="API\SmallCompanyData.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="API\DocumentInboxData.cs" />
-    <Compile Include="Custom\DocumentAnnotationsInboxData.cs" />
+    <Compile Include="API\DocumentAnnotationsInboxData.cs" />
+    <Compile Include="Custom\RequestToAnnotatePdf.cs" />
     <Compile Include="Custom\MemberData.cs" />
     <Compile Include="API\RotationInboxData.cs" />
     <Compile Include="API\RotationNodeDocInboxData.cs" />
-    <Compile Include="Custom\DocumentUserInboxData.cs" />
+    <Compile Include="API\DocumentUserInboxData.cs" />
     <Compile Include="API\RotationNodeInboxData.cs" />
     <Compile Include="API\RotationNodeUpDocInboxData.cs" />
     <Compile Include="Custom\UserInboxData.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Custom\WorkflowNodeInboxData.cs" />
     <Compile Include="DbDefinition\AuditTrail.cs" />
     <Compile Include="DbDefinition\BusinessUsage.cs" />
+    <Compile Include="DbDefinition\DocumentHistory.cs" />
     <Compile Include="DbDefinition\TagItem.cs" />
     <Compile Include="DbDefinition\Price.cs" />
     <Compile Include="UtilitiesModel.cs" />

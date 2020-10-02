@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DRD.Service
 {
@@ -131,13 +132,12 @@ namespace DRD.Service
                 db.SaveChanges();
 
                 if (rotationNodeDoc.Document == null) continue;
-                // save annos first before set sign/initial/stamp
-                ICollection<DocumentAnnotationsInboxData> docElement = new List<DocumentAnnotationsInboxData>();
-                foreach (DocumentAnnotation x in rotationNodeDoc.Document.DocumentAnnotations)
+                var annoToSave = new List<DocumentAnnotationsInboxData>();
+                foreach(DocumentAnnotation da in rotationNodeDoc.Document.DocumentAnnotations)
                 {
-                    docElement.Add(new DocumentAnnotationsInboxData(x));
+                    annoToSave.Add(new DocumentAnnotationsInboxData(da));
                 }
-                docElement = documentService.SaveAnnos(rotationNodeDoc.DocumentId, userId, "", docElement);
+                documentService.SaveAnnos(rotationNodeDoc.DocumentId, userId, "", annoToSave);
 
                 if ((rotationNodeDoc.ActionStatus & (int)Models.Constant.EnumDocumentAction.SIGN) == (int)Models.Constant.EnumDocumentAction.SIGN)
                     documentService.Signature((long)rotationNodeDoc.DocumentId, userId, rotationNode.RotationId);

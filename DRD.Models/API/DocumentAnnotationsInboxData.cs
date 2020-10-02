@@ -1,8 +1,5 @@
-﻿using DRD.Models.API;
-
-namespace DRD.Models
+﻿namespace DRD.Models.API
 {
-
     public class DocumentAnnotationsInboxData
     {
         public long Id { get; set; } // Id (Primary key)

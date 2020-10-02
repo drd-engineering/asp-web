@@ -34,6 +34,7 @@ namespace DRD.Service.Context
         public DbSet<WorkflowNodeLink> WorkflowNodeLinks { get; set; }
         public DbSet<TagItem> TagItems { get; set; }
         public DbSet<Price> Prices { get; set; }
+        public DbSet<DocumentHistory> DocumentHistories { get; set; }
 
         public override int SaveChanges()
         {
