@@ -322,21 +322,6 @@
                 }
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(false);
                 var permission = arg.Document.DocumentUser.ActionPermission;
-                console.log(
-                    $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ($scope.model.DocumentActionPermissionType == 2 || ((permission & 16) == 16))
-                );
-                console.log(
-                    $scope.isCompleteRotation()
-                );
-                console.log(
-                    arg.ActionStatus
-                );
-                console.log(
-                    $scope.model.DocumentActionPermissionType
-                );
-                console.log(
-                    permission
-                );
                 iframe.contentWindow.angular.element("#xpdfController").scope().showDownload
                     (
                         $scope.isCompleteRotation() && ((arg.ActionStatus & 64) != 64) && ($scope.model.DocumentActionPermissionType == 2 || ((permission & 16) == 16))
@@ -1034,7 +1019,6 @@
                     {
                         newDocument: {
                             Id: $scope.model.Id,
-                            Description: $scope.model.Descr,
                             FileUrl: $scope.model.FileUrl,
                             FileName: $scope.model.FileName,
                             Extension: $scope.model.FileExtension,
