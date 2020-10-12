@@ -327,7 +327,7 @@ namespace DRD.Service
         /// <returns></returns>
         public int CreateInbox(ActivityItem activity)
         {
-            //abort if thre is an error
+            //abort if there is an error
             if (activity.ExitCode <= 0) return activity.ExitCode;
 
             using var db = new Connection();
@@ -370,6 +370,11 @@ namespace DRD.Service
                 inboxDb.Message = "You need to review " + activity.RotationName;
                 inboxDb.LastStatus = "REVIEW";
                 UpdatePreviousInbox(activity);
+            }
+            else if (activity.LastActivityStatus != null && activity.LastActivityStatus.Equals("PENDING"))
+            {
+                inboxDb.Message = "This " + activity.RotationName + " is waiting for other user to submit the rotation";
+                inboxDb.LastStatus = "PENDING";
             }
             else
             {
@@ -487,7 +492,16 @@ namespace DRD.Service
                     inbox.Message = "This " + activity.RotationName + " has been completed";
                     inbox.LastStatus = "COMPLETED";
                 }
-                UpdatePreviousInbox(activity);
+
+                //case if parallel
+                if (activity.LastActivityStatus.Equals("PENDING"))
+                {
+                    inbox.Message = "This " + activity.RotationName + " is waiting for other user to submit the rotation";
+                    inbox.LastStatus = "PENDING";
+                }
+                else
+                    UpdatePreviousInbox(activity);
+
                 return db.SaveChanges();
             }
             else
@@ -552,30 +566,6 @@ namespace DRD.Service
                 Symbol symbol = symbolService.getSymbol(stringBit);
                 int symbolCode = symbol == null ? 0 : symbol.Id;
 
-/*                var workflowNodeCheckSourceLinksDb = db.WorkflowNodeLinks.Where(c => c.TargetId == rotationNode.WorkflowNodeId && c.SymbolCode == symbolCode).ToList();
-                //check if current activity has multiple source
-                if (workflowNodeCheckSourceLinksDb.Count > 1)
-                {
-                    foreach (WorkflowNodeLink workflowNodeLink in workflowNodeCheckSourceLinksDb)
-                    {
-                        var rotationNodeCheck = db.RotationNodes.FirstOrDefault(rn => rn.WorkflowNodeId == workflowNodeLink.Source.WorkflowId);
-                        //if any parallel source target to current still open, pending the current submit
-                        if (rotationNodeCheck.Status.Equals(Constant.RotationStatus.Open))
-                        {
-                            //change current status to pending
-                            rotationNode.Status = (int)Constant.RotationStatus.Pending;
-                            returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, (int)Constant.RotationStatus.Pending, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, stringBit));
-                            return returnValue;
-                        }
-                    }
-                    //change all pending source to next activity
-                    foreach (WorkflowNodeLink workflowNodeLink in workflowNodeCheckSourceLinksDb)
-                    {
-                        var rotationNodeCheck = db.RotationNodes.FirstOrDefault(rn => rn.WorkflowNodeId == workflowNodeLink.Source.WorkflowId);
-                        returnValue = ProcessNextSubmitActivity(returnValue, rotationNodeCheck, symbolCode, stringBit);
-                    }
-                }*/
-
                 //process current Rotation Node
                 returnValue = ProcessNextSubmitActivity(returnValue, rotationNode, symbolCode, stringBit);
             }
@@ -635,10 +625,10 @@ namespace DRD.Service
 
                     //change status to pending, waiting for all parallel sources finished
                     rotationNodeLookup.Status = anyUnfinishParallel ? (int)Constant.RotationStatus.Pending : (int)Constant.RotationStatus.Open;
-
+                    stringBit = anyUnfinishParallel ? "PENDING" : stringBit;
                     db.SaveChanges();
                     long lastProductId = rotationNodeLookup.Id;
-                    returnValue.Add(CreateActivityResult(rotationNodeLookup.UserId, rotationNode.UserId, (int)Constant.RotationStatus.In_Progress, rotationNodeLookup.Rotation.Name, rotationNodeLookup.RotationId, lastProductId, stringBit));
+                    returnValue.Add(CreateActivityResult(rotationNodeLookup.UserId, rotationNode.UserId, rotationNodeLookup.Status, rotationNodeLookup.Rotation.Name, rotationNodeLookup.RotationId, lastProductId, stringBit));
                 }
                 else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
                 {
