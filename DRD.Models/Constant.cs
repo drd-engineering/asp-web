@@ -34,6 +34,11 @@ namespace DRD.Models
             Administrator = 2,
             Owner = 3
         }
+        public enum UserProfileStatus
+        {
+            NotComplete = -1,
+            Complete = 1
+        }
         public enum AccessType
         {
             //restricted, cannot access at all
