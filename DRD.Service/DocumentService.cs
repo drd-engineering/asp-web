@@ -17,12 +17,11 @@ namespace DRD.Service
         /// <returns></returns>
         public int CheckIsUserProfileComplete(long userId)
         {
-            int ret = 1;
             using var db = new Connection();
-            var mem = db.Users.FirstOrDefault(c => c.Id == userId);
-            if (mem.SignatureImageFileName == null || mem.InitialImageFileName == null || mem.KTPImageFileName == null || mem.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
-                ret = -1;
-            return ret;
+            var user = db.Users.FirstOrDefault(c => c.Id == userId);
+            if (user.SignatureImageFileName == null || user.InitialImageFileName == null || user.KTPImageFileName == null || user.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + user.OfficialIdNo))
+                return (int)Constant.UserProfileStatus.NotComplete;
+            return (int)Constant.UserProfileStatus.Complete;
         }
         /// <summary>
         /// GET user permission from rotation user
@@ -422,7 +421,10 @@ namespace DRD.Service
                 var dt = DateTime.Now;
                 da.Flag = 1;
                 da.AssignedAt = dt;
-                da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                string uniqueCode = dt.ToString("yyMMddHHmmssfff");
+                string additionalUniqueRandom = Utilities.RandomString(5);
+                string codeUsed = "DRD-" + Utilities.CombineStringRandomPosition(uniqueCode, additionalUniqueRandom);
+                da.AssignedAnnotationCode = codeUsed;
                 da.AssignedAnnotationImageFileName = (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE ? user.SignatureImageFileName : user.InitialImageFileName);
                 if (!numbers.Equals(""))
                     numbers += ", ";
@@ -463,7 +465,10 @@ namespace DRD.Service
                 var dt = DateTime.Now;
                 da.Flag = 1;
                 da.AssignedAt = dt;
-                da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                string uniqueCode = dt.ToString("yyMMddHHmmssfff");
+                string additionalUniqueRandom = Utilities.RandomString(5);
+                string codeUsed = "DRD-" + Utilities.CombineStringRandomPosition(uniqueCode, additionalUniqueRandom);
+                da.AssignedAnnotationCode = codeUsed;
                 da.AssignedAnnotationImageFileName = user.StampImageFileName;
                 if (!numbers.Equals(""))
                     numbers += ", ";

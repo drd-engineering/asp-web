@@ -20,6 +20,8 @@ namespace DRD.Models
         public const long ID_NOT_FOUND = 0;
         public const int ALLOW_EXCEED_LIMIT = -99;
         public const string API_KEY = "AIzaSyB5y7e2nuBQ4OFE257snefNT8XorZVIGYY";
+        public const string ALPHABET_ONLY = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
         public static readonly IList<String> RESTRICTED_FOLDER_NAME = new ReadOnlyCollection<string>(new List<String> { ">", "<", ":", "\"", "/", "\\", "|", "?", "*" });
 
         /// Constructor
@@ -32,7 +34,6 @@ namespace DRD.Models
             Administrator = 2,
             Owner = 3
         }
-
         public enum AccessType
         {
             //restricted, cannot access at all
