@@ -133,7 +133,7 @@ namespace DRD.Service
 
                 if (rotationNodeDoc.Document == null) continue;
                 var annoToSave = new List<DocumentAnnotationsInboxData>();
-                foreach(DocumentAnnotation da in rotationNodeDoc.Document.DocumentAnnotations)
+                foreach (DocumentAnnotation da in rotationNodeDoc.Document.DocumentAnnotations)
                 {
                     annoToSave.Add(new DocumentAnnotationsInboxData(da));
                 }
@@ -349,7 +349,7 @@ namespace DRD.Service
             }
             else
             {
-                inboxDb.Note = activity.UserName + ", you has new Work on Rotatiion " + activity.RotationName;
+                inboxDb.Note = activity.UserName + ", you has new Work on Rotation " + activity.RotationName;
                 var activityItem = db.RotationNodes.FirstOrDefault(rtNode => rtNode.Id == activity.RotationNodeId);
                 if (activityItem != null)
                 {
@@ -404,6 +404,8 @@ namespace DRD.Service
             inboxDb.PreviousUserName = activity.PreviousUserName;
             inboxDb.RotationId = activity.RotationId;
             inboxDb.CreatedAt = DateTime.Now;
+            System.Diagnostics.Debug.WriteLine("DB INBOX :: " + inboxDb.UserId + " " + inboxDb.LastStatus);
+
             db.Inboxes.Add(inboxDb);
             var dbsave = db.SaveChanges();
             SendEmailActivity(inboxDb);
@@ -423,7 +425,8 @@ namespace DRD.Service
             {
                 foreach (Inbox inbox in prevInbox)
                 {
-                    if (activity.LastActivityStatus.Equals("SUBMIT"))
+                    //check if parallel don't update the inbox
+                    if (activity.LastActivityStatus.Equals("SUBMIT") && !(inbox.PreviousUserEmail.Equals(activity.PreviousEmail) && inbox.LastStatus.Equals("SUBMIT")))
                     {
                         inbox.Message = activity.UserName + "(" + activity.Email + ")" + " is reviewing " + activity.RotationName;
                         inbox.LastStatus = "INFO";
@@ -460,9 +463,12 @@ namespace DRD.Service
         public int GenerateNewInbox(ActivityItem activity)
         {
             using var db = new Connection();
+            System.Diagnostics.Debug.WriteLine("BEFORE SEARCH :: " + activity.RotationId + " " +activity.UserId);
             var inbox = db.Inboxes.Where(item => item.RotationId == activity.RotationId && item.UserId == activity.UserId).FirstOrDefault();
+            System.Diagnostics.Debug.WriteLine("INBOX NONEXIST :: " + inbox);
             if (inbox != null)
             {
+                System.Diagnostics.Debug.WriteLine("INBOX EXIST ::");
                 inbox.ActivityId = activity.RotationNodeId;
                 inbox.CreatedAt = DateTime.Now;
                 inbox.PreviousUserEmail = activity.PreviousEmail;
@@ -505,6 +511,7 @@ namespace DRD.Service
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("INBOX NOT EXIST ::");
                 return CreateInbox(activity);
             }
         }
@@ -573,6 +580,7 @@ namespace DRD.Service
             InboxService inboxService = new InboxService();
             foreach (ActivityItem activity in returnValue)
             {
+                System.Diagnostics.Debug.WriteLine(activity.Email +" - " +activity.LastActivityStatus+" - "+activity.ExitCode);
                 inboxService.GenerateNewInbox(activity);
             }
             return returnValue;
@@ -621,13 +629,14 @@ namespace DRD.Service
 
                         db.RotationNodes.Add(rotationNode2);
                     }
-
+                    
                     //change status to pending, waiting for all parallel sources finished
                     rotationNodeLookup.Status = anyUnfinishParallel ? (int)Constant.RotationStatus.Pending : (int)Constant.RotationStatus.Open;
                     stringBit = anyUnfinishParallel ? "PENDING" : stringBit;
+
                     db.SaveChanges();
                     long lastProductId = rotationNodeLookup.Id;
-                    returnValue.Add(CreateActivityResult(rotationNodeLookup.UserId, rotationNode.UserId, rotationNodeLookup.Status, rotationNodeLookup.Rotation.Name, rotationNodeLookup.RotationId, lastProductId, stringBit));
+                    returnValue.Add(CreateActivityResult(rotationNodeLookup.UserId, rotationNode.UserId, 1, rotationNodeLookup.Rotation.Name, rotationNodeLookup.RotationId, lastProductId, stringBit));
                 }
                 else if (nodeto.SymbolCode == symbolService.getSymbolId("END"))
                 {
@@ -732,11 +741,13 @@ namespace DRD.Service
                             || documentElement.ElementTypeId == (int)Models.Constant.EnumElementTypeId.PRIVATESTAMP)
                         {
                             var user = db.Users.FirstOrDefault(c => c.Id == documentElement.UserId);
-                            Element newElement = new Element();
-                            newElement.EncryptedUserId = Utilities.Encrypt(user.Id.ToString());
-                            newElement.UserId = user.Id;
-                            newElement.Name = user.Name;
-                            newElement.Foto = user.ProfileImageFileName;
+                            Element newElement = new Element
+                            {
+                                EncryptedUserId = Utilities.Encrypt(user.Id.ToString()),
+                                UserId = user.Id,
+                                Name = user.Name,
+                                Foto = user.ProfileImageFileName
+                            };
                             documentElement.Element = newElement;
                         }
                     }

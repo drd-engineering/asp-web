@@ -583,7 +583,9 @@
             };
             $scope.submitActivity = function (bit) {
                 $scope.btnDisabled = true;
-                var needSign = $scope.checkSignOrStamp();
+                var needSign = $scope.checkSign();
+                console.log("NEED SIGN " + needSign)
+                console.log("NEED PASSWORD " + $scope.needPassword )
                 if (needSign && bit == 1 && $scope.needPassword != 0) {
                     $scope.checkIsUserProfileComplete();
                 } else {
@@ -591,20 +593,18 @@
                 }
             }
             /*--------------------------------------------------------------
-                User Signature and Stamp Function
+                User Signature 
             --------------------------------------------------------------*/
-            $scope.checkSignOrStamp = function () {
+            $scope.checkSign = function () {
                 for (var i = 0; i < $scope.docs.length; i++) {
                     var doc = {};
                     doc.Document = $scope.docs[i].Document;
                     doc.DocumentId = $scope.docs[i].DocumentId;
+                        console.log("DOCUMENT ");
+                        console.log(doc.Document.DocumentUser);
                     if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 1))) {
                         // need sign
                         $scope.needPassword |= 1;
-                    }
-                    if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 32))) {
-                        // need stamp
-                        $scope.needPassword |= 32;
                     }
                     if ($scope.needPassword != 0) {
                         return true;
@@ -615,8 +615,9 @@
             $scope.checkIsUserProfileComplete = function () {
                 $http.post('/document/CheckIsUserProfileComplete', { userId: 0 }).then(function (response) {
                     if (response.data) {
+                        console.log("RESPONEE "+ response.data);
                         if (response.data == -1) {
-                            showError("Complete your user profiles to continue to sign this document. (KTP, initial, signature, and stamp)");
+                            showError("Complete your user profiles to continue to sign this document. (KTP, initial, signature)");
                             $scope.btnDisabled = false;
                             return;
                         } else {
@@ -819,7 +820,7 @@
                 if (!pdfCanClose) {
                     swal({
                         title: "Information",
-                        text: "You need to assign user to SIgnature, Initial, or Stamp. Double click on the user icon to assign",
+                        text: "You need to assign user to SIgnature, Initial. Double click on the user icon to assign",
                         type: "warning",
                         showCancelButton: false,
                         closeOnConfirm: true,

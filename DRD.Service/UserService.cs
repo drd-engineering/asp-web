@@ -103,6 +103,7 @@ namespace DRD.Service
         {
             using var db = new Connection();
             string encryptedPassword = Utilities.Encrypt(password);
+            username = username.ToLower();
 
             Expression<Func<User, bool>> findUsername = s => s.Email == username;
             if (!username.Contains('@'))

@@ -276,3 +276,5 @@ __pycache__/
 
 # Migrations 
 Core.Postgres/Migrations/*
+/DRD.App/doc/company
+/DRD.App/Images/Member
