@@ -17,12 +17,11 @@ namespace DRD.Service
         /// <returns></returns>
         public int CheckIsUserProfileComplete(long userId)
         {
-            int ret = 1;
             using var db = new Connection();
-            var mem = db.Users.FirstOrDefault(c => c.Id == userId);
-            if (mem.SignatureImageFileName == null || mem.InitialImageFileName == null || mem.KTPImageFileName == null || mem.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + mem.OfficialIdNo))
-                ret = -1;
-            return ret;
+            var user = db.Users.FirstOrDefault(c => c.Id == userId);
+            if (user.SignatureImageFileName == null || user.InitialImageFileName == null || user.KTPImageFileName == null || user.KTPVerificationImageFileName == null || string.IsNullOrEmpty("" + user.OfficialIdNo))
+                return (int)Constant.UserProfileStatus.NotComplete;
+            return (int)Constant.UserProfileStatus.Complete;
         }
         /// <summary>
         /// GET user permission from rotation user
@@ -364,7 +363,7 @@ namespace DRD.Service
             EmailService emailService = new EmailService();
             string body =
                 "Dear " + user.Name + ",<br/><br/>" +
-                "You have signed rotation <b>" + rotName + "</b> in document <b>" + docName + "</b>, the signature number generated: <b>" + numbers + "</b>.<br/>";
+                "You have signed rotation <b>" + rotName + "</b> in document <b>" + docName + "</b>, the signature unique code: <b>" + numbers + "</b>.<br/>";
 
             body += "<br/><br/> " + admName + " Administrator<br/>";
 
@@ -388,7 +387,7 @@ namespace DRD.Service
             EmailService emailService = new EmailService();
             string body =
                 "Dear " + user.Name + ",<br/><br/>" +
-                "You have stamped document <b>" + docName + "</b> in rotation <b>" + rotName + "</b>, the stamp number generated: <b>" + numbers + "</b>.<br/>";
+                "You have stamped document <b>" + docName + "</b> in rotation <b>" + rotName + "</b>, the stamp unique code : <b>" + numbers + "</b>.<br/>";
 
             body += "<br/><br/> " + admName + " Administrator<br/>";
 
@@ -416,24 +415,20 @@ namespace DRD.Service
             var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
             var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
             int cx = 0;
-            string numbers = "";
             foreach (DocumentAnnotation da in datas)
             {
                 var dt = DateTime.Now;
                 da.Flag = 1;
                 da.AssignedAt = dt;
-                da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                string uniqueCode = dt.ToString("yyMMddHHmmssfff");
+                string additionalUniqueRandom = Utilities.RandomString(5);
+                string codeUsed = "DRD-" + Utilities.CombineStringRandomPosition(uniqueCode, additionalUniqueRandom);
+                da.AssignedAnnotationCode = codeUsed;
                 da.AssignedAnnotationImageFileName = (da.ElementTypeId == (int)Models.Constant.EnumElementTypeId.SIGNATURE ? user.SignatureImageFileName : user.InitialImageFileName);
-                if (!numbers.Equals(""))
-                    numbers += ", ";
-                numbers += da.AssignedAnnotationCode;
                 cx++;
+                SendEmailSignature(user, rot.Name, doc.FileName, da.AssignedAnnotationCode);
             }
-            if (cx > 0)
-            {
-                db.SaveChanges();
-                SendEmailSignature(user, rot.Name, doc.FileName, numbers);
-            }
+            db.SaveChanges();
             WriteDocumentHistory(document: doc, details: "Document was Signed by User " + user.Id.ToString() + "("+user.Name+")");
             return cx;
         }
@@ -457,24 +452,20 @@ namespace DRD.Service
             var rot = db.Rotations.FirstOrDefault(c => c.Id == rotationId);
             var doc = db.Documents.FirstOrDefault(c => c.Id == documentId);
             int cx = 0;
-            string numbers = "";
             foreach (DocumentAnnotation da in datas)
             {
                 var dt = DateTime.Now;
                 da.Flag = 1;
                 da.AssignedAt = dt;
-                da.AssignedAnnotationCode = "DRD-" + dt.ToString("yyMMddHHmmssfff");
+                string uniqueCode = dt.ToString("yyMMddHHmmssfff");
+                string additionalUniqueRandom = Utilities.RandomString(5);
+                string codeUsed = "DRD-" + Utilities.CombineStringRandomPosition(uniqueCode, additionalUniqueRandom);
+                da.AssignedAnnotationCode = codeUsed;
                 da.AssignedAnnotationImageFileName = user.StampImageFileName;
-                if (!numbers.Equals(""))
-                    numbers += ", ";
-                numbers += da.AssignedAnnotationCode;
                 cx++;
+                SendEmailStamp(user, rot.Name, doc.FileName, da.AssignedAnnotationCode);
             }
-            if (cx > 0)
-            {
-                db.SaveChanges();
-                SendEmailStamp(user, rot.Name, doc.FileName, numbers);
-            }
+            db.SaveChanges();
             WriteDocumentHistory(document: doc, details: "Document was Stamped by User " + user.Id.ToString() + "(" + user.Name + ")");
             return cx;
         }

@@ -77,7 +77,7 @@ namespace Core.Postgres
                     Name = "Bam Viole",
                     Phone = "0897287837382",
                     Email = "bam@solobhakti.com",
-                    OfficialIdNo = 2511100909080001,
+                    OfficialIdNo = 2511100909080002,
                     Password = passEncrypted,
                     IsActive = true
                 },
@@ -86,20 +86,73 @@ namespace Core.Postgres
                     Name = "Seraphina Alaydrus",
                     Phone = "0897287837382",
                     Email = "seraphina@solobhakti.com",
-                    OfficialIdNo = 2511100909080001,
+                    OfficialIdNo = 2511100909080003,
                     Password = passEncrypted,
                     IsActive = true
                 },
                 new User
                 {
-                    Name = "Arlo Iskandar",
-                    Phone = "0897287837382",
-                    Email = "arlo@solobhakti.com",
-                    OfficialIdNo = 2511100909080001,
+                    Name = "Chae Sinaga",
+                    Phone = "085877213147",
+                    Email = "chae@solobhakti.com",
+                    OfficialIdNo = 2511100909080004,
                     Password = passEncrypted,
                     IsActive = true
                 },
-
+                new User
+                {
+                    Name = "Yeji Sitohang",
+                    Phone = "081516322231",
+                    Email = "yeji@solobhakti.com",
+                    OfficialIdNo = 2511100909080005,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Yuna Siahahan",
+                    Phone = "089756321121",
+                    Email = "yuna@solobhakti.com",
+                    OfficialIdNo = 2511100909080006,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Lia Simbolon",
+                    Phone = "087731224234",
+                    Email = "lia@solobhakti.com",
+                    OfficialIdNo = 2511100909080007,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Momo Pakubumi",
+                    Phone = "087865663123",
+                    Email = "momo@solobhakti.com",
+                    OfficialIdNo = 2511100909080008,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Palihan Panahan",
+                    Phone = "0865526366232",
+                    Email = "palihan@solobhakti.com",
+                    OfficialIdNo = 2511100909080009,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Serina Selihan",
+                    Phone = "08895737277",
+                    Email = "serina@solobhakti.com",
+                    OfficialIdNo = 2511100909080010,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
             };
 
 
@@ -147,7 +200,7 @@ namespace Core.Postgres
                 IsCompanyAccept = true,
                 IsMemberAccept = true,
                 UserId = listOfUserCreated[2].Id,
-                IsAdministrator = true
+                IsAdministrator = false
             };
             Member member4 = new Member
             {
@@ -156,17 +209,72 @@ namespace Core.Postgres
                 IsCompanyAccept = true,
                 IsMemberAccept = true,
                 UserId = listOfUserCreated[3].Id,
-                IsAdministrator = true
+                IsAdministrator = false
             };
-
+            Member member5 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[4].Id,
+                IsAdministrator = false
+            };
+            Member member6 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[5].Id,
+                IsAdministrator = false
+            };
+            Member member7 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[6].Id,
+                IsAdministrator = false
+            };
+            Member member8 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[7].Id,
+                IsAdministrator = false
+            };
+            Member member9 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[8].Id,
+                IsAdministrator = false
+            };
+            Member member10 = new Member
+            {
+                CompanyId = listOfCompanyCreated[0].Id,
+                IsActive = true,
+                IsCompanyAccept = true,
+                IsMemberAccept = true,
+                UserId = listOfUserCreated[9].Id,
+                IsAdministrator = false
+            };
             BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
             Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
             BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
 
 
-            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3]);
+            modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3],
+                listOfUserCreated[4], listOfUserCreated[5], listOfUserCreated[6], listOfUserCreated[7],
+                listOfUserCreated[8], listOfUserCreated[9]);
             modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0]);
-            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4);
+            modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10);
 
             modelBuilder.Entity<BusinessPackage>().HasData(package1);
             modelBuilder.Entity<Price>().HasData(price1);

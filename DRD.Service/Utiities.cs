@@ -22,11 +22,19 @@ namespace DRD.Service
         private static readonly Random random = new Random();
         public static string RandomString(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            return new string(Enumerable.Repeat(chars, length)
+            return new string(Enumerable.Repeat(Constant.ALPHABET_ONLY, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        public static string CombineStringRandomPosition(string baseValue, string additional)
+        {
+            for (int i =0; i < additional.Length; i++)
+            {
+                int indexTarget = random.Next(baseValue.Length);
+                baseValue = baseValue.Substring(0, indexTarget) + additional[i] + baseValue.Substring(indexTarget, baseValue.Length-indexTarget);
+            }
+            return baseValue;
+        }
         public static string Encrypt(string clearText)
         {
             string EncryptionKey = Constant.ENCRYPT_KEY;
