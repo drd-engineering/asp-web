@@ -1209,6 +1209,8 @@
         item.ElementType = elementType.SIGNATURE;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
+        item.WidthPosition = 150;
+        item.HeightPosition = 100;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1226,6 +1228,8 @@
         item.ElementType = elementType.INITIAL;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
+        item.WidthPosition = 150;
+        item.HeightPosition = 100;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1243,6 +1247,8 @@
         item.ElementType = elementType.PRIVATESTAMP;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
+        item.WidthPosition = 150;
+        item.HeightPosition = 100;
         item.ScaleX = 1;
         item.ScaleY = 1;
         $scope.addAnnoItem(item);
@@ -1276,6 +1282,8 @@
         item.ElementType = elementType.TEXT;
         item.TopPosition = out.y;
         item.LeftPosition = out.x;
+        item.WidthPosition = 100;
+        item.HeightPosition = 100;
         item.Text = defaultText;
         item.ScaleX = 1;
         item.ScaleY = 1;

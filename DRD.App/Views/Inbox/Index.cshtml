@@ -600,11 +600,13 @@
                     var doc = {};
                     doc.Document = $scope.docs[i].Document;
                     doc.DocumentId = $scope.docs[i].DocumentId;
-                        console.log("DOCUMENT ");
-                        console.log(doc.Document.DocumentUser);
                     if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 1))) {
                         // need sign
                         $scope.needPassword |= 1;
+                    }
+                    if (($scope.validAction(doc.Document.DocumentUser.ActionPermission, 32))) {
+                        // need sign
+                        $scope.needPassword |= 32;
                     }
                     if ($scope.needPassword != 0) {
                         return true;
