@@ -215,6 +215,9 @@
         signatureArrange(stampClass, item.LeftPosition, item.TopPosition);
     }
     $scope.addAnnoText = function (dataIdx) {
+
+        console.log($scope.annoItems[dataIdx]);
+
         var item = $scope.annoItems[dataIdx];
 
         var annolayer = createAnnoLayer(item.Page);
@@ -237,8 +240,14 @@
         if (!isAnnoElementEnable)
             $('.' + editTextClass).attr('contenteditable', 'false');
         var defFlag = dropedToCenter;
+
+        console.log("after ON EDit");
+        console.log(item.Text);
+
         dropedToCenter = false;
         signatureArrange(editTextClass, item.LeftPosition, item.TopPosition);
+        console.log("after Signature Arrange");
+        console.log(item.Text);
         dropedToCenter = defFlag;
     }
     $scope.addAnnoPen = function (dataIdx) {
@@ -499,9 +508,12 @@
         var page = parseInt(e.target.getAttribute('page-no'));
         if (!$.isNumeric(page)) {
             $scope.clickObjectButtonPointer();
+            console.log("out");
+            console.log($scope.annoItems);
             enableAnnoLayer(false);
             return;
         }
+            console.log(toolType);
         if (toolType == elementType.PEN)
             penMouseDown(e, page);
         else if (toolType == elementType.HIGHLIGHTER)
@@ -987,7 +999,7 @@
                 height: pos2Float(elmstyle.height),
             };
 
-        var pad = (svgPadding * 4);
+        var pad = (svgPadding * 4); 
         var selected = $('#' + id);
         var parent = $('#' + selected[0].parentNode.id);
 
@@ -1004,7 +1016,7 @@
         item.LeftPosition = rectsvg.left + (svgPadding * 2);
         item.TopPosition = rectsvg.top + (svgPadding * 2);;
         item.WidthPosition = rectsvg.width - pad;
-        item.HeightPosition = rectsvg.height - pad;
+        item.HeightPosition = rectsvg.height - pad; 
 
         $scope.debugText = "L:" + item.LeftPosition + " T:" + item.TopPosition + " W:" + item.WidthPosition + " H:" + item.HeightPosition;
     }
@@ -1302,9 +1314,16 @@
     var onEditText = function (e) {
         var svgId = e.target.parentNode.id;
         var text = e.target.innerText;
+
+        console.log("TEXT onEditText :: ");
+        console.log(text);
+
         var iItem = $scope.findAnnoItem(svgId);
         if (iItem != -1)
             $scope.annoItems[iItem].Text = text;
+
+        console.log($scope.annoItems[iItem]);
+
 
         var w = e.path[0].clientWidth;
         var h = e.path[0].clientHeight;
@@ -1320,7 +1339,7 @@
         if (!isAnnoElementEnable) return;
         if (selectedNodeId.startsWith(editTextClass)) {
             //$scope.annoSelectorRemoveEvent();
-            //$('.svg-selection').hide();
+            //$('.svg-selection').hide();   
             //isresize = false;
             //$('#' + selectedNodeId).focus();
             $scope.popupText(selectedNodeId);
@@ -2029,7 +2048,16 @@
     // modal text
     $scope.popupText = function (id) {
         defaultTextId = id;
-        var text = $('#' + id)[0].innerHTML;
+
+        console.log("POPUP");
+        console.log(id);
+        console.log($scope.annoItems);
+        console.log($scope.annoItems[id]);
+        var idText = parseInt(id.substr(id.length - 1));
+        var text = $scope.annoItems[idText].Text;
+
+        //var text = $('#' + id)[0].innerHTML;
+
         $('#dataText').val(text);
         $("#modal_text").modal("show");
     }
@@ -2041,7 +2069,12 @@
         var parent = $('#' + defaultTextId)[0].parentElement.id;
         var i = $scope.findAnnoItem(parent);
         var item = $scope.annoItems[i];
+
+        console.log(item.Text);
         item.Text = text;//$('#dataText').val();
+        console.log("AFTER :: ");
+        console.log(item.Text);
+
         $('#' + defaultTextId)[0].innerHTML = text;//$('#dataText').val();
     }
 
