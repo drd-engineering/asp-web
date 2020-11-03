@@ -1040,12 +1040,33 @@
         },
         fallback: function fallback(featureId) { },
         error: function error(message, moreInfo) {
+
+            console.log("Message:: " + message);
+            console.log("compare:: " + (moreInfo.message == 'bad XRef entry'));
+            console.log("compare:: " + (moreInfo.message == "bad XRef entry"));
+            console.log("more info:: " + moreInfo.message);
+
+
+           /* var moreInfoText = [this.l10n.get('error_version_info', {
+                version: _pdfjsLib.version || '?',
+                build: _pdfjsLib.build || '?'
+            }, 'DRD - error ')];*/
+
             var moreInfoText = [this.l10n.get('error_version_info', {
                 version: _pdfjsLib.version || '?',
                 build: _pdfjsLib.build || '?'
-            }, 'PDF.js v{{version}} (build: {{build}})')];
+            }, 'DRD - PDF encryption invalid')];
+
+
+            console.log("Preview:: " + moreInfoText );
+
             if (moreInfo) {
-                moreInfoText.push(this.l10n.get('error_message', { message: moreInfo.message }, 'Message: {{message}}'));
+                if (moreInfo.message == 'bad XRef entry') {
+                    moreInfoText = [this.l10n.get('error_version_info', { suggestion: 'try to revert it back your document into word and convert it again into pdf file, if there are still problems please contact our costumer service for further help.'})];
+                }
+                else
+                    moreInfoText.push(this.l10n.get('error_message', { message: moreInfo.message }, 'Message: {{message}}'));
+
                 if (moreInfo.stack) {
                     moreInfoText.push(this.l10n.get('error_stack', { stack: moreInfo.stack }, 'Stack: {{stack}}'));
                 } else {
