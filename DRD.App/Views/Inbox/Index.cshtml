@@ -876,6 +876,17 @@
                     $scope.btnDisabled = false;
                 });
             };
+
+            $scope.$watch('files', function () {
+                $scope.upload($scope.files);
+            });
+            $scope.$watch('file', function () {
+                if ($scope.file != null) {
+                    $scope.files = [$scope.file]; 
+                }
+            });
+
+
             $scope.uploadDocFile = function (idx, file, errFiles) {
                 $scope.finit = $scope.f;
                 $scope.f = file;

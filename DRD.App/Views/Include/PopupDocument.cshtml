@@ -11,27 +11,38 @@
                 <h6 class="modal-title">Upload File </h6>
             </div>
 
-            <div class="input-group" style="padding:50px; align-content:center; vertical-align:central; width:100%;">
+            <div class="input-group" style="padding:50px; padding-top:10px; align-content:center; vertical-align:central; width:100%;">
                 <form autocomplete="off" >
                     <div ng-show="wizarno=='product'">
                         <div class="col-md-12">
+
                             <div class="row justify-content-sm-center">
-                                <div class="col-sm-4">
-                                    <span style="position:absolute;padding:5px;font-size:smaller" ng-model="$parent.progressUploadFile">{{$parent.model.FileName}}<br />{{$parent.progressValueUploadFile}}</span>
+                                <div ng-show="fileTypeImage == 'no_document.png'" class="col-sm-12">
+                                    <div ngf-drop="uploadDocFile(0,$file, $invalidFiles)" class="drop-box"
+                                         ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false"
+                                         accept="application/pdf"
+                                         ngf-pattern="'application/pdf'">
+                                        Drop your pdf file here or
+                                        <span class="btn browsebutton bg-dark" ngf-select="uploadDocFile(0,$file, $invalidFiles)" style="margin-left:10px;background-color:#075685; color:white; width:100px;height:20px">choose your file</span><br />
+                                        <span style="position:absolute;padding:5px;font-size:smaller" ng-model="$parent.progressUploadFile">{{$parent.model.FileName}}<br />{{$parent.progressValueUploadFile}}</span>
+                                    </div>
+                                    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
                                 </div>
                                 <div class="col-sm-4">
-                                        
+                                   
+                                </div>
+                                <div class="col-sm-4">
                                     <div class="image-wrapper">
 
-                                        <img ng-src="/Images/filetype/{{fileTypeImage}}" class="image-content"
-                                                ngf-drop="uploadDocFile(0,$file, $invalidFiles)"
-                                                ngf-select="uploadDocFile(0,$file, $invalidFiles)"
-                                                accept="application/pdf" 
-                                                ngf-pattern="'application/pdf'"
-                                                style="object-fit:fill" />
+                                        <img ng-show="fileTypeImage != 'no_document.png'" ng-src="/Images/filetype/{{fileTypeImage}}" class="image-content"
+                                             ngf-drop="uploadDocFile(0,$file, $invalidFiles)"
+                                             ngf-select="uploadDocFile(0,$file, $invalidFiles)"
+                                             accept="application/pdf"
+                                             ngf-pattern="'application/pdf'"
+                                             style="object-fit:fill" />
                                     </div>
-                                        
-                                    <span ng-show=" $parent.isUpload" style="font-size:xx-small">File Size: {{humanFileSize($parent.model.FileSize,1024)}}</span>   
+
+                                    <span ng-show=" $parent.isUpload" style="font-size:xx-small">File Size: {{humanFileSize($parent.model.FileSize,1024)}}</span>
                                 </div>
                             </div>
                             <div class="row">
@@ -40,6 +51,7 @@
                                     <b><a style="background-color:#FCD097; color:white;" class="btn btn-dark" ng-click="annoDocument()"> Set up document</a></b> of {{$parent.docFileName}}
                                 </div><br />
                             </div>        
+                            <br />
                             <div class="row">
                                 <div class="col-6">
                                     <label class="control-label">max print/person  <small style="color:gray">(optional)</small></label>
@@ -50,7 +62,6 @@
                                     <input type="number" class="form-control input-xs" ng-model="$parent.model.MaxDownload" ng-required="wizarno=='product'" ng-only-number />
                                 </div>
                             </div>
-                            <br />
                         </div>
                     </div>
                     <hr />
