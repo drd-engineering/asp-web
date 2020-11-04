@@ -1,5 +1,29 @@
 
-    .auto-style3 {
+.browsebutton {
+    position: relative;
+    cursor: pointer;
+    color: #3572b0;
+    background: transparent;
+    padding: 0;
+    border: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 100%;
+    height: 165px;
+    text-align: center;
+    padding-top: 25px;
+    margin: 10px;
+}
+
+.dragover {
+    border: 5px dashed blue;
+}   
+.auto-style3 {
         width: 64px;
     }
 
