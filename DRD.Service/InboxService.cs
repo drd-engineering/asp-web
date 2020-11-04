@@ -643,13 +643,9 @@ namespace DRD.Service
                 {
                     //Find all the IDs of source workflow link 
                     var workflownodelinktargetsources = db.WorkflowNodeLinks.Where(c => c.TargetId == workflowNodeLink.TargetId && c.SourceId != workflowNodeLink.SourceId && c.SymbolCode == symbolCode).Select(c => c.SourceId).ToHashSet();
-                    if (rotationNode.Status.Equals((int)Constant.RotationStatus.Declined))
-                        UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Declined);
-                    else
-                        UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Completed);
-                    returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, 1, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, "END"));
+
                     //check if any other parallel source whish is still ongoing
-                    /*bool anyUnfinishParallel = db.RotationNodes.Any(rn => rn.RotationId == rotationNode.RotationId && rn.Status == (int)Constant.RotationStatus.Open && workflownodelinktargetsources.Contains(rn.WorkflowNodeId));
+                    bool anyUnfinishParallel = db.RotationNodes.Any(rn => rn.RotationId == rotationNode.RotationId && rn.Status == (int)Constant.RotationStatus.Open && workflownodelinktargetsources.Contains(rn.WorkflowNodeId));
 
                     if (!anyUnfinishParallel)
                     {
@@ -658,7 +654,7 @@ namespace DRD.Service
                         else
                             UpdateStatus(db, rotationNode.Rotation.Id, (int)Constant.RotationStatus.Open, (int)Constant.RotationStatus.Completed);
                         returnValue.Add(CreateActivityResult(rotationNode.UserId, rotationNode.UserId, 1, rotationNode.Rotation.Name, rotationNode.RotationId, rotationNode.Id, "END"));
-                    }*/
+                    }
                 }
             }
             return returnValue;

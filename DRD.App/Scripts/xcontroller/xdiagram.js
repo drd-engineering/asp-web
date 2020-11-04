@@ -584,9 +584,11 @@
         $scope.selectByMe = false;
     }
 
-    $("html").keypress(function (e) {
-        if (e.key == 'x' || e.key == 'X') {
-            if ($scope.selectedLinkNoIdx != -1) {
+
+    $("html").keyup(function (e) {
+            console.log(e.key);
+        if (e.key == 'x' || e.key == 'X' || e.key == 'Delete' || e.key == 'Backspace') {
+            if ($scope.selectedLinkNoIdx != -1) {``
                 swal({
                     title: "Confirmation",
                     text: "This link will be deleted, are you sure?",

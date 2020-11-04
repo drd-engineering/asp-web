@@ -20,6 +20,7 @@
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
     <script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.filedrop.js"></script>
 
     <script src="/html2pdf-master/dist/html2pdf.bundle.js"></script>
     <script src="/assets/vendors/angular-1.5.5/angular-sanitize.min.js"></script>
@@ -104,7 +105,7 @@
                                             </td>
                                             <td style="height:50px;width:20%" class="text-top">
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
-                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="revisedDocument($index);">Set Up</button>
+                                                @*<button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="revisedDocument($index);">Set Up</button>*@
                                                 <button ng-show="!checkIsFirstPerson()" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.ActionStatus, 2)?'Revised':'Revision')}}</button>
                                             </td>
                                         </tr>
@@ -593,7 +594,7 @@
                 }
             }
             /*--------------------------------------------------------------
-                User Signature 
+                User Signature
             --------------------------------------------------------------*/
             $scope.checkSign = function () {
                 for (var i = 0; i < $scope.docs.length; i++) {
@@ -925,7 +926,7 @@
                             $scope.progressValueUploadFile = "Failed";
                             return;
                         } else if (response.data.Status == "OK") {
-                            
+
                             file.result = response.data;
                             if (file.result) {
                                 $scope.model.FileUrl = file.result.FileUrl;
