@@ -19,6 +19,17 @@ namespace DRD.Models
         public virtual User ContactOwner { get; set; }
         [ForeignKey("ContactItemId")]
         public virtual User ContactItem { get; set; }
+        public Contact()
+        {
+
+        }
+        public Contact(long userId, long itemId)
+        {
+            ContactOwnerId = userId;
+            ContactItemId = itemId;
+            IsActive = true;
+            IsBlocked = false;
+        }
 
         public static implicit operator Contact(ContactItem v)
         {

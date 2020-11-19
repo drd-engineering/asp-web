@@ -23,16 +23,21 @@ namespace DRD.Service
             var result = db.Users.Where(userItem => userItem.Email.Equals(register.Email.ToLower())).Count();
             if (result != 0)
             {
-                User retVal = new User();
-                retVal.Id = -1;
+                User retVal = new User
+                {
+                    Id = -1
+                };
                 return retVal;
             }
+
             User user = new User(register.Email.ToLower(), register.Name, register.Phone)
             {
                 Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1))
             };
+            
             long userId = Save(user);
             user.Id = userId;
+            
             if (register.CompanyId != null)
             {
                 MemberService memberService = new MemberService();
@@ -40,6 +45,7 @@ namespace DRD.Service
             }
             return user;
         }
+
         /// <summary>
         /// HELPER method to Save user with valid and unique user Id long value
         /// </summary>
@@ -69,6 +75,13 @@ namespace DRD.Service
             using var db = new Connection();
             return db.Users.Any(i => i.Id == id);
         }
+
+        public User CreateVoidUser(string email)
+        {
+            return null;
+        }
+
+
         /// <summary>
         /// SEND registration notification via email, for new user
         /// </summary>

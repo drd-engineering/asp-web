@@ -13,6 +13,9 @@ namespace DRD.Service
 {
     public class ContactService
     {
+
+        UserService userService;
+
         /// <summary>
         /// This function used to get all personal contact that related to user, and use search key and pagination if needed
         /// </summary>
@@ -22,7 +25,8 @@ namespace DRD.Service
         public ContactList GetPersonalContact(UserSession user, string topCriteria, int page, int pageSize)
         {
             Expression<Func<ContactItem, bool>> criteriaUsed = ContactItem => true;
-            return GetPersonalContact(user, topCriteria, page, pageSize, null, criteriaUsed);
+            Expression<Func<ContactItem, string>> orderUsed = ContactItem => ContactItem.Name;
+            return GetPersonalContact(user, topCriteria, page, pageSize, orderUsed, criteriaUsed);
         }
         public ContactList GetPersonalContact(UserSession user, string topCriteria, int page, int pageSize, Expression<Func<ContactItem, string>> order, Expression<Func<ContactItem, bool>> criteria)
         {
@@ -39,36 +43,92 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new Connection())
+            using var db = new Connection();
+            // Scenario:
+            // login using user with id = "11111211"
+            var result = (from User in db.Users
+                          join Contact in db.Contacts on User.Id equals Contact.ContactItemId
+                          where Contact.ContactOwner.Id == user.Id && User.Name!=""
+                          && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Email).Contains(x)))
+                          select new ContactItem
+                          {
+                              Id = User.Id,
+                              Name = User.Name,
+                              Phone = User.Phone,
+                              Email = User.Email,
+                              ImageProfile = User.ProfileImageFileName
+                          }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
+            ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
+            int counter = 0;
+
+            foreach (ContactItem x in result)
+
             {
-                // Scenario:
-                // login using user with id = "11111211"
-                var result = (from User in db.Users
-                              join Contact in db.Contacts on User.Id equals Contact.ContactItemId
-                              where Contact.ContactOwner.Id == user.Id
-                              && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Email).Contains(x)))
-                              select new ContactItem
-                              {
-                                  Id = User.Id,
-                                  Name = User.Name,
-                                  Phone = User.Phone,
-                                  Email = User.Email,
-                                  ImageProfile = User.ProfileImageFileName
-                              }).Where(criteria).OrderBy(ordering).Skip(skip).Take(pageSize).ToList();
-                ContactList listReturned = new ContactList { Type = "Personal", Items = new List<ContactItem>() };
-                int counter = 0;
+                listReturned.Items.Add(x);
+                counter += 1;
+            }
 
-                foreach (ContactItem x in result)
+            listReturned.Count = counter;
 
+            return listReturned;
+        }
+
+        public MemberData GetEmailContact(long userId, string email)
+        {
+            userService = new UserService();
+
+            using var db = new Connection();
+
+            //check if criteria is match with email regex
+            if (Utilities.IsValidEmail(email))
+            {
+
+                System.Diagnostics.Debug.WriteLine("TESTING EMAIL VALID YES");
+
+                var userSaved = db.Users.FirstOrDefault(user => user.Email == email);
+                var userResult = new MemberData();
+
+
+                //check if user doesn't exist
+                if (userSaved == null)
                 {
-                    listReturned.Items.Add(x);
-                    counter = counter + 1;
+                    userResult = new MemberData
+                    {
+                        Id=-1
+                    };
+
+                    //return user
+                    return  userResult;
                 }
 
-                listReturned.Count = counter;
+                var contactMatch = db.Contacts.FirstOrDefault(personalcontact => personalcontact.ContactOwnerId == userId && personalcontact.ContactItemId == userSaved.Id);
 
-                return listReturned;
+                //if in personal contact
+                if (contactMatch != null)
+                {
+                    userResult = new MemberData
+                    {
+                        Id = 0
+                    };
+
+                    //return user
+                    return userResult;
+                }
+
+                userResult = new MemberData(userSaved);
+
+                userResult.EncryptedId = Utilities.Encrypt(userResult.Id.ToString());
+
+                return userResult;
+
             }
+
+            var emailNotvalid = new MemberData
+            {
+                Id = -2
+            };
+
+            return emailNotvalid;
         }
 
         public long GetTotalPersonalContact(UserSession user)
@@ -159,7 +219,7 @@ namespace DRD.Service
             }
 
         }
-        public ContactItem getContact(long userId)
+        public ContactItem GetContact(long userId)
         {
             using (var db = new Connection())
             {
@@ -206,7 +266,18 @@ namespace DRD.Service
             }
         }
 
+        public long AddPersonalContact(long userId, long userContactItemId)
+        {
+            using var db = new Connection();
+            var contact = new Contact(userId, userContactItemId);
 
+            db.Contacts.Add(contact);
+            db.SaveChanges();
+
+            System.Diagnostics.Debug.WriteLine("TESTING EMAIL add contact:  " + contact.ContactItemId + " :: " + contact.ContactOwnerId + " :: " + userId);
+
+            return userContactItemId;
+        }
 
     }
 }

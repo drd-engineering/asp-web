@@ -3535,6 +3535,7 @@
     <Content Include="Views\Include\PopupMemberRotation.cshtml" />
     <Content Include="Views\Include\DocumentSummary.cshtml" />
     <Content Include="Views\Error\404.cshtml" />
+    <Content Include="Views\Include\PopupAddContact.cshtml" />
     <None Include="Views\Workflow\Index.cshtml" />
     <Content Include="doc\json.json" />
     <Content Include="doc\mgn\loading.pdf" />

@@ -10,6 +10,11 @@ namespace DRD.Web.Controllers
             return View();
         }
 
+        public ActionResult PopupAddContact()
+        {
+            return View();
+        }
+
         public ActionResult PopupProject()
         {
             return View();

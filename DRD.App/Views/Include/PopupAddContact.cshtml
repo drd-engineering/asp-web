@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div id="modal_add_contact" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title">Add Contact</h6>
+            </div>
+
+            <div class="input-group">
+                <input type="text" ng-keyup="$event.keyCode == 13 && GetEmailContact($parent.criteriaAdd)" class="form-control" ng-model="$parent.criteriaAdd" placeholder="email address"  />
+
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" ng-click="GetEmailContact($parent.criteria)">Search</button>
+                </span>
+            </div>
+
+            <div style="max-height:450px" class="table-responsive">
+                <table class="table-xxs table-borderless table-hover datatable-highlight dataTable no-footer" style="font-size:small;width:100%">
+
+                    <tbody>
+                        <tr ng-show="$parent.contactMatched != null && $parent.contactMatched.Id>0" style="cursor:pointer;height:60px;vertical-align:middle;" data-dismiss="modal" ng-click="addPersonalContact();">
+                            <td ng-show="$parent.contactMatched.Id>0">
+                                <img ng-src={{($parent.contactMatched.Picture==null?"/Images/Member/user.png":"/Images/Member/"+$parent.contactMatche.EncryptedId+"/"+$parent.contactMatched.Picture)}} height="40" width="40" style="cursor:pointer;border-radius:50%;" />
+                                &ensp;&ensp;{{$parent.contactMatched.Name}}
+                            </td>
+                            <td ng-show="$parent.contactMatched.Id>0">{{$parent.contactMatched.Email}}</td>
+                            <td ng-show="$parent.contactMatched.Id>0">{{$parent.contactMatched.Id}}</td>
+                            
+                        </tr >
+                        <tr ng-show="$parent.contactMatched == null || $parent.contactMatched.Id<=0" style="height:60px;vertical-align:middle;text-align:center" data-dismiss="modal">
+                            <td ng-show="$parent.contactMatched == null">Enter valid email address</td>
+                            <td ng-show="$parent.contactMatched.Id<=0">Email format is either not valid nor a member of drd</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+

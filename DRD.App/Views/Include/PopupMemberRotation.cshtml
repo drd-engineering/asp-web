@@ -31,7 +31,8 @@
                     <tbody>
                         <tr ng-repeat="x in $parent.members" style="cursor:pointer;height:25px;vertical-align:top" data-dismiss="modal" ng-click="setMemberFromRotation($index);">
                             <td width="15px"><i class="icon-user" /></td>
-                            <td>{{x.Name+" - "+x.Email}}</td>
+                            <td ng-show="x.Name!=''">{{x.Name+" - "+x.Email}}</td>
+                            <td ng-show="x.Name==''">{{x.Email + " (not registered as a drd user)"}}</td>
                         </tr>
                     </tbody>
                 </table>

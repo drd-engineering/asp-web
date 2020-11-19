@@ -15,6 +15,16 @@ namespace DRD.Models.Custom
         public string CompanyName { get; set; }
 
         public MemberData() { }
+
+        public MemberData(User user) 
+        {
+            Id = user.Id;
+            Name = user.Name;
+            Phone = user.Phone;
+            Email = user.Email;
+            ImageProfile = user.ProfileImageFileName;
+            EncryptedId = UtilitiesModel.Encrypt(user.Id.ToString());
+        }
     }
     public class MemberDataComparer : IEqualityComparer<MemberData>
     {

@@ -47,7 +47,7 @@ namespace DRD.App.Controllers
         public ActionResult GetMembers(string criteria, int page, int totalItemPerPage)
         {
             CheckLogin();
-            var data = memberService.GetMembers(user.Id, criteria, page, totalItemPerPage, null);
+            var data = memberService.FindContact(user.Id, criteria, page, totalItemPerPage, null);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         /// <summary>

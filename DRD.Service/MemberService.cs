@@ -14,6 +14,7 @@ namespace DRD.Service
     {
         private CompanyService companyService;
         private ContactService contactService;
+        private UserService userService;
         private SubscriptionService subscriptionService ;
         /// <summary>
         /// CHECK if id member already exist or not
@@ -51,7 +52,7 @@ namespace DRD.Service
                     UserId = x.UserId
                 };
                 memberItem.Company = companyService.GetCompany(memberItem.CompanyId);
-                memberItem.User = contactService.getContact(memberItem.UserId);
+                memberItem.User = contactService.GetContact(memberItem.UserId);
                 memberItem.User.EncryptedId = Utilities.Encrypt(memberItem.UserId.ToString());
 
                 listReturn.addMember(memberItem);
@@ -293,13 +294,80 @@ namespace DRD.Service
         /// <param name="pageSize"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public ICollection<MemberData> GetMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
+        public ICollection<MemberData> FindContact(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order)
         {
             Expression<Func<MemberData, bool>> criteriaUsed = WorkflowData => true;
-            return FindMembers(userId, topCriteria, page, pageSize, order, criteriaUsed);
+            return FindInAllContacts(userId, topCriteria, page, pageSize, order, criteriaUsed);
         }
-        public ICollection<MemberData> FindMembers(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order, Expression<Func<MemberData, bool>> criteria)
+        public ICollection<MemberData> FindInAllContacts(long userId, string topCriteria, int page, int pageSize, Expression<Func<MemberData, string>> order, Expression<Func<MemberData, bool>> criteria)
         {
+            userService = new UserService();
+            contactService = new ContactService();
+            using var db = new Connection();
+            
+            System.Diagnostics.Debug.WriteLine("TESTING EMAIL:  "+ Utilities.IsValidEmail(topCriteria)+" :: "+ topCriteria);
+
+
+            //check if criteria is match with email regex
+            if (Utilities.IsValidEmail(topCriteria))
+            {
+
+                System.Diagnostics.Debug.WriteLine("TESTING EMAIL VALID YES");
+
+                var userSaved = db.Users.FirstOrDefault(user=>user.Email == topCriteria);
+                var userResult = new MemberData();
+
+
+                //check if user doesn't exist
+                if (userSaved == null)
+                {
+                    //register user
+                    userSaved = userService.SaveRegistration(new RegistrationData()
+                    {
+                        Name = "",
+                        Phone = "",
+                        Email = topCriteria.ToLower()
+                    });
+
+                    contactService.AddPersonalContact(userId, userSaved.Id);
+                    userResult = new MemberData(userSaved);
+
+                    //return as first element of list
+                    return new List<MemberData> { userResult };
+
+                }
+                
+                var contactMatch = db.Contacts.FirstOrDefault(personalcontact => personalcontact.ContactOwnerId == userId && personalcontact.ContactItemId == userSaved.Id);
+
+                //if not in personal contact
+                if (contactMatch == null)
+                {
+
+                    System.Diagnostics.Debug.WriteLine("TESTING EMAIL add contact:  " + userSaved.Id + " :: " + topCriteria + " :: " + userId);
+
+                    contactService.AddPersonalContact(userId, userSaved.Id);
+                    userResult = new MemberData(userSaved);
+                    return new List<MemberData> { userResult };
+                }
+
+                userResult = (from Contact in db.Contacts
+                                    join User in db.Users on Contact.ContactItemId equals User.Id
+                                    where Contact.ContactOwnerId == userId && Contact.ContactItemId == contactMatch.ContactItemId
+                                    select new MemberData
+                                    {
+                                        Id = User.Id,
+                                        Name = User.Name,
+                                        Phone = User.Phone,
+                                        Email = User.Email,
+                                        ImageProfile = User.ProfileImageFileName
+                                    }).FirstOrDefault();
+
+                userResult.EncryptedId = Utilities.Encrypt(userResult.Id.ToString());
+
+                return new List<MemberData> { userResult };
+                
+            }
+
             int skip = pageSize * (page - 1);
             Expression<Func<MemberData, string>> ordering = MemberData => "Name";
 
@@ -313,44 +381,41 @@ namespace DRD.Service
             else
                 topCriteria = "";
 
-            using (var db = new Connection())
-            {
-                var contactListAllMatch = (from Contact in db.Contacts
-                                           join User in db.Users on Contact.ContactItemId equals User.Id
-                                           where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
-                                           select new MemberData
-                                           {
-                                               Id = User.Id,
-                                               Name = User.Name,
-                                               Phone = User.Phone,
-                                               Email = User.Email,
-                                               ImageProfile = User.ProfileImageFileName
-                                           }).Union(from member1 in db.Members
-                                                    join company in db.Companies on member1.CompanyId equals company.Id
-                                                    join member2 in db.Members on company.Id equals member2.CompanyId
-                                                    join user in db.Users on member2.UserId equals user.Id
-                                                    where member1.UserId == userId
-                                                    && member1.IsActive && member1.IsCompanyAccept && member1.IsMemberAccept
-                                                    && member2.IsActive && member2.IsCompanyAccept && member2.IsMemberAccept
-                                                    && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
-                                                    select new MemberData
-                                                    {
-                                                        Id = user.Id,
-                                                        Name = user.Name,
-                                                        Phone = user.Phone,
-                                                        Email = user.Email,
-                                                        ImageProfile = user.ProfileImageFileName
-                                                    }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
-                if (contactListAllMatch != null)
-                    for (var i = 0; i < contactListAllMatch.Count(); i++)
-                    {
-                        var item = contactListAllMatch.ElementAt(i);
-                        item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
-                        contactListAllMatch[i] = item;
-                    }
+            var contactListAllMatch = (from Contact in db.Contacts
+                                       join User in db.Users on Contact.ContactItemId equals User.Id
+                                       where Contact.ContactOwner.Id == userId && (topCriteria.Equals("") || tops.All(x => (User.Name + " " + User.Phone + " " + User.Email).ToLower().Contains(x.ToLower())))
+                                       select new MemberData
+                                       {
+                                           Id = User.Id,
+                                           Name = User.Name,
+                                           Phone = User.Phone,
+                                           Email = User.Email,
+                                           ImageProfile = User.ProfileImageFileName
+                                       }).Union(from member1 in db.Members
+                                                join company in db.Companies on member1.CompanyId equals company.Id
+                                                join member2 in db.Members on company.Id equals member2.CompanyId
+                                                join user in db.Users on member2.UserId equals user.Id
+                                                where member1.UserId == userId
+                                                && member1.IsActive && member1.IsCompanyAccept && member1.IsMemberAccept
+                                                && member2.IsActive && member2.IsCompanyAccept && member2.IsMemberAccept
+                                                && (topCriteria.Equals("") || tops.All(x => (user.Name + " " + user.Phone + " " + user.Email).ToLower().Contains(x.ToLower())))
+                                                select new MemberData
+                                                {
+                                                    Id = user.Id,
+                                                    Name = user.Name,
+                                                    Phone = user.Phone,
+                                                    Email = user.Email,
+                                                    ImageProfile = user.ProfileImageFileName
+                                                }).Where(criteria).OrderBy(member => member.Name).Skip(skip).Take(pageSize).ToList();
+            if (contactListAllMatch != null)
+                for (var i = 0; i < contactListAllMatch.Count(); i++)
+                {
+                    var item = contactListAllMatch.ElementAt(i);
+                    item.EncryptedId = Utilities.Encrypt(item.Id.ToString());
+                    contactListAllMatch[i] = item;
+                }
 
-                return contactListAllMatch;
-            }
+            return contactListAllMatch;
         }
         /// <summary>
         /// Find how many userd that is related to the query
