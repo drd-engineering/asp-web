@@ -9,7 +9,6 @@ namespace DRD.Service
 {
     public class SubscriptionService
     {
-        UserService userService = new UserService();
 
         public Constant.BusinessUsageStatus CheckOrAddSpecificUsage(Models.Constant.BusinessPackageItem packageType,  long companyId, long? additional = 0, bool? addAfterSubscriptionValid = false, bool reset = false)
         {
@@ -25,7 +24,7 @@ namespace DRD.Service
                     additionalUsage = (int)additional;
                 }
 
-                if (!checkExpired(package, usage).Equals(Constant.BusinessUsageStatus.OK))
+                if (!CheckExpired(package, usage).Equals(Constant.BusinessUsageStatus.OK))
                 {
                     return Constant.BusinessUsageStatus.EXPIRED;
                 }
@@ -71,51 +70,47 @@ namespace DRD.Service
 
         public BusinessUsage EditBusinessPackage(long companyId, int? TotalAdministrators, DateTime? ExpiredAt, long? Price, bool? IsActive)
         {
-            using (var db = new Connection())
+            using var db = new Connection();
+            BusinessUsage planBusiness = (from c in db.BusinessUsages
+                                          where c.CompanyId == companyId && c.IsActive
+                                          select c).FirstOrDefault();
+            if (planBusiness != null)
             {
-                BusinessUsage planBusiness = (from c in db.BusinessUsages
-                                      where c.CompanyId == companyId && c.IsActive
-                                      select c).FirstOrDefault();
-                if (planBusiness != null)
-                {
-                    planBusiness.Administrator = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.Administrator);
-                    planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
-                    planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
-                    db.SaveChanges();
-                }
-                return planBusiness;
+                planBusiness.Administrator = (TotalAdministrators.HasValue ? TotalAdministrators.Value : planBusiness.Administrator);
+                planBusiness.ExpiredAt = (ExpiredAt.HasValue ? ExpiredAt.Value : planBusiness.ExpiredAt);
+                planBusiness.IsActive = (IsActive.HasValue ? IsActive.Value : planBusiness.IsActive);
+                db.SaveChanges();
             }
+            return planBusiness;
         }
 
         public ActiveUsage GetActiveBusinessSubscriptionByCompany(long companyId)
         {
-            using (var db = new Connection())
-            {
-                return (from company in db.Companies
-                        join usage in db.BusinessUsages on company.Id equals usage.CompanyId
-                        join price in db.Prices on usage.PriceId equals price.Id
-                        join package in db.BusinessPackages on usage.PackageId equals package.Id
-                        where company.Id == companyId && usage.IsActive
-                        select new ActiveUsage
-                        {
-                            Id = usage == null ? 0 : usage.Id,
-                            AdministratorsLimit = package == null ? 0 : package.Administrator,
-                            CompanyId = company == null ? 0 : company.Id,
-                            CompanyName = company == null ? null : company.Name,
-                            ExpiredAt = usage == null ? DateTime.MinValue : usage.ExpiredAt,
-                            IsActive = usage == null ? false : usage.IsActive,
-                            PackageName = package == null ? null : package.Name,
-                            RotationStartedLimit = package == null ? 0 : package.RotationStarted,
-                            StartedAt = usage == null ? DateTime.MinValue : usage.CreatedAt,
-                            StorageLimit = package == null ? 0 : package.Storage,
-                            TotalAdministrators = usage == null ? 0 : usage.Administrator,
-                            TotalPrice = price == null ? 0 : price.Total,
-                            TotalRotationStarted = usage == null ? 0 : usage.RotationStarted,
-                            TotalStorage = usage == null ? 0 : usage.Storage,
-                            TotalUsers = usage == null ? 0 : usage.Member,
-                            UsersLimit = package == null ? 0 : package.Member,
-                        }).FirstOrDefault();
-            }
+            using var db = new Connection();
+            return (from company in db.Companies
+                    join usage in db.BusinessUsages on company.Id equals usage.CompanyId
+                    join price in db.Prices on usage.PriceId equals price.Id
+                    join package in db.BusinessPackages on usage.PackageId equals package.Id
+                    where company.Id == companyId && usage.IsActive
+                    select new ActiveUsage
+                    {
+                        Id = usage == null ? 0 : usage.Id,
+                        AdministratorsLimit = package == null ? 0 : package.Administrator,
+                        CompanyId = company == null ? 0 : company.Id,
+                        CompanyName = company == null ? null : company.Name,
+                        ExpiredAt = usage == null ? DateTime.MinValue : usage.ExpiredAt,
+                        IsActive = usage == null ? false : usage.IsActive,
+                        PackageName = package == null ? null : package.Name,
+                        RotationStartedLimit = package == null ? 0 : package.RotationStarted,
+                        StartedAt = usage == null ? DateTime.MinValue : usage.CreatedAt,
+                        StorageLimit = package == null ? 0 : package.Storage,
+                        TotalAdministrators = usage == null ? 0 : usage.Administrator,
+                        TotalPrice = price == null ? 0 : price.Total,
+                        TotalRotationStarted = usage == null ? 0 : usage.RotationStarted,
+                        TotalStorage = usage == null ? 0 : usage.Storage,
+                        TotalUsers = usage == null ? 0 : usage.Member,
+                        UsersLimit = package == null ? 0 : package.Member,
+                    }).FirstOrDefault();
         }
 
         public List<BusinessPackage> GetAllPublicSubscription()
@@ -128,108 +123,112 @@ namespace DRD.Service
 
         public ActiveUsageList GetBusinessSubscriptionByUser(long userId)
         {
-            using (var db = new Connection())
-            {
-                var returnList = new ActiveUsageList();
-                var OwnerSubscriptions = new ActiveUsageList();
+            using var db = new Connection();
+            var returnList = new ActiveUsageList();
+            var OwnerSubscriptions = new ActiveUsageList();
 
-                var adminSubscription = (from member in db.Members
-                                         join company in db.Companies on member.CompanyId equals company.Id
-                                         join usage in db.BusinessUsages on company.Id equals usage.CompanyId
-                                         join package in db.BusinessPackages on usage.PackageId equals package.Id
-                                         where member.UserId == userId && usage.IsActive && member.IsAdministrator
-                                         select new ActiveUsage
-                                         {
-                                             Id = usage == null ? 0 : usage.Id,
-                                             CompanyId = company == null ? 0 : company.Id,
-                                             CompanyName = company == null ? null : company.Name,
-                                             StorageLimit = package == null ? 0 : package.Storage,
-                                             PackageName = package == null ? null : package.Name,
-                                             TotalAdministrators = usage == null ? 0 : usage.Administrator
-                                         }).ToList();
-                returnList.usages = adminSubscription;
-                var ownerSubscriptions = (from company in db.Companies
-                                          join usage in db.BusinessUsages on company.Id equals usage.CompanyId
-                                          join package in db.BusinessPackages on usage.PackageId equals package.Id
-                                          where company.OwnerId == userId && usage.IsActive
-                                          select new ActiveUsage
-                                          {
-                                              Id = usage == null ? 0 : usage.Id,
-                                              CompanyId = company == null ? 0 : company.Id,
-                                              CompanyName = company == null ? null : company.Name,
-                                              StorageLimit = package == null ? 0 : package.Storage,
-                                              PackageName = package == null ? null : package.Name,
-                                              TotalAdministrators = usage == null ? 0 : usage.Administrator
-                                          }).ToList();
-                OwnerSubscriptions.usages = ownerSubscriptions;
-                returnList.mergeBusinessSubscriptionList(OwnerSubscriptions);
-                returnList.usages = returnList.usages.OrderBy(i => i.CompanyName).ToList();
-                return returnList;
-            }
+            var adminSubscription = (from member in db.Members
+                                     join company in db.Companies on member.CompanyId equals company.Id
+                                     join usage in db.BusinessUsages on company.Id equals usage.CompanyId
+                                     join package in db.BusinessPackages on usage.PackageId equals package.Id
+                                     where member.UserId == userId && usage.IsActive && member.IsAdministrator
+                                     select new ActiveUsage
+                                     {
+                                         Id = usage == null ? 0 : usage.Id,
+                                         CompanyId = company == null ? 0 : company.Id,
+                                         CompanyName = company == null ? null : company.Name,
+                                         StorageLimit = package == null ? 0 : package.Storage,
+                                         PackageName = package == null ? null : package.Name,
+                                         TotalAdministrators = usage == null ? 0 : usage.Administrator
+                                     }).ToList();
+            returnList.usages = adminSubscription;
+            var ownerSubscriptions = (from company in db.Companies
+                                      join usage in db.BusinessUsages on company.Id equals usage.CompanyId
+                                      join package in db.BusinessPackages on usage.PackageId equals package.Id
+                                      where company.OwnerId == userId && usage.IsActive
+                                      select new ActiveUsage
+                                      {
+                                          Id = usage == null ? 0 : usage.Id,
+                                          CompanyId = company == null ? 0 : company.Id,
+                                          CompanyName = company == null ? null : company.Name,
+                                          StorageLimit = package == null ? 0 : package.Storage,
+                                          PackageName = package == null ? null : package.Name,
+                                          TotalAdministrators = usage == null ? 0 : usage.Administrator
+                                      }).ToList();
+            OwnerSubscriptions.usages = ownerSubscriptions;
+            returnList.mergeBusinessSubscriptionList(OwnerSubscriptions);
+            returnList.usages = returnList.usages.OrderBy(i => i.CompanyName).ToList();
+            return returnList;
         }
 
         internal Price getActivePricePackage(long packageId)
         {
-            using (var db = new Connection())
-            {
-                return db.Prices.Where(p => p.PackageId == packageId && p.IsActive).LastOrDefault();
-            }
+            using var db = new Connection();
+            return db.Prices.Where(p => p.PackageId == packageId && p.IsActive).LastOrDefault();
         }
 
         public BusinessPackage GetCompanyPackage(long packageId)
         {
-            using (var db = new Connection())
-            {
-                BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).FirstOrDefault();
-                return plan;
-            }
+            using var db = new Connection();
+            BusinessPackage plan = db.BusinessPackages.Where(c => c.Id == packageId && c.IsActive).FirstOrDefault();
+            return plan;
         }
 
         public BusinessPackage getCompanyPackageByCompany(long companyId)
         {
-            BusinessUsage usage = GetCompanyUsage(companyId);
+            System.Diagnostics.Debug.WriteLine(companyId);
+            System.Diagnostics.Debug.WriteLine("CompanyID");
+            BusinessUsage usage = GetCompanyUsage(companyId, false);
+            System.Diagnostics.Debug.WriteLine(usage);
+            System.Diagnostics.Debug.WriteLine(usage.Id);
+            System.Diagnostics.Debug.WriteLine(usage.PackageId);
+            System.Diagnostics.Debug.WriteLine("PACKAGED ");
             return GetCompanyPackage(usage.PackageId);
         }
 
-        public BusinessUsage GetCompanyUsage(long companyId)
+        public long GetActiveUsageFromInactiveUsage(long usageId)
         {
-            using (var db = new Connection())
-            {
-                BusinessUsage plan = db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
-                return plan;
-            }
+            long companyId = GetCompanyUsageById(usageId).CompanyId;
+            return GetCompanyUsage(companyId).Id;
         }
 
-        public BusinessUsage getCompanyUsageById(long id)
+        public BusinessUsage GetCompanyUsage(long companyId, bool onlyActive = true) 
         {
-            using (var db = new Connection())
-            {
-                BusinessUsage plan = db.BusinessUsages.Where(c => c.Id == id).FirstOrDefault();
-                return plan;
-            }
+            using var db = new Connection();
+            if(onlyActive)
+                return db.BusinessUsages.Where(c => c.CompanyId == companyId && c.IsActive).FirstOrDefault();
+            return db.BusinessUsages.Where(c => c.CompanyId == companyId).FirstOrDefault();
+            
+        }
+
+        public BusinessUsage GetCompanyUsageById(long id)
+        {
+            using var db = new Connection();
+            BusinessUsage plan = db.BusinessUsages.Where(c => c.Id == id).FirstOrDefault();
+            return plan;
         }
 
         public Constant.BusinessUsageStatus IsSubscriptionValid(long userId, long usageId)
         {
-            using (var db = new Connection())
+            using var db = new Connection();
+            BusinessUsage usage = GetCompanyUsageById(usageId);
+            //check if having any active usage
+            if (usage == null) return Constant.BusinessUsageStatus.NO_ACTIVE_PLAN;
+            if (usage != null)
             {
-                BusinessUsage usage = getCompanyUsageById(usageId);
-                //check if having any active usage
-                if (usage == null) return Constant.BusinessUsageStatus.NO_ACTIVE_PLAN;
-                if (usage != null)
+                var package = GetCompanyPackage(usage.PackageId);
+                //check usage with package limitation
+                Constant.BusinessUsageStatus validStatus = IsValid(package, usage);
+                if (validStatus != Constant.BusinessUsageStatus.OK)
                 {
-                    var package = GetCompanyPackage(usage.PackageId);
-                    //check usage with package limitation
-                    Constant.BusinessUsageStatus validStatus = IsValid(package, usage);
-                    if ( validStatus != Constant.BusinessUsageStatus.OK)
-                    {
-                        return validStatus;
-                    }
+                    return validStatus;
                 }
-                //check if authorizeed admin or owner
-                if (!userService.IsAdminOrOwnerofSpecificCompany(userId,companyId:usage.CompanyId)) return Constant.BusinessUsageStatus.NOT_AUTHORIZED;
-                return Constant.BusinessUsageStatus.OK;
             }
+
+            UserService userService = new UserService();
+            //check if authorizeed admin or owner
+            if (!userService.IsAdminOrOwnerofSpecificCompany(userId, companyId: usage.CompanyId)) return Constant.BusinessUsageStatus.NOT_AUTHORIZED;
+            return Constant.BusinessUsageStatus.OK;
         }
 
         public Constant.BusinessUsageStatus IsValid(BusinessPackage package, BusinessUsage usage)
@@ -243,10 +242,10 @@ namespace DRD.Service
             }
 
 
-            return checkExpired(package,usage);
+            return CheckExpired(package,usage);
         }
 
-        public Constant.BusinessUsageStatus checkExpired(BusinessPackage package, BusinessUsage usage)
+        public Constant.BusinessUsageStatus CheckExpired(BusinessPackage package, BusinessUsage usage)
         {
             if (!package.IsExpirationDateExtendedAutomatically && usage.ExpiredAt < DateTime.Now)
             {
@@ -255,23 +254,23 @@ namespace DRD.Service
             }
             if (package.IsExpirationDateExtendedAutomatically && usage.ExpiredAt < DateTime.Now)
             {
-                ExtendUsage(usage.Id);
+                ExtendUsage(usage.CompanyId);
+                return Constant.BusinessUsageStatus.EXTENDED;
+
             }
             return Constant.BusinessUsageStatus.OK;
         }
 
         public void ExtendUsage(long companyId)
         {
-            BusinessUsage oldUsage = DeactivateActiveUsage(companyId);
             BusinessPackage businessPackage = getCompanyPackageByCompany(companyId);
-            using (var db = new Connection())
-            {
-                DateTime? extendedTime = oldUsage.ExpiredAt.Value.AddDays(businessPackage.Duration);
-                BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
+            BusinessUsage oldUsage = DeactivateActiveUsage(companyId);
+            using var db = new Connection();
+            DateTime? extendedTime = oldUsage.ExpiredAt.Value.AddDays(businessPackage.Duration);
+            BusinessUsage newUsage = new BusinessUsage(oldUsage, startedAt: oldUsage.ExpiredAt, expiredAt: extendedTime);
 
-                db.BusinessUsages.Add(newUsage);
-                db.SaveChanges();
-            }
+            db.BusinessUsages.Add(newUsage);
+            db.SaveChanges();
         }
     }
 }
