@@ -3,30 +3,21 @@ using DRD.Models.API;
 using DRD.Models.Custom;
 using DRD.Models.View;
 using DRD.Service.Context;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace DRD.Service
 {
     public class RotationService
     {
-
-        private SubscriptionService subscriptionService;
-
-        public RotationService()
-        {
-            subscriptionService = new SubscriptionService();
-        }
-
         //helper
         private bool CheckIdExist(long id)
         {
             using var db = new Connection();
             return db.Rotations.Any(i => i.Id == id);
         }
+
         public ResponseStatus Start(long userId, long rotationId, long subscriptionId)
         {
             var returnItem = StartProcess(userId, rotationId, subscriptionId);
@@ -42,13 +33,21 @@ namespace DRD.Service
             }
             return new ResponseStatus() { code = -6, status = "" };
         }
+
         //helper
         private List<ActivityItem> StartProcess(long userId, long rotationId, long usageId)
         {
             List<ActivityItem> result = new List<ActivityItem>();
+            SubscriptionService subscriptionService = new SubscriptionService();
 
             //Check Subscription
             Constant.BusinessUsageStatus subscriptionStatus = subscriptionService.IsSubscriptionValid(userId, usageId);
+            if (subscriptionStatus.Equals(Constant.BusinessUsageStatus.EXTENDED))
+            {
+                usageId = subscriptionService.GetActiveUsageFromInactiveUsage(usageId);
+                subscriptionStatus = Constant.BusinessUsageStatus.OK;
+            }
+
             if (!subscriptionStatus.Equals(Constant.BusinessUsageStatus.OK))
             {
                 result.Add(CreateActivityResult((int)subscriptionStatus, exitStatus: subscriptionStatus.ToString()));
@@ -110,6 +109,7 @@ namespace DRD.Service
             db.SaveChanges();
             return result;
         }
+
         //helper
         private ActivityItem CreateActivityResult(int exitCode, long userId = 0, long previousUserId = 0, string rotationName = "", long rotationNodeId = 0, long rotationId = 0, string exitStatus = null)
         {
@@ -143,6 +143,7 @@ namespace DRD.Service
             using var db = new Connection();
             return db.RotationUsers.FirstOrDefault(c => c.WorkflowNodeId == WorkflowNodeToId && c.RotationId == RotationId).UserId.Value;
         }
+
         /// <summary>
         /// Obtain rotation that user has already made and search by Id of the rotation
         /// </summary>
@@ -154,42 +155,42 @@ namespace DRD.Service
             using var db = new Connection();
             var result =
                         (from rotation in db.Rotations
-                        where rotation.Id == id && rotation.IsActive == isActive && rotation.CreatorId == creatorId
-                        select new RotationIndex
-                        {
-                        Id = rotation.Id,
-                        Name = rotation.Name,
-                        Description = rotation.Description,
-                        WorkflowId = rotation.WorkflowId,
-                        CompanyId = rotation.CompanyId,
-                        Workflow = new WorkflowItem
-                                    {
-                                    Id = rotation.Workflow.Id,
-                                    Name = rotation.Workflow.Name,
-                                    },
-                        Status = rotation.Status,
-                        UserId = rotation.UserId, // filled when using personal plan
-                        RotationUsers = (from x in rotation.RotationUsers
-                                        select new RotationUserItem
-                                        {
-                                        Id = x.Id,
-                                        UserId = x.UserId,
-                                        WorkflowNodeId = x.WorkflowNodeId,
-                                        ActivityName = x.WorkflowNode.Caption,
-                                        Number = (x.UserId == null ? (long?)null : x.User.Id),
-                                        Name = (x.UserId == null ? "Undefined" : x.User.Name),
-                                        Email = (x.UserId == null ? "" : x.User.Email),
-                                        Picture = (x.UserId == null ? "icon_user.png" : x.User.ProfileImageFileName),
-                                        FlagPermission = x.ActionPermission
-                                        }).ToList(),
-                                        }).FirstOrDefault();
+                         where rotation.Id == id && rotation.IsActive == isActive && rotation.CreatorId == creatorId
+                         select new RotationIndex
+                         {
+                             Id = rotation.Id,
+                             Name = rotation.Name,
+                             Description = rotation.Description,
+                             WorkflowId = rotation.WorkflowId,
+                             CompanyId = rotation.CompanyId,
+                             Workflow = new WorkflowItem
+                             {
+                                 Id = rotation.Workflow.Id,
+                                 Name = rotation.Workflow.Name,
+                             },
+                             Status = rotation.Status,
+                             UserId = rotation.UserId, // filled when using personal plan
+                             RotationUsers = (from x in rotation.RotationUsers
+                                              select new RotationUserItem
+                                              {
+                                                  Id = x.Id,
+                                                  UserId = x.UserId,
+                                                  WorkflowNodeId = x.WorkflowNodeId,
+                                                  ActivityName = x.WorkflowNode.Caption,
+                                                  Number = (x.UserId == null ? (long?)null : x.User.Id),
+                                                  Name = (x.UserId == null ? "Undefined" : x.User.Name),
+                                                  Email = (x.UserId == null ? "" : x.User.Email),
+                                                  Picture = (x.UserId == null ? "icon_user.png" : x.User.ProfileImageFileName),
+                                                  FlagPermission = x.ActionPermission
+                                              }).ToList(),
+                         }).FirstOrDefault();
             //check if result null
             if (result == null) return result;
 
             //add encrypted id to access image folder
             foreach (RotationUserItem x in result.RotationUsers)
                 x.EncryptedId = Utilities.Encrypt(x.UserId.ToString());
-            
+
             result.CompanyRotation = (from cmpny in db.Companies
                                       where cmpny.Id == result.CompanyId
                                       select new SmallCompanyData
@@ -213,12 +214,12 @@ namespace DRD.Service
             using var db = new Connection();
             var result =
                 (from workflowNode in db.WorkflowNodes
-                where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
-                select new RotationUserData
-                {
-                ActivityName = workflowNode.Caption,
-                WorkflowNodeId = workflowNode.Id
-                }).ToList();
+                 where workflowNode.WorkflowId == workflowId && workflowNode.SymbolCode == 5
+                 select new RotationUserData
+                 {
+                     ActivityName = workflowNode.Caption,
+                     WorkflowNodeId = workflowNode.Id
+                 }).ToList();
             foreach (RotationUserData item in result)
             {
                 if (item.UserId != 0)
@@ -235,6 +236,7 @@ namespace DRD.Service
             result = result.OrderBy(c => c.WorkflowNodeId).ToList();
             return result;
         }
+
         /// <summary>
         /// Obtain Rotation related to the criteria, and user as the creator. Take as many as given parameters
         /// </summary>
@@ -273,17 +275,18 @@ namespace DRD.Service
             foreach (RotationListItem rotationListItem in result)
             {
                 rotationListItem.CompanyRotation = (from cmpny in db.Companies
-                                              where cmpny.Id == rotationListItem.CompanyId
-                                              select new SmallCompanyData
-                                              {
-                                                  Id = cmpny.Id,
-                                                  Code = cmpny.Code,
-                                                  Name = cmpny.Name,
-                                              }).FirstOrDefault();
+                                                    where cmpny.Id == rotationListItem.CompanyId
+                                                    select new SmallCompanyData
+                                                    {
+                                                        Id = cmpny.Id,
+                                                        Code = cmpny.Code,
+                                                        Name = cmpny.Name,
+                                                    }).FirstOrDefault();
                 rotationListItem.StatusDescription = rotationListItem.Status == (int)Constant.RotationStatus.Open ? "Not Started" : (rotationListItem.Status == (int)Constant.RotationStatus.In_Progress ? "Ongoing" : "Completed");
             }
             return result;
         }
+
         /// <summary>
         /// Count Rotation related to the criteria, and user as the creator.
         /// </summary>
@@ -304,7 +307,7 @@ namespace DRD.Service
                 if (db.Rotations != null)
                 {
                     var result = (from rotation in db.Rotations
-                                  where rotation.CreatorId == creatorId && rotation.IsActive==isActive && (criteria.Equals("") || criterias.All(criteria => (rotation.Name).ToLower().Contains(criteria.ToLower())))
+                                  where rotation.CreatorId == creatorId && rotation.IsActive == isActive && (criteria.Equals("") || criterias.All(criteria => (rotation.Name).ToLower().Contains(criteria.ToLower())))
                                   orderby rotation.Status, rotation.CreatedAt descending, rotation.Name descending
                                   select new RotationData
                                   {
@@ -480,6 +483,7 @@ namespace DRD.Service
 
             return rotationDb.Id;
         }
+
         /// <summary>
         /// Delete(inactive) specific rotation from id
         /// </summary>

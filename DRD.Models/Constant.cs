@@ -150,6 +150,7 @@ namespace DRD.Models
             NO_ACTIVE_PLAN = 5,
             NOT_AUTHORIZED = 6,
             EXPIRED = 7,
+            EXTENDED = 8,
             STORAGE_EXCEED_LIMIT = 99
         }
 

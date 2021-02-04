@@ -60,14 +60,14 @@ namespace Core.Postgres
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            String passEncrypted = UtilitiesModel.Encrypt("solobhakti2020");
+            String passEncrypted = UtilitiesModel.Encrypt("drdaccess2021");
             List <User> listOfUserCreated = new List<User>
             {
                 new User
                 {
                     Name = "Lalisa Tambolon",
                     Phone = "0897287837382",
-                    Email = "lalisa@solobhakti.com",
+                    Email = "lalisa@drdaccess.com",
                     OfficialIdNo = 2511100909080001,
                     Password = passEncrypted,
                     IsActive = true
@@ -76,7 +76,7 @@ namespace Core.Postgres
                 {
                     Name = "Bam Viole",
                     Phone = "0897287837382",
-                    Email = "bam@solobhakti.com",
+                    Email = "bam@drdaccess.com",
                     OfficialIdNo = 2511100909080002,
                     Password = passEncrypted,
                     IsActive = true
@@ -85,7 +85,7 @@ namespace Core.Postgres
                 {
                     Name = "Seraphina Alaydrus",
                     Phone = "0897287837382",
-                    Email = "seraphina@solobhakti.com",
+                    Email = "seraphina@drdaccess.com",
                     OfficialIdNo = 2511100909080003,
                     Password = passEncrypted,
                     IsActive = true
@@ -94,7 +94,7 @@ namespace Core.Postgres
                 {
                     Name = "Chae Sinaga",
                     Phone = "085877213147",
-                    Email = "chae@solobhakti.com",
+                    Email = "chae@drdaccess.com",
                     OfficialIdNo = 2511100909080004,
                     Password = passEncrypted,
                     IsActive = true
@@ -103,7 +103,7 @@ namespace Core.Postgres
                 {
                     Name = "Yeji Sitohang",
                     Phone = "081516322231",
-                    Email = "yeji@solobhakti.com",
+                    Email = "yeji@drdaccess.com",
                     OfficialIdNo = 2511100909080005,
                     Password = passEncrypted,
                     IsActive = true
@@ -112,7 +112,7 @@ namespace Core.Postgres
                 {
                     Name = "Yuna Siahahan",
                     Phone = "089756321121",
-                    Email = "yuna@solobhakti.com",
+                    Email = "yuna@drdaccess.com",
                     OfficialIdNo = 2511100909080006,
                     Password = passEncrypted,
                     IsActive = true
@@ -121,7 +121,7 @@ namespace Core.Postgres
                 {
                     Name = "Lia Simbolon",
                     Phone = "087731224234",
-                    Email = "lia@solobhakti.com",
+                    Email = "lia@drdaccess.com",
                     OfficialIdNo = 2511100909080007,
                     Password = passEncrypted,
                     IsActive = true
@@ -130,7 +130,7 @@ namespace Core.Postgres
                 {
                     Name = "Momo Pakubumi",
                     Phone = "087865663123",
-                    Email = "momo@solobhakti.com",
+                    Email = "momo@drdaccess.com",
                     OfficialIdNo = 2511100909080008,
                     Password = passEncrypted,
                     IsActive = true
@@ -139,7 +139,7 @@ namespace Core.Postgres
                 {
                     Name = "Palihan Panahan",
                     Phone = "0865526366232",
-                    Email = "palihan@solobhakti.com",
+                    Email = "palihan@drdaccess.com",
                     OfficialIdNo = 2511100909080009,
                     Password = passEncrypted,
                     IsActive = true
@@ -148,7 +148,7 @@ namespace Core.Postgres
                 {
                     Name = "Serina Selihan",
                     Phone = "08895737277",
-                    Email = "serina@solobhakti.com",
+                    Email = "serina@drdaccess.com",
                     OfficialIdNo = 2511100909080010,
                     Password = passEncrypted,
                     IsActive = true
@@ -160,10 +160,10 @@ namespace Core.Postgres
             {
                 new Company
                 {
-                    Code = "SOLTC202007001",
-                    Name = "PT Solobhakti Trading & Contractor",
+                    Code = "SOLTC202107001",
+                    Name = "PT Artha Amita Sempurna",
                     Phone = "0214556372",
-                    Email = "sempoasupport@sempoa.com",
+                    Email = "admin@drdaccess.com",
                     Description = "A trading and  contractor company",
                     Address = "jalan Musi 32, Gambir, Jakarta",
                     PostalCode = "10150",
