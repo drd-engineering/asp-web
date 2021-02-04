@@ -173,7 +173,7 @@
                                         <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.CreatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                         <td><span style="font-size:xx-small;color:darkblue">{{convertJsonDate(y.UpdatedAt) | date: 'dd/MM/yyyy HH:mm:ss'}}</span></td>
                                         <td>
-                                            <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.InboxStatus == 0? 'ongoing' : (usr.InboxStatus == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="padding:2px;{{(usr.InboxStatus == 0? ' border: 2px solid green' : (usr.InboxStatus == -99? 'filter: grayscale(100%)':'border: 1px solid black'))}};cursor:pointer;border-radius:50%;" src="{{usr.ProfileImageFileName != null ? '/Images/Member/'+usr.EncryptedId +'/' + usr.ProfileImageFileName : '/Images/Member/user.png'}}" /></span>
+                                            <span ng-repeat="usr in y.RotationUsers"><img title="{{(usr.InboxStatus == 0? 'ongoing' : (usr.InboxStatus == -99? 'waiting':'completed')) + ' - '+ usr.Name}}" height="30" width="30" style="{{'padding:2px;' + (usr.InboxStatus == 0? ' border: 2px solid #13EA15' : (usr.InboxStatus == -99? 'filter: grayscale(100%)':'border: 1px solid slategrey'))+';cursor:pointer;border-radius:50%;'}}" src="{{usr.ProfileImageFileName != null ? '/Images/Member/'+usr.EncryptedId +'/' + usr.ProfileImageFileName : '/Images/Member/user.png'}}" on-error-src="/Images/Member/user.png" /></span>
 
                                         </td>
                                     </tr>

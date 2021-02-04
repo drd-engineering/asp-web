@@ -59,22 +59,25 @@
         }
 
     .highlight-card {
+        cursor: pointer;
         background-color: white;
         margin: inherit 10px;
         padding: 10px;
-        
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
+        min-height: 100px;
     }
 
     .highlight-card:hover {
         box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
     }
     .light {
-        border: 3px solid #075685;
+        outline: 3px solid #5D90AE;
+        color: #5D90AE;
+        font-weight: 700;
     }
         .highlight-card .card-image img {
             height: 40px;
@@ -145,7 +148,7 @@
         <div class="horizontalscroll">
             <!-- CARD 1 -->
             <div class="col-md-3 card" ng-click="getDefaultPersonalContact()">
-                <div style="cursor:pointer" class="highlight-card personal">
+                <div class="highlight-card personal">
                     <div class="container">
                         <div class="row">
                             <div class="col-xs-4">
@@ -166,7 +169,7 @@
             <!-- end of CARD 1 -->
             <!-- CARD 2 -->
             <div class="col-md-3 card" ng-repeat="y in companies" ng-if="isMemberOfACompany()" ng-click="getDefaultContactFromCompany(y.Id)" ng-init="$last && equalHeight()">
-                <div style="cursor:pointer" class="highlight-card {{y.Id}}">
+                <div class="highlight-card {{y.Id}}">
                     <div class="container">
                         <div class="row">
                             <div class="col-xs-4">

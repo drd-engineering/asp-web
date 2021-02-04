@@ -25,9 +25,9 @@
     $scope.elmPararrelName = "node-pararrel";
 
     $scope.linkTypeSubmit = "grid";
-    $scope.linkTypeRevisi = "straight";
-    $scope.linkTypeReject = "fluid";
-    $scope.linkTypeAlter = "straight";
+    $scope.linkTypeRevisi = "magnet";
+    $scope.linkTypeReject = "grid";
+    $scope.linkTypeAlter = "magnet";
     $scope.linkTypeYes = "grid";
     $scope.linkTypeNo = "grid";
     $scope.linkTypeSubmitCase = "grid";
@@ -49,6 +49,7 @@
     $scope.firstNode = '';
     $scope.endNode = '';
 
+    $scope.activityNumber = 1;
     $scope.activity = {};
     $scope.decision = {};
     $scope.transfer = {};
@@ -140,7 +141,7 @@
         var lineSubmit = new LeaderLine(activity, submit, {
                 endPlug: 'behind',
                 hide: true,
-                path: 'straight',
+                path: 'magnet',
                 dash: { animation: true },
                 size: 2,
                 color: $scope.linkColorSubmit,
@@ -183,7 +184,7 @@
             lineSubmit = new LeaderLine(activity, submit, {
                 endPlug: 'behind',
                 hide: true,
-                path: 'straight',
+                path: 'magnet',
                 dash: { animation: true },
                 size: 2,
                 color: $scope.linkColorSubmit,
@@ -243,10 +244,17 @@
     $scope.addNodeActivity = function (left, top) {
         var canvas = document.getElementById('canvas');
 
+        var activityName = 'Activity ' + $scope.activityNumber
+        $scope.activityNumber += 1;
+
+        console.log($scope.activityNumber);
+        console.log(activityName);
+
         var html = document.getElementById($scope.elmActivityName + "-xx").outerHTML;
         html = html.replace(/-xx-/g, $scope.inode);
         html = html.replace(/-xx/g, "-" + $scope.inode);
         html = html.replace(/-yy/g, "");
+        html = html.replace(/ActivTitle/g, activityName );
         $("#canvas").append(html);
 
         var newDiv = document.getElementById($scope.elmActivityName + "-" + $scope.inode);
@@ -256,8 +264,7 @@
 
         $scope.initActivity($scope.inode);
 
-        $scope.addNode($scope.elmActivityName + '-' + $scope.inode, 'ACTIVITY', 'Activity');
-
+        $scope.addNode($scope.elmActivityName + '-' + $scope.inode, 'ACTIVITY', activityName);
 
         var idx = $scope.inode - 1;
         let elmTitle = 'title-activity-' + idx;
@@ -448,6 +455,9 @@
     $scope.bindDiagram = function (nodes, links) {
         if (nodes == null) return;
 
+        console.log(nodes);
+        console.log(links);
+
         // node
         //$scope.nodes =angular.copy( nodes);
         $scope.inode = 3;
@@ -456,8 +466,6 @@
             var elm;
             if (node.symbolCode == 'START' || node.symbolCode == 'END') {
                 elm = document.getElementById(node.element);
-            } else if (node.symbolCode == 'PARALLEL') {
-                elm = $scope.addNodePararrel(0, 0);
             } else if (node.symbolCode == 'ACTIVITY' && node.caption != 'Document Uploading') {
                 elm = $scope.addNodeActivity(0, 0);
                 var idx = $scope.getIndex(elm.id);
@@ -474,50 +482,8 @@
             } else if (node.symbolCode == 'ACTIVITY' && node.caption == 'Document Uploading') {
                 elm = document.getElementById('node-activity-2');
 
-            } else if (node.symbolCode == 'DECISION') {
-                elm = $scope.addNodeDecision(0, 0);
-                var idx = $scope.getIndex(elm.id);
-
-                var cap = $("#title-decision-" + idx);
-                var info = $("#info-decision-" + idx);
-                cap.text(node.caption);
-                info.attr("data-content", node.info);
-                info.attr("data-original-title", node.caption);
-
-                $("#decision-descr-" + idx).text('value ' + node.Operator + ' ' + node.value);
-
-                var val = document.getElementById("decision-value-" + idx);
-                val.value = node.value;
-                var oprt = document.getElementById("decision-operator-" + idx);
-                oprt.value = node.Operator;
-
-            } else if (node.symbolCode == 'TRANSFER') {
-                elm = $scope.addNodeTransfer(0, 0);
-                var idx = $scope.getIndex(elm.id);
-
-                var cap = $("#title-transfer-" + idx);
-                var info = $("#info-transfer-" + idx);
-                cap.text(node.caption);
-                info.attr("data-content", node.info);
-                info.attr("data-original-title", node.caption);
-
-                $("#transfer-descr-" + idx).text('amount = ' + node.value);
-
-                var val = document.getElementById("transfer-value-" + idx);
-                val.value = node.value;
-
-            } else if (node.symbolCode == 'CASE') {
-                elm = $scope.addNodeCase(0, 0);
-                var idx = $scope.getIndex(elm.id);
-
-                var cap = $("#title-case-" + idx);
-                var info = $("#info-case-" + idx);
-                cap.text(node.caption);
-                info.attr("data-content", node.info);
-                info.attr("data-original-title", node.caption);
-
-                $("#case-descr-" + idx).text(node.value);
             }
+
             elm.style.left = node.posLeft == null ? 0 : node.posLeft;
             elm.style.top = node.posTop == null ? 0 : node.posTop;
             elm.style.width = node.width;

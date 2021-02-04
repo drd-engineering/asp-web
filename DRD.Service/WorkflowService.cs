@@ -43,7 +43,7 @@ namespace DRD.Service
                                            .Where(c => c.Id == id).FirstOrDefault();
             return values;
         }
-
+                    
         /// <summary>
         /// used for getting workflow from index
         /// </summary>
@@ -74,7 +74,7 @@ namespace DRD.Service
             //check if nodes or links not available 
             if (nodes.Count() == 0 || links.Count() == 0) return result;
             
-            int dmid = 2;
+            int dmid = 3;
             result.WorkflowNodes = new List<WorkflowNodeItem>();
             result.WorkflowNodeLinks = new List<WorkflowNodeLinkItem>();
             
@@ -90,6 +90,11 @@ namespace DRD.Service
                     WorkflowNodeItem.element = elementname + "-" + 0;
                 else if (elementname == "end")
                     WorkflowNodeItem.element = elementname + "-" + 1;
+                else if (workflowNode.Caption.Equals("Document Uploading"))
+                {
+                    WorkflowNodeItem.element = GetSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + 2;
+                    dmid++;
+                }
                 else
                 {
                     WorkflowNodeItem.element = GetSymbolsFromCsvById(workflowNode.SymbolCode).ElementName + "-" + dmid;
@@ -106,6 +111,8 @@ namespace DRD.Service
                 result.WorkflowNodes.Add(WorkflowNodeItem);
             }
             
+            //TODO Make tracking entity of each node, each entity check end link of every node
+
             //link process
             foreach (WorkflowNodeLink wfnl in links)
             {

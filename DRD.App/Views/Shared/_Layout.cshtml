@@ -57,7 +57,7 @@
         <!-- /Custom JS-->
     </head>
 
-<body class="navbar-top" ng-app="drdApp">
+<body class="navbar-top sidebar-xs" ng-app="drdApp">
     <div ng-controller="drdControllerMain">
         <!-- Main navbar -->
         <div class="navbar navbar-default navbar-fixed-top header-highlight">
@@ -67,7 +67,7 @@
                 </a>
                 <ul class="nav navbar-nav visible-xs-block">
                     <li>
-                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="@(Model.User.ProfileImageFileName!=null ? "/Images/Member/"+Model.User.EncryptedId+"/" + Model.User.ProfileImageFileName : "/Images/Member/user.png")" alt="" /></a>
+                        <a style="border-radius:50%" data-toggle="collapse" data-target="#navbar-mobile"> <img style="width:20px;height:20px;" src="{{Model.User.ProfileImageFileName != null ? '/Images/Member/'+ Model.User.EncryptedId +'/' + Model.User.ProfileImageFileName : '/Images/Member/user.png'}}" on-error-src="/Images/Member/user.png"  alt="" /></a>
                     </li>
                     <li>
                         <a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a>
@@ -165,6 +165,18 @@
 <script type="text/javascript">
 
     //var myApp = angular.module('drdApp', ['ngAnimate', 'ui.bootstrap'])
+    myApp.directive('onErrorSrc', function () {
+        return {
+            link: function (scope, element, attrs) {
+                element.bind('error', function () {
+                    if (attrs.src != attrs.onErrorSrc) {
+                        attrs.$set('src', attrs.onErrorSrc);
+                    }
+                });
+            }
+        }
+    });
+
     myApp.controller("drdControllerMain", function ($scope, $location, $http, $filter) {
 
         $scope.$on("$destroy", function (event) {
