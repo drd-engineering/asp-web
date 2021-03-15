@@ -10,6 +10,7 @@ namespace DRD.Models.API
         public int RotationStatus { get; set; } // 
         public long? CreatorId { get; set; } // CreatorId
         public long? CompanyId { get; set; } // filled only if rotation started
+        public string EncryptCID { get; set; } // filled only if rotation started
         public long FirstNodeId { get; set; }
         public System.DateTime? CreatedAt { get; set; } // DateCreated
         public System.DateTime? UpdatedAt { get; set; } // DateUpdated

@@ -262,8 +262,10 @@ namespace DRD.Service
         /// <param name="inboxId"></param>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public RotationInboxData GetInbox(long inboxId, long UserId)
+        public RotationInboxData GetInbox(long inboxId = 0, long UserId = 0)
         {
+            if (inboxId == 0 || UserId == 0)
+                return null;
             SetInboxToRead(inboxId);
             var rotationNodeId = GetRotationNodeId(inboxId);
             using var db = new Connection();
@@ -287,6 +289,7 @@ namespace DRD.Service
                  }).FirstOrDefault();
             companyService = new CompanyService();
             result.CompanyInbox = companyService.GetCompany(result.CompanyId.Value);
+            result.EncryptCID = UtilitiesModel.Encrypt(result.CompanyId.ToString());
             var tagService = new TagService();
             result.Tags = tagService.GetTagsAsString(result.Id);
 

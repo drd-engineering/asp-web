@@ -184,6 +184,19 @@ namespace DRD.App.Controllers
             }
         }
 
+        public ActionResult SetUpDoc(DocumentInboxData newDocument, long companyId, long rotationId)
+        {
+            CheckLogin();
+            newDocument.CreatorId = user.Id;
+            newDocument.UserEmail = user.Email;
+            //prod.CompanyId = (long)user.CompanyId;
+
+            var srv = new DocumentService();
+            var data = srv.SetUpDoc(newDocument, companyId, rotationId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult SaveAnnos(long documentId, long creatorId, IEnumerable<DocumentAnnotationsInboxData> annos)
         {
             var srv = new DocumentService();

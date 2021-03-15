@@ -76,6 +76,35 @@ namespace DRD.Service
             }
             return document;
         }
+
+        /// <summary>
+        /// SAVE document data db from uploaded document
+        /// </summary>
+        /// <param name="prod"></param>
+        /// <param name="companyId"></param>
+        /// <param name="rotationId"></param>
+        /// <returns></returns>
+        public DocumentInboxData SetUpDoc(DocumentInboxData prod, long companyId, long rotationId)
+        {
+            long result = 0;
+            DocumentInboxData document;
+            using (var db = new Connection())
+            {
+                if (prod.Id == 0)
+                    document = Create(prod, companyId, rotationId);
+                // SHOULD BE REVIEWED THIS UPDATE IS NOT USED YET
+                else document = Update(prod, companyId, rotationId);
+
+                if (document.Id != 0)
+                    result = document.Id;
+                document.DocumentAnnotations = SaveAnnos(document.Id, (long)document.CreatorId, document.UserEmail, prod.DocumentAnnotations);
+                document.DocumentUsers = CreateDocumentUserFromAnnotations(document.Id);
+                document.DocumentUser = document.DocumentUsers.FirstOrDefault(docusr => docusr.UserId == document.CreatorId);
+                if (document.DocumentUser == null) document.DocumentUser = new DocumentUserInboxData(CreateDocumentUser(document.Id, document.CreatorId));
+            }
+            return document;
+        }
+
         /// <summary>
         /// CREATE new document data in db after uploading document for a company
         /// </summary>

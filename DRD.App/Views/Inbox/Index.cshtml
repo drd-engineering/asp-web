@@ -105,7 +105,7 @@
                                             </td>
                                             <td style="height:50px;width:20%" class="text-top">
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
-                                                @*<button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="revisedDocument($index);">Set Up</button>*@
+                                                <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="annotateDocument($index);">Set Up</button>
                                                 <button ng-show="!checkIsFirstPerson()" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.ActionStatus, 2)?'Revised':'Revision')}}</button>
                                             </td>
                                         </tr>
@@ -205,6 +205,7 @@
             $scope.passwordError = false;
             $scope.isRevising = false;
             $scope.isUploading = false;
+            $scope.isSetUp = false;
             $scope.docIdx = 0;
             $scope.btnDisabled = true;
             $scope.identities = [];
@@ -247,6 +248,7 @@
                     $scope.model.Status = product.Status;
                     $scope.model.RotationStatus = product.RotationStatus;
                     $scope.companyId = product.CompanyId;
+                    $scope.encryptCID = product.EncryptCID;
                     $scope.model.FirstNodeId = product.FirstNodeId;
                     $scope.model.RotationNodeId = product.RotationNodeId;
                     $scope.model.WorkflowId = product.WorkflowId;
@@ -390,6 +392,25 @@
                     var x = 0;
                 });
             };
+            $scope.openDocumentSetUp = function (iframe, idx, fileName, isNew) {
+
+                $scope.btnDisabled = true;
+
+                var doc = $scope.docs[idx];
+                $scope.setAnnos(doc.Document.DocumentAnnotations);
+
+                if (iframe.contentWindow == null)
+                    return;
+                iframe.contentWindow.angular.element("#xpdfController").scope().setDefaultPdf(fileName, isNew);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoItems($scope.annos);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
+                iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
+                isdefineiframe = true;
+                $scope.selectedIdx = idx;
+                $("#modal_pdf_viewer").modal("show");
+                $(window).on('beforeunload', function () { return ""; });
+                /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
+            };
 
             $scope.openDocumentRevision = function (iframe, idx, fileName) {
                 $scope.btnDisabled = true;
@@ -409,6 +430,7 @@
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', revisiFinished);*/
             };
             $scope.closePdf = function () {
+
                 if ($scope.isRevising) {
                     var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
                     if (items != [] && items != null && items != undefined) {
@@ -446,12 +468,39 @@
                     if ($scope.fromSelectDoc) {
                         $("#modal_select_document").modal("show");
                     }
-                } else {
+                } else if ($scope.isSetUp) {
+                    var items = document.getElementById("xpdfIFrame").contentWindow.angular.element("#xpdfController").scope().getAnnoItems();
+                    if (items != [] && items != null && items != undefined) {
+                        swal({
+                            title: "Confirmation",
+                            text: "Do you want to save these set up configurations?",
+                            type: "warning",
+                            showCancelButton: true,
+                            closeOnConfirm: true,
+                            closeOnCancel: true,
+                            confirmButtonColor: "#2196F3",
+                            showLoaderOnConfirm: true,
+                            confirmButtonText: "Yes ",
+                            cancelButtonText: "No",
+                        }, function (isConfirm) {
+                            $scope.btnDisabled = false;
+                            if (isConfirm) {
+                                $scope.docs[$scope.selectedIdx].Document.DocumentAnnotations = items;
+                                $scope.$apply();
+                                $scope.settingUpDocument($scope.selectedIdx);
+                            }
+                            $("#modal_pdf_viewer").modal("hide");
+                        });
+                    }
+                    console.log($scope.docs);
+                }
+                else {
                     $("#modal_pdf_viewer").modal("hide");
                 }
                 $scope.btnDisabled = false;
                 $scope.isRevising = false;
                 $scope.isUploading = false;
+                $scope.isSetUp = false;
             }
             /*--------------------------------------------------------------
                DOCUMENT FIRST TIME SETUP DOCUMENT
@@ -473,6 +522,30 @@
                     var x = 0;
                 });
             };
+
+            $scope.annotateDocument = function (idx) {
+                console.log($scope.docs);
+                $scope.btnDisabled = true;
+                var doc = $scope.docs[idx];
+                $scope.isSetUp = true;
+                var iframe = document.getElementById('xpdfIFrame');
+
+                // Reset everytime document want to open
+                iframe.contentWindow.angular.element("#xpdfController").scope().setEmptyPdf();
+                iframe.contentWindow.angular.element("#xpdfController").scope().resetAnnoItems();
+                $http.post('/document/openfile', { fileName: doc.Document.FileUrl }).then(function (response) {
+                    if (response.data) {
+                        $scope.openDocumentSetUp(iframe, idx, response.data, false);
+                    }
+                }, function (response) {
+                    //error handle\
+                    var x = 0;
+                });
+
+            };
+
+           
+
             $scope.openDocument = function (iframe, fileName, isNew) {
                 $scope.btnDisabled = true;
                 if (iframe.contentWindow == null)
@@ -482,6 +555,7 @@
                 iframe.contentWindow.angular.element("#xpdfController").scope().setAnnoToolbarVisible(true);
                 iframe.contentWindow.angular.element("#xpdfController").scope().setRotationId($scope.rotationId);
                 isdefineiframe = true;
+                $scope.selectedIdx = idx;
                 $("#modal_pdf_viewer").modal("show");
                 $(window).on('beforeunload', function () { return ""; });
                 /*$('#modal_pdf_viewer').on('hidden.bs.modal', annoFinished);*/
@@ -983,6 +1057,74 @@
                     showError("Error upload file : " + $scope.errFile.$error + " (" + $scope.errFile.$errorParam + ")");
                 }
             };
+
+            $scope.settingUpDocument = function (idx) {
+                var tmpAnnos = angular.copy($scope.annos);
+                $scope.annos = [];
+                for (i = 0; i < tmpAnnos.length; i++) {
+                    var ix = tmpAnnos[i];
+                    if (ix.IsDeleted) continue;
+                    var item = {};
+                    item.Id = ix.Id;
+                    item.Page = ix.Page;
+                    item.LeftPosition = ix.LeftPosition;
+                    item.TopPosition = ix.TopPosition;
+                    item.WidthPosition = ix.WidthPosition;
+                    item.HeightPosition = ix.HeightPosition;
+                    item.Color = ix.Color;
+                    item.BackColor = ix.BackColor;
+                    item.Text = ix.Text;
+                    item.Unknown = ix.Unknown;
+                    item.Rotation = ix.Rotation;
+                    item.ScaleX = ix.ScaleX;
+                    item.ScaleY = ix.ScaleY;
+                    item.TransitionX = ix.TransitionX;
+                    item.TransitionY = ix.TransitionY;
+                    item.StrokeWidth = ix.StrokeWidth;
+                    item.Opacity = ix.Opacity;
+                    item.CreatorId = ix.CreatorId;
+                    item.Flag = ix.Flag;
+                    item.AssignedAnnotationCode = ix.AssignedAnnotationCode;
+                    item.AssignedAt = ix.AssignedAt;
+                    item.AssignedAnnotationImageFileName = ix.AssignedAnnotationImageFileName;
+                    item.UserId = ix.UserId;
+                    item.ElementTypeId = ix.ElementType;
+                    item.Element = ix.Element;
+                    $scope.annos.push(item);
+                }
+
+                var btn = Ladda.create(document.querySelector('.submit-document'));
+                btn.start();
+                $http.post('@Url.Action("SetUpDoc", "document")',
+                    {
+                        newDocument: {
+                            Id: $scope.model.Id,
+                            FileUrl: $scope.model.FileUrl,
+                            FileName: $scope.model.FileName,
+                            FileSize: $scope.model.FileSize,
+                            MaximumPrintPerUser: $scope.model.MaxPrint,
+                            MaximumDownloadPerUser: $scope.model.MaxDownload,
+                            DocumentAnnotations: $scope.annos,
+                        }, companyId: $scope.companyId,
+                        rotationId: $scope.rotationId
+                    }).then(function (response) {
+                        btn.stop();
+                        if (response.data != null) {
+                            response.data.Extension = "pdf";
+                            $scope.docs[idx].Document = response.data;
+                            $scope.btnDisabled = false;
+                            console.log($scope.docs);
+                        } else {
+                            showInfo("An error has occurred");
+                        }
+                    }, function (response) {
+                        //error handle\
+                        btn.stop();
+                        showInfo("An error has occurred, please try submitting again.");
+                    });
+
+            }
+
             $scope.prepareStoreDocument = function () {
                 if ($scope.isUpload == 0) {
                     showInfo("document must be uploaded");
@@ -1086,12 +1228,14 @@
                             $scope.tempDoc.Document = response.data;
                             $scope.tempDoc.DocumentId = response.data.Id;
                             $scope.tempDoc.Document.IsCurrent = response.data.IsCurrent;
+                            $scope.tempDoc.Document.EncryptedCompanyId = $scope.encryptCID;
                             $scope.docs.push($scope.tempDoc);
                             $scope.resetFileUploadDetails();
                             $("#modal_select_document").modal('hide');
                             showInfo("Success store document");
                             document.querySelector('.submit-document').disabled = false;
                             $scope.btnDisabled = false;
+                            console.log($scope.docs);
                         } else {
                             showInfo("An error has occurred");
                         }

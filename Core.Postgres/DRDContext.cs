@@ -61,6 +61,7 @@ namespace Core.Postgres
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             String passEncrypted = UtilitiesModel.Encrypt("drdaccess2021");
+            String radikariPassEncrypted = UtilitiesModel.Encrypt("radikari2021");
             List <User> listOfUserCreated = new List<User>
             {
                 new User
@@ -69,6 +70,15 @@ namespace Core.Postgres
                     Phone = "0897287837382",
                     Email = "lalisa@drdaccess.com",
                     OfficialIdNo = 2511100909080001,
+                    Password = passEncrypted,
+                    IsActive = true
+                },
+                new User
+                {
+                    Name = "Admin Radikari",
+                    Phone = "08895737277",
+                    Email = "superadmin@radikari.com",
+                    OfficialIdNo = 2511100909080010,
                     Password = passEncrypted,
                     IsActive = true
                 },
@@ -172,7 +182,21 @@ namespace Core.Postgres
                     OwnerId = listOfUserCreated[0].Id,
                     CreatedAt = DateTime.Now
                 },
-             
+                 new Company
+                {
+                    Code = "SOLTC202107001",
+                    Name = "PT Rajawali Berdikari Indonesia",
+                    Phone = "0214556372",
+                    Email = "admin@radikari.com",
+                    Description = "A trading and  contractor company",
+                    Address = "The Great Saladin Square Blok C10, Jl. Margonda Raya No.39, Depok, Pancoran MAS, Depok, Kec. Pancoran Mas, Kota Depok, Jawa Barat 16431",
+                    PostalCode = "10150",
+                    IsActive = true,
+                    IsVerified = true,
+                    OwnerId = listOfUserCreated[1].Id,
+                    CreatedAt = DateTime.Now
+                },
+
             };
 
             Member member1 = new Member
@@ -266,14 +290,19 @@ namespace Core.Postgres
                 IsAdministrator = false
             };
             BusinessPackage package1 = new BusinessPackage { Id = -1, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,IsPublic=true,Member=-99, Storage = 100000000, Administrator = 2, Duration = 60, Name = "Business" };
+            BusinessPackage package2 = new BusinessPackage { Id = -2, IsActive = true, IsExceedLimitAllowed = false, IsExpirationDateExtendedAutomatically = true, RotationStarted=-99,IsPublic=true,Member=-99, Storage = 10000000000, Administrator = 20, Duration = 90, Name = "Business" };
+            
             Price price1 = new Price { Id = -1, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
+            Price price2 = new Price { Id = -2, CreatedAt = DateTime.Now, Total = 2019192039, PackageId = package1.Id };
+            
             BusinessUsage usage1 = new BusinessUsage { Id = -1, CompanyId = listOfCompanyCreated[0].Id, PackageId = package1.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package1.Duration), PriceId = price1.Id };
+            BusinessUsage usage2 = new BusinessUsage { Id = -2, CompanyId = listOfCompanyCreated[1].Id, PackageId = package2.Id, CreatedAt = DateTime.Now, ExpiredAt = DateTime.Now.AddDays(package2.Duration), PriceId = price2.Id };
 
 
             modelBuilder.Entity<User>().HasData(listOfUserCreated[0], listOfUserCreated[1], listOfUserCreated[2], listOfUserCreated[3],
                 listOfUserCreated[4], listOfUserCreated[5], listOfUserCreated[6], listOfUserCreated[7],
-                listOfUserCreated[8], listOfUserCreated[9]);
-            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0]);
+                listOfUserCreated[8], listOfUserCreated[9],listOfUserCreated[10]);
+            modelBuilder.Entity<Company>().HasData(listOfCompanyCreated[0], listOfCompanyCreated[1]);
             modelBuilder.Entity<Member>().HasData(member1, member2, member3, member4, member5, member6, member7, member8, member9, member10);
 
             modelBuilder.Entity<BusinessPackage>().HasData(package1);

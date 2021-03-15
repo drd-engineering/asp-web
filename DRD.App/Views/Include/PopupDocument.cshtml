@@ -47,11 +47,15 @@
                             </div>
                             <div class="row">
                                 <div class="control-label" ng-show="$parent.isUpload">
-                                    <small><b>Set up document</b> is used for placing signature and/or initial box</small><br />
-                                    <b><a style="background-color:#FCD097; color:white;" class="btn btn-dark" ng-click="annoDocument()"> Set up document</a></b> of {{$parent.docFileName}}
+                                    <!--
+    <small><b>Set up document</b> is used for placing signature and/or initial box</small><br />
+        <b><a style="background-color:#FCD097; color:white;" class="btn btn-dark" ng-click="annoDocument()"> Set up document</a></b> of
+    -->
+                                    {{$parent.docFileName}}
                                 </div><br />
                             </div>        
                             <br />
+                            <!--
                             <div class="row">
                                 <div class="col-6">
                                     <label class="control-label">max print/person  <small style="color:gray">(optional)</small></label>
@@ -62,6 +66,7 @@
                                     <input type="number" class="form-control input-xs" ng-model="$parent.model.MaxDownload" ng-required="wizarno=='product'" ng-only-number />
                                 </div>
                             </div>
+                                -->
                         </div>
                     </div>
                     <hr />
