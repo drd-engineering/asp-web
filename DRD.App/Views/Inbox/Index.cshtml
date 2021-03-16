@@ -106,7 +106,7 @@
                                             <td style="height:50px;width:20%" class="text-top">
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px;background-color: maroon;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="remove document" ng-click="removeDocument($index);">remove</button>
                                                 <button ng-show="checkIsFirstPerson()" class="btn pull-right" style="margin:5px; color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer;" data-toggle="tootltip" title="Set up the initial and signature" ng-click="annotateDocument($index);">Set Up</button>
-                                                <button ng-show="!checkIsFirstPerson()" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.ActionStatus, 2)?'Revised':'Revision')}}</button>
+                                                <button ng-show="!checkIsFirstPerson()" class="btn pull-right" style="color:black;background-color: #AFC9D8;border: none;color: white;width:100px;padding: 10px 12px;cursor: pointer; margin:5px; " data-toggle="tootltip" title="give scracth or note to be revised by the uploader" ng-click="revisedDocument($index);">{{(validAction(x.ActionStatus, 2)?'Corrected':'Correction')}}</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -278,6 +278,9 @@
                                     }
                                 }
                             }
+
+                            console.log("DOCS");
+                            console.log($scope.docs);
                         }
                     }
                     console.log($scope.sumDocuments);
@@ -726,7 +729,7 @@
                 else if (bit == 2)
                     eventString = "Reject";
                 else if (bit == 4)
-                    eventString = "Revision";
+                    eventString = "Ask the revision for";
                 else if (bit == 8)
                     eventString = "Manual Alter";
                 swal({
@@ -756,7 +759,7 @@
                                 }
                             }
                             swal.close();
-
+                            btnDisabled = false;
                         }, 500);
                     });
             };
@@ -1098,12 +1101,13 @@
                 $http.post('@Url.Action("SetUpDoc", "document")',
                     {
                         newDocument: {
-                            Id: $scope.model.Id,
-                            FileUrl: $scope.model.FileUrl,
-                            FileName: $scope.model.FileName,
-                            FileSize: $scope.model.FileSize,
-                            MaximumPrintPerUser: $scope.model.MaxPrint,
-                            MaximumDownloadPerUser: $scope.model.MaxDownload,
+                            Id: $scope.docs[idx].Document.Id,
+                            FileUrl: $scope.docs[idx].Document.FileUrl,
+                            FileName: $scope.docs[idx].Document.FileName,
+                            FileSize: $scope.docs[idx].Document.FileSize,
+                            Extension: "pdf",
+                            MaximumPrintPerUser: $scope.docs[idx].Document.MaxPrint,
+                            MaximumDownloadPerUser: $scope.docs[idx].Document.MaxDownload,
                             DocumentAnnotations: $scope.annos,
                         }, companyId: $scope.companyId,
                         rotationId: $scope.rotationId
@@ -1111,7 +1115,12 @@
                         btn.stop();
                         if (response.data != null) {
                             response.data.Extension = "pdf";
-                            $scope.docs[idx].Document = response.data;
+                            $scope.docs[idx].Document.Id = response.data.Id;
+                            $scope.docs[idx].Document.CompanyId = response.data.CompanyId;
+                            $scope.docs[idx].Document.CreatedAt = response.data.CreatedAt;
+                            $scope.docs[idx].Document.Description = response.data.Description;
+                            $scope.docs[idx].Document.DocumentUser = response.data.DocumentUser;
+                            $scope.docs[idx].Document.DocumentUsers = response.data.DocumentUsers;
                             $scope.btnDisabled = false;
                             console.log($scope.docs);
                         } else {

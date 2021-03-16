@@ -453,13 +453,17 @@
         var no = item.SvgId.replace('svg', '');
         if ((item.Flag & 1) == 1) {
             var foto = document.getElementById("signed-" + no);
-            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.AssignedAnnotationImageFileName;
+            if (item.AssignedAnnotationImageFileName!=null)
+                foto.src = "/Images/Member/" + item.Element.EncryptedUserId + "/" + item.AssignedAnnotationImageFileName;
+
             if (item.ElementType == elementType.SIGNATURE || item.ElementType == elementType.INITIAL)
                 $("#signed-name-" + no).text(item.Element.Name);
+
             $("#signed-code-" + no).text(item.AssignedAnnotationCode);
         } else {
             var foto = document.getElementById("member-foto-" + no);
-            foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
+            if (item.Element.Foto!=null)
+                foto.src = "/Images/Member/"+item.Element.EncryptedUserId+"/"+item.Element.Foto;
             $("#member-name-" + no).text(item.Element.Name+' | '+item.Element.Number);
         }
     }
