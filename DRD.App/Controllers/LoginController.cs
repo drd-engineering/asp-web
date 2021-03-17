@@ -25,6 +25,20 @@ namespace DRD.App.Controllers
                 return RedirectToAction("Index", "login", new { redirectUrl = "login/changepassword" });
             return View();
         }
+        public ActionResult Ubhsppchngnds(string token)
+        {
+            UserService userService = new UserService();
+            System.Diagnostics.Debug.WriteLine(userService.GenerateToken(3543151354,512));
+            System.Diagnostics.Debug.WriteLine(userService.CheckTokenValidity(token));
+            System.Diagnostics.Debug.WriteLine("TESTING");
+            System.Diagnostics.Debug.WriteLine(userService.GenerateToken(348725064698812, 512));
+            System.Diagnostics.Debug.WriteLine(userService.CheckTokenUserValidity(token));
+            System.Diagnostics.Debug.WriteLine("TESTING");
+            var data = userService.CheckTokenUserValidity(token);
+            if (data == null)
+                return RedirectToAction("Index", "login");
+            return View(data);
+        }
 
         public ActionResult ForgotPassword()
         {
@@ -37,6 +51,25 @@ namespace DRD.App.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         public ActionResult Login(string username, string password)
+        {
+            int ret = -1;
+            UserService userService = new UserService();
+            var user = userService.Login(username, password);
+            if (user != null)
+            {
+                ret = 1;
+                Session["_USER_LOGIN_"] = user;
+            }
+            return Json(ret, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// API for login to DRD account using username and password
+        /// </summary>
+        /// <param name="username">there are many options for username, use id or email</param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public ActionResult ResetPassword(string username, string password)
         {
             int ret = -1;
             UserService userService = new UserService();
@@ -97,7 +130,7 @@ namespace DRD.App.Controllers
             return menuService.GetMenus(user.Id);
         }
         /// <summary>
-        /// API to change password of user logged in
+        /// API to change password after authorized login
         /// </summary>
         /// <param name="oldPassword"></param>
         /// <param name="newPassword"></param>
@@ -110,6 +143,20 @@ namespace DRD.App.Controllers
             var data = usrService.UpdatePassword(user, oldPassword, newPassword);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// API to change password after authorized login
+        /// </summary>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public ActionResult ReplacePassword(String token, String newPassword)
+        {
+            UserService usrService = new UserService();
+            var data = usrService.UpdatePassword(token, newPassword);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// API to request for reset password of user
         /// </summary>
@@ -118,11 +165,12 @@ namespace DRD.App.Controllers
         public ActionResult ResetPassword(String emailUser)
         {
             UserService userService = new UserService();
-            var data = userService.ResetPassword(emailUser);
+            var data = userService.GetUser(emailUser);
             if (data != null)
                 userService.SendEmailResetPassword(data);
             var result = data == null ? 0 : 1;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
     }
 }

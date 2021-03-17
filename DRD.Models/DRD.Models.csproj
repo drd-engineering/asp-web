@@ -194,6 +194,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\ResetPasswordPageData.cs" />
     <Compile Include="API\ActiveUsageList.cs" />
     <Compile Include="API\AddMemberResponse.cs" />
     <Compile Include="API\ListWorkflowItem.cs" />

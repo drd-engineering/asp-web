@@ -1,0 +1,273 @@
+﻿@using DRD.Models
+@model DRD.Models.API.ResetPasswordPageData
+
+@{
+    ViewBag.Title = "Change Password";
+    Layout = null;
+}
+<!-- Global stylesheets -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+<link href="/Images/logo-color-background.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/core.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/components.css" rel="stylesheet" type="text/css">
+<link href="/assets/css/colors.css" rel="stylesheet" type="text/css">
+<!-- /global stylesheets -->
+<!-- Core JS files -->
+<script type="text/javascript" src="/assets/js/core/libraries/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/core/libraries/bootstrap.min.js"></script>
+<!-- /core JS files -->
+<!-- Theme JS files -->
+<script type="text/javascript" src="/assets/js/plugins/ui/nicescroll.min.js"></script>
+<script type="text/javascript" src="/assets/js/pages/layout_fixed_custom.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/ui/ripple.min.js"></script>
+<!-- /theme JS files -->
+<!-- Theme JS files -->
+<script type="text/javascript" src="/assets/js/plugins/notifications/noty.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/jgrowl.min.js"></script>
+
+<script src="/assets/js/plugins/buttons/spin.min.js" type="text/javascript"></script>
+<script src="/assets/js/plugins/buttons/ladda.min.js" type="text/javascript"></script>
+<script src="/assets/js/pages/components_buttons.js" type="text/javascript"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular.js"></script>
+<script src="/assets/vendors/angular-1.5.5/angular-animate.js"></script>
+<script src="/Scripts/ui-bootstrap-tpls-1.3.2.js"></script>
+
+<script src="/assets/vendors/file-upload/ng-file-upload-shim.min.js"></script>
+<script src="/assets/vendors/file-upload/ng-file-upload.min.js"></script>
+
+<script src="/assets/vendors/ng_only_number.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/notifications/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/notifications/sweet_alert.min.js"></script>
+<script src="~/Scripts/xpublic.js"></script>
+
+<script src="~/Scripts/autocomplete/autocomplete.min.js"></script>
+
+<script src="~/Scripts/lodash.min.js"></script>
+<script src="~/Scripts/angular-simple-logger.js"></script>
+
+<script src="/assets/vendors/bootstrap-switch/bootstrap-switch.js"></script>
+
+<script src="/assets/vendors/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/uniform.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switchery.min.js"></script>
+<script type="text/javascript" src="/assets/js/plugins/forms/styling/switch.min.js"></script>
+
+<script src="/assets/vendors/angular-1.5.5/angular-sanitize.min.js"></script>
+
+<link href="~/Scripts/autocomplete/autocomplete.min.css" rel="stylesheet" />
+<link id="bsdp-css" href="/assets/vendors/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+<link href="~/assets/css/pages/login.css" rel="stylesheet" type="text/css">
+
+<title>DRD - @ViewBag.Title</title>
+<body class="login-container" style="" ng-app="drdApp">
+    <!-- Page container -->
+    <div class="page-container" ng-controller="drdController">
+        <!-- Page content -->
+        <div class="page-content">
+            <!-- Main content -->
+            <div class="content-wrapper">
+
+                <!-- /page header -->
+                <!-- Horizontal form options -->
+                <!-- Content area -->
+                <div class="content">
+                    <!-- Simple login form -->
+                    <form name="myForm" class="form-horizontal" autocomplete="off">
+                        <div class="panel panel-body login-form" style="padding:0px">
+                            <div class="text-center" ">
+                                <img src="/Images/login_banner.png" width="100%" /><br /><br />
+                                <img ng-show="load" style="left: 50%;top: 50%;width:100px; height:100px;" src="~/assets/spinner.gif">
+                                <h5 class="content-group"><small ng-show="!load" class="display-block">Hi,<strong> @Model.Name  </strong> !</small>Set a new password </h5>
+                            </div>
+                            <div style="padding-left:40px;padding-right:40px; margin-top:20px;">
+
+                                <div class="row">
+                                    <div style="color:red;font-size:10px;align-self:end" ng-show="newPasswordStatus">{{newPasswordErrorMessage}}</div>
+                                </div>
+                                <div class="form-group input-container">
+                                    <input id="newPassword" type="password" class="form-control" ng-change="checkPassword()"
+                                           ng-model="model.NewPassword" placeholder="Your New Password" required>
+                                    <span ng-if="!isShowNew"
+                                          ng-click="showPassword('new')"
+                                          class="icon-eye-blocked2 eye-container form-control-feedback pull-right"
+                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                    </span>
+                                    <span ng-if="isShowNew"
+                                          ng-click="showPassword('new')"
+                                          class="icon-eye2 eye-container form-control-feedback pull-right"
+                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                    </span>
+                                </div>
+                                <div class="row">
+                                    <div style="color:red;font-size:10px;align-self:end" ng-show="newConfirmPasswordStatus">this should be same as the new password</div>
+                                </div>
+                                <div class="form-group input-container">
+                                    <input id="confirmNewPassword" type="password" class="form-control" ng-model="model.ConfirmNewPassword"
+                                           ng-change="checkPassword()" placeholder="Type Again Your New Password" required>
+                                    <span ng-if="!isShowConfirmNew"
+                                          ng-click="showPassword('confirm new')"
+                                          class="icon-eye-blocked2 eye-container form-control-feedback pull-right"
+                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                    </span>
+                                    <span ng-if="isShowConfirmNew"
+                                          ng-click="showPassword('confirm new')"
+                                          class="icon-eye2 eye-container form-control-feedback pull-right"
+                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                    </span>
+                                </div>
+                                <div ng-show="!load" class="form-group">
+                                    <button class="btn btn-flat" style="background-color:#eb7734; color:white; width:100%;height:50px" ng-click="updateProduct()" ng-disabled="buttonSubmitStatus">
+                                        Set Password
+                                    </button>
+                                </div>
+                                <table ng-show="!load" style="width:100%;font-size:10px">
+                                    <tr>
+                                        <td style="">
+                                            
+                                        </td>
+                                        <td style="text-align:right">
+                                            <a style="text-decoration:none;color:black" href="/login">back to login</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                            </div>
+                        </div>
+                    </form>
+                    <!--/MEMBER DATA-->
+                
+                </div>
+                <!-- /vertical form options -->
+            </div>
+            <!-- /Main content -->
+        </div>
+        <!-- /Page content -->
+    </div>
+    <!-- /Page container -->
+
+    <script type="text/javascript">
+        var myApp = angular.module('drdApp', ['ngAnimate', 'ngSanitize', 'ui.bootstrap'])
+        myApp.controller("drdController", function ($scope, $sce, $location, $http, $filter) {
+            ////////////////////////////  INITIATE DATA  ////////////////////////////
+            $scope.model = {};
+            $scope.wizarno = 'product';
+            $scope.newPasswordStatus = false;
+            $scope.newPasswordErrorMessage = "";
+            $scope.newConfirmPasswordStatus = false;
+            $scope.buttonSubmitStatus = true;
+            $scope.isShowOld = false;
+            $scope.isShowNew = false;
+            $scope.isShowConfirmNew = false;
+            $scope.infoSuccess = "Change password successfully.";
+            angular.element(document).ready(function () {
+            });
+            $scope.initData = function () {
+            }
+            ////////////////////////////  SAVE NEW PASSWORD  ////////////////////////////
+            $scope.updateProduct = function () {
+                if (!$scope.isValidForm($scope.myForm))
+                    return;
+                if ($scope.model.NewPassword != $scope.model.ConfirmNewPassword) {
+                    showInfo("Password confirmation is not the same as new password.");
+                    return;
+                }
+                console.log('masuk update');
+                $scope.saveProduct();
+            }
+            $scope.isValidForm = function (theForm) {
+                var isvalid = theForm.$valid;
+                return isvalid;
+            };
+            $scope.saveProduct = function () {
+                console.log('save');
+
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const token = urlParams.get('token');
+
+                $http.post('@Url.Action("ReplacePassword", "Login")',
+                    {
+                        token: token,
+                        newPassword: $scope.model.NewPassword
+                    }).then(function (response) {
+                        
+                        if (response.data) {
+                            if (response.data == -2) {
+                                showError("TokenError.");
+                                return;
+                            } else if (response.data == -1) {
+                                showError("Token error");
+                                return;
+                            }
+                            else {
+                               showSuccess("Your password has been changed");
+                                
+                            }
+                        }
+                    }, function (response) {
+                        
+                        //error handle\
+                        var x = 0;
+                    });
+            }
+            ////////////////////////////  PASSWORD VALIDATION CHECK  ////////////////////////////
+            $scope.checkPassword = function () {
+                var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+                if (strongRegex.test($scope.model.NewPassword)) {
+                    $scope.newPasswordStatus = false;
+                    if ($scope.model.NewPassword != $scope.model.ConfirmNewPassword) {
+                        $scope.buttonSubmitStatus = true;
+                        $scope.newConfirmPasswordStatus = true;
+                    }
+                    else {
+                        $scope.buttonSubmitStatus = false;
+                        $scope.newConfirmPasswordStatus = false;
+                        $scope.newPasswordStatus = false;
+                    }
+                }
+                else {
+                    $scope.buttonSubmitStatus = true;
+                    $scope.newPasswordErrorMessage = "Password use at least 8 characters with mixtures of letters, uppercase and numbers";
+                    $scope.newPasswordStatus = true;
+                }
+            }
+            ////////////////////////////  SHOW OR OFF PASSWORD  ////////////////////////////
+            $scope.showPassword = function (identifier) {
+                if (identifier == "old") {
+                    var inputpassword = document.getElementById("oldPassword");
+                    if (inputpassword.type === "password") inputpassword.type = "text";
+                    else inputpassword.type = "password";
+                    $scope.isShowOld = !$scope.isShowOld;
+                } else if (identifier == 'new') {
+                    var inputpassword = document.getElementById("newPassword");
+                    if (inputpassword.type === "password") inputpassword.type = "text";
+                    else inputpassword.type = "password";
+                    $scope.isShowNew = !$scope.isShowNew;
+                } else {
+                    var inputpassword = document.getElementById("confirmNewPassword");
+                    if (inputpassword.type === "password") inputpassword.type = "text";
+                    else inputpassword.type = "password";
+                    $scope.isShowConfirmNew = !$scope.isShowConfirmNew;
+                }
+            }
+            ////////////////////////////  BACK  ////////////////////////////
+            $scope.goBack = function() {
+                window.history.back();
+            }
+            ////////////////////////////  PAGE  ////////////////////////////
+            $scope.scrollingPage = function (id) {
+                $('html, body').animate({
+                    scrollTop: $(id).offset().top
+                }, 200);
+            }
+        });
+        $(function () { });
+        $(document).ready(function () { })
+    </script>
+</body>

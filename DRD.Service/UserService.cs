@@ -7,6 +7,7 @@ using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Web;
 
 namespace DRD.Service
 {
@@ -30,10 +31,7 @@ namespace DRD.Service
                 return retVal;
             }
 
-            User user = new User(register.Email.ToLower(), register.Name, register.Phone)
-            {
-                Password = Utilities.Encrypt(System.Web.Security.Membership.GeneratePassword(length: 8, numberOfNonAlphanumericCharacters: 1))
-            };
+            User user = new User(register.Email.ToLower(), register.Name, register.Phone);
             
             long userId = Save(user);
             user.Id = userId;
@@ -96,11 +94,12 @@ namespace DRD.Service
             string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/Registration.html"));
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+            String token = GenerateToken(user.Id, (int) Constant.TokenType.firstPassword);
 
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
             body = body.Replace("{_NUMBER_}", "" + user.Id);
-            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
+            body = body.Replace("{_TOKEN_}", token);
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 
@@ -136,7 +135,82 @@ namespace DRD.Service
             return loginUser;
         }
 
-        public UserSession getUpdatedUser(long id)
+        public string GenerateToken(long userId, int type)
+        {
+            //the format will be "type|date|userId"
+            String formatedToken = "" + type + "_" + userId + "_" + DateTime.Now;
+            string token = HttpUtility.UrlEncode(Utilities.Encrypt(formatedToken));
+            return token;
+        }
+        
+        public bool CheckTokenValidity(string token)
+        {
+            if (token == null) return false;
+
+            Constant.TokenType tokenType = GetTokenType(token);
+            DateTime tokenDate = GetTokenDate(token);
+
+            return tokenType switch
+            {
+                Constant.TokenType.firstPassword => true,
+                Constant.TokenType.resetPassword => DateTime.Now < tokenDate.AddDays(1),
+                _ => false,
+            };
+        }
+
+        public ResetPasswordPageData CheckTokenUserValidity(string token)
+        {
+            if (!CheckTokenValidity(token)) return null;
+            using var db = new Connection();
+            User user = db.Users.Find(GetTokenUserId(token));
+            if (user == null) return null;
+            string type = GetTokenType(token).ToString();
+            return  new ResetPasswordPageData() { Name= user.Name, Type= type };
+        }
+
+        public UserSession LoginWithToken(string token)
+        {
+            using var db = new Connection();
+            if (!CheckTokenValidity(token)) return null;
+
+            long id = GetTokenUserId(token);
+           
+            User userGet = db.Users.Find(id);
+            if (userGet == null) return null;
+            if (userGet.IsActive == false)
+            {
+                userGet.IsActive = true;
+                db.SaveChanges();
+            }
+            UserSession loginUser = new UserSession(userGet);
+            return loginUser;
+        }
+
+        private Constant.TokenType GetTokenType(string token)
+        {
+
+            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
+            string[] tokenPart = secret.Split('_');
+            return (Constant.TokenType)int.Parse(tokenPart[0]);
+        }
+
+        private DateTime GetTokenDate(string token)
+        {
+
+            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
+            string[] tokenPart = secret.Split('_');
+            return DateTime.Parse(tokenPart[2]);
+        }
+
+        private long GetTokenUserId(string token)
+        {
+
+            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
+            string[] tokenPart = secret.Split('_');
+            return long.Parse(tokenPart[1]);
+        }
+
+        public UserSession GetUpdatedUser(long id)
         {
             using var db = new Connection();
 
@@ -271,6 +345,25 @@ namespace DRD.Service
             db.SaveChanges();
             return 1;
         }
+
+        /// <summary>
+        /// SAVE new password of specify user that loged in to application
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public int UpdatePassword(String token, String newPassword)
+        {
+            using var db = new Connection();
+            if (!CheckTokenValidity(token)) return -1;
+            User getUser = db.Users.Find(GetTokenUserId(token));
+            if (getUser == null) return -1;
+            getUser.Password = Utilities.Encrypt(newPassword);
+            db.SaveChanges();
+            return 1;
+        }
+
         /// <summary>
         /// SAVE new user password by generator and send the password to user's email
         /// </summary>
@@ -290,6 +383,18 @@ namespace DRD.Service
             return userGet;
         }
         /// <summary>
+        /// SAVE new user password by generator and send the password to user's email
+        /// </summary>
+        /// <param name="emailUser"></param>
+        /// <returns></returns>
+        public User GetUser(string emailUser)
+        {
+            using var db = new Connection();
+            var userGet = db.Users.FirstOrDefault(c => c.Email.Equals(emailUser));
+            return userGet;
+        }
+
+        /// <summary>
         /// EMAIL to user result of the reset password action
         /// </summary>
         /// <param name="user"></param>
@@ -301,12 +406,15 @@ namespace DRD.Service
             EmailService emailService = new EmailService();
 
             string body = emailService.CreateHtmlBody(System.Web.HttpContext.Current.Server.MapPath("/doc/emailtemplate/ResetPassword.html"));
+
             String strPathAndQuery = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
             String strUrl = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+            String token = GenerateToken(user.Id,(int)Constant.TokenType.resetPassword);
 
             body = body.Replace("{_URL_}", strUrl);
             body = body.Replace("{_NAME_}", user.Name);
-            body = body.Replace("{_PASSWORD_}", Utilities.Decrypt(user.Password));
+            body = body.Replace("{_URL_}", strUrl);
+            body = body.Replace("{_TOKEN_}", token);
 
             var senderEmail = configGenerator.GetConstant("EMAIL_USER")["value"];
 

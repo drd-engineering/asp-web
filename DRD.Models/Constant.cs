@@ -50,6 +50,13 @@ namespace DRD.Models
             //fully access granted if there are multiple feature access in a pages
             fullAccess = 3
         }
+
+        public enum TokenType
+        {
+            firstPassword = 512,
+            resetPassword = 1024
+        }
+
         public enum DocumentActionPermissionType
         {
             //restricted, cannot access at all

@@ -77,7 +77,7 @@ namespace DRD.App.Controllers
             data.Add(MoveFromTemp(newUser, ret1.SignatureImageFileName));
             data.Add(MoveFromTemp(newUser, ret1.StampImageFileName));
 
-            var updatedUser = userService.getUpdatedUser(newUser.Id);
+            var updatedUser = userService.GetUpdatedUser(newUser.Id);
             {
                 Session["_USER_LOGIN_"] = updatedUser;
             }
