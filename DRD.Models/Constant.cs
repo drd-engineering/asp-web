@@ -53,6 +53,7 @@ namespace DRD.Models
 
         public enum TokenType
         {
+            Error = -1,
             firstPassword = 512,
             resetPassword = 1024
         }

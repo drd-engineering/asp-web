@@ -139,23 +139,31 @@ namespace DRD.Service
         {
             //the format will be "type|date|userId"
             String formatedToken = "" + type + "_" + userId + "_" + DateTime.Now;
+            
             string token = HttpUtility.UrlEncode(Utilities.Encrypt(formatedToken));
             return token;
         }
         
         public bool CheckTokenValidity(string token)
         {
+
             if (token == null) return false;
 
             Constant.TokenType tokenType = GetTokenType(token);
             DateTime tokenDate = GetTokenDate(token);
 
+            if (tokenType.Equals(Constant.TokenType.Error) || tokenDate.Equals(DateTime.MaxValue))
+                return false;
+            
+
+            using var db = new Connection();
             return tokenType switch
             {
-                Constant.TokenType.firstPassword => true,
-                Constant.TokenType.resetPassword => DateTime.Now < tokenDate.AddDays(1),
+                (Constant.TokenType.firstPassword) => db.Users.Find(GetTokenUserId(token))?.Password == null,
+                (Constant.TokenType.resetPassword) => DateTime.Now < tokenDate.AddDays(1),
                 _ => false,
             };
+            ;
         }
 
         public ResetPasswordPageData CheckTokenUserValidity(string token)
@@ -163,6 +171,7 @@ namespace DRD.Service
             if (!CheckTokenValidity(token)) return null;
             using var db = new Connection();
             User user = db.Users.Find(GetTokenUserId(token));
+
             if (user == null) return null;
             string type = GetTokenType(token).ToString();
             return  new ResetPasswordPageData() { Name= user.Name, Type= type };
@@ -186,28 +195,34 @@ namespace DRD.Service
             return loginUser;
         }
 
+        private string trySplitEncrypt(string token, int index)
+        {
+            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
+            string[] tokenPart = secret.Split('_');
+            if (index >= tokenPart.Length) return null;
+            return tokenPart[index];
+        }
+
         private Constant.TokenType GetTokenType(string token)
         {
 
-            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
-            string[] tokenPart = secret.Split('_');
-            return (Constant.TokenType)int.Parse(tokenPart[0]);
+            bool canConvert = int.TryParse(trySplitEncrypt(token,0), out int type);
+
+            return canConvert ? (Constant.TokenType) type : Constant.TokenType.Error;
         }
 
         private DateTime GetTokenDate(string token)
         {
+            bool canConvert = DateTime.TryParse(trySplitEncrypt(token, 2), out DateTime date);
 
-            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
-            string[] tokenPart = secret.Split('_');
-            return DateTime.Parse(tokenPart[2]);
+            return canConvert? date : DateTime.MaxValue;
         }
 
         private long GetTokenUserId(string token)
         {
+            bool canConvert = long.TryParse(trySplitEncrypt(token, 1), out long userId);
 
-            string secret = Utilities.Decrypt(HttpUtility.UrlDecode(token));
-            string[] tokenPart = secret.Split('_');
-            return long.Parse(tokenPart[1]);
+            return canConvert ? userId : -1;
         }
 
         public UserSession GetUpdatedUser(long id)

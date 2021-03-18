@@ -31,7 +31,7 @@ namespace DRD.App.Controllers
             System.Diagnostics.Debug.WriteLine(userService.GenerateToken(3543151354,512));
             System.Diagnostics.Debug.WriteLine(userService.CheckTokenValidity(token));
             System.Diagnostics.Debug.WriteLine("TESTING");
-            System.Diagnostics.Debug.WriteLine(userService.GenerateToken(348725064698812, 512));
+            System.Diagnostics.Debug.WriteLine(userService.GenerateToken(52988479423338, 512));
             System.Diagnostics.Debug.WriteLine(userService.CheckTokenUserValidity(token));
             System.Diagnostics.Debug.WriteLine("TESTING");
             var data = userService.CheckTokenUserValidity(token);
