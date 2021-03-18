@@ -80,12 +80,25 @@
                     <!-- Simple login form -->
                     <form name="myForm" class="form-horizontal" autocomplete="off">
                         <div class="panel panel-body login-form" style="padding:0px">
-                            <div class="text-center" ">
+                            <div ng-show="resetState == 0" class="text-center" ">
                                 <img src="/Images/login_banner.png" width="100%" /><br /><br />
                                 <img ng-show="load" style="left: 50%;top: 50%;width:100px; height:100px;" src="~/assets/spinner.gif">
                                 <h5 class="content-group"><small ng-show="!load" class="display-block">Hi,<strong> @Model.Name  </strong> !</small>Set a new password </h5>
                             </div>
-                            <div style="padding-left:40px;padding-right:40px; margin-top:20px;">
+
+                            <div ng-show="resetState == 1" class="text-center" ">
+                                <img src="/Images/login_banner.png" width="100%" /><br /><br />
+                                <img ng-show="load" style="left: 50%;top: 50%;width:100px; height:100px;" src="~/assets/spinner.gif">
+                                <p class="content-group"><small ng-show="!load" class="display-block">Hi,<strong> @Model.Name  </strong> !</small>You have successfully set your new password, back to login page to proceed.</p>
+                            </div>
+
+                            <div ng-show="resetState == -1" class="text-center" ">
+                                <img src="/Images/login_banner.png" width="100%" /><br /><br />
+                                <img ng-show="load" style="left: 50%;top: 50%;width:100px; height:100px;" src="~/assets/spinner.gif">
+                                <h5 class="content-group"><small ng-show="!load" class="display-block">Hi,<strong> @Model.Name  </strong> !</small>the reset is unsuccessful, refresh this page and try again.</h5>
+                            </div>
+
+                            <div ng-show="resetState == 0" style="padding-left:40px;padding-right:40px; margin-top:20px;">
 
                                 <div class="row">
                                     <div style="color:red;font-size:10px;align-self:end" ng-show="newPasswordStatus">{{newPasswordErrorMessage}}</div>
@@ -96,12 +109,12 @@
                                     <span ng-if="!isShowNew"
                                           ng-click="showPassword('new')"
                                           class="icon-eye-blocked2 eye-container form-control-feedback pull-right"
-                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                          style="cursor: pointer; pointer-events: all;left:85%;color:grey">
                                     </span>
                                     <span ng-if="isShowNew"
                                           ng-click="showPassword('new')"
                                           class="icon-eye2 eye-container form-control-feedback pull-right"
-                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                          style="cursor: pointer; pointer-events: all;left:85%;color:grey">
                                     </span>
                                 </div>
                                 <div class="row">
@@ -113,12 +126,12 @@
                                     <span ng-if="!isShowConfirmNew"
                                           ng-click="showPassword('confirm new')"
                                           class="icon-eye-blocked2 eye-container form-control-feedback pull-right"
-                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                          style="cursor: pointer; pointer-events: all;left:85%;color:grey">
                                     </span>
                                     <span ng-if="isShowConfirmNew"
                                           ng-click="showPassword('confirm new')"
                                           class="icon-eye2 eye-container form-control-feedback pull-right"
-                                           style="cursor: pointer; pointer-events: all;left:85%;color:grey">
+                                          style="cursor: pointer; pointer-events: all;left:85%;color:grey">
                                     </span>
                                 </div>
                                 <div ng-show="!load" class="form-group">
@@ -126,16 +139,19 @@
                                         Set Password
                                     </button>
                                 </div>
+                               
+                            </div>
+                            <div style="padding-left:40px;padding-right:40px;padding-bottom:10px">
                                 <table ng-show="!load" style="width:100%;font-size:10px">
                                     <tr>
                                         <td style="">
-                                            
                                         </td>
                                         <td style="text-align:right">
-                                            <a style="text-decoration:none;color:black" href="/login">back to login</a>
+                                            <a style="text-decoration:none;color:black" href="/login">Back to login</a>
                                         </td>
                                     </tr>
                                 </table>
+
                                 <br />
                             </div>
                         </div>
@@ -169,6 +185,8 @@
             });
             $scope.initData = function () {
             }
+
+            $scope.resetState = 0;
             ////////////////////////////  SAVE NEW PASSWORD  ////////////////////////////
             $scope.updateProduct = function () {
                 if (!$scope.isValidForm($scope.myForm))
@@ -200,13 +218,16 @@
                         if (response.data) {
                             if (response.data == -2) {
                                 showError("TokenError.");
+                                $scope.resetState = -1;
                                 return;
                             } else if (response.data == -1) {
                                 showError("Token error");
+                                $scope.resetState = -1;
                                 return;
                             }
                             else {
-                               showSuccess("Your password has been changed");
+                                showSuccess("Your password has been changed");
+                                $scope.resetState = 1;
                                 
                             }
                         }
