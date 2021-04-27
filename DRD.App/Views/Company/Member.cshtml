@@ -56,7 +56,8 @@
                                 <div ng-repeat="x in acceptedMembers"  class="col-lg-3 col-md-4 col-xs-6">
                                     <div class="row member-container">
                                         <div class="col-sm-3 col-lg-3">
-                                            <img class="avatar" ng-src="/Images/Member/{{x.User.EncryptedId}}/{{x.User.ImageProfile}}" />
+                                            <img class="avatar" ng-src="{{x.User.ProfileImageFileName != null ? '/Images/Member/'+x.User.EncryptedId +'/' + x.User.ProfileImageFileName : '/Images/Member/user.png'}}
+                                                 " />
                                         </div>
                                         <div class="col-sm-8 col-lg-8 no-overflow">
                                             <strong class="ellipsis">{{x.User.Name}}</strong>
@@ -110,7 +111,7 @@
                                     <div ng-repeat="x in waitingMembers" class="col-lg-6 col-md-6 col-xs-12">
                                         <div class="row member-container">
                                             <div class="col-sm-2 col-lg-2">
-                                                <img class="avatar" ng-src="/Images/Member/{{x.User.EncryptedUserId}}/{{x.User.ImageProfile}}" />
+                                                <img class="avatar" ng-src="{{x.User.ProfileImageFileName != null ? '/Images/Member/'+x.User.EncryptedId +'/' + x.User.ProfileImageFileName : '/Images/Member/user.png'}}" />
                                             </div>
                                             <div class="col-sm-6 col-lg-6 no-overflow">
                                                 <strong class="ellipsis">{{x.User.Name}}</strong>
@@ -233,6 +234,7 @@
                 $http.post('@Url.Action("AcceptMember", "Company")', { memberId: MemberId })
                     .then(function (response) {
                         if (response.data) {
+                            console.log(response.data);
                             if (response.data == "OK") {
                                 $.jGrowl('Request from User with id ' + MemberId + " Accepted", {
                                     header: 'Request Accepted',

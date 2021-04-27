@@ -79,7 +79,7 @@ namespace Core.Postgres
                     Phone = "08895737277",
                     Email = "superadmin@radikari.com",
                     OfficialIdNo = 2511100909080010,
-                    Password = passEncrypted,
+                    Password = radikariPassEncrypted,
                     IsActive = true
                 },
                 new User
